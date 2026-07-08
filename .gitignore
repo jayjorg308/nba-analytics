@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Installed third-party agent skills (own upstream/license; managed by `skills`,
+# not vendored here — committing would drift from upstream and fight updates)
+.claude/skills/
+
 # Python (ingestion layer)
 __pycache__/
 *.py[cod]
