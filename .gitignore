@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Python (ingestion layer)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Data landing + derived layers (pulled/computed locally; not committed by default)
+data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
