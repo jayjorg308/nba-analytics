@@ -1,1 +1,1 @@
-# nba-analytics
+# NBA Analytics
