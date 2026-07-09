@@ -1,0 +1,227 @@
+// The single pure aggregation function (ADR-0007): computes v1's player-side
+// metrics — diet-weighted expected PPS, per-zone making deltas, suppression /
+// small-sample flags — over an array of enriched shots.
+//
+// v1 calls it once with all shots; that call is the all-pass case of the
+// filtered subsets v2 will pass (which is why it takes the shots array, not
+// the payload). Keep it a single call site per ADR-0007: do not scatter
+// aggregation across the app. The output is never persisted — the payload
+// stays metric-free.
+
+import {
+  EVAL_ZONES,
+  LONG_TWO_BAND,
+  MID_RANGE_BANDS,
+  SMALL_SAMPLE_MAKING_ATTEMPTS,
+  ZONE_INCLUSION_MIN_ATTEMPTS,
+  ZONE_POINT_VALUE,
+} from './constants'
+import type { EvalZone, MidRangeBand } from './constants'
+import type { EnrichedShot, ZoneBaselineEntry } from './payload'
+
+export interface ZoneMetricsRow {
+  zone: EvalZone
+  attempts: number
+  makes: number
+  /** Share of the player's evaluation attempts; null when he has none. */
+  attemptShare: number | null
+  /** League share of evaluation attempts, renormalized over the 6 eval zones. */
+  leagueAttemptShare: number
+  fgPct: number | null
+  leagueFgPct: number
+  pps: number | null
+  leaguePps: number
+  /** Shot making (ADR-0001): player FG% minus league FG%, same zone. */
+  makingDelta: number | null
+  /** Mix-view inclusion at >= 15 attempts (ADR-0008). Display-scoped:
+   * excluded zones still count toward the diet weighting. */
+  included: boolean
+  /** Small-sample uncertainty flag on the making delta — flags, never
+   * suppresses (ADR-0008: no second hard cutoff on the making axis). */
+  smallSampleMaking: boolean
+}
+
+export interface BandMetricsRow {
+  band: MidRangeBand
+  attempts: number
+  makes: number
+  shareOfMidRange: number | null
+  leagueShareOfMidRange: number
+  fgPct: number | null
+  leagueFgPct: number
+  pps: number | null
+  leaguePps: number
+  makingDelta: number | null
+  smallSampleMaking: boolean
+}
+
+export interface ShotMetrics {
+  /** ADR-0002: the comparison class travels with the numbers and must be
+   * stated plainly in the UI — "vs league average", never peer-adjusted. */
+  comparisonClass: 'league-average'
+  totalAttempts: number
+  /** Attempts in the 6 evaluation zones (Backcourt excluded). */
+  evalAttempts: number
+  /** Backcourt heaves: excluded from evaluation, reported, never hidden. */
+  backcourt: { attempts: number; makes: number }
+  selection: {
+    /** The headline selection number: the player's zone attempt shares
+     * weighted by each zone's LEAGUE PPS — his making held at league level,
+     * isolating selection (ADR-0001). */
+    playerDietExpectedPps: number | null
+    /** The same weighting applied to the league's own shares — the benchmark
+     * is the league's own diet, never an arbitrary bar (ADR-0002). */
+    leagueDietExpectedPps: number
+    selectionDelta: number | null
+  }
+  /** Exactly the 6 evaluation zones, in EVAL_ZONES order. */
+  zones: ZoneMetricsRow[]
+  /** ADR-0008 launch-hero refinements, computed unconditionally with
+   * data-driven visibility — no hero-conditional code paths, so a different
+   * hero re-runs the gate for free. */
+  midRangeSplit: { visible: boolean; bands: BandMetricsRow[] }
+  cornerSplit: { visible: boolean; left: ZoneMetricsRow; right: ZoneMetricsRow }
+}
+
+interface Tally {
+  attempts: number
+  makes: number
+}
+
+function tallyShots<K extends string>(shots: EnrichedShot[], key: (s: EnrichedShot) => K): Map<K, Tally> {
+  const tallies = new Map<K, Tally>()
+  for (const shot of shots) {
+    const k = key(shot)
+    const t = tallies.get(k) ?? { attempts: 0, makes: 0 }
+    t.attempts += 1
+    if (shot.made) t.makes += 1
+    tallies.set(k, t)
+  }
+  return tallies
+}
+
+export function aggregateShotMetrics(
+  shots: EnrichedShot[],
+  baseline: ZoneBaselineEntry[],
+): ShotMetrics {
+  const basicBaseline = new Map(
+    baseline.filter((e) => e.grain === 'basic').map((e) => [e.zone, e]),
+  )
+  const bandBaseline = new Map(
+    baseline.filter((e) => e.grain === 'midRangeBand').map((e) => [e.band, e]),
+  )
+  for (const zone of EVAL_ZONES) {
+    const entry = basicBaseline.get(zone)
+    if (!entry || entry.fga === 0) {
+      // parseDerivedPayload guarantees presence; fga=0 would make the league
+      // FG% undefined. Either way the contract is broken — fail loudly.
+      throw new Error(`baseline unusable for evaluation zone '${zone}'`)
+    }
+  }
+
+  const zoneTallies = tallyShots(shots, (s) => s.zoneBasic)
+  const backcourtTally = zoneTallies.get('Backcourt') ?? { attempts: 0, makes: 0 }
+  const totalAttempts = shots.length
+  const evalAttempts = totalAttempts - backcourtTally.attempts
+
+  const leagueEvalFga = EVAL_ZONES.reduce((sum, z) => sum + basicBaseline.get(z)!.fga, 0)
+
+  const zones: ZoneMetricsRow[] = EVAL_ZONES.map((zone) => {
+    const league = basicBaseline.get(zone)!
+    const { attempts, makes } = zoneTallies.get(zone) ?? { attempts: 0, makes: 0 }
+    const pointValue = ZONE_POINT_VALUE[zone]
+    const fgPct = attempts > 0 ? makes / attempts : null
+    const leagueFgPct = league.fgm / league.fga
+    return {
+      zone,
+      attempts,
+      makes,
+      attemptShare: evalAttempts > 0 ? attempts / evalAttempts : null,
+      leagueAttemptShare: league.fga / leagueEvalFga,
+      fgPct,
+      leagueFgPct,
+      pps: fgPct === null ? null : fgPct * pointValue,
+      leaguePps: leagueFgPct * pointValue,
+      makingDelta: fgPct === null ? null : fgPct - leagueFgPct,
+      included: attempts >= ZONE_INCLUSION_MIN_ATTEMPTS,
+      smallSampleMaking: attempts < SMALL_SAMPLE_MAKING_ATTEMPTS,
+    }
+  })
+
+  // Diet weighting uses all six evaluation zones regardless of `included`:
+  // inclusion is a display concern, and dropping a sub-15 zone's attempts
+  // would misstate the diet itself.
+  const playerDietExpectedPps =
+    evalAttempts > 0
+      ? zones.reduce((sum, r) => sum + (r.attemptShare ?? 0) * r.leaguePps, 0)
+      : null
+  const leagueDietExpectedPps = zones.reduce(
+    (sum, r) => sum + r.leagueAttemptShare * r.leaguePps,
+    0,
+  )
+
+  const midShots = shots.filter((s) => s.zoneBasic === 'Mid-Range')
+  const bandTallies = tallyShots(midShots, (s) => s.zoneRange)
+  for (const band of bandTallies.keys()) {
+    if (!bandBaseline.has(band as MidRangeBand)) {
+      throw new Error(`player mid-range band '${band}' has no baseline entry`)
+    }
+  }
+  const leagueBandFga = [...bandBaseline.values()].reduce((sum, e) => sum + e.fga, 0)
+  const midAttempts = midShots.length
+  const bands: BandMetricsRow[] = MID_RANGE_BANDS.filter((b) => bandBaseline.has(b)).map(
+    (band) => {
+      const league = bandBaseline.get(band)!
+      const { attempts, makes } = bandTallies.get(band) ?? { attempts: 0, makes: 0 }
+      const fgPct = attempts > 0 ? makes / attempts : null
+      const leagueFgPct = league.fgm / league.fga
+      return {
+        band,
+        attempts,
+        makes,
+        shareOfMidRange: midAttempts > 0 ? attempts / midAttempts : null,
+        leagueShareOfMidRange: league.fga / leagueBandFga,
+        fgPct,
+        leagueFgPct,
+        pps: fgPct === null ? null : fgPct * 2,
+        leaguePps: leagueFgPct * 2,
+        makingDelta: fgPct === null ? null : fgPct - leagueFgPct,
+        smallSampleMaking: attempts < SMALL_SAMPLE_MAKING_ATTEMPTS,
+      }
+    },
+  )
+  // The split ships when the long-two band is material (>= the inclusion
+  // bar) — the ADR-0008 promotion rule. Selection transparency, not a making
+  // indictment.
+  const longTwoAttempts = bandTallies.get(LONG_TWO_BAND)?.attempts ?? 0
+
+  const leftCorner = zones.find((r) => r.zone === 'Left Corner 3')!
+  const rightCorner = zones.find((r) => r.zone === 'Right Corner 3')!
+
+  return {
+    comparisonClass: 'league-average',
+    totalAttempts,
+    evalAttempts,
+    backcourt: { attempts: backcourtTally.attempts, makes: backcourtTally.makes },
+    selection: {
+      playerDietExpectedPps,
+      leagueDietExpectedPps,
+      selectionDelta:
+        playerDietExpectedPps === null ? null : playerDietExpectedPps - leagueDietExpectedPps,
+    },
+    zones,
+    midRangeSplit: {
+      visible: longTwoAttempts >= ZONE_INCLUSION_MIN_ATTEMPTS,
+      bands,
+    },
+    cornerSplit: {
+      // Secondary corner view: shown only when BOTH corners individually
+      // clear the volume bar (CONTEXT.md); silent otherwise.
+      visible:
+        leftCorner.attempts >= ZONE_INCLUSION_MIN_ATTEMPTS &&
+        rightCorner.attempts >= ZONE_INCLUSION_MIN_ATTEMPTS,
+      left: leftCorner,
+      right: rightCorner,
+    },
+  }
+}
