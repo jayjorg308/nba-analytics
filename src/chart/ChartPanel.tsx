@@ -132,7 +132,10 @@ export function ChartPanel({
   ariaLabel: string
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const [view, setView] = useState<CourtView>('shots')
+  // Zones is the DEFAULT view: the zone-shaded court is the argument (the
+  // verdict painted on the floor); the raw made/missed scatter is the
+  // secondary, look-closer view.
+  const [view, setView] = useState<CourtView>('zones')
   const [hovered, setHovered] = useState<Hovered | null>(null)
 
   function switchView(next: CourtView) {
@@ -152,21 +155,37 @@ export function ChartPanel({
 
   return (
     <div className="chart-panel">
-      <fieldset className="court-view-toggle">
-        <legend className="visually-hidden">Court view</legend>
-        {(['shots', 'zones'] as const).map((v) => (
-          <label key={v} className={view === v ? 'toggle-active' : undefined}>
-            <input
-              type="radio"
-              name="court-view"
-              value={v}
-              checked={view === v}
-              onChange={() => switchView(v)}
-            />
-            {v === 'shots' ? 'Shots' : 'Zones'}
-          </label>
-        ))}
-      </fieldset>
+      {/* Legend beside the toggle, ABOVE the court: the legend is the key to
+          reading the hero visual, so it is read before the fills, not after. */}
+      <div className="chart-controls">
+        <fieldset className="court-view-toggle">
+          <legend className="visually-hidden">Court view</legend>
+          {(['zones', 'shots'] as const).map((v) => (
+            <label key={v} className={view === v ? 'toggle-active' : undefined}>
+              <input
+                type="radio"
+                name="court-view"
+                value={v}
+                checked={view === v}
+                onChange={() => switchView(v)}
+              />
+              {v === 'shots' ? 'Shots' : 'Zones'}
+            </label>
+          ))}
+        </fieldset>
+        {view === 'shots' ? (
+          <div className="chart-legend" aria-hidden="true">
+            <span className="legend-item">
+              <span className="legend-swatch legend-made" /> Made
+            </span>
+            <span className="legend-item">
+              <span className="legend-swatch legend-missed" /> Missed
+            </span>
+          </div>
+        ) : (
+          <ZonesLegend />
+        )}
+      </div>
       <div className="chart-wrapper" ref={wrapperRef}>
         {view === 'shots' ? (
           <ShotChart
@@ -199,18 +218,6 @@ export function ChartPanel({
           </TooltipBox>
         )}
       </div>
-      {view === 'shots' ? (
-        <div className="chart-legend" aria-hidden="true">
-          <span className="legend-item">
-            <span className="legend-swatch legend-made" /> Made
-          </span>
-          <span className="legend-item">
-            <span className="legend-swatch legend-missed" /> Missed
-          </span>
-        </div>
-      ) : (
-        <ZonesLegend />
-      )}
     </div>
   )
 }

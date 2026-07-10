@@ -36,7 +36,7 @@ _Avoid_: using "shot quality" to mean whether shots went in.
 A player's *conversion relative to the zone baseline* — does he beat league expectation in the zones where he shoots? Answers "is he actually good?" Distinct from shot selection.
 
 **Zones view**:
-The court's second display mode (Shots / Zones toggle): the six evaluation-zone regions shaded by making delta (player FG% − league FG% per zone) on the **making scale**, titled "vs league average" (ADR-0002). Display-only: it re-presents the same `ShotMetrics.zones[]` the table shows (no re-aggregation — ADR-0011), shades all six zones regardless of `included` (inclusion gates the mix view; making is flagged†, never suppressed — ADR-0008), and its drawn regions approximate the data's zone assignments without ever overriding them (ADR-0012). The mid-range 8–16/16–24 band split stays table-only — no rings on the court.
+The court's **default** display mode (Zones / Shots toggle; the raw made/missed scatter is the secondary, look-closer view): the six evaluation-zone regions shaded by making delta (player FG% − league FG% per zone) on the **making scale**, titled "vs league average" (ADR-0002), with the scale's legend beside the toggle above the court. Display-only: it re-presents the same `ShotMetrics.zones[]` the table shows (no re-aggregation — ADR-0011), shades all six zones regardless of `included` (inclusion gates the mix view; making is flagged†, never suppressed — ADR-0008), and its drawn regions approximate the data's zone assignments without ever overriding them (ADR-0012). The mid-range 8–16/16–24 band split stays table-only — no rings on the court.
 
 **Making scale**:
 The Zones view's binned diverging encoding of making delta: neutral gray band at ±2.5 pp around league average, symmetric warm (above) / cool (below) arms in 7.5 pp steps, open-ended past ±17.5 — edges are fixed absolute values so the same color means the same delta for every hero and season (ADR-0013). A zero-attempt zone renders unpainted (no data ≠ at league average), and the per-theme colors are governed by tested invariants — label contrast, monotone luminance, gray midpoint — not by fixed hexes (ADR-0014).
@@ -49,6 +49,12 @@ The fraction of a player's (or the league's) shots taken from a given zone. Deri
 
 **Diet-weighted expected PPS**:
 The headline selection number: a player's zone attempt shares weighted by each zone's *league* PPS (his making held at league level, isolating selection). Compared against the same weighting applied to the *league's* zone shares — so the benchmark is the league's own diet, never an arbitrary fixed bar.
+
+**Making PPS delta**:
+The headline making number: actual PPS minus diet-weighted expected PPS — what the player's conversion adds or subtracts with his diet held fixed (ADR-0016). Denominated in PPS (the whole-diet value consequence), unlike the per-zone making delta (FG% points, one zone's conversion); the headline numbers decompose exactly: league diet PPS + selection delta + making PPS delta = actual PPS.
+
+**Combined threes**:
+The three 3-point evaluation zones rolled up into one line by summing makes and attempts — player and league both, per the zone-rollup rule, never averaged rates. Exists so the making verdict can be stated at a grain the sample supports: each launch-hero 3PT zone is individually small-sample-flagged (49/34/48 attempts) while the combined 131 clear the bar (ADR-0016).
 
 **Selection benchmark**:
 The league-average shot mix. Shot selection is always framed as "vs league average," never "vs positional peers." The comparison is deliberately position-blind (see ADR-0002); position/archetype-adjusted selection is a v2 concern. The tool states its comparison class plainly. Excludes Backcourt heaves (nominal 3-zones with ~0 real value that would distort the weighting).
@@ -64,6 +70,9 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 
 **v1 thesis**:
 "Is this player taking good shots?" — answered completely by the two-axis model (shot selection + shot making). This is the whole of v1's claim; the tool states this question and no more.
+
+**Verdict**:
+The one-or-two-sentence answer to the v1 thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by a committed guard test that asserts each directional claim against the deployed payload's metrics (ADR-0017); its language stays inside selection/making (ADR-0005).
 
 **v2 thesis**:
 "How does he create his shots?" — the scheduled second act. Designated engine: the Case 2 buckets (catch-and-shoot vs pull-up, contested, shot-clock). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction.

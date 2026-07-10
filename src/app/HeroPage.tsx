@@ -45,11 +45,14 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
     <main className="hero-page">
       <header className="hero-header">
         <h1>{heroConfig.thesis}</h1>
+        {/* The answer before the evidence (ADR-0017) — authored hero copy,
+            kept honest by the committed verdict guard. */}
+        <p className="hero-verdict">{heroConfig.verdict}</p>
         <p className="hero-byline">
           {payload._meta.player} · {payload._meta.season} · vs league average
         </p>
       </header>
-      <HeadlineBanner selection={metrics.selection} />
+      <HeadlineBanner selection={metrics.selection} making={metrics.making} threes={metrics.threes} />
       <div className="hero-layout">
         <ChartPanel
           shots={payload.shots}

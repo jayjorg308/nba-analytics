@@ -54,6 +54,21 @@ describe.skipIf(!existsSync(publicPayloadPath))('deployed payload (launch hero)'
     })
   })
 
+  it('anchors the verdict-grain numbers the headline blocks will state', () => {
+    // ADR-0016: selection ~league-average; making costs ~0.11 PPS; the
+    // combined threes carry it at a grain that clears the small-sample bar.
+    const payload = parseDerivedPayload(
+      JSON.parse(readFileSync(publicPayloadPath, 'utf-8')),
+    )
+    const m = aggregateShotMetrics(payload.shots, payload.zoneBaseline)
+    expect(m.selection.playerDietExpectedPps).toBeCloseTo(1.0986, 3)
+    expect(m.making.actualPps).toBeCloseTo(0.9902, 3)
+    expect(m.making.makingPpsDelta).toBeCloseTo(-0.1084, 3)
+    expect(m.threes.attempts).toBe(131)
+    expect(m.threes.smallSampleMaking).toBe(false)
+    expect(m.threes.makingDelta).toBeCloseTo(-0.1458, 3)
+  })
+
   it('matches the latest derived payload when data/ is present', () => {
     const derivedDir = path.resolve(process.cwd(), 'data/derived/cody-williams/2025-26')
     if (!existsSync(derivedDir)) return

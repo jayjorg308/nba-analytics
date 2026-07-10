@@ -12,13 +12,10 @@ function ZoneRow({ row }: { row: ZoneMetricsRow }) {
       <td>{row.attempts}</td>
       <td>{formatPercent1(row.attemptShare)}</td>
       <td>{formatPercent1(row.leagueAttemptShare)}</td>
-      <td>
-        {formatPercent1(row.fgPct)} <span className="lg">({formatPercent1(row.leagueFgPct)})</span>
-      </td>
+      <td>{withSmallSampleMark(formatSignedPp1(row.makingDelta), row.smallSampleMaking)}</td>
       <td>
         {formatPps2(row.pps)} <span className="lg">({formatPps2(row.leaguePps)})</span>
       </td>
-      <td>{withSmallSampleMark(formatSignedPp1(row.makingDelta), row.smallSampleMaking)}</td>
     </tr>
   )
 }
@@ -36,14 +33,10 @@ function BandRow({ band }: { band: BandMetricsRow }) {
       <td>{band.attempts}</td>
       <td>{formatPercent1(band.shareOfMidRange)}</td>
       <td>{formatPercent1(band.leagueShareOfMidRange)}</td>
-      <td>
-        {formatPercent1(band.fgPct)}{' '}
-        <span className="lg">({formatPercent1(band.leagueFgPct)})</span>
-      </td>
+      <td>{withSmallSampleMark(formatSignedPp1(band.makingDelta), band.smallSampleMaking)}</td>
       <td>
         {formatPps2(band.pps)} <span className="lg">({formatPps2(band.leaguePps)})</span>
       </td>
-      <td>{withSmallSampleMark(formatSignedPp1(band.makingDelta), band.smallSampleMaking)}</td>
     </tr>
   )
 }
@@ -63,16 +56,25 @@ export function ZoneTable({ metrics }: { metrics: ShotMetrics }) {
   return (
     <section className="zone-panel">
       <table className="zone-table">
-        <caption>Zone by zone: shot mix and shot making, vs league average</caption>
+        <caption>
+          Zone by zone: shot mix and shot making, vs league average (making Δ in FG percentage
+          points)
+        </caption>
+        {/* Column philosophy: the verdict-supporting columns lead — FGA (the
+            honesty anchor that makes † interpretable, never hover-hidden),
+            the diet pair, then Making Δ. PPS (lg) trails as the reference
+            column, so if the table ever overflows, the scroll cuts reference
+            material, never the payoff. There is no FG% column: PPS is the
+            unit of shot quality (ADR-0001) and Making Δ already encodes
+            FG%-vs-league; raw FG% lives on the court's zone tooltip. */}
         <thead>
           <tr>
             <th scope="col">Zone</th>
             <th scope="col">FGA</th>
             <th scope="col">Share</th>
             <th scope="col">Lg share</th>
-            <th scope="col">FG% (lg)</th>
+            <th scope="col">Making Δ</th>
             <th scope="col">PPS (lg)</th>
-            <th scope="col">Making Δ (pp)</th>
           </tr>
         </thead>
         <tbody>

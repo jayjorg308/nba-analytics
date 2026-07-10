@@ -20,28 +20,32 @@ function renderPanel() {
 }
 
 describe('ChartPanel view toggle', () => {
-  it('defaults to the Shots view', () => {
+  it('defaults to the Zones view — the argument, not the commodity scatter', () => {
     const { container } = renderPanel()
-    expect((screen.getByLabelText('Shots') as HTMLInputElement).checked).toBe(true)
+    expect((screen.getByLabelText('Zones') as HTMLInputElement).checked).toBe(true)
+    expect(container.querySelectorAll('.zone-fill')).toHaveLength(6)
+    expect(container.querySelectorAll('.shot-dot')).toHaveLength(0)
+    // the legend (the key to the hero visual) renders in the controls row
+    // ABOVE the court, not below it
+    screen.getByText('Shot making vs league average (percentage points)')
+    expect(container.querySelectorAll('.zones-legend-swatch')).toHaveLength(7)
+    const panelChildren = [...container.querySelector('.chart-panel')!.children]
+    expect(panelChildren.map((c) => c.className)).toEqual(['chart-controls', 'chart-wrapper'])
+    expect(panelChildren[0]!.querySelector('.zones-legend')).not.toBeNull()
+  })
+
+  it('switches to Shots: dots replace fills and the legend swaps', () => {
+    const { container } = renderPanel()
+    fireEvent.click(screen.getByLabelText('Shots'))
     expect(container.querySelectorAll('.shot-dot')).toHaveLength(14)
     expect(container.querySelectorAll('.zone-fill')).toHaveLength(0)
     screen.getByText('Made')
     screen.getByText('Missed')
-  })
-
-  it('switches to Zones: fills replace dots and the legend swaps', () => {
-    const { container } = renderPanel()
-    fireEvent.click(screen.getByLabelText('Zones'))
-    expect(container.querySelectorAll('.shot-dot')).toHaveLength(0)
-    expect(container.querySelectorAll('.zone-fill')).toHaveLength(6)
-    screen.getByText('Shot making vs league average (percentage points)')
-    expect(screen.queryByText('Made')).toBeNull()
-    expect(container.querySelectorAll('.zones-legend-swatch')).toHaveLength(7)
+    expect(screen.queryByText(/percentage points/)).toBeNull()
   })
 
   it('shows a zone tooltip on hover with the flagged uncertainty sentence', () => {
     const { container } = renderPanel()
-    fireEvent.click(screen.getByLabelText('Zones'))
     const raFill = [...container.querySelectorAll('.zone-fill')].at(-1)! // RA topmost
     fireEvent.pointerEnter(raFill)
     screen.getByText('Restricted Area')
@@ -54,9 +58,8 @@ describe('ChartPanel view toggle', () => {
     expect(container.querySelector('.shot-tooltip')).toBeNull()
   })
 
-  it('restores the Shots view cleanly, clearing hover state', () => {
+  it('switches views cleanly, clearing hover state', () => {
     const { container } = renderPanel()
-    fireEvent.click(screen.getByLabelText('Zones'))
     const fill = container.querySelector('.zone-fill')!
     fireEvent.pointerEnter(fill)
     expect(container.querySelector('.shot-tooltip')).not.toBeNull()
@@ -66,5 +69,8 @@ describe('ChartPanel view toggle', () => {
     expect(container.querySelector('.shot-tooltip')).toBeNull()
     expect(screen.queryByText(/percentage points/)).toBeNull()
     screen.getByText('Made')
+    fireEvent.click(screen.getByLabelText('Zones'))
+    expect(container.querySelectorAll('.zone-fill')).toHaveLength(6)
+    expect(screen.queryByText('Made')).toBeNull()
   })
 })
