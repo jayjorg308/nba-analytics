@@ -4,7 +4,9 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    // node by default; component tests opt into jsdom per-file via
+    // `// @vitest-environment jsdom` docblocks.
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 })

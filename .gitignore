@@ -22,8 +22,9 @@ __pycache__/
 .venv/
 venv/
 
-# Data landing + derived layers (pulled/computed locally; not committed by default)
-data/
+# Data landing + derived layers (pulled/computed locally; not committed by default).
+# Anchored to the repo root: public/data/ (the synced deployment payload) IS committed.
+/data/
 
 # Editor directories and files
 .vscode/*
