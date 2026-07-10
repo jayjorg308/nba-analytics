@@ -29,3 +29,4 @@ Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agen
 - vitest runs in **node** by default; component tests opt into jsdom per-file via a `// @vitest-environment jsdom` docblock and need an explicit `afterEach(cleanup)` (vitest globals are off, so testing-library auto-cleanup does not run).
 - Under jsdom, `import.meta.url` is not a file URL — resolve fixture paths from `process.cwd()` (the repo root) in jsdom test files.
 - Real-data tests use `describe.skipIf` and run only where `data/` or `public/data/` exists; they skip on clean clones by design.
+- **Committed design guard**: `src/chart/makingScale.contrast.test.ts` parses the actual CSS (`src/App.css` / `src/index.css`) and enforces the making-scale palette invariants (label contrast, per-arm monotone luminance, gray neutral) in both themes. Tune `--making-*` hexes freely — the guard defines validity; never weaken its assertions to admit a palette (ADR-0014).

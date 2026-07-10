@@ -36,7 +36,10 @@ _Avoid_: using "shot quality" to mean whether shots went in.
 A player's *conversion relative to the zone baseline* — does he beat league expectation in the zones where he shoots? Answers "is he actually good?" Distinct from shot selection.
 
 **Zones view**:
-The court's second display mode (Shots / Zones toggle): the six evaluation-zone regions shaded by making delta (player FG% − league FG% per zone) on a binned diverging scale — warm above league, cool below, neutral gray at league average, titled "vs league average" (ADR-0002). Display-only: it re-presents the same `ShotMetrics.zones[]` the table shows (no re-aggregation — ADR-0011), shades all six zones regardless of `included` (inclusion gates the mix view; making is flagged†, never suppressed — ADR-0008), and its drawn regions approximate the data's zone assignments without ever overriding them (ADR-0012). The mid-range 8–16/16–24 band split stays table-only — no rings on the court.
+The court's second display mode (Shots / Zones toggle): the six evaluation-zone regions shaded by making delta (player FG% − league FG% per zone) on the **making scale**, titled "vs league average" (ADR-0002). Display-only: it re-presents the same `ShotMetrics.zones[]` the table shows (no re-aggregation — ADR-0011), shades all six zones regardless of `included` (inclusion gates the mix view; making is flagged†, never suppressed — ADR-0008), and its drawn regions approximate the data's zone assignments without ever overriding them (ADR-0012). The mid-range 8–16/16–24 band split stays table-only — no rings on the court.
+
+**Making scale**:
+The Zones view's binned diverging encoding of making delta: neutral gray band at ±2.5 pp around league average, symmetric warm (above) / cool (below) arms in 7.5 pp steps, open-ended past ±17.5 — edges are fixed absolute values so the same color means the same delta for every hero and season (ADR-0013). A zero-attempt zone renders unpainted (no data ≠ at league average), and the per-theme colors are governed by tested invariants — label contrast, monotone luminance, gray midpoint — not by fixed hexes (ADR-0014).
 
 **Shot diet**:
 The distribution of a player's shot attempts across zones — his attempt share per zone. The raw material of shot selection.
