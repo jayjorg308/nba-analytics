@@ -10,10 +10,15 @@
 // implementations use -47.5/422.5 instead — the choice moves court LINES
 // only; dot positions are the API's coordinates either way.
 //
-// ORIENTATION: baseline at the BOTTOM of the frame, three-point arc opening
-// upward, half-court line at the top. The y-flip (SVG y grows downward)
-// happens exactly once, inside statsToSvg — not via a scale(1,-1) transform —
-// so tests can assert exact SVG numbers.
+// ORIENTATION: the OFFENSE'S PERSPECTIVE — baseline and hoop at the TOP of
+// the frame, three-point arc opening downward, half-court line at the bottom.
+// This is the one orientation that needs no axis flip: the NBA's naming is
+// the offense's (negative locX = "Left Side(L)" = the shooter's left), so
+// with the hoop at the top the shooter's left is the image's left and both
+// axes of statsToSvg are plain translations. Flipping y alone to put the
+// hoop at the bottom — the common tutorial view — MIRRORS the court: left-
+// corner shots render in what a player reads as the right corner. A true
+// hoop-at-bottom view would have to flip x as well (ADR-0015).
 
 import type { EvalZone } from '../domain/constants'
 
@@ -40,11 +45,11 @@ export interface SvgPoint {
 }
 
 export function statsToSvg(x: number, y: number): SvgPoint {
-  return { x: x - COURT.minX + PAD, y: COURT.maxY + PAD - y }
+  return { x: x - COURT.minX + PAD, y: y - COURT.minY + PAD }
 }
 
 export function svgToStats(x: number, y: number): SvgPoint {
-  return { x: x + COURT.minX - PAD, y: COURT.maxY + PAD - y }
+  return { x: x + COURT.minX - PAD, y: y + COURT.minY - PAD }
 }
 
 export function isOnCourt(shot: { locX: number; locY: number }): boolean {
@@ -76,11 +81,11 @@ export interface ZoneRegion {
  * stats units, then through statsToSvg). Rendered stroke-only.
  */
 export function courtElements(): CourtElement[] {
-  const hoop = statsToSvg(0, 0) // (270, 437.5)
-  const junction = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // corner-line top / arc ends
+  const hoop = statsToSvg(0, 0) // (270, 72.5)
+  const junction = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // corner-line bottom / arc ends
 
-  const boundaryTL = statsToSvg(COURT.minX, COURT.maxY)
-  const paintTL = statsToSvg(-80, 137.5) // key: 16 ft wide, 19 ft from baseline
+  const boundaryTL = statsToSvg(COURT.minX, COURT.minY)
+  const paintTL = statsToSvg(-80, COURT.minY) // key: 16 ft wide, 19 ft from baseline
   const ftCenter = statsToSvg(0, 137.5)
   const backboardY = statsToSvg(0, -12.5).y // face 4 ft from baseline
   const baselineY = statsToSvg(0, COURT.minY).y
@@ -100,7 +105,7 @@ export function courtElements(): CourtElement[] {
     {
       id: 'restricted-arc',
       kind: 'path',
-      d: `M ${hoop.x - 40} ${hoop.y} A 40 40 0 0 1 ${hoop.x + 40} ${hoop.y}`,
+      d: `M ${hoop.x - 40} ${hoop.y} A 40 40 0 0 0 ${hoop.x + 40} ${hoop.y}`,
     },
     { id: 'rim', kind: 'circle', cx: hoop.x, cy: hoop.y, r: 7.5 },
     {
@@ -130,12 +135,12 @@ export function courtElements(): CourtElement[] {
     {
       id: 'three-point-arc',
       kind: 'path',
-      d: `M ${statsToSvg(-220, 0).x} ${junction} A 237.5 237.5 0 0 1 ${statsToSvg(220, 0).x} ${junction}`,
+      d: `M ${statsToSvg(-220, 0).x} ${junction} A 237.5 237.5 0 0 0 ${statsToSvg(220, 0).x} ${junction}`,
     },
     {
       id: 'center-circle',
       kind: 'path',
-      d: `M ${hoop.x - 60} ${halfCourtY} A 60 60 0 0 0 ${hoop.x + 60} ${halfCourtY}`,
+      d: `M ${hoop.x - 60} ${halfCourtY} A 60 60 0 0 1 ${hoop.x + 60} ${halfCourtY}`,
     },
   ]
 }
@@ -153,10 +158,10 @@ export function courtElements(): CourtElement[] {
  */
 export function zoneRegions(): ZoneRegion[] {
   const hoop = statsToSvg(0, 0)
-  const junctionY = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // ≈ 348.0224
-  const baselineY = statsToSvg(0, COURT.minY).y // 490
-  const boundaryTL = statsToSvg(COURT.minX, COURT.maxY)
-  const paintTL = statsToSvg(-80, 137.5)
+  const junctionY = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // ≈ 161.9776
+  const baselineY = statsToSvg(0, COURT.minY).y // 20
+  const boundaryTL = statsToSvg(COURT.minX, COURT.minY)
+  const paintTL = statsToSvg(-80, COURT.minY)
   const leftCornerX = statsToSvg(-220, 0).x // 50
   const rightCornerX = statsToSvg(220, 0).x // 490
 
@@ -171,7 +176,7 @@ export function zoneRegions(): ZoneRegion[] {
         width: COURT.maxX - COURT.minX,
         height: COURT.maxY - COURT.minY,
       },
-      labelAnchor: { x: hoop.x, y: 120 },
+      labelAnchor: { x: hoop.x, y: 390 },
     },
     {
       zone: 'Left Corner 3',
@@ -179,11 +184,11 @@ export function zoneRegions(): ZoneRegion[] {
         id: 'zone-lc3',
         kind: 'rect',
         x: boundaryTL.x,
-        y: junctionY,
+        y: baselineY,
         width: leftCornerX - boundaryTL.x,
-        height: baselineY - junctionY,
+        height: junctionY - baselineY,
       },
-      labelAnchor: { x: 35, y: 419 },
+      labelAnchor: { x: 35, y: 91 },
       labelRotate: -90,
     },
     {
@@ -192,11 +197,11 @@ export function zoneRegions(): ZoneRegion[] {
         id: 'zone-rc3',
         kind: 'rect',
         x: rightCornerX,
-        y: junctionY,
+        y: baselineY,
         width: leftCornerX - boundaryTL.x,
-        height: baselineY - junctionY,
+        height: junctionY - baselineY,
       },
-      labelAnchor: { x: 505, y: 419 },
+      labelAnchor: { x: 505, y: 91 },
       labelRotate: 90,
     },
     {
@@ -204,19 +209,19 @@ export function zoneRegions(): ZoneRegion[] {
       shape: {
         id: 'zone-mid-range',
         kind: 'path',
-        d: `M ${leftCornerX} ${baselineY} L ${leftCornerX} ${junctionY} A 237.5 237.5 0 0 1 ${rightCornerX} ${junctionY} L ${rightCornerX} ${baselineY} Z`,
+        d: `M ${leftCornerX} ${baselineY} L ${leftCornerX} ${junctionY} A 237.5 237.5 0 0 0 ${rightCornerX} ${junctionY} L ${rightCornerX} ${baselineY} Z`,
       },
-      labelAnchor: { x: hoop.x, y: 225 },
+      labelAnchor: { x: hoop.x, y: 285 },
     },
     {
       zone: 'In The Paint (Non-RA)',
       shape: { id: 'zone-paint', kind: 'rect', x: paintTL.x, y: paintTL.y, width: 160, height: 190 },
-      labelAnchor: { x: hoop.x, y: 372 },
+      labelAnchor: { x: hoop.x, y: 138 },
     },
     {
       zone: 'Restricted Area',
       shape: { id: 'zone-ra', kind: 'circle', cx: hoop.x, cy: hoop.y, r: 40 },
-      labelAnchor: { x: hoop.x, y: 411 },
+      labelAnchor: { x: hoop.x, y: 99 },
     },
   ]
 }

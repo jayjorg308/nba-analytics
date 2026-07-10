@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   classifyByGeometry,
   CORNER_ARC_JUNCTION_Y,
+  COURT,
   courtElements,
   isOnCourt,
   statsToSvg,
@@ -12,13 +13,21 @@ import {
 } from './geometry'
 
 describe('statsToSvg', () => {
-  it('places the hoop at (270, 437.5)', () => {
-    expect(statsToSvg(0, 0)).toEqual({ x: 270, y: 437.5 })
+  it('places the hoop at (270, 72.5)', () => {
+    expect(statsToSvg(0, 0)).toEqual({ x: 270, y: 72.5 })
   })
 
   it('maps the court extremes to the padded frame edges', () => {
-    expect(statsToSvg(-250, -52.5)).toEqual({ x: 20, y: 490 }) // left baseline corner
-    expect(statsToSvg(250, 417.5)).toEqual({ x: 520, y: 20 }) // right half-court corner
+    expect(statsToSvg(-250, -52.5)).toEqual({ x: 20, y: 20 }) // left baseline corner
+    expect(statsToSvg(250, 417.5)).toEqual({ x: 520, y: 490 }) // right half-court corner
+  })
+
+  it('keeps the offense perspective: hoop at top, shooter-left on image-left', () => {
+    // Negative locX is the NBA's "Left Side(L)" — the SHOOTER'S left. Hoop at
+    // the top is the one orientation where that lands on image-left with no
+    // axis flip; a y-only flip (hoop at bottom) mirrors the court (ADR-0015).
+    expect(statsToSvg(0, 0).y).toBeLessThan(statsToSvg(0, COURT.maxY).y)
+    expect(statsToSvg(-220, 0).x).toBeLessThan(statsToSvg(220, 0).x)
   })
 
   it('round-trips through svgToStats', () => {
@@ -70,19 +79,19 @@ describe('courtElements', () => {
   it('draws the expected line-work', () => {
     const byId = new Map(elements.map((e) => [e.id, e]))
     expect(byId.get('boundary')).toMatchObject({ x: 20, y: 20, width: 500, height: 470 })
-    expect(byId.get('paint')).toMatchObject({ x: 190, y: 300, width: 160, height: 190 })
-    expect(byId.get('ft-circle')).toMatchObject({ cx: 270, cy: 300, r: 60 })
-    expect(byId.get('rim')).toMatchObject({ cx: 270, cy: 437.5, r: 7.5 })
-    expect(byId.get('backboard')).toMatchObject({ x1: 240, y1: 450, x2: 300, y2: 450 })
-    expect(byId.get('corner-3-left')).toMatchObject({ x1: 50, y1: 490, x2: 50 })
-    expect(byId.get('corner-3-right')).toMatchObject({ x1: 490, y1: 490, x2: 490 })
+    expect(byId.get('paint')).toMatchObject({ x: 190, y: 20, width: 160, height: 190 })
+    expect(byId.get('ft-circle')).toMatchObject({ cx: 270, cy: 210, r: 60 })
+    expect(byId.get('rim')).toMatchObject({ cx: 270, cy: 72.5, r: 7.5 })
+    expect(byId.get('backboard')).toMatchObject({ x1: 240, y1: 60, x2: 300, y2: 60 })
+    expect(byId.get('corner-3-left')).toMatchObject({ x1: 50, y1: 20, x2: 50 })
+    expect(byId.get('corner-3-right')).toMatchObject({ x1: 490, y1: 20, x2: 490 })
   })
 })
 
 describe('zoneRegions', () => {
   const regions = zoneRegions()
   const byZone = new Map(regions.map((r) => [r.zone, r]))
-  const junctionSvgY = 437.5 - CORNER_ARC_JUNCTION_Y
+  const junctionSvgY = 72.5 + CORNER_ARC_JUNCTION_Y
 
   it('returns the six regions in painter order (outer to inner)', () => {
     expect(regions.map((r) => r.zone)).toEqual([
@@ -100,22 +109,21 @@ describe('zoneRegions', () => {
       kind: 'rect', x: 20, y: 20, width: 500, height: 470,
     })
     const lc3 = byZone.get('Left Corner 3')!.shape
-    expect(lc3).toMatchObject({ kind: 'rect', x: 20, width: 30 })
-    expect((lc3 as { y: number }).y).toBeCloseTo(junctionSvgY, 10)
-    expect((lc3 as { height: number }).height).toBeCloseTo(490 - junctionSvgY, 10)
+    expect(lc3).toMatchObject({ kind: 'rect', x: 20, y: 20, width: 30 })
+    expect((lc3 as { height: number }).height).toBeCloseTo(junctionSvgY - 20, 10)
     const rc3 = byZone.get('Right Corner 3')!.shape
-    expect(rc3).toMatchObject({ kind: 'rect', x: 490, width: 30 })
+    expect(rc3).toMatchObject({ kind: 'rect', x: 490, y: 20, width: 30 })
     // paint region uses the same numbers as the paint line-work rect
     expect(byZone.get('In The Paint (Non-RA)')!.shape).toMatchObject({
-      kind: 'rect', x: 190, y: 300, width: 160, height: 190,
+      kind: 'rect', x: 190, y: 20, width: 160, height: 190,
     })
     expect(byZone.get('Restricted Area')!.shape).toMatchObject({
-      kind: 'circle', cx: 270, cy: 437.5, r: 40,
+      kind: 'circle', cx: 270, cy: 72.5, r: 40,
     })
     const mid = byZone.get('Mid-Range')!.shape
     expect(mid.kind).toBe('path')
-    expect((mid as { d: string }).d).toContain('A 237.5 237.5 0 0 1')
-    expect((mid as { d: string }).d).toMatch(/^M 50 490 /)
+    expect((mid as { d: string }).d).toContain('A 237.5 237.5 0 0 0')
+    expect((mid as { d: string }).d).toMatch(/^M 50 20 /)
   })
 
   it('keeps every region shape inside the viewBox', () => {
