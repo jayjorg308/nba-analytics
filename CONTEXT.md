@@ -50,6 +50,9 @@ The league-average shot mix. Shot selection is always framed as "vs league avera
 **Derived payload** (a.k.a. **the typed JSON contract**):
 What Python persists and the frontend consumes: `{ enriched per-shot rows + rolled-up zone baseline }`, typed and Zod-validated at the load boundary. Notably it does *not* contain the headline metrics — those are computed from it. This payload is identical regardless of where player aggregation later runs, so the storage contract is not blocked on the compute-location question.
 
+**Deployed payload**:
+The committed copy of the derived payload the app actually fetches: `public/data/<player-slug>/<season>.json`, refreshed only by an explicit `npm run hero:sync` (ADR-0010). The third layer of the storage story — raw (append-only, gitignored) → derived (recomputed, gitignored) → deployed (committed). The app reads persisted JSON only; it never calls the NBA API (unofficial endpoint; blocks cloud IPs).
+
 **Aggregation function**:
 The single pure function that computes v1's player-side metrics (diet-weighted PPS, making deltas, suppression) over an array of enriched shots. v1 calls it once with all shots — the all-pass case of the filtered subsets v2 will pass. **Resolved (ADR-0009):** its language is TypeScript (`src/domain/aggregate.ts`), closing the call ADR-0007 deferred; as a pure, tested unit it ports back as a contained rewrite, not an architecture change. Its contents are fully specified by the ADR-0008 zone set.
 
@@ -63,7 +66,7 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Explicitly v2, Case 2/3-powered. v1 has *no* creation signal — a catch-and-shoot and a pull-up from the same spot are identical dots in `shotchartdetail` — and must never imply otherwise (see ADR-0005).
 
 **Shot spine**:
-The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product.
+The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay is the scheduled next increment.
 
 **Raw artifact**:
 One verbatim blob of a `shotchartdetail` response (player shots + `LeagueAverages` frame), stored exactly as returned. Keyed per **(player, season, pull-date)**. Self-describing: records at minimum its pull-date and games-included (or date-range), so a blob's contents are knowable without re-deriving.
@@ -94,4 +97,4 @@ A player is eligible to be a hero only if they have ≥1 completed season passin
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
 
 **Volume gate** (Gate 2):
-The player has enough per-zone attempts that the mix view isn't mostly suppression warnings — constraint 4 (sample-size suppression) promoted from zone-level to player-level eligibility. **Threshold: a zone is included at ≥15 attempts** (all 6 evaluation zones clear for the launch hero/season; set from real counts per ADR-0003, now ADR-0008). There is *no* second hard cutoff on the making axis: low-N zones instead carry a **small-sample uncertainty flag** on the making delta. Rationale from the data — a player's attempt *share* is stable by ~34+ attempts, but per-zone *conversion* is noisy there, so the selection/making axis split is real, not just anticipated.
+The player has enough per-zone attempts that the mix view isn't mostly suppression warnings — constraint 4 (sample-size suppression) promoted from zone-level to player-level eligibility. **Threshold: a zone is included at ≥15 attempts** (all 6 evaluation zones clear for the launch hero/season; set from real counts per ADR-0003, now ADR-0008). There is *no* second hard cutoff on the making axis: low-N zones instead carry a **small-sample uncertainty flag** on the making delta. Rationale from the data — a player's attempt *share* is stable by ~34+ attempts, but per-zone *conversion* is noisy there, so the selection/making axis split is real, not just anticipated. **The flag threshold is < 50 attempts** (`SMALL_SAMPLE_MAKING_ATTEMPTS`, `src/domain/constants.ts`; tunable): it must exceed 49 so per-corner making at L49/R34 carries the flag per ADR-0008, and at n=50 a ~40% shooter's FG% has a 95% CI of ~±13.6pp — noise-dominated.
