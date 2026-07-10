@@ -53,6 +53,7 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
       <div className="hero-layout">
         <ChartPanel
           shots={payload.shots}
+          zones={metrics.zones}
           ariaLabel={`Half-court shot chart: ${metrics.totalAttempts} shots by ${payload._meta.player}, ${payload._meta.season}`}
         />
         <ZoneTable metrics={metrics} />

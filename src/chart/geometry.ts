@@ -15,6 +15,8 @@
 // happens exactly once, inside statsToSvg — not via a scale(1,-1) transform —
 // so tests can assert exact SVG numbers.
 
+import type { EvalZone } from '../domain/constants'
+
 export const COURT = { minX: -250, maxX: 250, minY: -52.5, maxY: 417.5 } as const
 
 const PAD = 20 // stats units (2 ft) of breathing room around the playing surface
@@ -59,6 +61,15 @@ export type CourtElement =
   | { id: string; kind: 'circle'; cx: number; cy: number; r: number }
   | { id: string; kind: 'line'; x1: number; y1: number; x2: number; y2: number }
   | { id: string; kind: 'path'; d: string }
+
+export interface ZoneRegion {
+  zone: EvalZone
+  shape: CourtElement
+  /** Where the zone's label sits (svg coords), chosen to dodge line-work. */
+  labelAnchor: SvgPoint
+  /** Corners are 30 units wide — their labels render rotated. */
+  labelRotate?: number
+}
 
 /**
  * Court line-work as SVG-space descriptors (NBA dimensions in feet, x10 to
@@ -127,4 +138,110 @@ export function courtElements(): CourtElement[] {
       d: `M ${hoop.x - 60} ${halfCourtY} A 60 60 0 0 0 ${hoop.x + 60} ${halfCourtY}`,
     },
   ]
+}
+
+/**
+ * The six evaluation-zone regions for the Zones view, in PAINTER ORDER:
+ * each later (inner) shape simply covers the earlier (outer) one, so no
+ * clipPath/evenodd is needed and pointer hit-testing works naturally
+ * (topmost shape wins = innermost zone). The full boundary rect IS the
+ * Above-the-Break-3 fill; corners, the inside-3pt region, the paint, and
+ * the restricted-area disc stack on top.
+ *
+ * These regions are PRESENTATION shapes that approximate the data's zone
+ * assignments — they never decide a shot's zone (ADR-0012).
+ */
+export function zoneRegions(): ZoneRegion[] {
+  const hoop = statsToSvg(0, 0)
+  const junctionY = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // ≈ 348.0224
+  const baselineY = statsToSvg(0, COURT.minY).y // 490
+  const boundaryTL = statsToSvg(COURT.minX, COURT.maxY)
+  const paintTL = statsToSvg(-80, 137.5)
+  const leftCornerX = statsToSvg(-220, 0).x // 50
+  const rightCornerX = statsToSvg(220, 0).x // 490
+
+  return [
+    {
+      zone: 'Above the Break 3',
+      shape: {
+        id: 'zone-atb3',
+        kind: 'rect',
+        x: boundaryTL.x,
+        y: boundaryTL.y,
+        width: COURT.maxX - COURT.minX,
+        height: COURT.maxY - COURT.minY,
+      },
+      labelAnchor: { x: hoop.x, y: 120 },
+    },
+    {
+      zone: 'Left Corner 3',
+      shape: {
+        id: 'zone-lc3',
+        kind: 'rect',
+        x: boundaryTL.x,
+        y: junctionY,
+        width: leftCornerX - boundaryTL.x,
+        height: baselineY - junctionY,
+      },
+      labelAnchor: { x: 35, y: 419 },
+      labelRotate: -90,
+    },
+    {
+      zone: 'Right Corner 3',
+      shape: {
+        id: 'zone-rc3',
+        kind: 'rect',
+        x: rightCornerX,
+        y: junctionY,
+        width: leftCornerX - boundaryTL.x,
+        height: baselineY - junctionY,
+      },
+      labelAnchor: { x: 505, y: 419 },
+      labelRotate: 90,
+    },
+    {
+      zone: 'Mid-Range',
+      shape: {
+        id: 'zone-mid-range',
+        kind: 'path',
+        d: `M ${leftCornerX} ${baselineY} L ${leftCornerX} ${junctionY} A 237.5 237.5 0 0 1 ${rightCornerX} ${junctionY} L ${rightCornerX} ${baselineY} Z`,
+      },
+      labelAnchor: { x: hoop.x, y: 225 },
+    },
+    {
+      zone: 'In The Paint (Non-RA)',
+      shape: { id: 'zone-paint', kind: 'rect', x: paintTL.x, y: paintTL.y, width: 160, height: 190 },
+      labelAnchor: { x: hoop.x, y: 372 },
+    },
+    {
+      zone: 'Restricted Area',
+      shape: { id: 'zone-ra', kind: 'circle', cx: hoop.x, cy: hoop.y, r: 40 },
+      labelAnchor: { x: hoop.x, y: 411 },
+    },
+  ]
+}
+
+/**
+ * TEST-ONLY (ADR-0012): never import from production code.
+ *
+ * Mirrors the zoneRegions painter stack top-down (innermost wins) so tests
+ * can measure how well the DRAWN regions agree with the DATA's zone
+ * assignments. The data is the sole authority on a shot's zone — in the
+ * launch payload the RA radial envelope tops out at ~39.66 stats units and
+ * the paint's begins at ~40.46, so the nominal 40-unit boundary is not
+ * recoverable from coordinates. A disagreement with this classifier is
+ * documented, never "fixed" by reassigning the shot.
+ */
+export function classifyByGeometry(locX: number, locY: number): EvalZone {
+  if (Math.hypot(locX, locY) <= 40) return 'Restricted Area'
+  if (locX >= -80 && locX <= 80 && locY >= COURT.minY && locY <= 137.5) {
+    return 'In The Paint (Non-RA)'
+  }
+  const insideThree =
+    locY <= CORNER_ARC_JUNCTION_Y ? Math.abs(locX) < 220 : Math.hypot(locX, locY) < 237.5
+  if (insideThree) return 'Mid-Range'
+  if (locY <= CORNER_ARC_JUNCTION_Y) {
+    return locX <= -220 ? 'Left Corner 3' : 'Right Corner 3'
+  }
+  return 'Above the Break 3'
 }

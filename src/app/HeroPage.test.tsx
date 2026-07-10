@@ -64,6 +64,25 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText(/1 shot beyond half-court not shown/)
   })
 
+  it('shades all six zones in the Zones view despite included=false everywhere', async () => {
+    // every golden zone is sub-15 attempts (included: false) — inclusion
+    // gates the MIX view only; the making axis is flagged, never suppressed
+    // (ADR-0008), so the Zones view shades all six regions
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage />)
+    await screen.findByText(heroConfig.thesis)
+
+    fireEvent.click(screen.getByLabelText('Zones'))
+    const fills = document.querySelectorAll('.zone-fill')
+    expect(fills).toHaveLength(6)
+    expect([...fills].some((f) => f.getAttribute('class')!.includes('nodata'))).toBe(false)
+    // all six labels carry the small-sample dagger
+    const labels = [...document.querySelectorAll('.zone-label')]
+    expect(labels).toHaveLength(6)
+    expect(labels.every((l) => l.textContent!.includes('†'))).toBe(true)
+    screen.getByText('Shot making vs league average (percentage points)')
+  })
+
   it('shows a descriptive tooltip on hover and removes it on leave', async () => {
     stubFetch({ ok: true, json: goldenJson })
     render(<HeroPage />)

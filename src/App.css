@@ -2,6 +2,37 @@
    variables in index.css so light/dark both work without chart-specific
    palettes. */
 
+/* Diverging making-delta scale (Zones view): cool = below league, warm =
+   above, NEUTRAL GRAY midpoint = league average (never a hue). Each mode's
+   steps are selected for its surface, not auto-flipped. Guarded by
+   src/chart/makingScale.contrast.test.ts (label contrast >= 4.5:1 vs
+   --text-h in both modes; per-arm luminance monotone; neutral gray).
+   Advisory dataviz-validator note: the inner (palest) steps sit below the
+   2:1 surface floor by design — they are large regions delineated by
+   court-line strokes and carrying direct labels, not discrete marks. */
+:root {
+  --making-cold-3: #3b82f6;
+  --making-cold-2: #93c5fd;
+  --making-cold-1: #bfdbfe;
+  --making-neutral: #e7e6e2;
+  --making-warm-1: #fed7aa;
+  --making-warm-2: #fdba74;
+  --making-warm-3: #ea580c;
+  --making-nodata: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --making-cold-3: #2563eb;
+    --making-cold-2: #1e40af;
+    --making-cold-1: #1e3a5f;
+    --making-neutral: #272935;
+    --making-warm-1: #4d2d1a;
+    --making-warm-2: #8a3d10;
+    --making-warm-3: #c2410c;
+  }
+}
+
 .hero-page {
   text-align: left;
   padding: 0 32px 64px;
@@ -97,6 +128,51 @@
 
 /* --- Chart ----------------------------------------------------------------- */
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.court-view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  margin: 0 0 10px;
+  gap: 2px;
+}
+
+.court-view-toggle label {
+  font-size: 14px;
+  padding: 4px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.court-view-toggle label.toggle-active {
+  background: var(--accent-bg);
+  color: var(--text-h);
+}
+
+.court-view-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.court-view-toggle label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .chart-wrapper {
   position: relative;
 }
@@ -134,6 +210,42 @@
   fill: transparent;
   stroke: none;
   pointer-events: all;
+}
+
+/* --- Zones view -------------------------------------------------------------- */
+
+.zone-fill {
+  stroke: none;
+}
+
+.zone-fill-cold-3 { fill: var(--making-cold-3); }
+.zone-fill-cold-2 { fill: var(--making-cold-2); }
+.zone-fill-cold-1 { fill: var(--making-cold-1); }
+.zone-fill-neutral { fill: var(--making-neutral); }
+.zone-fill-warm-1 { fill: var(--making-warm-1); }
+.zone-fill-warm-2 { fill: var(--making-warm-2); }
+.zone-fill-warm-3 { fill: var(--making-warm-3); }
+.zone-fill-nodata { fill: var(--making-nodata); }
+
+.zone-label {
+  pointer-events: none;
+  fill: var(--text-h);
+  font-size: 12px;
+  text-anchor: middle;
+  /* theme-aware halo so labels stay legible over any fill */
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.zone-label-name {
+  font-weight: 600;
+}
+
+.zone-label-delta {
+  font-family: var(--mono);
+  font-size: 11px;
 }
 
 .chart-skip-note {
@@ -196,6 +308,61 @@
 .legend-missed {
   border: 1.5px solid var(--text);
   opacity: 0.55;
+}
+
+.zones-legend {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.zones-legend-title {
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.zones-legend-scale {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.zones-legend-steps {
+  flex: 0 1 280px;
+}
+
+.zones-legend-swatches {
+  display: flex;
+}
+
+.zones-legend-swatch {
+  flex: 1;
+  height: 12px;
+  border: 1px solid var(--border);
+  border-left-width: 0;
+}
+
+.zones-legend-swatch:first-child {
+  border-left-width: 1px;
+  border-radius: 3px 0 0 3px;
+}
+
+.zones-legend-swatch:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.zones-legend-edges {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 6% 0; /* pull edge numbers under the swatch boundaries */
+}
+
+.zones-legend-end {
+  white-space: nowrap;
+  font-size: 12px;
+  padding-top: 1px;
 }
 
 /* --- Zone table ------------------------------------------------------------ */
