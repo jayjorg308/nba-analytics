@@ -18,8 +18,8 @@ import {
 } from './constants'
 
 // Must match SCHEMA_VERSION in ingestion/derive_payload.py; bump both on any
-// breaking payload change.
-export const SCHEMA_VERSION = 1
+// breaking payload change. v2: _meta.zoneConflictsDropped (ADR-0019).
+export const SCHEMA_VERSION = 2
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
 
@@ -70,6 +70,9 @@ export const derivedPayloadSchema = z
       pullDate: z.string().regex(isoDate),
       sourceSnapshot: z.string().min(1),
       totalShots: z.number().int().min(0),
+      /** Rows dropped at derive because the NBA's SHOT_TYPE contradicted the
+       * zone's point value — reported in the UI whenever nonzero (ADR-0019). */
+      zoneConflictsDropped: z.number().int().min(0),
     }),
     shots: z.array(enrichedShotSchema),
     zoneBaseline: z.array(zoneBaselineEntrySchema),

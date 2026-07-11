@@ -3,7 +3,7 @@
 
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { derivedPayloadSchema, parseDerivedPayload } from './payload'
+import { derivedPayloadSchema, parseDerivedPayload, SCHEMA_VERSION } from './payload'
 
 const goldenUrl = new URL('../../tests/fixtures/derived.golden.json', import.meta.url)
 const golden = JSON.parse(readFileSync(goldenUrl, 'utf-8')) as unknown
@@ -74,7 +74,8 @@ describe('parseDerivedPayload', () => {
 
   it('rejects a schemaVersion mismatch', () => {
     const p = clone()
-    p._meta.schemaVersion = 2
+    // derived from the constant so this test can't rot across bumps
+    p._meta.schemaVersion = SCHEMA_VERSION + 1
     expectRejected(p)
   })
 

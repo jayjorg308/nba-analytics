@@ -82,6 +82,9 @@ describe('HeroPage over the golden fixture', () => {
     // backcourt reported, never hidden (1 synthetic attempt in the golden)
     screen.getByText(/Backcourt heaves: 1 attempt \(0 made\)/)
 
+    // no zone-point conflicts in the golden -> the ADR-0019 note stays silent
+    expect(screen.queryByText(/dropped at derive/)).toBeNull()
+
     // both hero refinements below their volume gates -> hidden
     expect(screen.queryByText(/8-16 ft/)).toBeNull()
     expect(screen.queryByText(/Corner 3s:/)).toBeNull()
@@ -131,6 +134,17 @@ describe('HeroPage over the golden fixture', () => {
 
     fireEvent.pointerLeave(hit)
     expect(document.querySelector('.shot-tooltip')).toBeNull()
+  })
+})
+
+describe('zone-point conflicts (ADR-0019)', () => {
+  it('reports dropped rows whenever the payload carries a nonzero count', async () => {
+    const withConflict = structuredClone(goldenJson)
+    ;(withConflict._meta as { zoneConflictsDropped: number }).zoneConflictsDropped = 1
+    stubFetch({ ok: true, json: withConflict })
+    render(<HeroPage />)
+    await screen.findByText(heroConfig.thesis)
+    screen.getByText(/1 shot dropped at derive/)
   })
 })
 

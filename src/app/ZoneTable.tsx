@@ -50,7 +50,14 @@ function BandRow({ band }: { band: BandMetricsRow }) {
  * Every number comes from the single aggregation output — this component
  * formats, it never computes (ADR-0007).
  */
-export function ZoneTable({ metrics }: { metrics: ShotMetrics }) {
+export function ZoneTable({
+  metrics,
+  zoneConflictsDropped,
+}: {
+  metrics: ShotMetrics
+  /** _meta.zoneConflictsDropped — reported whenever nonzero (ADR-0019). */
+  zoneConflictsDropped: number
+}) {
   const { zones, midRangeSplit, cornerSplit, backcourt, threes } = metrics
   const twoPointZones = zones.filter((z) => ZONE_POINT_VALUE[z.zone] === 2)
   const threePointZones = zones.filter((z) => ZONE_POINT_VALUE[z.zone] === 3)
@@ -127,6 +134,13 @@ export function ZoneTable({ metrics }: { metrics: ShotMetrics }) {
           <p>
             Backcourt heaves: {backcourt.attempts} attempt{backcourt.attempts === 1 ? '' : 's'} (
             {backcourt.makes} made) — excluded from evaluation, reported here.
+          </p>
+        )}
+        {zoneConflictsDropped > 0 && (
+          <p>
+            {zoneConflictsDropped} shot{zoneConflictsDropped === 1 ? '' : 's'} dropped at derive:
+            the NBA&apos;s own scoring (2PT/3PT) and zone assignment disagree — dropped and
+            counted, never guessed.
           </p>
         )}
         {anyExcluded && (
