@@ -37,7 +37,8 @@ import pandas as pd
 
 # Bump on any breaking payload change; pinned as a literal on the TS side
 # (src/domain/payload.ts) so a mismatch fails loudly at the load boundary.
-SCHEMA_VERSION = 1
+# v2: _meta.zoneConflictsDropped (ADR-0019).
+SCHEMA_VERSION = 2
 
 # --- Zone taxonomy (v1 evaluation grain = SHOT_ZONE_BASIC; see CONTEXT.md) -----
 BASIC_ZONES = [
@@ -121,8 +122,13 @@ def latest_snapshot_path(raw_root: Path, slug: str, season: str) -> Path:
     return candidates[-1]
 
 
-def validate_snapshot(snapshot: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
-    """Validate a raw snapshot; return (_meta, shots, league) or exit loudly."""
+def validate_snapshot(snapshot: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame, int]:
+    """Validate a raw snapshot; exit loudly on contract violations.
+
+    Returns (_meta, shots, league, zone_conflicts_dropped). Zone-point
+    conflicts (ADR-0019) are the one non-fatal finding: the offending rows
+    are dropped from `shots` and counted, never guessed or swallowed.
+    """
     meta = snapshot.get("_meta")
     response = snapshot.get("response")
     if not isinstance(meta, dict) or not isinstance(response, dict):
@@ -170,12 +176,21 @@ def validate_snapshot(snapshot: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame]
         if unknown:
             fail(f"unknown SHOT_ZONE_RANGE in {frame_name}: {sorted(unknown)}")
 
-    # Point value is derived from SHOT_TYPE; it must agree with the zone.
+    # Zone-point conflicts (ADR-0019): pointValue comes from SHOT_TYPE (the
+    # scorer's call — what the shot was actually worth); the zone comes from
+    # tracking coordinates, and the NBA occasionally disagrees with itself
+    # (e.g. a foot-on-the-line step-back scored 2PT but zoned Above the
+    # Break 3 at ~24 ft of coordinates). Zone boundaries ARE point-value
+    # boundaries at the evaluation grain, so such rows are unrepresentable:
+    # DROP them and COUNT them — never guess them into a zone, never swallow
+    # them silently. The count rides in _meta and the UI reports it whenever
+    # nonzero.
     is_three_zone = shots["SHOT_ZONE_BASIC"].isin(THREE_POINT_ZONES)
     is_three_type = shots["SHOT_TYPE"] == "3PT Field Goal"
-    if not (is_three_zone == is_three_type).all():
-        n = int((is_three_zone != is_three_type).sum())
-        fail(f"SHOT_TYPE inconsistent with zone point value on {n} row(s)")
+    conflict = is_three_zone != is_three_type
+    zone_conflicts_dropped = int(conflict.sum())
+    if zone_conflicts_dropped:
+        shots = shots[~conflict]
 
     try:
         pd.to_datetime(shots["GAME_DATE"].astype(str), format="%Y%m%d")
@@ -207,7 +222,7 @@ def validate_snapshot(snapshot: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame]
     if uncovered:
         fail(f"player mid-range band(s) with no covering league rows: {sorted(uncovered)}")
 
-    return meta, shots, league
+    return meta, shots, league, zone_conflicts_dropped
 
 
 def enrich_shots(shots: pd.DataFrame) -> list[dict]:
@@ -283,7 +298,13 @@ def rollup_baseline(league: pd.DataFrame) -> list[dict]:
     return entries
 
 
-def build_payload(meta: dict, source: str, shots: list[dict], baseline: list[dict]) -> dict:
+def build_payload(
+    meta: dict,
+    source: str,
+    shots: list[dict],
+    baseline: list[dict],
+    zone_conflicts_dropped: int,
+) -> dict:
     return {
         "_meta": {
             "schemaVersion": SCHEMA_VERSION,
@@ -293,7 +314,9 @@ def build_payload(meta: dict, source: str, shots: list[dict], baseline: list[dic
             "seasonType": meta["season_type"],
             "pullDate": meta["pull_date"],
             "sourceSnapshot": source,
+            # Post-drop count: totalShots is what the payload carries.
             "totalShots": len(shots),
+            "zoneConflictsDropped": zone_conflicts_dropped,
         },
         "shots": shots,
         "zoneBaseline": baseline,
@@ -339,10 +362,10 @@ def main() -> None:
         snapshot_path = latest_snapshot_path(Path(args.raw_root), slug, args.season)
 
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-    meta, shots_df, league_df = validate_snapshot(snapshot)
+    meta, shots_df, league_df, conflicts = validate_snapshot(snapshot)
     enriched = enrich_shots(shots_df)
     baseline = rollup_baseline(league_df)
-    payload = build_payload(meta, repo_relative(snapshot_path), enriched, baseline)
+    payload = build_payload(meta, repo_relative(snapshot_path), enriched, baseline, conflicts)
 
     if args.out_file:
         out_path = Path(args.out_file)
@@ -357,6 +380,8 @@ def main() -> None:
     print(f"derived payload -> {out_path}")
     print(f"  {meta['player']} {meta['season']}  shots={len(enriched)}  "
           f"baseline entries={len(baseline)}")
+    if conflicts:
+        print(f"  zone-point conflicts dropped (ADR-0019): {conflicts}")
     for zone in BASIC_ZONES:
         if counts.get(zone):
             print(f"    {zone:<24}{counts[zone]:>5}")

@@ -62,6 +62,9 @@ The league-average shot mix. Shot selection is always framed as "vs league avera
 **Derived payload** (a.k.a. **the typed JSON contract**):
 What Python persists and the frontend consumes: `{ enriched per-shot rows + rolled-up zone baseline }`, typed and Zod-validated at the load boundary. Notably it does *not* contain the headline metrics — those are computed from it. This payload is identical regardless of where player aggregation later runs, so the storage contract is not blocked on the compute-location question.
 
+**Zone-point conflict**:
+A raw shot row whose `SHOT_TYPE` (the scorer's point value — what the shot was actually worth) contradicts its coordinate-derived zone's point value; the NBA disagreeing with itself, typically a foot-on-the-line call. Unrepresentable at the evaluation grain (zone boundaries are point-value boundaries), so the derive step drops and counts it, and the UI reports the count whenever nonzero — dropped and reported, never guessed into a zone (ADR-0019).
+
 **Deployed payload**:
 The committed copy of the derived payload the app actually fetches: `public/data/<player-slug>/<season>.json`, refreshed only by an explicit `npm run hero:sync` (ADR-0010). The third layer of the storage story — raw (append-only, gitignored) → derived (recomputed, gitignored) → deployed (committed). The app reads persisted JSON only; it never calls the NBA API (unofficial endpoint; blocks cloud IPs).
 

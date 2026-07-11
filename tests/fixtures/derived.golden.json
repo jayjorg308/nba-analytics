@@ -1,13 +1,14 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
     "seasonType": "Regular Season",
     "pullDate": "2026-07-09",
     "sourceSnapshot": "tests/fixtures/snapshot.truncated.json",
-    "totalShots": 15
+    "totalShots": 15,
+    "zoneConflictsDropped": 0
   },
   "shots": [
     {
