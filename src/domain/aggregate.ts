@@ -46,8 +46,11 @@ export interface BandMetricsRow {
   band: MidRangeBand
   attempts: number
   makes: number
-  shareOfMidRange: number | null
-  leagueShareOfMidRange: number
+  /** Share of the player's evaluation attempts — the SAME denominator as
+   * every other Share in the table (one denominator rule: parent/child rows
+   * sum, and "his 16-24ft share vs the league's" compares like with like). */
+  attemptShare: number | null
+  leagueAttemptShare: number
   fgPct: number | null
   leagueFgPct: number
   pps: number | null
@@ -218,8 +221,6 @@ export function aggregateShotMetrics(
       throw new Error(`player mid-range band '${band}' has no baseline entry`)
     }
   }
-  const leagueBandFga = [...bandBaseline.values()].reduce((sum, e) => sum + e.fga, 0)
-  const midAttempts = midShots.length
   const bands: BandMetricsRow[] = MID_RANGE_BANDS.filter((b) => bandBaseline.has(b)).map(
     (band) => {
       const league = bandBaseline.get(band)!
@@ -230,8 +231,11 @@ export function aggregateShotMetrics(
         band,
         attempts,
         makes,
-        shareOfMidRange: midAttempts > 0 ? attempts / midAttempts : null,
-        leagueShareOfMidRange: league.fga / leagueBandFga,
+        // One denominator rule: band shares are of ALL evaluation attempts
+        // (like every zone row), so the bands sum to their Mid-Range parent
+        // and league comparisons stay like-for-like.
+        attemptShare: evalAttempts > 0 ? attempts / evalAttempts : null,
+        leagueAttemptShare: league.fga / leagueEvalFga,
         fgPct,
         leagueFgPct,
         pps: fgPct === null ? null : fgPct * 2,

@@ -143,18 +143,21 @@ describe('aggregateShotMetrics on the hand-computed micro-fixture', () => {
     expect(m.selection.leagueDietExpectedPps).toBeCloseTo(4050 / 4000, 12)
   })
 
-  it('computes the mid-range band view with its own league shares', () => {
+  it('computes the mid-range band view on the diet denominator', () => {
     expect(m.midRangeSplit.visible).toBe(false) // long-two attempts 2 < 15
     const [b816, b1624] = m.midRangeSplit.bands
     expect(b816!.band).toBe('8-16 ft')
     expect(b816!.attempts).toBe(2)
-    expect(b816!.shareOfMidRange).toBeCloseTo(0.5, 12)
-    expect(b816!.leagueShareOfMidRange).toBeCloseTo(0.6, 12) // 600/1000
+    expect(b816!.attemptShare).toBeCloseTo(0.125, 12) // 2/16 of ALL eval attempts
+    expect(b816!.leagueAttemptShare).toBeCloseTo(0.15, 12) // 600/4000
     expect(b816!.makingDelta).toBeCloseTo(0.05, 12) // .5 - .45
     expect(b1624!.attempts).toBe(2)
     expect(b1624!.fgPct).toBe(0)
     expect(b1624!.makingDelta).toBeCloseTo(-0.325, 12)
     expect(b1624!.leaguePps).toBeCloseTo(0.65, 12)
+    // one denominator rule: the bands sum to their Mid-Range parent
+    const mrShare = m.zones.find((r) => r.zone === 'Mid-Range')!.attemptShare!
+    expect(b816!.attemptShare! + b1624!.attemptShare!).toBeCloseTo(mrShare, 12)
   })
 
   it('flags every low-volume zone and gates both secondary views', () => {

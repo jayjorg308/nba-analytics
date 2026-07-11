@@ -26,7 +26,7 @@ Rolling the `LeagueAverages` frame (delivered at fine grain) up to the evaluatio
 A left/right corner-3 view (from `SHOT_ZONE_AREA`), shown only when both corners individually clear the volume threshold — surfaces "left corner lover" insights when the data supports them, silent otherwise. **Ships for the launch hero** (both corners clear: L49 / R34); per-corner making carries the small-sample flag.
 
 **Long two**:
-A long mid-range two-pointer (~16–24 ft) — the lowest-value shot on the floor. The characteristic way a young wing's selection goes wrong. **Resolved for the launch hero (ADR-0008):** ~46% of his mid-range is long-two (33 attempts in 2025-26, clearing ≥15), so the Mid-Range range split ships. The purpose is *selection transparency*, not a making indictment — his long-two make rate (~45%) is fine; the point is to show how much of his diet sits in the lowest-value band.
+A long mid-range two-pointer (~16–24 ft) — the lowest-value shot on the floor. The characteristic way a young wing's selection goes wrong. **Resolved for the launch hero (ADR-0008):** ~46% of his mid-range is long-two (33 attempts in 2025-26, clearing ≥15), so the Mid-Range range split ships. The purpose is *selection transparency*, not a making indictment — his long-two make rate (~45%) is fine; the point is to show how much of his diet sits in the lowest-value band. Band shares are stated on the **diet denominator** (share of all evaluation attempts, league compared on the same footing) — one denominator across the whole table, so parent and child rows sum.
 
 **Shot selection** (a.k.a. **shot quality**):
 The expected value of the *zones a player chooses to shoot from* — is he hunting high-PPS shots? Outcome-independent. Answers "is he taking good shots?"
