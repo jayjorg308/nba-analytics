@@ -14,7 +14,9 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    # hero/* branches are parallel deployment targets that never open PRs —
+    # gate their pushes directly.
+    branches: [main, 'hero/**']
 
 jobs:
   typescript:

@@ -39,10 +39,22 @@ describe('HeroPage over the golden fixture', () => {
     // title (ADR-0017; its truthfulness is the verdict guard's job)
     screen.getByText(heroConfig.verdict)
 
-    // drift guard: the synced payload and heroConfig must describe the same hero
-    const meta = goldenJson._meta as { player: string; season: string }
-    expect(meta.player).toBe(heroConfig.playerName)
-    expect(meta.season).toBe(heroConfig.season)
+    // drift guard: the DEPLOYED payload and heroConfig must describe the same
+    // hero. Deliberately NOT checked against the golden — that is the
+    // hero-independent cross-language contract fixture and stays Cody-derived
+    // on every branch, including hero deployment branches.
+    const deployedPath = path.resolve(
+      process.cwd(),
+      'public',
+      heroConfig.payloadUrl.replace(import.meta.env.BASE_URL, ''),
+    )
+    const deployedMeta = (
+      JSON.parse(readFileSync(deployedPath, 'utf-8')) as {
+        _meta: { player: string; season: string }
+      }
+    )._meta
+    expect(deployedMeta.player).toBe(heroConfig.playerName)
+    expect(deployedMeta.season).toBe(heroConfig.season)
 
     // headline: league diet from the verbatim league frame (1.09124 -> "1.09"),
     // with the comparison class stated beside the numbers (ADR-0002)
