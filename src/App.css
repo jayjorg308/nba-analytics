@@ -97,6 +97,17 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 20px 24px;
+
+  /* The pair must read as one comparison: numbers beside numbers, notes
+     beside notes. Subgrid pins both cards' rows (header / numbers / note)
+     to shared track heights, so a longer header or note in one card can
+     never push its neighbor's rows out of alignment — at any width, for
+     any hero's copy. `span 3` = the blocks a card renders; bump it if a
+     card ever grows another. */
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  row-gap: 0; /* card-internal spacing comes from item margins, not the pair's gap */
 }
 
 .headline-banner h2 {
@@ -104,19 +115,26 @@
 }
 
 .comparison-class {
+  /* Own line, not inline after the title: the two titles differ in length,
+     so sharing the line makes one header wrap before the other and the
+     cards' number rows drift apart. A block subtitle keeps both headers the
+     same shape and needs no separator punctuation after the title. */
+  display: block;
+  margin-top: 2px;
   font-weight: 400;
   font-size: 15px;
   color: var(--text);
 }
 
 .headline-numbers {
+  /* 28px (the former narrow-viewport value, now unconditional) keeps the
+     selection card's three labels ("expected from his diet" / "expected from
+     league diet" / "his choices") on one line beside the making card's in
+     the two-column layout — at 48px the selection labels wrap while the
+     making card's don't, and the cards stop reading as a matched pair. */
   display: flex;
-  gap: 48px;
+  gap: 28px;
   margin: 14px 0 10px;
-
-  @media (max-width: 1024px) {
-    gap: 28px;
-  }
 }
 
 .headline-stat {

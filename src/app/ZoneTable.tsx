@@ -1,7 +1,17 @@
 import { Fragment } from 'react'
 import type { BandMetricsRow, ShotMetrics, ZoneMetricsRow } from '../domain/aggregate'
-import { LONG_TWO_BAND, ZONE_POINT_VALUE } from '../domain/constants'
+import { LONG_TWO_BAND, ZONE_POINT_VALUE, type EvalZone } from '../domain/constants'
 import { formatPercent1, formatPps2, formatSignedPp1, withSmallSampleMark } from '../format'
+
+// Table-only display names: the three-point children sit under the
+// "3 Pointers" parent row, so repeating "3" in every child label is
+// redundant here. Everywhere else (court labels, tooltips, data, notes)
+// keeps the full zone name.
+const TABLE_ZONE_LABEL: Partial<Record<EvalZone, string>> = {
+  'Left Corner 3': 'Left Corner',
+  'Right Corner 3': 'Right Corner',
+  'Above the Break 3': 'Above the Break',
+}
 
 function ZoneRow({ row, child = false }: { row: ZoneMetricsRow; child?: boolean }) {
   const className =
@@ -12,7 +22,15 @@ function ZoneRow({ row, child = false }: { row: ZoneMetricsRow; child?: boolean 
     // included=false zones are muted, never deleted (ADR-0008): their
     // attempts still count toward the diet weighting.
     <tr className={className}>
-      <th scope="row">{row.zone}</th>
+      <th scope="row">
+        {TABLE_ZONE_LABEL[row.zone] ?? row.zone}
+        {row.zone === 'Restricted Area' && (
+          // The long-two note's mirror: a league value-hierarchy fact, not
+          // hero copy — asserted against the deployed payload by the table
+          // claim in verdict.guard.test.ts.
+          <span className="band-note">highest-value shot</span>
+        )}
+      </th>
       <td>{row.attempts}</td>
       <td>{formatPercent1(row.attemptShare)}</td>
       <td>{formatPercent1(row.leagueAttemptShare)}</td>
@@ -31,7 +49,7 @@ function BandRow({ band }: { band: BandMetricsRow }) {
         {band.band}
         {band.band === LONG_TWO_BAND && (
           // Selection transparency, not a making indictment (ADR-0008).
-          <span className="band-note">long two — lowest-value shot on the floor</span>
+          <span className="band-note">lowest-value shot</span>
         )}
       </th>
       <td>{band.attempts}</td>
@@ -70,7 +88,7 @@ export function ZoneTable({
     <section className="zone-panel">
       <table className="zone-table">
         <caption>
-          Zone by zone: shot mix and shot making, vs league average (making Δ in FG percentage
+          Zone by zone: shot diet and shot making, vs league average (making Δ in FG percentage
           points)
         </caption>
         {/* Column philosophy: the verdict-supporting columns lead — FGA (the
@@ -103,7 +121,7 @@ export function ZoneTable({
               clear the small-sample bar its children individually fail — the
               row order is the argument for why the verdict speaks here. */}
           <tr>
-            <th scope="row">All threes</th>
+            <th scope="row">3 Pointers</th>
             <td>{threes.attempts}</td>
             <td>{formatPercent1(threes.attemptShare)}</td>
             <td>{formatPercent1(threes.leagueAttemptShare)}</td>

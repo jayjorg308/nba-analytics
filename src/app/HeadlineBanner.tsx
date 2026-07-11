@@ -1,28 +1,30 @@
 import type { ShotMetrics } from '../domain/aggregate'
-import {
-    formatPercent1,
-    formatPps2,
-    formatSignedPps2,
-    withSmallSampleMark,
-} from '../format'
+import { formatPps2, formatSignedPps2 } from '../format'
 
 /**
  * The paired headline blocks: the two-axis answer (v1 thesis) with equal
  * billing — selection and making, in the same unit and the same diet
  * weighting (ADR-0016). The shared middle number (his diet-weighted expected
- * PPS) is the hinge: selection moves league diet → his diet; making moves
- * his diet → what he actually scored. The comparison class is stated plainly
- * beside the numbers (ADR-0002). This component only formats aggregation
- * outputs (ADR-0011) — the interpretive verdict prose lives elsewhere.
+ * PPS) is the hinge and deliberately carries the SAME label in both blocks
+ * ("expected from his diet"): it is the output of selection (what his
+ * choices are worth) and the benchmark for making (what he should have
+ * scored). "Expected" always means at league-average shooting; in prose the
+ * making axis is described as "conversion" (the CONTEXT.md defining word),
+ * never as bare "making". The comparison class is stated plainly beside the
+ * numbers (ADR-0002). This component only formats aggregation outputs
+ * (ADR-0011) — the interpretive verdict prose lives elsewhere.
+ *
+ * Deliberately spare: each card is its three numbers and one explainer
+ * line. Drill-down evidence (rim share, combined threes) lives in the zone
+ * table and the court, not here — a previous iteration appended it to the
+ * cards and they bloated.
  */
 export function HeadlineBanner({
     selection,
     making,
-    threes,
 }: {
     selection: ShotMetrics['selection']
     making: ShotMetrics['making']
-    threes: ShotMetrics['threes']
 }) {
     return (
         <div className="headline-pair">
@@ -31,9 +33,10 @@ export function HeadlineBanner({
                 aria-label="Shot selection headline"
             >
                 <h2>
-                    Shot selection{' '}
+                    Shot selection
                     <span className="comparison-class">
-                        - diet-weighted expected PPS vs. league average
+                        expected points per shot: his shot diet vs. the
+                        league&apos;s
                     </span>
                 </h2>
                 <div className="headline-numbers">
@@ -41,24 +44,29 @@ export function HeadlineBanner({
                         <span className="stat-value">
                             {formatPps2(selection.playerDietExpectedPps)}
                         </span>
-                        <span className="stat-label">his shot diet</span>
+                        <span className="stat-label">
+                            expected from his diet
+                        </span>
                     </div>
                     <div className="headline-stat">
                         <span className="stat-value">
                             {formatPps2(selection.leagueDietExpectedPps)}
                         </span>
-                        <span className="stat-label">league diet</span>
+                        <span className="stat-label">
+                            expected from league diet
+                        </span>
                     </div>
                     <div className="headline-stat">
                         <span className="stat-value">
                             {formatSignedPps2(selection.selectionDelta)}
                         </span>
-                        <span className="stat-label">difference</span>
+                        <span className="stat-label">his choices</span>
                     </div>
                 </div>
                 <p className="headline-note">
-                    Expected points per shot from where he shoots, with making
-                    held at league level — selection only.
+                    Expected PPS prices every shot at league-average shooting.
+                    His shot selection moves this number, not whether they go
+                    in.
                 </p>
             </section>
             <section
@@ -66,9 +74,9 @@ export function HeadlineBanner({
                 aria-label="Shot making headline"
             >
                 <h2>
-                    Shot making{' '}
+                    Shot making
                     <span className="comparison-class">
-                        - actual vs. expected PPS, at league-average making
+                        actual vs. expected points per shot, on the same diet
                     </span>
                 </h2>
                 <div className="headline-numbers">
@@ -90,21 +98,12 @@ export function HeadlineBanner({
                         <span className="stat-value">
                             {formatSignedPps2(making.makingPpsDelta)}
                         </span>
-                        <span className="stat-label">difference</span>
+                        <span className="stat-label">his conversion</span>
                     </div>
                 </div>
                 <p className="headline-note">
-                    Points per shot he actually scored vs. his shot diet
-                    converted at league level — making only.
-                </p>
-                <p className="headline-note">
-                    From three:{' '}
-                    {withSmallSampleMark(
-                        formatPercent1(threes.fgPct),
-                        threes.smallSampleMaking
-                    )}{' '}
-                    on {threes.attempts} attempts (league{' '}
-                    {formatPercent1(threes.leagueFgPct)}).
+                    Comparing his actual PPS vs. what league-average shooting
+                    yields from the same shots.
                 </p>
             </section>
         </div>

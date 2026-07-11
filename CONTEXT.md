@@ -43,21 +43,22 @@ The Zones view's binned diverging encoding of making delta: neutral gray band at
 
 **Shot diet**:
 The distribution of a player's shot attempts across zones — his attempt share per zone. The raw material of shot selection.
+_Avoid_: "shot mix" in product copy — same concept, second name; diet is the product's word (headline labels, verdict copy, table caption).
 
 **Attempt share** (a.k.a. **zone frequency**):
 The fraction of a player's (or the league's) shots taken from a given zone. Derived from FGA per zone in the shot data / `LeagueAverages` frame. A player's per-zone attempt shares are noisy in a single player-season; the league's are stable (large N), which is why the league is the benchmark and not the reverse.
 
 **Diet-weighted expected PPS**:
-The headline selection number: a player's zone attempt shares weighted by each zone's *league* PPS (his making held at league level, isolating selection). Compared against the same weighting applied to the *league's* zone shares — so the benchmark is the league's own diet, never an arbitrary fixed bar.
+The headline selection number: a player's zone attempt shares weighted by each zone's *league* PPS (his making held at league level, isolating selection). Compared against the same weighting applied to the *league's* zone shares — so the benchmark is the league's own diet, never an arbitrary fixed bar. Surfaces in the UI as **"expected from his diet"** — deliberately the *same label in both headline blocks*, because the number is the hinge of the ADR-0016 decomposition: the output of selection (what his choices are worth) and the benchmark for making (what he should have scored from them). In UI copy, "expected" always means "at league-average shooting"; the making axis is described in prose as *conversion*, never bare "making".
 
 **Making PPS delta**:
 The headline making number: actual PPS minus diet-weighted expected PPS — what the player's conversion adds or subtracts with his diet held fixed (ADR-0016). Denominated in PPS (the whole-diet value consequence), unlike the per-zone making delta (FG% points, one zone's conversion); the headline numbers decompose exactly: league diet PPS + selection delta + making PPS delta = actual PPS.
 
 **Combined threes**:
-The three 3-point evaluation zones rolled up into one line by summing makes and attempts — player and league both, per the zone-rollup rule, never averaged rates. Exists so the making verdict can be stated at a grain the sample supports: each launch-hero 3PT zone is individually small-sample-flagged (49/34/48 attempts) while the combined 131 clear the bar (ADR-0016). Rendered in the zone table as the **All threes** parent row over its three (child) zone rows; there is deliberately no paint or all-twos parent — RA vs non-RA is the value-critical distinction inside the arc, and a combined row would average across it.
+The three 3-point evaluation zones rolled up into one line by summing makes and attempts — player and league both, per the zone-rollup rule, never averaged rates. Exists so the making verdict can be stated at a grain the sample supports: each launch-hero 3PT zone is individually small-sample-flagged (49/34/48 attempts) while the combined 131 clear the bar (ADR-0016). Rendered in the zone table as the **3 Pointers** parent row over its three (child) zone rows (whose table labels drop the redundant "3": Left Corner / Right Corner / Above the Break); there is deliberately no paint or all-twos parent — RA vs non-RA is the value-critical distinction inside the arc, and a combined row would average across it.
 
 **Selection benchmark**:
-The league-average shot mix. Shot selection is always framed as "vs league average," never "vs positional peers." The comparison is deliberately position-blind (see ADR-0002); position/archetype-adjusted selection is a v2 concern. The tool states its comparison class plainly. Excludes Backcourt heaves (nominal 3-zones with ~0 real value that would distort the weighting).
+The league-average shot diet. Shot selection is always framed as "vs league average," never "vs positional peers." The comparison is deliberately position-blind (see ADR-0002); position/archetype-adjusted selection is a v2 concern. The tool states its comparison class plainly. Excludes Backcourt heaves (nominal 3-zones with ~0 real value that would distort the weighting).
 
 **Derived payload** (a.k.a. **the typed JSON contract**):
 What Python persists and the frontend consumes: `{ enriched per-shot rows + rolled-up zone baseline }`, typed and Zod-validated at the load boundary. Notably it does *not* contain the headline metrics — those are computed from it. This payload is identical regardless of where player aggregation later runs, so the storage contract is not blocked on the compute-location question.
@@ -75,7 +76,7 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 "Is this player taking good shots?" — answered completely by the two-axis model (shot selection + shot making). This is the whole of v1's claim; the tool states this question and no more.
 
 **Verdict**:
-The one-or-two-sentence answer to the v1 thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by a committed guard test that asserts each directional claim against the deployed payload's metrics (ADR-0017); its language stays inside selection/making (ADR-0005).
+The two-or-three-sentence answer to the v1 thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by a committed guard test that asserts each directional claim against the deployed payload's metrics (ADR-0017); its language stays inside selection/making (ADR-0005).
 
 **v2 thesis**:
 "How does he create his shots?" — the scheduled second act. Designated engine: the Case 2 buckets (catch-and-shoot vs pull-up, contested, shot-clock). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction.

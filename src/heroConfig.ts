@@ -16,6 +16,7 @@ export const heroConfig = {
     // (src/app/verdict.guard.test.ts) fails if any directional claim stops
     // matching the deployed payload. Selection/making language only (ADR-0005).
     verdict:
-        'Yes, where he shoots from is essentially league-average. The problem is shot making: ' +
-        'he converts below what his shot diet should yield, and the gap comes almost entirely from three.',
+        'Yes, he lives at the rim and rarely fires from three, and that trade nets out to an ' +
+        'essentially league-average shot diet. The problem is shot making. ' +
+        'He converts below what his shot diet should yield, and the gap comes almost entirely from three.',
 } as const
