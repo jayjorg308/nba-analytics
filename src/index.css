@@ -75,6 +75,10 @@ h2 {
 
 h1 {
   font-size: 56px;
+  /* Must own its line-height: the :root 145% computes to a fixed ~26px and
+     inherits — a 56px line in a 26px box paints descenders over whatever
+     sits below it. */
+  line-height: 1.05;
   letter-spacing: -1.68px;
   margin: 32px 0;
   @media (max-width: 1024px) {

@@ -35,6 +35,10 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText('Loading shot data…')
     await screen.findByText(heroConfig.thesis) // the H1: the v1 question
 
+    // the verdict leads: the authored answer renders directly under the
+    // title (ADR-0017; its truthfulness is the verdict guard's job)
+    screen.getByText(heroConfig.verdict)
+
     // drift guard: the synced payload and heroConfig must describe the same hero
     const meta = goldenJson._meta as { player: string; season: string }
     expect(meta.player).toBe(heroConfig.playerName)
@@ -45,12 +49,35 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText('1.09')
     expect(screen.getAllByText(/vs league average/).length).toBeGreaterThanOrEqual(2)
 
+    // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21",
+    // with the combined-threes line carrying its small-sample dagger (6 < 50)
+    screen.getByRole('heading', { name: /Shot making/ })
+    screen.getByText('1.21')
+    screen.getByText(/From three: 50\.0%† on 6 attempts/)
+
     // all six golden zones are < 15 attempts -> every row muted, none deleted
     expect(document.querySelectorAll('.zone-row-excluded')).toHaveLength(6)
     screen.getByText(/Zones under 15 attempts are shown muted/)
 
     // small-sample daggers on making deltas + the footnote
     expect(screen.getAllByText(/†/).length).toBeGreaterThan(1)
+
+    // payoff columns lead, reference trails; FGA stays visible (the honesty
+    // anchor for †) and there is deliberately no FG% column (ADR-0001: PPS
+    // is the unit; Making Δ already encodes FG%-vs-league)
+    const headers = [...document.querySelectorAll('.zone-table thead th')].map(
+      (th) => th.textContent,
+    )
+    expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
+
+    // the verdict-grain parent row (ADR-0016): 'All threes' sits between the
+    // two-point rows and its three child zone rows
+    const rowHeads = [...document.querySelectorAll('.zone-table tbody th')].map(
+      (th) => th.textContent,
+    )
+    expect(rowHeads.indexOf('All threes')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
+    expect(rowHeads.indexOf('All threes')).toBeLessThan(rowHeads.indexOf('Left Corner 3'))
+    expect(document.querySelectorAll('.zone-row-child')).toHaveLength(3)
 
     // backcourt reported, never hidden (1 synthetic attempt in the golden)
     screen.getByText(/Backcourt heaves: 1 attempt \(0 made\)/)
@@ -59,9 +86,33 @@ describe('HeroPage over the golden fixture', () => {
     expect(screen.queryByText(/8-16 ft/)).toBeNull()
     expect(screen.queryByText(/Corner 3s:/)).toBeNull()
 
-    // chart: 14 dots (the backcourt heave is off-frame and skipped, with caption)
+    // the court defaults to the Zones view — the argument leads; the raw
+    // scatter is the secondary tab
+    expect((screen.getByLabelText('Zones') as HTMLInputElement).checked).toBe(true)
+    expect(document.querySelectorAll('.zone-fill')).toHaveLength(6)
+
+    // Shots view: 14 dots (the backcourt heave is off-frame and skipped, with caption)
+    fireEvent.click(screen.getByLabelText('Shots'))
     expect(document.querySelectorAll('.shot-dot')).toHaveLength(14)
     screen.getByText(/1 shot beyond half-court not shown/)
+  })
+
+  it('shades all six zones in the default Zones view despite included=false everywhere', async () => {
+    // every golden zone is sub-15 attempts (included: false) — inclusion
+    // gates the MIX view only; the making axis is flagged, never suppressed
+    // (ADR-0008), so the Zones view shades all six regions
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage />)
+    await screen.findByText(heroConfig.thesis)
+
+    const fills = document.querySelectorAll('.zone-fill')
+    expect(fills).toHaveLength(6)
+    expect([...fills].some((f) => f.getAttribute('class')!.includes('nodata'))).toBe(false)
+    // all six labels carry the small-sample dagger
+    const labels = [...document.querySelectorAll('.zone-label')]
+    expect(labels).toHaveLength(6)
+    expect(labels.every((l) => l.textContent!.includes('†'))).toBe(true)
+    screen.getByText('Shot making vs league average (percentage points)')
   })
 
   it('shows a descriptive tooltip on hover and removes it on leave', async () => {
@@ -69,6 +120,7 @@ describe('HeroPage over the golden fixture', () => {
     render(<HeroPage />)
     await screen.findByText(heroConfig.thesis)
 
+    fireEvent.click(screen.getByLabelText('Shots')) // dots live in the secondary view
     // first dot in DOM order = first missed shot in payload order:
     // the Mid-Range 17-footer, Q2 with 7:52 left, Oct 31 2025
     const hit = document.querySelector('.shot-dot .dot-hit')!

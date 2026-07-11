@@ -35,6 +35,12 @@ _Avoid_: using "shot quality" to mean whether shots went in.
 **Shot making**:
 A player's *conversion relative to the zone baseline* — does he beat league expectation in the zones where he shoots? Answers "is he actually good?" Distinct from shot selection.
 
+**Zones view**:
+The court's **default** display mode (Zones / Shots toggle; the raw made/missed scatter is the secondary, look-closer view): the six evaluation-zone regions shaded by making delta (player FG% − league FG% per zone) on the **making scale**, titled "vs league average" (ADR-0002), with the scale's legend beside the toggle above the court. Display-only: it re-presents the same `ShotMetrics.zones[]` the table shows (no re-aggregation — ADR-0011), shades all six zones regardless of `included` (inclusion gates the mix view; making is flagged†, never suppressed — ADR-0008), and its drawn regions approximate the data's zone assignments without ever overriding them (ADR-0012). The mid-range 8–16/16–24 band split stays table-only — no rings on the court.
+
+**Making scale**:
+The Zones view's binned diverging encoding of making delta: neutral gray band at ±2.5 pp around league average, symmetric warm (above) / cool (below) arms in 7.5 pp steps, open-ended past ±17.5 — edges are fixed absolute values so the same color means the same delta for every hero and season (ADR-0013). A zero-attempt zone renders unpainted (no data ≠ at league average), and the per-theme colors are governed by tested invariants — label contrast, monotone luminance, gray midpoint — not by fixed hexes (ADR-0014).
+
 **Shot diet**:
 The distribution of a player's shot attempts across zones — his attempt share per zone. The raw material of shot selection.
 
@@ -44,17 +50,29 @@ The fraction of a player's (or the league's) shots taken from a given zone. Deri
 **Diet-weighted expected PPS**:
 The headline selection number: a player's zone attempt shares weighted by each zone's *league* PPS (his making held at league level, isolating selection). Compared against the same weighting applied to the *league's* zone shares — so the benchmark is the league's own diet, never an arbitrary fixed bar.
 
+**Making PPS delta**:
+The headline making number: actual PPS minus diet-weighted expected PPS — what the player's conversion adds or subtracts with his diet held fixed (ADR-0016). Denominated in PPS (the whole-diet value consequence), unlike the per-zone making delta (FG% points, one zone's conversion); the headline numbers decompose exactly: league diet PPS + selection delta + making PPS delta = actual PPS.
+
+**Combined threes**:
+The three 3-point evaluation zones rolled up into one line by summing makes and attempts — player and league both, per the zone-rollup rule, never averaged rates. Exists so the making verdict can be stated at a grain the sample supports: each launch-hero 3PT zone is individually small-sample-flagged (49/34/48 attempts) while the combined 131 clear the bar (ADR-0016). Rendered in the zone table as the **All threes** parent row over its three (child) zone rows; there is deliberately no paint or all-twos parent — RA vs non-RA is the value-critical distinction inside the arc, and a combined row would average across it.
+
 **Selection benchmark**:
 The league-average shot mix. Shot selection is always framed as "vs league average," never "vs positional peers." The comparison is deliberately position-blind (see ADR-0002); position/archetype-adjusted selection is a v2 concern. The tool states its comparison class plainly. Excludes Backcourt heaves (nominal 3-zones with ~0 real value that would distort the weighting).
 
 **Derived payload** (a.k.a. **the typed JSON contract**):
 What Python persists and the frontend consumes: `{ enriched per-shot rows + rolled-up zone baseline }`, typed and Zod-validated at the load boundary. Notably it does *not* contain the headline metrics — those are computed from it. This payload is identical regardless of where player aggregation later runs, so the storage contract is not blocked on the compute-location question.
 
+**Deployed payload**:
+The committed copy of the derived payload the app actually fetches: `public/data/<player-slug>/<season>.json`, refreshed only by an explicit `npm run hero:sync` (ADR-0010). The third layer of the storage story — raw (append-only, gitignored) → derived (recomputed, gitignored) → deployed (committed). The app reads persisted JSON only; it never calls the NBA API (unofficial endpoint; blocks cloud IPs).
+
 **Aggregation function**:
 The single pure function that computes v1's player-side metrics (diet-weighted PPS, making deltas, suppression) over an array of enriched shots. v1 calls it once with all shots — the all-pass case of the filtered subsets v2 will pass. **Resolved (ADR-0009):** its language is TypeScript (`src/domain/aggregate.ts`), closing the call ADR-0007 deferred; as a pure, tested unit it ports back as a contained rewrite, not an architecture change. Its contents are fully specified by the ADR-0008 zone set.
 
 **v1 thesis**:
 "Is this player taking good shots?" — answered completely by the two-axis model (shot selection + shot making). This is the whole of v1's claim; the tool states this question and no more.
+
+**Verdict**:
+The one-or-two-sentence answer to the v1 thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by a committed guard test that asserts each directional claim against the deployed payload's metrics (ADR-0017); its language stays inside selection/making (ADR-0005).
 
 **v2 thesis**:
 "How does he create his shots?" — the scheduled second act. Designated engine: the Case 2 buckets (catch-and-shoot vs pull-up, contested, shot-clock). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction.
@@ -63,7 +81,7 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Explicitly v2, Case 2/3-powered. v1 has *no* creation signal — a catch-and-shoot and a pull-up from the same spot are identical dots in `shotchartdetail` — and must never imply otherwise (see ADR-0005).
 
 **Shot spine**:
-The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product.
+The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 
 **Raw artifact**:
 One verbatim blob of a `shotchartdetail` response (player shots + `LeagueAverages` frame), stored exactly as returned. Keyed per **(player, season, pull-date)**. Self-describing: records at minimum its pull-date and games-included (or date-range), so a blob's contents are knowable without re-deriving.
@@ -94,4 +112,4 @@ A player is eligible to be a hero only if they have ≥1 completed season passin
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
 
 **Volume gate** (Gate 2):
-The player has enough per-zone attempts that the mix view isn't mostly suppression warnings — constraint 4 (sample-size suppression) promoted from zone-level to player-level eligibility. **Threshold: a zone is included at ≥15 attempts** (all 6 evaluation zones clear for the launch hero/season; set from real counts per ADR-0003, now ADR-0008). There is *no* second hard cutoff on the making axis: low-N zones instead carry a **small-sample uncertainty flag** on the making delta. Rationale from the data — a player's attempt *share* is stable by ~34+ attempts, but per-zone *conversion* is noisy there, so the selection/making axis split is real, not just anticipated.
+The player has enough per-zone attempts that the mix view isn't mostly suppression warnings — constraint 4 (sample-size suppression) promoted from zone-level to player-level eligibility. **Threshold: a zone is included at ≥15 attempts** (all 6 evaluation zones clear for the launch hero/season; set from real counts per ADR-0003, now ADR-0008). There is *no* second hard cutoff on the making axis: low-N zones instead carry a **small-sample uncertainty flag** on the making delta. Rationale from the data — a player's attempt *share* is stable by ~34+ attempts, but per-zone *conversion* is noisy there, so the selection/making axis split is real, not just anticipated. **The flag threshold is < 50 attempts** (`SMALL_SAMPLE_MAKING_ATTEMPTS`, `src/domain/constants.ts`; tunable): it must exceed 49 so per-corner making at L49/R34 carries the flag per ADR-0008, and at n=50 a ~40% shooter's FG% has a 95% CI of ~±13.6pp — noise-dominated.

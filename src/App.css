@@ -2,6 +2,44 @@
    variables in index.css so light/dark both work without chart-specific
    palettes. */
 
+/* Diverging making-delta scale (Zones view): cool = below league, warm =
+   above, NEUTRAL GRAY midpoint = league average (never a hue). Each mode's
+   steps are selected for its surface, not auto-flipped. Guarded by
+   src/chart/makingScale.contrast.test.ts (label contrast >= 4.5:1 vs
+   --text-h in both modes; per-arm luminance monotone; neutral gray).
+   Advisory dataviz-validator note: the inner (palest) steps sit below the
+   2:1 surface floor by design — they are large regions delineated by
+   court-line strokes and carrying direct labels, not discrete marks.
+   Hue note: in DARK mode the 4.5:1 label floor caps warm fills at relative
+   luminance ~0.16, where yellow/amber physically reads as brown — dark warm
+   hues must stay red-orange or redder; don't re-attempt amber there. */
+:root {
+  --making-cold-3: #3b82f6;
+  --making-cold-2: #93c5fd;
+  --making-cold-1: #bfdbfe;
+  --making-neutral: #e7e6e2;
+  /* "Ember-match" warm arm: the dark mode Ember hue translated to light, so
+     the scale reads as one character across themes. */
+  --making-warm-1: #ffd1b3;
+  --making-warm-2: #fca86a;
+  --making-warm-3: #e14f0b;
+  --making-nodata: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --making-cold-3: #2563eb;
+    --making-cold-2: #1e40af;
+    --making-cold-1: #1e3a5f;
+    --making-neutral: #272935;
+    /* "Ember" warm arm: red-orange with chroma held high where a darkened
+       orange goes brown; warm-1 luminance matched to cold-1 for arm balance. */
+    --making-warm-1: #6b2612;
+    --making-warm-2: #a53409;
+    --making-warm-3: #c73d05;
+  }
+}
+
 .hero-page {
   text-align: left;
   padding: 0 32px 64px;
@@ -13,7 +51,22 @@
 }
 
 .hero-header h1 {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+/* The verdict: the first thing the eye hits after the question, so it ranks
+   between body (18px) and h2 (24px). Prose, not numbers — the headline
+   blocks below carry the figures. */
+.hero-verdict {
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--text-h);
+  max-width: 72ch;
+  margin: 18px 0 14px;
+
+  @media (max-width: 1024px) {
+    font-size: 19px;
+  }
 }
 
 .hero-byline {
@@ -29,13 +82,21 @@
   color: #dc2626;
 }
 
-/* --- Headline selection banner ------------------------------------------- */
+/* --- Headline blocks ------------------------------------------------------- */
+
+/* The two-axis answer gets equal billing: selection and making side by side,
+   stacking when a card would drop under ~340px (ADR-0016). */
+.headline-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
 
 .headline-banner {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 20px 24px;
-  margin-bottom: 32px;
 }
 
 .headline-banner h2 {
@@ -97,6 +158,63 @@
 
 /* --- Chart ----------------------------------------------------------------- */
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Toggle + legend share a row above the court: the legend is the key to the
+   hero visual and must be read before the fills. Wraps on narrow widths. */
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.court-view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  margin: 0;
+  gap: 2px;
+  align-self: flex-start;
+}
+
+.court-view-toggle label {
+  font-size: 14px;
+  padding: 4px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.court-view-toggle label.toggle-active {
+  background: var(--accent-bg);
+  color: var(--text-h);
+}
+
+.court-view-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.court-view-toggle label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .chart-wrapper {
   position: relative;
 }
@@ -136,6 +254,42 @@
   pointer-events: all;
 }
 
+/* --- Zones view -------------------------------------------------------------- */
+
+.zone-fill {
+  stroke: none;
+}
+
+.zone-fill-cold-3 { fill: var(--making-cold-3); }
+.zone-fill-cold-2 { fill: var(--making-cold-2); }
+.zone-fill-cold-1 { fill: var(--making-cold-1); }
+.zone-fill-neutral { fill: var(--making-neutral); }
+.zone-fill-warm-1 { fill: var(--making-warm-1); }
+.zone-fill-warm-2 { fill: var(--making-warm-2); }
+.zone-fill-warm-3 { fill: var(--making-warm-3); }
+.zone-fill-nodata { fill: var(--making-nodata); }
+
+.zone-label {
+  pointer-events: none;
+  fill: var(--text-h);
+  font-size: 12px;
+  text-anchor: middle;
+  /* theme-aware halo so labels stay legible over any fill */
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.zone-label-name {
+  font-weight: 600;
+}
+
+.zone-label-delta {
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
 .chart-skip-note {
   font-size: 14px;
   color: var(--text);
@@ -170,7 +324,6 @@
 .chart-legend {
   display: flex;
   gap: 20px;
-  margin-top: 8px;
   font-size: 14px;
 }
 
@@ -198,6 +351,63 @@
   opacity: 0.55;
 }
 
+.zones-legend {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.zones-legend-title {
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.zones-legend-scale {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* The legend is the key to the default hero visual — the bar takes all the
+   row width the end-caps leave it, within a readable ceiling. */
+.zones-legend-steps {
+  flex: 1 1 220px;
+  max-width: 380px;
+}
+
+.zones-legend-swatches {
+  display: flex;
+}
+
+.zones-legend-swatch {
+  flex: 1;
+  height: 14px;
+  border: 1px solid var(--border);
+  border-left-width: 0;
+}
+
+.zones-legend-swatch:first-child {
+  border-left-width: 1px;
+  border-radius: 3px 0 0 3px;
+}
+
+.zones-legend-swatch:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.zones-legend-edges {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 6% 0; /* pull edge numbers under the swatch boundaries */
+}
+
+.zones-legend-end {
+  white-space: nowrap;
+  font-size: 12px;
+  padding-top: 1px;
+}
+
 /* --- Zone table ------------------------------------------------------------ */
 
 /* The nowrap numeric columns overflow narrow viewports — scroll the table
@@ -209,7 +419,7 @@
 .zone-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .zone-table caption {
@@ -219,9 +429,11 @@
   margin-bottom: 10px;
 }
 
+/* Sized to fit the side-by-side column (~514px in the 1126px shell) without
+   horizontal scroll — the whole point of the payoff-first column order. */
 .zone-table th,
 .zone-table td {
-  padding: 8px 10px;
+  padding: 8px 7px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -243,11 +455,17 @@
   font-weight: 500;
   color: var(--text-h);
   white-space: nowrap;
+
+  /* Narrow screens: let zone names wrap instead of pushing Making Δ into
+     the panel's overflow scroll. */
+  @media (max-width: 1024px) {
+    white-space: normal;
+  }
 }
 
 .zone-table td {
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-h);
   white-space: nowrap;
 }
@@ -260,7 +478,8 @@
   opacity: 0.45;
 }
 
-.band-row th {
+.band-row th,
+.zone-row-child th {
   padding-left: 26px;
   font-weight: 400;
   color: var(--text);
@@ -270,6 +489,9 @@
   display: block;
   font-size: 12px;
   color: var(--text);
+  /* The note must wrap: tbody th is nowrap, and an unwrappable note would
+     force the Zone column wide enough to push Making Δ into overflow. */
+  white-space: normal;
 }
 
 .table-notes {

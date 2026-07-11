@@ -10,10 +10,17 @@
 // implementations use -47.5/422.5 instead — the choice moves court LINES
 // only; dot positions are the API's coordinates either way.
 //
-// ORIENTATION: baseline at the BOTTOM of the frame, three-point arc opening
-// upward, half-court line at the top. The y-flip (SVG y grows downward)
-// happens exactly once, inside statsToSvg — not via a scale(1,-1) transform —
-// so tests can assert exact SVG numbers.
+// ORIENTATION: the OFFENSE'S PERSPECTIVE — baseline and hoop at the TOP of
+// the frame, three-point arc opening downward, half-court line at the bottom.
+// This is the one orientation that needs no axis flip: the NBA's naming is
+// the offense's (negative locX = "Left Side(L)" = the shooter's left), so
+// with the hoop at the top the shooter's left is the image's left and both
+// axes of statsToSvg are plain translations. Flipping y alone to put the
+// hoop at the bottom — the common tutorial view — MIRRORS the court: left-
+// corner shots render in what a player reads as the right corner. A true
+// hoop-at-bottom view would have to flip x as well (ADR-0015).
+
+import type { EvalZone } from '../domain/constants'
 
 export const COURT = { minX: -250, maxX: 250, minY: -52.5, maxY: 417.5 } as const
 
@@ -38,11 +45,11 @@ export interface SvgPoint {
 }
 
 export function statsToSvg(x: number, y: number): SvgPoint {
-  return { x: x - COURT.minX + PAD, y: COURT.maxY + PAD - y }
+  return { x: x - COURT.minX + PAD, y: y - COURT.minY + PAD }
 }
 
 export function svgToStats(x: number, y: number): SvgPoint {
-  return { x: x + COURT.minX - PAD, y: COURT.maxY + PAD - y }
+  return { x: x + COURT.minX - PAD, y: y + COURT.minY - PAD }
 }
 
 export function isOnCourt(shot: { locX: number; locY: number }): boolean {
@@ -60,16 +67,25 @@ export type CourtElement =
   | { id: string; kind: 'line'; x1: number; y1: number; x2: number; y2: number }
   | { id: string; kind: 'path'; d: string }
 
+export interface ZoneRegion {
+  zone: EvalZone
+  shape: CourtElement
+  /** Where the zone's label sits (svg coords), chosen to dodge line-work. */
+  labelAnchor: SvgPoint
+  /** Corners are 30 units wide — their labels render rotated. */
+  labelRotate?: number
+}
+
 /**
  * Court line-work as SVG-space descriptors (NBA dimensions in feet, x10 to
  * stats units, then through statsToSvg). Rendered stroke-only.
  */
 export function courtElements(): CourtElement[] {
-  const hoop = statsToSvg(0, 0) // (270, 437.5)
-  const junction = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // corner-line top / arc ends
+  const hoop = statsToSvg(0, 0) // (270, 72.5)
+  const junction = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // corner-line bottom / arc ends
 
-  const boundaryTL = statsToSvg(COURT.minX, COURT.maxY)
-  const paintTL = statsToSvg(-80, 137.5) // key: 16 ft wide, 19 ft from baseline
+  const boundaryTL = statsToSvg(COURT.minX, COURT.minY)
+  const paintTL = statsToSvg(-80, COURT.minY) // key: 16 ft wide, 19 ft from baseline
   const ftCenter = statsToSvg(0, 137.5)
   const backboardY = statsToSvg(0, -12.5).y // face 4 ft from baseline
   const baselineY = statsToSvg(0, COURT.minY).y
@@ -89,7 +105,7 @@ export function courtElements(): CourtElement[] {
     {
       id: 'restricted-arc',
       kind: 'path',
-      d: `M ${hoop.x - 40} ${hoop.y} A 40 40 0 0 1 ${hoop.x + 40} ${hoop.y}`,
+      d: `M ${hoop.x - 40} ${hoop.y} A 40 40 0 0 0 ${hoop.x + 40} ${hoop.y}`,
     },
     { id: 'rim', kind: 'circle', cx: hoop.x, cy: hoop.y, r: 7.5 },
     {
@@ -119,12 +135,118 @@ export function courtElements(): CourtElement[] {
     {
       id: 'three-point-arc',
       kind: 'path',
-      d: `M ${statsToSvg(-220, 0).x} ${junction} A 237.5 237.5 0 0 1 ${statsToSvg(220, 0).x} ${junction}`,
+      d: `M ${statsToSvg(-220, 0).x} ${junction} A 237.5 237.5 0 0 0 ${statsToSvg(220, 0).x} ${junction}`,
     },
     {
       id: 'center-circle',
       kind: 'path',
-      d: `M ${hoop.x - 60} ${halfCourtY} A 60 60 0 0 0 ${hoop.x + 60} ${halfCourtY}`,
+      d: `M ${hoop.x - 60} ${halfCourtY} A 60 60 0 0 1 ${hoop.x + 60} ${halfCourtY}`,
     },
   ]
+}
+
+/**
+ * The six evaluation-zone regions for the Zones view, in PAINTER ORDER:
+ * each later (inner) shape simply covers the earlier (outer) one, so no
+ * clipPath/evenodd is needed and pointer hit-testing works naturally
+ * (topmost shape wins = innermost zone). The full boundary rect IS the
+ * Above-the-Break-3 fill; corners, the inside-3pt region, the paint, and
+ * the restricted-area disc stack on top.
+ *
+ * These regions are PRESENTATION shapes that approximate the data's zone
+ * assignments — they never decide a shot's zone (ADR-0012).
+ */
+export function zoneRegions(): ZoneRegion[] {
+  const hoop = statsToSvg(0, 0)
+  const junctionY = statsToSvg(0, CORNER_ARC_JUNCTION_Y).y // ≈ 161.9776
+  const baselineY = statsToSvg(0, COURT.minY).y // 20
+  const boundaryTL = statsToSvg(COURT.minX, COURT.minY)
+  const paintTL = statsToSvg(-80, COURT.minY)
+  const leftCornerX = statsToSvg(-220, 0).x // 50
+  const rightCornerX = statsToSvg(220, 0).x // 490
+
+  return [
+    {
+      zone: 'Above the Break 3',
+      shape: {
+        id: 'zone-atb3',
+        kind: 'rect',
+        x: boundaryTL.x,
+        y: boundaryTL.y,
+        width: COURT.maxX - COURT.minX,
+        height: COURT.maxY - COURT.minY,
+      },
+      labelAnchor: { x: hoop.x, y: 390 },
+    },
+    {
+      zone: 'Left Corner 3',
+      shape: {
+        id: 'zone-lc3',
+        kind: 'rect',
+        x: boundaryTL.x,
+        y: baselineY,
+        width: leftCornerX - boundaryTL.x,
+        height: junctionY - baselineY,
+      },
+      labelAnchor: { x: 35, y: 91 },
+      labelRotate: -90,
+    },
+    {
+      zone: 'Right Corner 3',
+      shape: {
+        id: 'zone-rc3',
+        kind: 'rect',
+        x: rightCornerX,
+        y: baselineY,
+        width: leftCornerX - boundaryTL.x,
+        height: junctionY - baselineY,
+      },
+      labelAnchor: { x: 505, y: 91 },
+      labelRotate: 90,
+    },
+    {
+      zone: 'Mid-Range',
+      shape: {
+        id: 'zone-mid-range',
+        kind: 'path',
+        d: `M ${leftCornerX} ${baselineY} L ${leftCornerX} ${junctionY} A 237.5 237.5 0 0 0 ${rightCornerX} ${junctionY} L ${rightCornerX} ${baselineY} Z`,
+      },
+      labelAnchor: { x: hoop.x, y: 285 },
+    },
+    {
+      zone: 'In The Paint (Non-RA)',
+      shape: { id: 'zone-paint', kind: 'rect', x: paintTL.x, y: paintTL.y, width: 160, height: 190 },
+      labelAnchor: { x: hoop.x, y: 138 },
+    },
+    {
+      zone: 'Restricted Area',
+      shape: { id: 'zone-ra', kind: 'circle', cx: hoop.x, cy: hoop.y, r: 40 },
+      labelAnchor: { x: hoop.x, y: 99 },
+    },
+  ]
+}
+
+/**
+ * TEST-ONLY (ADR-0012): never import from production code.
+ *
+ * Mirrors the zoneRegions painter stack top-down (innermost wins) so tests
+ * can measure how well the DRAWN regions agree with the DATA's zone
+ * assignments. The data is the sole authority on a shot's zone — in the
+ * launch payload the RA radial envelope tops out at ~39.66 stats units and
+ * the paint's begins at ~40.46, so the nominal 40-unit boundary is not
+ * recoverable from coordinates. A disagreement with this classifier is
+ * documented, never "fixed" by reassigning the shot.
+ */
+export function classifyByGeometry(locX: number, locY: number): EvalZone {
+  if (Math.hypot(locX, locY) <= 40) return 'Restricted Area'
+  if (locX >= -80 && locX <= 80 && locY >= COURT.minY && locY <= 137.5) {
+    return 'In The Paint (Non-RA)'
+  }
+  const insideThree =
+    locY <= CORNER_ARC_JUNCTION_Y ? Math.abs(locX) < 220 : Math.hypot(locX, locY) < 237.5
+  if (insideThree) return 'Mid-Range'
+  if (locY <= CORNER_ARC_JUNCTION_Y) {
+    return locX <= -220 ? 'Left Corner 3' : 'Right Corner 3'
+  }
+  return 'Above the Break 3'
 }

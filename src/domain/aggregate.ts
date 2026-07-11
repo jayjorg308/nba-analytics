@@ -1,6 +1,7 @@
 // The single pure aggregation function (ADR-0007): computes v1's player-side
-// metrics — diet-weighted expected PPS, per-zone making deltas, suppression /
-// small-sample flags — over an array of enriched shots.
+// metrics — diet-weighted expected PPS, the headline making rollup, per-zone
+// making deltas, suppression / small-sample flags — over an array of
+// enriched shots.
 //
 // v1 calls it once with all shots; that call is the all-pass case of the
 // filtered subsets v2 will pass (which is why it takes the shots array, not
@@ -55,6 +56,26 @@ export interface BandMetricsRow {
   smallSampleMaking: boolean
 }
 
+/** The three 3-point evaluation zones rolled up into one line: player makes
+ * and attempts summed, league FGM/FGA summed then re-divided (the ADR-0004
+ * rule — never averaged rates). Exists so the making verdict can be stated at
+ * a grain the sample supports: for the launch hero every 3PT zone is
+ * individually sub-50 (flagged) while the combined attempts clear the bar. */
+export interface ThreesMetrics {
+  attempts: number
+  makes: number
+  /** Share of the player's evaluation attempts taken from three. */
+  attemptShare: number | null
+  leagueAttemptShare: number
+  fgPct: number | null
+  leagueFgPct: number
+  pps: number | null
+  leaguePps: number
+  /** Same semantics as ZoneMetricsRow.makingDelta: FG% minus league FG%. */
+  makingDelta: number | null
+  smallSampleMaking: boolean
+}
+
 export interface ShotMetrics {
   /** ADR-0002: the comparison class travels with the numbers and must be
    * stated plainly in the UI — "vs league average", never peer-adjusted. */
@@ -74,8 +95,21 @@ export interface ShotMetrics {
     leagueDietExpectedPps: number
     selectionDelta: number | null
   }
+  making: {
+    /** Actual conversion over evaluation attempts: points scored / FGA. */
+    actualPps: number | null
+    /** The headline making number (ADR-0016): actual PPS minus the
+     * diet-weighted expected PPS — what his conversion adds or subtracts
+     * with his shot diet held fixed. Denominated in PPS (the whole-diet
+     * value consequence), unlike the per-zone makingDelta (FG% pp, one
+     * zone's conversion). Identity: leagueDietExpectedPps + selectionDelta
+     * + makingPpsDelta = actualPps. */
+    makingPpsDelta: number | null
+  }
   /** Exactly the 6 evaluation zones, in EVAL_ZONES order. */
   zones: ZoneMetricsRow[]
+  /** The combined-threes rollup — the verdict-grain 3PT line (ADR-0016). */
+  threes: ThreesMetrics
   /** ADR-0008 launch-hero refinements, computed unconditionally with
    * data-driven visibility — no hero-conditional code paths, so a different
    * hero re-runs the gate for free. */
@@ -160,6 +194,23 @@ export function aggregateShotMetrics(
     0,
   )
 
+  // The making rollup (ADR-0016): actual conversion vs the diet-held
+  // expectation. Points come off the zone rows — every shot in a zone
+  // carries that zone's point value (schema-enforced).
+  const evalPoints = zones.reduce((sum, r) => sum + r.makes * ZONE_POINT_VALUE[r.zone], 0)
+  const actualPps = evalAttempts > 0 ? evalPoints / evalAttempts : null
+
+  // Combined threes: player and league both rolled up by SUMMING makes and
+  // attempts (ADR-0004) — averaging the three zones' rates would silently
+  // overweight the low-volume corners.
+  const threeZones = zones.filter((r) => ZONE_POINT_VALUE[r.zone] === 3)
+  const threesAttempts = threeZones.reduce((sum, r) => sum + r.attempts, 0)
+  const threesMakes = threeZones.reduce((sum, r) => sum + r.makes, 0)
+  const threesLeagueFga = threeZones.reduce((sum, r) => sum + basicBaseline.get(r.zone)!.fga, 0)
+  const threesLeagueFgm = threeZones.reduce((sum, r) => sum + basicBaseline.get(r.zone)!.fgm, 0)
+  const threesFgPct = threesAttempts > 0 ? threesMakes / threesAttempts : null
+  const threesLeagueFgPct = threesLeagueFgm / threesLeagueFga
+
   const midShots = shots.filter((s) => s.zoneBasic === 'Mid-Range')
   const bandTallies = tallyShots(midShots, (s) => s.zoneRange)
   for (const band of bandTallies.keys()) {
@@ -209,7 +260,26 @@ export function aggregateShotMetrics(
       selectionDelta:
         playerDietExpectedPps === null ? null : playerDietExpectedPps - leagueDietExpectedPps,
     },
+    making: {
+      actualPps,
+      makingPpsDelta:
+        actualPps === null || playerDietExpectedPps === null
+          ? null
+          : actualPps - playerDietExpectedPps,
+    },
     zones,
+    threes: {
+      attempts: threesAttempts,
+      makes: threesMakes,
+      attemptShare: evalAttempts > 0 ? threesAttempts / evalAttempts : null,
+      leagueAttemptShare: threesLeagueFga / leagueEvalFga,
+      fgPct: threesFgPct,
+      leagueFgPct: threesLeagueFgPct,
+      pps: threesFgPct === null ? null : threesFgPct * 3,
+      leaguePps: threesLeagueFgPct * 3,
+      makingDelta: threesFgPct === null ? null : threesFgPct - threesLeagueFgPct,
+      smallSampleMaking: threesAttempts < SMALL_SAMPLE_MAKING_ATTEMPTS,
+    },
     midRangeSplit: {
       visible: longTwoAttempts >= ZONE_INCLUSION_MIN_ATTEMPTS,
       bands,

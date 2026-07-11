@@ -1,6 +1,6 @@
 import type { EnrichedShot } from '../domain/payload'
-import type { CourtElement } from './geometry'
-import { courtElements, DOT_R, HIT_R, isOnCourt, statsToSvg, VIEWBOX } from './geometry'
+import { CourtLines } from './CourtLines'
+import { DOT_R, HIT_R, isOnCourt, statsToSvg, VIEWBOX } from './geometry'
 
 export interface ShotChartProps {
   shots: EnrichedShot[]
@@ -9,19 +9,6 @@ export interface ShotChartProps {
    * converts to its own coordinate space. */
   onShotEnter?: (shot: EnrichedShot, clientAnchor: { x: number; y: number }) => void
   onShotLeave?: () => void
-}
-
-function CourtElementShape({ el }: { el: CourtElement }) {
-  switch (el.kind) {
-    case 'rect':
-      return <rect x={el.x} y={el.y} width={el.width} height={el.height} />
-    case 'circle':
-      return <circle cx={el.cx} cy={el.cy} r={el.r} />
-    case 'line':
-      return <line x1={el.x1} y1={el.y1} x2={el.x2} y2={el.y2} />
-    case 'path':
-      return <path d={el.d} />
-  }
 }
 
 /**
@@ -47,11 +34,7 @@ export function ShotChart({ shots, ariaLabel, onShotEnter, onShotLeave }: ShotCh
   return (
     <>
       <svg className="shot-chart" viewBox={VIEWBOX} role="img" aria-label={ariaLabel}>
-        <g className="court-lines">
-          {courtElements().map((el) => (
-            <CourtElementShape key={el.id} el={el} />
-          ))}
-        </g>
+        <CourtLines />
         <g aria-hidden="true">
           {ordered.map((shot) => {
             const p = statsToSvg(shot.locX, shot.locY)

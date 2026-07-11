@@ -110,6 +110,33 @@ describe('aggregateShotMetrics on the hand-computed micro-fixture', () => {
     expect(m.selection.selectionDelta).toBeCloseTo(0.06875, 12)
   })
 
+  it('computes the making rollup and its decomposition identity', () => {
+    // eval points: RA 3x2 + MR 1x2 + LC3 2x3 + RC3 1x3 = 17; 17/16 = 1.0625
+    expect(m.making.actualPps).toBeCloseTo(1.0625, 12)
+    expect(m.making.makingPpsDelta).toBeCloseTo(-0.01875, 12) // 1.0625 - 1.08125
+    // ADR-0016: league diet + selection delta + making delta reassembles
+    // actual PPS exactly — the decomposition the headline blocks will show.
+    expect(
+      m.selection.leagueDietExpectedPps + m.selection.selectionDelta! + m.making.makingPpsDelta!,
+    ).toBeCloseTo(m.making.actualPps!, 12)
+  })
+
+  it('rolls the combined threes up by summing, never averaging rates', () => {
+    expect(m.threes.attempts).toBe(8) // LC3 4 + RC3 2 + ATB3 2
+    expect(m.threes.makes).toBe(3)
+    expect(m.threes.attemptShare).toBeCloseTo(0.5, 12) // 8/16
+    expect(m.threes.leagueAttemptShare).toBeCloseTo(0.375, 12) // 1500/4000
+    expect(m.threes.fgPct).toBeCloseTo(0.375, 12)
+    // summed 550/1500 (ADR-0004) — NOT the naive zone-rate average
+    // (.4+.4+.35)/3 ~= .3833, which would overweight the low-volume corners
+    expect(m.threes.leagueFgPct).toBeCloseTo(550 / 1500, 12)
+    expect(m.threes.leagueFgPct).not.toBeCloseTo((0.4 + 0.4 + 0.35) / 3, 3)
+    expect(m.threes.pps).toBeCloseTo(1.125, 12)
+    expect(m.threes.leaguePps).toBeCloseTo(1.1, 12)
+    expect(m.threes.makingDelta).toBeCloseTo(0.375 - 550 / 1500, 12)
+    expect(m.threes.smallSampleMaking).toBe(true) // 8 < 50
+  })
+
   it('satisfies the identity: league diet PPS == league eval points / eval FGA', () => {
     // Sum(share_z * pps_z) must collapse to total points over total attempts —
     // a free invariant that catches renormalization bugs.
@@ -156,6 +183,13 @@ describe('threshold boundaries', () => {
     expect(at49.zones.find((r) => r.zone === 'Restricted Area')!.smallSampleMaking).toBe(true)
   })
 
+  it('clears the combined-threes flag at exactly 50 attempts, not at 49', () => {
+    const at50 = aggregateShotMetrics(reps(50, 'Above the Break 3', true), microBaseline)
+    expect(at50.threes.smallSampleMaking).toBe(false)
+    const at49 = aggregateShotMetrics(reps(49, 'Above the Break 3', true), microBaseline)
+    expect(at49.threes.smallSampleMaking).toBe(true)
+  })
+
   it('shows the corner split only when BOTH corners clear the bar', () => {
     const both = aggregateShotMetrics(
       [...reps(15, 'Left Corner 3', true), ...reps(15, 'Right Corner 3', true)],
@@ -191,6 +225,13 @@ describe('degenerate inputs', () => {
     expect(m.selection.playerDietExpectedPps).toBeNull()
     expect(m.selection.selectionDelta).toBeNull()
     expect(m.selection.leagueDietExpectedPps).toBeCloseTo(1.0125, 12)
+    expect(m.making.actualPps).toBeNull()
+    expect(m.making.makingPpsDelta).toBeNull()
+    expect(m.threes.attempts).toBe(0)
+    expect(m.threes.attemptShare).toBeNull()
+    expect(m.threes.fgPct).toBeNull()
+    expect(m.threes.makingDelta).toBeNull()
+    expect(m.threes.leagueFgPct).toBeCloseTo(550 / 1500, 12) // league side still real
     for (const r of m.zones) {
       expect(r.attemptShare).toBeNull()
       expect(r.fgPct).toBeNull()
@@ -232,6 +273,15 @@ describe('aggregation over the committed golden', () => {
     // hand-computed: league eval points / eval FGA = 239124/219131 = 1.09124
     expect(m.selection.leagueDietExpectedPps).toBeCloseTo(1.09124, 4)
   })
+
+  it('computes the verdict-grain rollups over the golden', () => {
+    // 1 make per zone except Mid-Range (2): 2+2+4+3+3+3 = 17 points / 14 att
+    expect(m.making.actualPps).toBeCloseTo(17 / 14, 12)
+    expect(m.threes).toMatchObject({ attempts: 6, makes: 3 })
+    expect(
+      m.selection.leagueDietExpectedPps + m.selection.selectionDelta! + m.making.makingPpsDelta!,
+    ).toBeCloseTo(m.making.actualPps!, 12)
+  })
 })
 
 // Runs only where the gitignored real derived payload exists (dev machines);
@@ -272,5 +322,15 @@ describe.skipIf(!latestReal)('real derived payload (launch hero, launch season)'
     // hand-computed headline: selection nearly league-average
     expect(m.selection.playerDietExpectedPps).toBeCloseTo(1.0986, 3)
     expect(m.selection.leagueDietExpectedPps).toBeCloseTo(1.0912, 3)
+
+    // verdict-grain rollups (ADR-0016): making is the story, and it is
+    // carried by the combined threes — which clear the small-sample bar
+    // even though every individual 3PT zone is flagged.
+    expect(m.making.actualPps).toBeCloseTo(0.9902, 3)
+    expect(m.making.makingPpsDelta).toBeCloseTo(-0.1084, 3)
+    expect(m.threes.attempts).toBe(131)
+    expect(m.threes.makes).toBe(28)
+    expect(m.threes.smallSampleMaking).toBe(false)
+    expect(m.threes.makingDelta).toBeCloseTo(-0.1458, 3)
   })
 })
