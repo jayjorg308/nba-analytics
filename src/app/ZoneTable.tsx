@@ -35,8 +35,8 @@ function BandRow({ band }: { band: BandMetricsRow }) {
         )}
       </th>
       <td>{band.attempts}</td>
-      <td>{formatPercent1(band.shareOfMidRange)}</td>
-      <td>{formatPercent1(band.leagueShareOfMidRange)}</td>
+      <td>{formatPercent1(band.attemptShare)}</td>
+      <td>{formatPercent1(band.leagueAttemptShare)}</td>
       <td>{withSmallSampleMark(formatSignedPp1(band.makingDelta), band.smallSampleMaking)}</td>
       <td>
         {formatPps2(band.pps)} <span className="lg">({formatPps2(band.leaguePps)})</span>
@@ -118,9 +118,9 @@ export function ZoneTable({
         </tbody>
       </table>
       <div className="table-notes">
-        {midRangeSplit.visible && (
-          <p>Mid-range sub-rows: shares are of mid-range attempts, not of all shots.</p>
-        )}
+        {/* No denominator footnote needed: every Share in the table — zones,
+            bands, the All threes parent — is a share of evaluation attempts,
+            so parent/child rows sum and league comparisons are like-for-like. */}
         {cornerSplit.visible && (
           <p>
             Corner 3s: Left {cornerSplit.left.attempts} FGA / Right {cornerSplit.right.attempts}{' '}
