@@ -5,17 +5,17 @@
 // agrees with this config, so drift breaks a test).
 
 export const heroConfig = {
-  playerName: 'Cody Williams',
-  season: '2025-26',
-  // Vite serves public/ at the site root; BASE_URL keeps subpath deploys working.
-  payloadUrl: `${import.meta.env.BASE_URL}data/cody-williams/2025-26.json`,
-  // The v1 question, stated verbatim and nothing more (ADR-0005).
-  thesis: 'Is Cody Williams taking good shots?',
-  // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
-  // when the data moves, rewrite this; the committed guard
-  // (src/app/verdict.guard.test.ts) fails if any directional claim stops
-  // matching the deployed payload. Selection/making language only (ADR-0005).
-  verdict:
-    'Yes — where he shoots from is essentially league-average. The problem is making: ' +
-    'he converts below what his shot diet should yield, and the gap comes almost entirely from three.',
+    playerName: 'Cody Williams',
+    season: '2025-26',
+    // Vite serves public/ at the site root; BASE_URL keeps subpath deploys working.
+    payloadUrl: `${import.meta.env.BASE_URL}data/cody-williams/2025-26.json`,
+    // The v1 question, stated verbatim and nothing more (ADR-0005).
+    thesis: 'Is Cody Williams taking good shots?',
+    // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
+    // when the data moves, rewrite this; the committed guard
+    // (src/app/verdict.guard.test.ts) fails if any directional claim stops
+    // matching the deployed payload. Selection/making language only (ADR-0005).
+    verdict:
+        'Yes, where he shoots from is essentially league-average. The problem is shot making: ' +
+        'he converts below what his shot diet should yield, and the gap comes almost entirely from three.',
 } as const

@@ -97,8 +97,11 @@ function ZonesLegend() {
       <div className="zones-legend-title">
         Shot making vs league average (percentage points)
       </div>
+      {/* End-caps stay terse ("below"/"above") — the signed edge numbers and
+          the title's "vs league average" carry the semantics, and the saved
+          width goes to the swatch bar. */}
       <div className="zones-legend-scale">
-        <span className="zones-legend-end">− below league</span>
+        <span className="zones-legend-end">− below</span>
         <div className="zones-legend-steps">
           <div className="zones-legend-swatches">
             {MAKING_LEGEND.map((entry) => (
@@ -116,7 +119,7 @@ function ZonesLegend() {
             ))}
           </div>
         </div>
-        <span className="zones-legend-end">+ above league</span>
+        <span className="zones-legend-end">+ above</span>
       </div>
     </div>
   )

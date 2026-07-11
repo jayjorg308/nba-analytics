@@ -9,15 +9,20 @@
    --text-h in both modes; per-arm luminance monotone; neutral gray).
    Advisory dataviz-validator note: the inner (palest) steps sit below the
    2:1 surface floor by design — they are large regions delineated by
-   court-line strokes and carrying direct labels, not discrete marks. */
+   court-line strokes and carrying direct labels, not discrete marks.
+   Hue note: in DARK mode the 4.5:1 label floor caps warm fills at relative
+   luminance ~0.16, where yellow/amber physically reads as brown — dark warm
+   hues must stay red-orange or redder; don't re-attempt amber there. */
 :root {
   --making-cold-3: #3b82f6;
   --making-cold-2: #93c5fd;
   --making-cold-1: #bfdbfe;
   --making-neutral: #e7e6e2;
-  --making-warm-1: #fed7aa;
-  --making-warm-2: #fdba74;
-  --making-warm-3: #ea580c;
+  /* "Ember-match" warm arm: the dark mode Ember hue translated to light, so
+     the scale reads as one character across themes. */
+  --making-warm-1: #ffd1b3;
+  --making-warm-2: #fca86a;
+  --making-warm-3: #e14f0b;
   --making-nodata: var(--bg);
 }
 
@@ -27,9 +32,11 @@
     --making-cold-2: #1e40af;
     --making-cold-1: #1e3a5f;
     --making-neutral: #272935;
-    --making-warm-1: #4d2d1a;
-    --making-warm-2: #8a3d10;
-    --making-warm-3: #c2410c;
+    /* "Ember" warm arm: red-orange with chroma held high where a darkened
+       orange goes brown; warm-1 luminance matched to cold-1 for arm balance. */
+    --making-warm-1: #6b2612;
+    --making-warm-2: #a53409;
+    --making-warm-3: #c73d05;
   }
 }
 
@@ -44,17 +51,22 @@
 }
 
 .hero-header h1 {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
-/* The verdict: the first thing the eye hits after the question. Prose, not
-   numbers — the headline blocks below carry the figures. */
+/* The verdict: the first thing the eye hits after the question, so it ranks
+   between body (18px) and h2 (24px). Prose, not numbers — the headline
+   blocks below carry the figures. */
 .hero-verdict {
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 21px;
+  line-height: 1.45;
   color: var(--text-h);
-  max-width: 62ch;
-  margin: 0 0 10px;
+  max-width: 72ch;
+  margin: 18px 0 14px;
+
+  @media (max-width: 1024px) {
+    font-size: 19px;
+  }
 }
 
 .hero-byline {
@@ -355,8 +367,11 @@
   gap: 10px;
 }
 
+/* The legend is the key to the default hero visual — the bar takes all the
+   row width the end-caps leave it, within a readable ceiling. */
 .zones-legend-steps {
-  flex: 0 1 280px;
+  flex: 1 1 220px;
+  max-width: 380px;
 }
 
 .zones-legend-swatches {
@@ -365,7 +380,7 @@
 
 .zones-legend-swatch {
   flex: 1;
-  height: 12px;
+  height: 14px;
   border: 1px solid var(--border);
   border-left-width: 0;
 }
@@ -383,7 +398,7 @@
   display: flex;
   justify-content: space-between;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   padding: 2px 6% 0; /* pull edge numbers under the swatch boundaries */
 }
 
@@ -463,7 +478,8 @@
   opacity: 0.45;
 }
 
-.band-row th {
+.band-row th,
+.zone-row-child th {
   padding-left: 26px;
   font-weight: 400;
   color: var(--text);

@@ -1,13 +1,17 @@
 import { Fragment } from 'react'
 import type { BandMetricsRow, ShotMetrics, ZoneMetricsRow } from '../domain/aggregate'
-import { LONG_TWO_BAND } from '../domain/constants'
+import { LONG_TWO_BAND, ZONE_POINT_VALUE } from '../domain/constants'
 import { formatPercent1, formatPps2, formatSignedPp1, withSmallSampleMark } from '../format'
 
-function ZoneRow({ row }: { row: ZoneMetricsRow }) {
+function ZoneRow({ row, child = false }: { row: ZoneMetricsRow; child?: boolean }) {
+  const className =
+    [child ? 'zone-row-child' : null, row.included ? null : 'zone-row-excluded']
+      .filter(Boolean)
+      .join(' ') || undefined
   return (
     // included=false zones are muted, never deleted (ADR-0008): their
     // attempts still count toward the diet weighting.
-    <tr className={row.included ? undefined : 'zone-row-excluded'}>
+    <tr className={className}>
       <th scope="row">{row.zone}</th>
       <td>{row.attempts}</td>
       <td>{formatPercent1(row.attemptShare)}</td>
@@ -47,7 +51,9 @@ function BandRow({ band }: { band: BandMetricsRow }) {
  * formats, it never computes (ADR-0007).
  */
 export function ZoneTable({ metrics }: { metrics: ShotMetrics }) {
-  const { zones, midRangeSplit, cornerSplit, backcourt } = metrics
+  const { zones, midRangeSplit, cornerSplit, backcourt, threes } = metrics
+  const twoPointZones = zones.filter((z) => ZONE_POINT_VALUE[z.zone] === 2)
+  const threePointZones = zones.filter((z) => ZONE_POINT_VALUE[z.zone] === 3)
   const anyExcluded = zones.some((z) => !z.included)
   const anyFlagged =
     zones.some((z) => z.smallSampleMaking) ||
@@ -78,13 +84,29 @@ export function ZoneTable({ metrics }: { metrics: ShotMetrics }) {
           </tr>
         </thead>
         <tbody>
-          {zones.map((row) => (
+          {twoPointZones.map((row) => (
             <Fragment key={row.zone}>
               <ZoneRow row={row} />
               {row.zone === 'Mid-Range' &&
                 midRangeSplit.visible &&
                 midRangeSplit.bands.map((band) => <BandRow key={band.band} band={band} />)}
             </Fragment>
+          ))}
+          {/* The verdict-grain parent row (ADR-0016): the combined threes
+              clear the small-sample bar its children individually fail — the
+              row order is the argument for why the verdict speaks here. */}
+          <tr>
+            <th scope="row">All threes</th>
+            <td>{threes.attempts}</td>
+            <td>{formatPercent1(threes.attemptShare)}</td>
+            <td>{formatPercent1(threes.leagueAttemptShare)}</td>
+            <td>{withSmallSampleMark(formatSignedPp1(threes.makingDelta), threes.smallSampleMaking)}</td>
+            <td>
+              {formatPps2(threes.pps)} <span className="lg">({formatPps2(threes.leaguePps)})</span>
+            </td>
+          </tr>
+          {threePointZones.map((row) => (
+            <ZoneRow key={row.zone} row={row} child />
           ))}
         </tbody>
       </table>

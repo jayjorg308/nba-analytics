@@ -70,6 +70,15 @@ describe('HeroPage over the golden fixture', () => {
     )
     expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
 
+    // the verdict-grain parent row (ADR-0016): 'All threes' sits between the
+    // two-point rows and its three child zone rows
+    const rowHeads = [...document.querySelectorAll('.zone-table tbody th')].map(
+      (th) => th.textContent,
+    )
+    expect(rowHeads.indexOf('All threes')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
+    expect(rowHeads.indexOf('All threes')).toBeLessThan(rowHeads.indexOf('Left Corner 3'))
+    expect(document.querySelectorAll('.zone-row-child')).toHaveLength(3)
+
     // backcourt reported, never hidden (1 synthetic attempt in the golden)
     screen.getByText(/Backcourt heaves: 1 attempt \(0 made\)/)
 
