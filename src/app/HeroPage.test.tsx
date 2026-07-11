@@ -61,15 +61,17 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText('1.09')
     expect(screen.getAllByText(/vs league average/).length).toBeGreaterThanOrEqual(2)
 
-    // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21",
-    // with the combined-threes line carrying its small-sample dagger (6 < 50)
+    // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21"
     screen.getByRole('heading', { name: /Shot making/ })
     screen.getByText('1.21')
-    screen.getByText(/From three: 50\.0%† on 6 attempts/)
 
     // all six golden zones are < 15 attempts -> every row muted, none deleted
     expect(document.querySelectorAll('.zone-row-excluded')).toHaveLength(6)
     screen.getByText(/Zones under 15 attempts are shown muted/)
+
+    // the Restricted Area annotation mirrors the long-two note (both are
+    // league value-hierarchy facts; the RA one is guard-asserted)
+    screen.getByText(/highest-value shot/)
 
     // small-sample daggers on making deltas + the footnote
     expect(screen.getAllByText(/†/).length).toBeGreaterThan(1)
@@ -82,13 +84,14 @@ describe('HeroPage over the golden fixture', () => {
     )
     expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
 
-    // the verdict-grain parent row (ADR-0016): 'All threes' sits between the
+    // the verdict-grain parent row (ADR-0016): '3 Pointers' sits between the
     // two-point rows and its three child zone rows
     const rowHeads = [...document.querySelectorAll('.zone-table tbody th')].map(
       (th) => th.textContent,
     )
-    expect(rowHeads.indexOf('All threes')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
-    expect(rowHeads.indexOf('All threes')).toBeLessThan(rowHeads.indexOf('Left Corner 3'))
+    expect(rowHeads.indexOf('3 Pointers')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
+    // child rows drop the "3" — the 3 Pointers parent already carries it
+    expect(rowHeads.indexOf('3 Pointers')).toBeLessThan(rowHeads.indexOf('Left Corner'))
     expect(document.querySelectorAll('.zone-row-child')).toHaveLength(3)
 
     // backcourt reported, never hidden (1 synthetic attempt in the golden)

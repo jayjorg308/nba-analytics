@@ -52,7 +52,7 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
           {payload._meta.player} · {payload._meta.season} · vs league average
         </p>
       </header>
-      <HeadlineBanner selection={metrics.selection} making={metrics.making} threes={metrics.threes} />
+      <HeadlineBanner selection={metrics.selection} making={metrics.making} />
       <div className="hero-layout">
         <ChartPanel
           shots={payload.shots}
