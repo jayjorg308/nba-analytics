@@ -3,7 +3,7 @@ import { ChartPanel } from '../chart/ChartPanel'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import type { DerivedPayload } from '../domain/payload'
 import type { HeroConfig } from '../heroes/types'
-import { heroImageUrl, indexUrl, payloadUrl } from '../heroes/urls'
+import { heroImageUrl, payloadUrl } from '../heroes/urls'
 import { HeadlineBanner } from './HeadlineBanner'
 import { usePayload } from './usePayload'
 import { ZoneTable } from './ZoneTable'
@@ -87,10 +87,14 @@ function HeroReady({ hero, payload }: { hero: HeroConfig; payload: DerivedPayloa
       </div>
       {/* The quiet way back to the directory (ADR-0022) — after the argument,
           never above it; cross-hero navigation is links between pages, not a
-          switcher on this one. */}
-      <footer className="hero-footer">
-        <a href={indexUrl()}>← All players</a>
-      </footer>
+          switcher on this one.
+          TEMPORARY(single-hero): hidden with the index (2026-07-12) — a
+          directory link with the directory hidden would just loop back to
+          this page. Restore with the index (re-import indexUrl from
+          ../heroes/urls):
+          <footer className="hero-footer">
+            <a href={indexUrl()}>← All players</a>
+          </footer> */}
     </main>
   )
 }

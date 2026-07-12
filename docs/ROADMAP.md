@@ -5,6 +5,25 @@ dependency and value-per-effort, not by calendar. Each phase repeats the v1
 recipe — a data spine with a golden fixture, a pure metrics function, honesty
 flags, authored-and-guarded copy — on a new axis._
 
+## Status — updated 2026-07-12
+
+| Phase | State |
+| --- | --- |
+| v1 — the two-axis argument | ✅ shipped (ADRs 0001–0021) |
+| v1.1 — close-out polish | ✅ closed 2026-07-12 (`hero:report`, the hero directory, display-grain rounding — ADRs 0022–0023) |
+| v2.0 — creation at the bucket grain | ⬅ **next up** (starts with the tracking-splits spike) |
+| v2.5 — creation at the shot grain | not started |
+| v3 — living seasons and heroes at scale | not started |
+
+> **Temporarily single-hero (2026-07-12):** while the Cody Williams page is
+> being fully polished, Keyonte George is unregistered and the hero index is
+> hidden — the root serves Cody directly and unknown paths fall back to him.
+> Everything needed to restore multi-hero stays committed and guarded (his
+> config module, colocated verdict guard, deployed payload, photo — and the
+> dormant `HeroIndexPage` keeps its tests). The revert is a grep for
+> `TEMPORARY(single-hero)` — three files. Revisit once v2/v3 land and the
+> Cody page is solidified.
+
 **Where v1 ended:** the thesis ("Is this player taking good shots?") is
 answered by the two-axis model, argued verdict-first (ADR-0018), guarded
 (golden contract, palette, verdict claims, drift, zone agreement), deployed as
