@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "golden:regen": "python ingestion/derive_payload.py --snapshot-file tests/fixtures/snapshot.truncated.json --out-file tests/fixtures/derived.golden.json",
-    "hero:sync": "node scripts/sync-hero-payload.mjs cody-williams 2025-26"
+    "hero:sync": "node scripts/sync-hero-payload.mjs cody-williams 2025-26",
+    "hero:report": "tsx scripts/hero-report.ts"
   },
   "dependencies": {
     "@fontsource/big-shoulders-display": "^5.2.5",
@@ -35,6 +36,7 @@
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "jsdom": "^29.1.1",
+    "tsx": "^4.23.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.62.0",
     "vite": "^8.1.1",
