@@ -18,10 +18,13 @@ by CI on every push. ADRs 0001–0019 record how it got here.
 
 1. **Wording pass** over verdicts and copy. Standing rule: any verdict edit
    runs `npm test` — the claims guard (ADR-0017) is the copy editor.
+   _Done 2026-07-11._
 2. **`npm run hero:report`** — print a hero's computed story from a derived
    payload: the decomposition (league diet + selection Δ + making Δ = actual
    PPS), the combined-threes rollup, per-zone bins and flags, gate results.
    Every hero swap starts by reading this; the verdict is written from it.
+   _Done 2026-07-11: `scripts/hero-report.ts` under tsx, reusing the
+   production parse + aggregation (ADR-0009 — never a second implementation)._
 3. **Hero index page** — one static page linking the hero deployments. A
    directory of arguments, deliberately not a switcher (ADR-0018): each hero
    stays a complete argument at its own URL.
