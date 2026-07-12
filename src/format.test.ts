@@ -5,8 +5,8 @@ import {
   formatPercent1,
   formatPeriod,
   formatPps2,
+  formatSignedGap,
   formatSignedPp1,
-  formatSignedPps2,
   withSmallSampleMark,
 } from './format'
 
@@ -24,11 +24,17 @@ describe('format', () => {
     expect(formatPps2(null)).toBe('—')
   })
 
-  it('always signs PPS deltas, with a typographic minus', () => {
-    expect(formatSignedPps2(0.0074)).toBe('+0.01')
-    expect(formatSignedPps2(-0.02)).toBe('−0.02')
-    expect(formatSignedPps2(0)).toBe('+0.00')
-    expect(formatSignedPps2(null)).toBe('—')
+  it('displayed gaps subtract the anchors AS DISPLAYED, not the raw delta (ADR-0023)', () => {
+    // George's making block: the raw delta (+0.0442) rounds to +0.04, but
+    // the anchors display as 1.07 and 1.02 — the gap must say +0.05.
+    expect(formatSignedGap(1.0664, 1.0222, 2)).toBe('+0.05')
+    // Cody's: anchors 0.99 and 1.10 — the gap −0.11 matches the raw delta.
+    expect(formatSignedGap(0.9902, 1.0986, 2)).toBe('−0.11')
+    expect(formatSignedGap(1.0912, 1.0912, 2)).toBe('+0.00') // never −0.00
+    expect(formatSignedGap(1.0222, 1.0912, 3)).toBe('−0.069') // report ladder, 3dp
+    expect(formatSignedGap(71.9, 67.1, 1)).toBe('+4.8') // report Δ pp, 1dp
+    expect(formatSignedGap(null, 1, 2)).toBe('—')
+    expect(formatSignedGap(1, null, 2)).toBe('—')
   })
 
   it('formats making deltas as signed percentage points', () => {

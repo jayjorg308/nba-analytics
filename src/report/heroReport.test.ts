@@ -15,8 +15,12 @@ const payload = parseDerivedPayload(JSON.parse(readFileSync(goldenUrl, 'utf-8'))
 const metrics = aggregateShotMetrics(payload.shots, payload.zoneBaseline)
 const report = renderHeroReport(payload)
 
-const MINUS = '−'
-const signed3 = (x: number) => `${x < 0 ? MINUS : '+'}${Math.abs(x).toFixed(3)}`
+/** Parse the single 3dp value on a ladder line, in integer milli-PPS. */
+function ladderMilli(label: string): number {
+  const line = report.split('\n').find((l) => l.includes(label))!
+  const value = line.replace('−', '-').match(/[-+]?\d+\.\d{3}/)![0]
+  return Math.round(parseFloat(value) * 1000)
+}
 
 describe('renderHeroReport', () => {
   it('names the hero, season, and provenance', () => {
@@ -30,12 +34,20 @@ describe('renderHeroReport', () => {
     expect(report).toContain('3 Pointers (combined)')
   })
 
-  it('prints the decomposition from the aggregation, at 3 decimals', () => {
+  it('prints the decomposition anchors from the aggregation, at 3 decimals', () => {
     expect(report).toContain(metrics.selection.leagueDietExpectedPps.toFixed(3))
-    expect(report).toContain(signed3(metrics.selection.selectionDelta!))
     expect(report).toContain(metrics.selection.playerDietExpectedPps!.toFixed(3))
-    expect(report).toContain(signed3(metrics.making.makingPpsDelta!))
     expect(report).toContain(metrics.making.actualPps!.toFixed(3))
+  })
+
+  it('the printed ladder adds up exactly — Δ lines are anchor gaps (ADR-0023)', () => {
+    const league = ladderMilli('league diet at league shooting')
+    const selection = ladderMilli('+ selection Δ')
+    const expected = ladderMilli('= expected from his diet')
+    const making = ladderMilli('+ making (conversion) Δ')
+    const actual = ladderMilli('= actual PPS')
+    expect(league + selection).toBe(expected)
+    expect(expected + making).toBe(actual)
   })
 
   it('reports the gate results', () => {
