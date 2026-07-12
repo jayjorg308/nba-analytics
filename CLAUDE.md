@@ -18,7 +18,7 @@ Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agen
 
 - `python ingestion/pull_shots.py --player "Name"` — pull raw snapshots. **Local only**: stats.nba.com blocks cloud IPs; never run from CI or the deployed app.
 - `python ingestion/derive_payload.py --player "Name" --season 2025-26` — derive the typed payload from the latest raw snapshot.
-- `npm run hero:sync` — copy the latest derived payload to the committed `public/data/` deployment copy (ADR-0010).
+- `npm run hero:sync` — copy the latest derived payload(s) to the committed `public/data/` deployment copy (ADR-0010). No args = every hero in the registry (`src/heroes/registry.ts`); `-- <slug> <season>` syncs one, registered or not.
 - `npm run hero:report -- <player-slug> <season>` — print the hero's computed story (gates, ADR-0016 decomposition, per-zone bins/flags) from the latest derived payload; `--deployed` reads the committed copy, `--file <path>` any payload. Every hero swap starts by reading this.
 - `npm run golden:regen` — regenerate `tests/fixtures/derived.golden.json`; required whenever the payload shape changes, committed in the same PR as the schema change.
 - `python -m pytest ingestion -q` — Python suite (includes the ADR-0004 reconciliation tests).
@@ -31,4 +31,4 @@ Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agen
 - Under jsdom, `import.meta.url` is not a file URL — resolve fixture paths from `process.cwd()` (the repo root) in jsdom test files.
 - Real-data tests use `describe.skipIf` and run only where `data/` or `public/data/` exists; they skip on clean clones by design.
 - **Committed design guard**: `src/chart/makingScale.contrast.test.ts` parses the actual CSS (`src/App.css` / `src/index.css`) and enforces the making-scale palette invariants (label contrast, per-arm monotone luminance, gray neutral) in both themes. Tune `--making-*` hexes freely — the guard defines validity; never weaken its assertions to admit a palette (ADR-0014).
-- **Committed verdict guard**: `src/app/verdict.guard.test.ts` asserts every directional claim in `heroConfig.verdict` against the deployed payload's metrics (ADR-0017). If a `hero:sync` or hero swap breaks a claim, rewrite the copy and the guard's claim mapping together — never loosen an assertion.
+- **Committed verdict guards**: each hero's `src/heroes/<slug>.guard.test.ts` (colocated with its config module, ADR-0022) asserts every directional claim in that hero's verdict against its deployed payload's metrics (ADR-0017). If a `hero:sync` or hero swap breaks a claim, rewrite the copy and the guard's claim mapping together — never loosen an assertion.

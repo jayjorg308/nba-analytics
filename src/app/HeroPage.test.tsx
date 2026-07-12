@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { heroConfig } from '../heroConfig'
+import { codyWilliams as hero } from '../heroes/cody-williams'
 import { HeroPage } from './HeroPage'
 
 // under jsdom, import.meta.url is not a file URL — resolve from the vitest
@@ -30,31 +30,33 @@ afterEach(() => {
 describe('HeroPage over the golden fixture', () => {
   it('renders loading, then the full evaluated page', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage />)
+    render(<HeroPage hero={hero} />)
 
     screen.getByText('Loading shot data…')
-    await screen.findByText(heroConfig.thesis) // the H1: the v1 question
+    await screen.findByText(hero.thesis) // the H1: the v1 question
 
     // the verdict leads: the authored answer renders directly under the
     // title (ADR-0017; its truthfulness is the verdict guard's job)
-    screen.getByText(heroConfig.verdict)
+    screen.getByText(hero.verdict)
 
-    // drift guard: the DEPLOYED payload and heroConfig must describe the same
-    // hero. Deliberately NOT checked against the golden — that is the
-    // hero-independent cross-language contract fixture and stays Cody-derived
-    // on every branch, including hero deployment branches.
+    // drift guard: the DEPLOYED payload and the hero's config module must
+    // describe the same hero. Deliberately NOT checked against the golden —
+    // that is the hero-independent cross-language contract fixture and stays
+    // Cody-derived regardless of which heroes are registered.
     const deployedPath = path.resolve(
       process.cwd(),
       'public',
-      heroConfig.payloadUrl.replace(import.meta.env.BASE_URL, ''),
+      'data',
+      hero.slug,
+      `${hero.season}.json`,
     )
     const deployedMeta = (
       JSON.parse(readFileSync(deployedPath, 'utf-8')) as {
         _meta: { player: string; season: string }
       }
     )._meta
-    expect(deployedMeta.player).toBe(heroConfig.playerName)
-    expect(deployedMeta.season).toBe(heroConfig.season)
+    expect(deployedMeta.player).toBe(hero.playerName)
+    expect(deployedMeta.season).toBe(hero.season)
 
     // headline: league diet from the verbatim league frame (1.09124 -> "1.09"),
     // with the comparison class stated beside the numbers (ADR-0002)
@@ -120,8 +122,8 @@ describe('HeroPage over the golden fixture', () => {
     // gates the MIX view only; the making axis is flagged, never suppressed
     // (ADR-0008), so the Zones view shades all six regions
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage />)
-    await screen.findByText(heroConfig.thesis)
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(hero.thesis)
 
     const fills = document.querySelectorAll('.zone-fill')
     expect(fills).toHaveLength(6)
@@ -135,8 +137,8 @@ describe('HeroPage over the golden fixture', () => {
 
   it('shows a descriptive tooltip on hover and removes it on leave', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage />)
-    await screen.findByText(heroConfig.thesis)
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(hero.thesis)
 
     fireEvent.click(screen.getByLabelText('Shots')) // dots live in the secondary view
     // first dot in DOM order = first missed shot in payload order:
@@ -157,8 +159,8 @@ describe('zone-point conflicts (ADR-0019)', () => {
     const withConflict = structuredClone(goldenJson)
     ;(withConflict._meta as { zoneConflictsDropped: number }).zoneConflictsDropped = 1
     stubFetch({ ok: true, json: withConflict })
-    render(<HeroPage />)
-    await screen.findByText(heroConfig.thesis)
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(hero.thesis)
     screen.getByText(/1 shot dropped at derive/)
   })
 })
@@ -166,7 +168,7 @@ describe('zone-point conflicts (ADR-0019)', () => {
 describe('HeroPage failure states', () => {
   it('surfaces HTTP failures', async () => {
     stubFetch({ ok: false, status: 404 })
-    render(<HeroPage />)
+    render(<HeroPage hero={hero} />)
     await screen.findByText(/HTTP 404 loading shot data/)
   })
 
@@ -174,7 +176,7 @@ describe('HeroPage failure states', () => {
     const bad = structuredClone(goldenJson)
     bad.surprise = true // strict schema: unknown key = contract violation
     stubFetch({ ok: true, json: bad })
-    render(<HeroPage />)
+    render(<HeroPage hero={hero} />)
     await screen.findByText(/Payload contract violation/)
   })
 })

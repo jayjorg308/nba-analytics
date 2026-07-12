@@ -188,6 +188,150 @@
   color: #dc2626;
 }
 
+/* The quiet way back to the directory (ADR-0022): after the argument, in
+   reference-material gray — never chrome above the question. */
+.hero-footer {
+  margin-top: 48px;
+  font-size: 14px;
+}
+
+.hero-footer a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.hero-footer a:hover,
+.hero-footer a:focus-visible {
+  color: var(--text-h);
+}
+
+/* --- Hero index (the directory of arguments, ADR-0022) ---------------------- */
+
+.index-page {
+  text-align: left;
+  padding: 0 32px 64px;
+  flex-grow: 1;
+
+  @media (max-width: 1024px) {
+    padding: 0 20px 48px;
+  }
+}
+
+.index-header {
+  margin: 44px 0 32px;
+
+  @media (max-width: 1024px) {
+    margin: 28px 0 24px;
+  }
+}
+
+.index-kicker {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.index-title {
+  margin: 0 0 12px;
+}
+
+.index-deck {
+  max-width: 60ch;
+}
+
+.hero-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+
+  @media (max-width: 1024px) {
+    gap: 16px;
+  }
+}
+
+/* A tile is the hero banner's narrow poster at directory scale: same B&W
+   filter, same scrim logic, same display face — a registered hero gets a
+   consistent tile with zero index work. White ink is theme-invariant for
+   the same reason as the banner's: the tile is its own dark surface. */
+.hero-tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  background: #0a0a0c;
+  text-decoration: none;
+  color: #fff;
+}
+
+.hero-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--hero-pos);
+  filter: grayscale(1) contrast(1.08) brightness(0.94);
+  transition: transform 200ms ease;
+}
+
+.hero-tile:hover img,
+.hero-tile:focus-visible img {
+  transform: scale(1.03);
+}
+
+.hero-tile:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hero-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 20px 18px 18px;
+  background:
+    linear-gradient(100deg, rgba(0, 0, 0, 0.62) 18%, rgba(0, 0, 0, 0.12) 55%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 92%);
+}
+
+.hero-tile-kicker {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.88;
+  margin-bottom: 8px;
+}
+
+.hero-tile-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(30px, 3.6vw, 42px);
+  line-height: 0.96;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  max-width: 13ch;
+  text-wrap: balance;
+}
+
+.hero-tile-cue {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-top: 14px;
+}
+
 /* --- Headline blocks ------------------------------------------------------- */
 
 /* The two-axis answer gets equal billing: selection and making side by side,

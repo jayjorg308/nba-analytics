@@ -2,17 +2,18 @@ import { useEffect, useMemo, type CSSProperties } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import type { DerivedPayload } from '../domain/payload'
-import { heroConfig } from '../heroConfig'
+import type { HeroConfig } from '../heroes/types'
+import { heroImageUrl, indexUrl, payloadUrl } from '../heroes/urls'
 import { HeadlineBanner } from './HeadlineBanner'
 import { usePayload } from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
-export function HeroPage() {
-  const state = usePayload(heroConfig.payloadUrl)
+export function HeroPage({ hero }: { hero: HeroConfig }) {
+  const state = usePayload(payloadUrl(hero))
 
   useEffect(() => {
-    document.title = `${heroConfig.playerName} · ${heroConfig.season} · shot selection`
-  }, [])
+    document.title = `${hero.playerName} · ${hero.season} · shot selection`
+  }, [hero])
 
   if (state.status === 'loading') {
     return (
@@ -29,10 +30,10 @@ export function HeroPage() {
       </main>
     )
   }
-  return <HeroReady payload={state.payload} />
+  return <HeroReady hero={hero} payload={state.payload} />
 }
 
-function HeroReady({ payload }: { payload: DerivedPayload }) {
+function HeroReady({ hero, payload }: { hero: HeroConfig; payload: DerivedPayload }) {
   // THE single production call site of the aggregation (ADR-0007/0009).
   // Everything below receives slices of `metrics` and only formats — nothing
   // in the UI recomputes a rate, share, or PPS.
@@ -47,21 +48,21 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
           just at hero scale. */}
       <header className="hero-banner">
         <img
-          src={heroConfig.hero.imageUrl}
-          alt={heroConfig.hero.imageAlt}
+          src={heroImageUrl(hero)}
+          alt={hero.hero.imageAlt}
           // Focal points as custom properties so the stylesheet can pick per
           // layout (inline object-position would defeat the media query).
           style={
             {
-              '--hero-pos': heroConfig.hero.imagePosition,
-              '--hero-pos-wide': heroConfig.hero.imagePositionWide,
+              '--hero-pos': hero.hero.imagePosition,
+              '--hero-pos-wide': hero.hero.imagePositionWide,
             } as CSSProperties
           }
           fetchPriority="high"
         />
         <div className="hero-banner-overlay">
-          <p className="hero-kicker">{heroConfig.hero.kicker}</p>
-          <h1 className="hero-title">{heroConfig.thesis}</h1>
+          <p className="hero-kicker">{hero.hero.kicker}</p>
+          <h1 className="hero-title">{hero.thesis}</h1>
           <p className="hero-cue" aria-hidden="true">
             ↓ The verdict
           </p>
@@ -69,8 +70,8 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
       </header>
       <header className="hero-header">
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
-            kept honest by the committed verdict guard. */}
-        <p className="hero-verdict">{heroConfig.verdict}</p>
+            kept honest by the colocated verdict guard. */}
+        <p className="hero-verdict">{hero.verdict}</p>
         <p className="hero-byline">
           {payload._meta.player} · {payload._meta.season} · vs league average
         </p>
@@ -84,6 +85,12 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
         />
         <ZoneTable metrics={metrics} zoneConflictsDropped={payload._meta.zoneConflictsDropped} />
       </div>
+      {/* The quiet way back to the directory (ADR-0022) — after the argument,
+          never above it; cross-hero navigation is links between pages, not a
+          switcher on this one. */}
+      <footer className="hero-footer">
+        <a href={indexUrl()}>← All players</a>
+      </footer>
     </main>
   )
 }
