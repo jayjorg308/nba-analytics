@@ -31,10 +31,10 @@ by CI on every push. ADRs 0001–0019 record how it got here.
    branch-per-hero model this item originally assumed). A directory of
    arguments, deliberately not a switcher (ADR-0018): each hero stays a
    complete argument at its own URL.
-   _Done 2026-07-11. Keyonte George is shelved for now to dial in the Cody
-   Williams example (his data and `hero/keyonte-george` branch are retained);
-   re-adding him = `hero:report` → verdict + colocated guard + photo →
-   registry entry + `hero:sync`._
+   _Done 2026-07-11. Keyonte George registered 2026-07-12 — the re-add path
+   (`hero:report` → verdict + colocated guard + photo → registry entry +
+   `hero:sync`) ran end to end on the first try; the retired
+   `hero/keyonte-george` deployment branch remains as reference._
 
 ## v2.0 — Creation at the bucket grain (the Case 2 engine)
 
