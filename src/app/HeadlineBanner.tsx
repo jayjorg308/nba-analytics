@@ -1,5 +1,5 @@
 import type { ShotMetrics } from '../domain/aggregate'
-import { formatPps2, formatSignedPps2 } from '../format'
+import { formatPps2, formatSignedGap } from '../format'
 
 /**
  * The paired headline blocks: the two-axis answer (v1 thesis) with equal
@@ -57,8 +57,15 @@ export function HeadlineBanner({
                         </span>
                     </div>
                     <div className="headline-stat">
+                        {/* The delta a reader can verify: the gap of the two
+                            displayed anchors, not the rounded raw delta
+                            (ADR-0023) — guarded by the identity test. */}
                         <span className="stat-value">
-                            {formatSignedPps2(selection.selectionDelta)}
+                            {formatSignedGap(
+                                selection.playerDietExpectedPps,
+                                selection.leagueDietExpectedPps,
+                                2,
+                            )}
                         </span>
                         <span className="stat-label">his choices</span>
                     </div>
@@ -96,7 +103,11 @@ export function HeadlineBanner({
                     </div>
                     <div className="headline-stat">
                         <span className="stat-value">
-                            {formatSignedPps2(making.makingPpsDelta)}
+                            {formatSignedGap(
+                                making.actualPps,
+                                selection.playerDietExpectedPps,
+                                2,
+                            )}
                         </span>
                         <span className="stat-label">his conversion</span>
                     </div>

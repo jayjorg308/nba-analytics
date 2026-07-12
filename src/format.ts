@@ -17,11 +17,28 @@ export function formatPps2(x: number | null): string {
   return x.toFixed(2)
 }
 
-/** 0.0074 -> "+0.01"; -0.02 -> "−0.02" (sign always shown) */
-export function formatSignedPps2(x: number | null): string {
-  if (x === null) return EM_DASH
-  const abs = Math.abs(x).toFixed(2)
-  return `${x < 0 ? MINUS : '+'}${abs}`
+/**
+ * A displayed delta between two displayed anchors (ADR-0023): computed from
+ * the SAME fixed-decimal roundings the anchors render with — in integer
+ * display units, so no float residue — never from the raw delta. Three
+ * independently correct roundings need not agree (1.0664 − 1.0222 shows
+ * 1.07 / 1.02 / +0.04 and fails the reader's subtraction); the numbers on
+ * screen must subtract exactly. The cost, accepted: the gap can differ from
+ * the raw delta by one display unit when the anchors round apart. Use this
+ * whenever a delta renders beside both its anchors; a delta shown without
+ * anchors still rounds from the raw value (e.g. formatSignedPp1).
+ */
+export function formatSignedGap(
+  minuend: number | null,
+  subtrahend: number | null,
+  decimals: number,
+): string {
+  if (minuend === null || subtrahend === null) return EM_DASH
+  const scale = 10 ** decimals
+  const units =
+    Math.round(Number(minuend.toFixed(decimals)) * scale) -
+    Math.round(Number(subtrahend.toFixed(decimals)) * scale)
+  return `${units < 0 ? MINUS : '+'}${(Math.abs(units) / scale).toFixed(decimals)}`
 }
 
 /** FG% delta as signed percentage points, 1 dp: -0.061 -> "−6.1" (unit in header) */

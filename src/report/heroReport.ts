@@ -19,20 +19,14 @@ import {
   ZONE_INCLUSION_MIN_ATTEMPTS,
 } from '../domain/constants'
 import type { DerivedPayload } from '../domain/payload'
-import { formatPercent1, formatPps2, formatSignedPp1, withSmallSampleMark } from '../format'
+import { formatPercent1, formatPps2, formatSignedGap, withSmallSampleMark } from '../format'
 
 const EM_DASH = '—'
-const MINUS = '−' // typographic minus, matching src/format.ts
 
 /** 1.0986 -> "1.099" — verdict-authoring precision (see header comment). */
 function formatPps3(x: number | null): string {
   if (x === null) return EM_DASH
   return x.toFixed(3)
-}
-
-function formatSignedPps3(x: number | null): string {
-  if (x === null) return EM_DASH
-  return `${x < 0 ? MINUS : '+'}${Math.abs(x).toFixed(3)}`
 }
 
 /** The making scale's bin, named the way the CSS arms name it (ADR-0013). */
@@ -83,7 +77,13 @@ function metricLine(label: string, r: MetricCells, marker = ''): string {
     formatPercent1(r.leagueFgPct).padStart(7),
     formatPps2(r.pps).padStart(7),
     formatPps2(r.leaguePps).padStart(6),
-    withSmallSampleMark(formatSignedPp1(r.makingDelta), r.smallSampleMaking).padStart(9),
+    // Δ pp sits beside the FG% columns it relates, so it is their gap AS
+    // DISPLAYED (ADR-0023); the bin still consumes the raw delta — the
+    // documented makingScale edge, unchanged.
+    withSmallSampleMark(
+      formatSignedGap(r.fgPct === null ? null : r.fgPct * 100, r.leagueFgPct * 100, 1),
+      r.smallSampleMaking,
+    ).padStart(9),
     `  ${binName(makingDeltaBin(r.makingDelta))}`,
   ].join('')
 }
@@ -122,14 +122,15 @@ export function renderHeroReport(payload: DerivedPayload): string {
   const includedCount = m.zones.filter((z) => z.included).length
   lines.push(`      → ${includedCount}/${m.zones.length} zones clear the bar`)
 
-  // The ADR-0016 decomposition, printed as the identity it is:
-  // league diet + selection Δ + making Δ = actual PPS.
+  // The ADR-0016 decomposition, printed as the identity it is: league diet
+  // + selection Δ + making Δ = actual PPS. The Δ lines are the gaps of the
+  // printed anchors (ADR-0023), so the ladder always adds up as printed.
   lines.push('', 'DECOMPOSITION (ADR-0016) — PPS, verdict-authoring precision')
   lines.push(
     `  league diet at league shooting  ${formatPps3(m.selection.leagueDietExpectedPps).padStart(8)}`,
-    `  + selection Δ                   ${formatSignedPps3(m.selection.selectionDelta).padStart(8)}`,
+    `  + selection Δ                   ${formatSignedGap(m.selection.playerDietExpectedPps, m.selection.leagueDietExpectedPps, 3).padStart(8)}`,
     `  = expected from his diet        ${formatPps3(m.selection.playerDietExpectedPps).padStart(8)}`,
-    `  + making (conversion) Δ         ${formatSignedPps3(m.making.makingPpsDelta).padStart(8)}`,
+    `  + making (conversion) Δ         ${formatSignedGap(m.making.actualPps, m.selection.playerDietExpectedPps, 3).padStart(8)}`,
     `  = actual PPS                    ${formatPps3(m.making.actualPps).padStart(8)}`,
   )
 
