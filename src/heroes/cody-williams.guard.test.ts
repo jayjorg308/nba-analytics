@@ -1,8 +1,9 @@
-// The committed verdict guard (ADR-0017). heroConfig.verdict is authored
-// prose — this test is what keeps it honest. Every directional claim the
-// copy makes is asserted here against the DEPLOYED payload's metrics, so a
-// hero:sync (or a hero swap) that breaks a claim breaks the build. The fix
-// is always to rewrite the copy (and this guard's claim mapping with it) —
+// The committed verdict guard (ADR-0017), colocated with the hero copy it
+// keeps honest — the guard file is part of the hero (ADR-0022): a new hero
+// means a new <slug>.guard.test.ts beside its config module. Every
+// directional claim the verdict makes is asserted here against the DEPLOYED
+// payload's metrics, so a hero:sync that breaks a claim breaks the build.
+// The fix is always to rewrite the copy (and this claim mapping with it) —
 // never to loosen an assertion so stale prose survives.
 //
 // Current verdict, claim by claim:
@@ -22,13 +23,16 @@ import { makingDeltaBin } from '../chart/makingScale'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import { ZONE_POINT_VALUE } from '../domain/constants'
 import { parseDerivedPayload } from '../domain/payload'
-import { heroConfig } from '../heroConfig'
+import { codyWilliams as hero } from './cody-williams'
 
-// One source of hero truth: the guard reads the same payload the app fetches.
+// One source of hero truth: the guard reads the same deployed payload the
+// app fetches for this slug/season (see src/heroes/urls.ts).
 const payloadPath = path.resolve(
   process.cwd(),
   'public',
-  heroConfig.payloadUrl.replace(import.meta.env.BASE_URL, ''),
+  'data',
+  hero.slug,
+  `${hero.season}.json`,
 )
 
 // Verdict semantics — thresholds the prose is held to:
@@ -114,7 +118,7 @@ describe.skipIf(!existsSync(payloadPath))('verdict guard (ADR-0017)', () => {
       'shot clock',
     ]
     for (const term of forbidden) {
-      expect(heroConfig.verdict.toLowerCase()).not.toContain(term)
+      expect(hero.verdict.toLowerCase()).not.toContain(term)
     }
   })
 })

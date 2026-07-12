@@ -25,9 +25,16 @@ by CI on every push. ADRs 0001–0019 record how it got here.
    Every hero swap starts by reading this; the verdict is written from it.
    _Done 2026-07-11: `scripts/hero-report.ts` under tsx, reusing the
    production parse + aggregation (ADR-0009 — never a second implementation)._
-3. **Hero index page** — one static page linking the hero deployments. A
-   directory of arguments, deliberately not a switcher (ADR-0018): each hero
-   stays a complete argument at its own URL.
+3. **Hero index page** — the site root: a directory of poster tiles linking
+   the hero pages, all served by one deployment (a hero registry in
+   `src/heroes/` + real URLs per hero — ADR-0022 supersedes the
+   branch-per-hero model this item originally assumed). A directory of
+   arguments, deliberately not a switcher (ADR-0018): each hero stays a
+   complete argument at its own URL.
+   _Done 2026-07-11. Keyonte George is shelved for now to dial in the Cody
+   Williams example (his data and `hero/keyonte-george` branch are retained);
+   re-adding him = `hero:report` → verdict + colocated guard + photo →
+   registry entry + `hero:sync`._
 
 ## v2.0 — Creation at the bucket grain (the Case 2 engine)
 
@@ -93,8 +100,9 @@ Two honesty constraints, both flag-shaped like everything else here:
 
 ## The standing not-to-do list
 
-- **No hero switcher.** One deployment, one argument (ADR-0018). Multi-hero
-  is a directory of pages, never a dropdown over one page.
+- **No hero switcher.** One argument per page (ADR-0018/0022). Multi-hero is
+  a directory of pages at real URLs — one deployment, plain links — never a
+  dropdown over one page.
 - **No creation inference from Case 1 data.** `ACTION_TYPE` stays quarantined
   in the raw layer until Case 2/3 can back the claim (ADR-0005).
 - **No rate averaging.** Rollups sum makes and attempts, always (ADR-0004).
