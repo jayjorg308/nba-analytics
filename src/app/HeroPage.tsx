@@ -43,8 +43,24 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
 
   return (
     <main className="hero-page">
+      {/* The poster banner carries the h1 — question first (ADR-0018),
+          just at hero scale. */}
+      <header className="hero-banner">
+        <img
+          src={heroConfig.hero.imageUrl}
+          alt={heroConfig.hero.imageAlt}
+          style={{ objectPosition: heroConfig.hero.imagePosition }}
+          fetchPriority="high"
+        />
+        <div className="hero-banner-overlay">
+          <p className="hero-kicker">{heroConfig.hero.kicker}</p>
+          <h1 className="hero-title">{heroConfig.thesis}</h1>
+          <p className="hero-cue" aria-hidden="true">
+            ↓ The verdict
+          </p>
+        </div>
+      </header>
       <header className="hero-header">
-        <h1>{heroConfig.thesis}</h1>
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
             kept honest by the committed verdict guard. */}
         <p className="hero-verdict">{heroConfig.verdict}</p>

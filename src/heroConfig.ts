@@ -9,8 +9,22 @@ export const heroConfig = {
     season: '2025-26',
     // Vite serves public/ at the site root; BASE_URL keeps subpath deploys working.
     payloadUrl: `${import.meta.env.BASE_URL}data/cody-williams/2025-26.json`,
-    // The v1 question, stated verbatim and nothing more (ADR-0005).
+    // The v1 question, stated verbatim and nothing more (ADR-0005). It is
+    // also the hero banner's poster type — the h1 lives on the photo, so the
+    // page still opens question-first (ADR-0018).
     thesis: 'Is Cody Williams taking good shots?',
+    // The hero banner: authored per hero, like the verdict. The committed
+    // JPEG is a web-sized derivative of the full-res source PNG beside it;
+    // the B&W treatment is CSS (filter), so the asset stays color.
+    hero: {
+        imageUrl: `${import.meta.env.BASE_URL}img/cody-williams-hero.jpg`,
+        imageAlt:
+            'Cody Williams hangs on the rim after a dunk against the New York Knicks',
+        // Focal point for the banner crop — rim and player sit in the top of
+        // this photo's frame.
+        imagePosition: '68% 10%',
+        kicker: 'Cody Williams · Utah Jazz · Nº 5 · 2025-26',
+    },
     // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
     // when the data moves, rewrite this; the committed guard
     // (src/app/verdict.guard.test.ts) fails if any directional claim stops
