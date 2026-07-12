@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, type CSSProperties } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import type { DerivedPayload } from '../domain/payload'
@@ -49,7 +49,14 @@ function HeroReady({ payload }: { payload: DerivedPayload }) {
         <img
           src={heroConfig.hero.imageUrl}
           alt={heroConfig.hero.imageAlt}
-          style={{ objectPosition: heroConfig.hero.imagePosition }}
+          // Focal points as custom properties so the stylesheet can pick per
+          // layout (inline object-position would defeat the media query).
+          style={
+            {
+              '--hero-pos': heroConfig.hero.imagePosition,
+              '--hero-pos-wide': heroConfig.hero.imagePositionWide,
+            } as CSSProperties
+          }
           fetchPriority="high"
         />
         <div className="hero-banner-overlay">

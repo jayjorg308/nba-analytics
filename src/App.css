@@ -69,32 +69,53 @@
   }
 }
 
+/* Wide layout: the photo is a right-anchored panel (72% width) so its crop
+   can sit lower and show more of the player; its left edge fades into the
+   banner ground, giving the title a solid column. Narrow layout reverts to
+   the full-bleed cover the mobile crop was designed around. */
 .hero-banner img {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  inset: 0 0 0 auto;
+  /* 60% panel: narrower than full-bleed, but the cover crop gets ~70% of the
+     photo's height into view (head to knees) instead of ~43% — narrower IS
+     more of the player, and his jersey stays clear of the title's tail. */
+  width: 60%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--hero-pos-wide);
   filter: grayscale(1) contrast(1.08) brightness(0.94);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 32%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 32%);
+
+  @media (max-width: 1024px) {
+    inset: 0;
+    width: 100%;
+    object-position: var(--hero-pos);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
-/* Text owns the left column, so the scrim darkens left and bottom — the
-   subject stays clear on the right. */
+/* Wide: text block centered in the solid left column; a mild left scrim
+   keeps the title legible where its long line reaches into the fade zone.
+   Narrow: bottom-anchored poster text over the photo, as before. */
 .hero-banner-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: center;
   padding: 32px 40px 30px;
   color: #fff;
-  background:
-    linear-gradient(100deg, rgba(0, 0, 0, 0.62) 18%, rgba(0, 0, 0, 0.12) 55%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 92%);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 32%, rgba(0, 0, 0, 0) 62%);
 
   @media (max-width: 1024px) {
+    justify-content: flex-end;
     padding: 24px 20px 22px;
+    background:
+      linear-gradient(100deg, rgba(0, 0, 0, 0.62) 18%, rgba(0, 0, 0, 0.12) 55%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 92%);
   }
 }
 
@@ -112,14 +133,23 @@
 .hero-title {
   font-family: var(--display);
   font-weight: 900;
-  font-size: clamp(38px, 6.4vw, 80px);
+  /* Capped at 72px: at 80 the second line's tail reaches the player's white
+     jersey and white-on-white dies. */
+  font-size: clamp(38px, 6.4vw, 72px);
   line-height: 0.96;
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: #fff;
   margin: 0;
-  max-width: 13ch;
+  /* Wide enough that the question balances as two lines
+     ("Is Cody Williams / taking good shots?"). */
+  max-width: 18ch;
   text-wrap: balance;
+
+  @media (max-width: 1024px) {
+    /* The narrow poster stacks it in four short lines. */
+    max-width: 13ch;
+  }
 }
 
 .hero-cue {

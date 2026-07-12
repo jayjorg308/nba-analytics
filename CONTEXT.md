@@ -78,6 +78,9 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 **Verdict**:
 The two-or-three-sentence answer to the v1 thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by a committed guard test that asserts each directional claim against the deployed payload's metrics (ADR-0017); its language stays inside selection/making (ADR-0005).
 
+**Hero banner**:
+The page's poster-scale opening: a black-and-white action photo of the hero player carrying the thesis question as the page's `h1` (kicker · question · "↓ the verdict" cue), leading directly into the verdict — ADR-0018's question-first order at poster volume. Its content (photo, per-layout focal points, kicker) is authored per hero in `heroConfig.hero`, like the verdict; its treatment (grayscale filter, wide panel / narrow full-bleed layouts, the display face) is product (ADR-0021, ADR-0020). The committed image is always a web-sized derivative, never a full-resolution source.
+
 **v2 thesis**:
 "How does he create his shots?" — the scheduled second act. Designated engine: the Case 2 buckets (catch-and-shoot vs pull-up, contested, shot-clock). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction.
 

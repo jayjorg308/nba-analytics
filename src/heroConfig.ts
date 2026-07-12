@@ -20,9 +20,11 @@ export const heroConfig = {
         imageUrl: `${import.meta.env.BASE_URL}img/cody-williams-hero.jpg`,
         imageAlt:
             'Cody Williams hangs on the rim after a dunk against the New York Knicks',
-        // Focal point for the banner crop — rim and player sit in the top of
-        // this photo's frame.
+        // Focal points per banner layout. Narrow (full-bleed) crops to the
+        // rim-and-player top of the frame; the wide layout right-anchors the
+        // photo as a panel, so its crop sits lower to show more of the player.
         imagePosition: '68% 10%',
+        imagePositionWide: '50% 24%',
         kicker: 'Cody Williams · Utah Jazz · Nº 5 · 2025-26',
     },
     // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
