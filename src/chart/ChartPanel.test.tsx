@@ -34,14 +34,20 @@ describe('ChartPanel view toggle', () => {
     expect(panelChildren[0]!.querySelector('.zones-legend')).not.toBeNull()
   })
 
-  it('switches to Shots: dots replace fills and the legend swaps', () => {
+  it('switches to Shots: dots replace fills and the shots legend becomes the visible layer', () => {
     const { container } = renderPanel()
     fireEvent.click(screen.getByLabelText('Shots'))
     expect(container.querySelectorAll('.shot-dot')).toHaveLength(14)
     expect(container.querySelectorAll('.zone-fill')).toHaveLength(0)
     screen.getByText('Made')
     screen.getByText('Missed')
-    expect(screen.queryByText(/percentage points/)).toBeNull()
+    // BOTH legends stay mounted — the inactive one is visibility-hidden,
+    // never removed, so the controls row keeps one height across the toggle
+    // and the court/table never shift (see .chart-legend-slot). Layer DOM
+    // order is fixed: [zones, shots].
+    const [zonesLayer, shotsLayer] = [...container.querySelectorAll('.chart-legend-layer')]
+    expect(zonesLayer!.className).toContain('legend-inactive')
+    expect(shotsLayer!.className).not.toContain('legend-inactive')
   })
 
   it('shows a zone tooltip on hover with the flagged uncertainty sentence', () => {
@@ -60,6 +66,7 @@ describe('ChartPanel view toggle', () => {
 
   it('switches views cleanly, clearing hover state', () => {
     const { container } = renderPanel()
+    const layers = () => [...container.querySelectorAll('.chart-legend-layer')]
     const fill = container.querySelector('.zone-fill')!
     fireEvent.pointerEnter(fill)
     expect(container.querySelector('.shot-tooltip')).not.toBeNull()
@@ -67,10 +74,11 @@ describe('ChartPanel view toggle', () => {
     expect(container.querySelectorAll('.shot-dot')).toHaveLength(14)
     expect(container.querySelectorAll('.zone-fill')).toHaveLength(0)
     expect(container.querySelector('.shot-tooltip')).toBeNull()
-    expect(screen.queryByText(/percentage points/)).toBeNull()
+    expect(layers()[0]!.className).toContain('legend-inactive')
     screen.getByText('Made')
     fireEvent.click(screen.getByLabelText('Zones'))
     expect(container.querySelectorAll('.zone-fill')).toHaveLength(6)
-    expect(screen.queryByText('Made')).toBeNull()
+    expect(layers()[0]!.className).not.toContain('legend-inactive')
+    expect(layers()[1]!.className).toContain('legend-inactive')
   })
 })

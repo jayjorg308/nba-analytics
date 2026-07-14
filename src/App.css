@@ -1,258 +1,311 @@
-/* Hero page — clean editorial, theme-aware. All colors come from the
-   variables in index.css so light/dark both work without chart-specific
-   palettes. */
+/* Hero page — clean editorial. All colors come from the variables in
+   index.css; the app ships dark-only (ADR-0024). */
 
 /* Diverging making-delta scale (Zones view): cool = below league, warm =
-   above, NEUTRAL GRAY midpoint = league average (never a hue). Each mode's
-   steps are selected for its surface, not auto-flipped. Guarded by
+   above, NEUTRAL GRAY midpoint = league average (never a hue). Steps are
+   selected for the dark surface. Guarded by
    src/chart/makingScale.contrast.test.ts (label contrast >= 4.5:1 vs
-   --text-h in both modes; per-arm luminance monotone; neutral gray).
+   --text-h; per-arm luminance monotone, lightening outward; neutral gray).
    Advisory dataviz-validator note: the inner (palest) steps sit below the
    2:1 surface floor by design — they are large regions delineated by
    court-line strokes and carrying direct labels, not discrete marks.
-   Hue note: in DARK mode the 4.5:1 label floor caps warm fills at relative
-   luminance ~0.16, where yellow/amber physically reads as brown — dark warm
-   hues must stay red-orange or redder; don't re-attempt amber there. */
+   Hue note: the 4.5:1 label floor caps warm fills at relative luminance
+   ~0.16, where yellow/amber physically reads as brown — warm hues must stay
+   red-orange or redder; don't re-attempt amber. */
 :root {
-  --making-cold-3: #3b82f6;
-  --making-cold-2: #93c5fd;
-  --making-cold-1: #bfdbfe;
-  --making-neutral: #e7e6e2;
-  /* "Ember-match" warm arm: the dark mode Ember hue translated to light, so
-     the scale reads as one character across themes. */
-  --making-warm-1: #ffd1b3;
-  --making-warm-2: #fca86a;
-  --making-warm-3: #e14f0b;
-  --making-nodata: var(--bg);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
     --making-cold-3: #2563eb;
     --making-cold-2: #1e40af;
     --making-cold-1: #1e3a5f;
     --making-neutral: #272935;
     /* "Ember" warm arm: red-orange with chroma held high where a darkened
-       orange goes brown; warm-1 luminance matched to cold-1 for arm balance. */
+     orange goes brown; warm-1 luminance matched to cold-1 for arm balance. */
     --making-warm-1: #6b2612;
     --making-warm-2: #a53409;
     --making-warm-3: #c73d05;
-  }
+    --making-nodata: var(--bg);
 }
 
 .hero-page {
-  text-align: left;
-  padding: 0 32px 64px;
-  flex-grow: 1;
+    text-align: left;
+    padding: 0 32px 64px;
+    flex-grow: 1;
 
-  @media (max-width: 1024px) {
-    padding: 0 20px 48px;
-  }
+    @media (max-width: 1024px) {
+        padding: 0 20px 48px;
+    }
 }
 
 /* --- Hero banner ------------------------------------------------------------ */
 
 /* Full-bleed poster: negative margins undo .hero-page's padding so the photo
    runs to the shell's borders. The photo ships in color; the B&W treatment
-   is a filter so it stays tunable per hero. White ink is deliberate and
-   theme-invariant — the scrim guarantees its ground in both modes. */
+   is a filter so it stays tunable per hero. White ink is deliberate — the
+   scrim guarantees its ground. */
 .hero-banner {
-  position: relative;
-  overflow: hidden;
-  margin: 0 -32px 28px;
-  background: #0a0a0c;
-  aspect-ratio: 1126 / 600;
+    position: relative;
+    overflow: hidden;
+    margin: 0 -32px 28px;
+    background: #0a0a0c;
+    aspect-ratio: 1126 / 600;
 
-  @media (max-width: 1024px) {
-    margin: 0 -20px 22px;
-    aspect-ratio: 3 / 4;
-  }
+    @media (max-width: 1024px) {
+        margin: 0 -20px 22px;
+        aspect-ratio: 3 / 4;
+    }
+
+    /* Portrait handhelds: the poster is the landing screen — it owns exactly
+     the first viewport and the argument starts one scroll below. svh (the
+     smallest viewport) means the banner fits even with the browser's URL
+     bar showing on load; landscape keeps the 3/4 poster, where a
+     full-height crop would leave no room for the title. */
+    @media (max-width: 1024px) and (orientation: portrait) {
+        aspect-ratio: auto;
+        height: 100svh;
+    }
 }
 
 /* Wide layout: the photo is a right-anchored panel (72% width) so its crop
    can sit lower and show more of the player; its left edge fades into the
    banner ground, giving the title a solid column. Narrow layout reverts to
    the full-bleed cover the mobile crop was designed around. */
-.hero-banner img {
-  position: absolute;
-  inset: 0 0 0 auto;
-  /* 60% panel: narrower than full-bleed, but the cover crop gets ~70% of the
+.hero-banner-photo {
+    position: absolute;
+    inset: 0 0 0 auto;
+    /* 60% panel: narrower than full-bleed, but the cover crop gets ~70% of the
      photo's height into view (head to knees) instead of ~43% — narrower IS
      more of the player, and his jersey stays clear of the title's tail. */
-  width: 60%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--hero-pos-wide);
-  filter: grayscale(1) contrast(1.08) brightness(0.94);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 32%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 32%);
+    width: 60%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--hero-pos-wide);
+    filter: grayscale(1) contrast(1.08) brightness(0.94);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 32%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 32%);
 
-  @media (max-width: 1024px) {
-    inset: 0;
-    width: 100%;
-    object-position: var(--hero-pos);
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
+    @media (max-width: 1024px) {
+        inset: 0;
+        width: 100%;
+        object-position: var(--hero-pos);
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+}
+
+/* Optional team mark (hero config teamLogoPath): a ghost watermark in the
+   wide layout's dark left column, behind the scrim and the title. Grayscale
+   + invert lifts the mark to a light neutral regardless of team color; the
+   low opacity is what reads as "shadow" — tune it, not the filter. The
+   narrow poster is all photo, so the mark hides there. */
+.hero-banner-logo {
+    position: absolute;
+    top: 80%;
+    transform: translateY(-50%);
+    width: 46%;
+    filter: grayscale(1) invert(1);
+    opacity: 0.16;
+    pointer-events: none;
+
+    @media (max-width: 1024px) {
+        display: none;
+    }
 }
 
 /* Wide: text block centered in the solid left column; a mild left scrim
    keeps the title legible where its long line reaches into the fade zone.
-   Narrow: bottom-anchored poster text over the photo, as before. */
+   Narrow: bottom-anchored poster text over the photo, as before. The cue is
+   the overlay's last flex child, after the flexed text block, so it pins to
+   the banner's bottom edge in both layouts. */
 .hero-banner-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 32px 40px 30px;
-  color: #fff;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 32%, rgba(0, 0, 0, 0) 62%);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px 40px 30px;
+    color: #fff;
+    /* Glyph-local insurance: text-shadow inherits, so every line of banner ink
+     carries a tight dark halo plus a soft ambient — protection exactly where
+     the letters are, covering whatever the grade beneath doesn't. */
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.55),
+        0 2px 12px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.5) 32%,
+        rgba(0, 0, 0, 0) 62%
+    );
 
-  @media (max-width: 1024px) {
-    justify-content: flex-end;
-    padding: 24px 20px 22px;
-    background:
-      linear-gradient(100deg, rgba(0, 0, 0, 0.62) 18%, rgba(0, 0, 0, 0.12) 55%),
-      linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 92%);
-  }
+    @media (max-width: 1024px) {
+        padding: 24px 20px 22px;
+        /* The bottom grade is a true title zone (poster practice): near-black
+       under the type so white ink never meets a white jersey, whatever the
+       crop. The full-height portrait poster has photo to spare above the
+       fade; the old 0.55-alpha cap was a half-measure — the jersey "5"
+       ghosted through it behind the cue. */
+        background:
+            linear-gradient(
+                100deg,
+                rgba(0, 0, 0, 0.62) 18%,
+                rgba(0, 0, 0, 0.12) 55%
+            ),
+            linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0) 40%,
+                rgba(0, 0, 0, 0.38) 66%,
+                rgba(0, 0, 0, 0.85) 96%
+            );
+    }
+}
+
+/* Kicker + title as one block: wide centers it in the left column; narrow
+   anchors it low, just above the pinned cue. */
+.hero-banner-text {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    @media (max-width: 1024px) {
+        justify-content: flex-end;
+    }
 }
 
 .hero-kicker {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.88;
-  margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.88;
+    margin-bottom: 10px;
 }
 
 /* The poster face appears here and nowhere else — reading sizes stay on
    --sans/--mono (the two-text-font rule). */
 .hero-title {
-  font-family: var(--display);
-  font-weight: 900;
-  /* Capped at 72px: at 80 the second line's tail reaches the player's white
-     jersey and white-on-white dies. */
-  font-size: clamp(38px, 6.4vw, 72px);
-  line-height: 0.96;
-  letter-spacing: 0.005em;
-  text-transform: uppercase;
-  color: #fff;
-  margin: 0;
-  /* Wide enough that the question balances as two lines
-     ("Is Cody Williams / taking good shots?"). */
-  max-width: 18ch;
-  text-wrap: balance;
-
-  @media (max-width: 1024px) {
-    /* The narrow poster stacks it in four short lines. */
-    max-width: 13ch;
-  }
+    font-family: var(--display);
+    font-weight: 900;
+    /* Capped at 72px: at 80 the second line's tail reaches the player's white
+     jersey and white-on-white dies. The min() term guards the narrow poster:
+     the pair's longer half ("taking good shots?") measures ~7.95x the font
+     size, so 10.6vw keeps it inside the padded column on viewports down to
+     ~310px — if it ever overflowed, text-wrap: balance would re-break the
+     name pair onto separate lines. */
+    font-size: min(clamp(38px, 6.4vw, 72px), 10.6vw);
+    line-height: 0.96;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0;
+    /* Wide enough that the question balances as two lines in BOTH layouts
+     ("Is Cody Williams / taking good shots?") — the player's name never
+     splits. */
+    max-width: 18ch;
+    text-wrap: balance;
 }
 
 .hero-cue {
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  opacity: 0.75;
-  margin-top: 20px;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-top: 20px;
 }
 
 /* The verdict: the first thing the eye hits after the question, so it ranks
    between body (18px) and h2 (24px). Prose, not numbers — the headline
    blocks below carry the figures. */
 .hero-verdict {
-  font-size: 21px;
-  line-height: 1.45;
-  color: var(--text-h);
-  max-width: 72ch;
-  margin: 18px 0 14px;
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--text-h);
+    max-width: 72ch;
+    margin: 18px 0 14px;
 
-  @media (max-width: 1024px) {
-    font-size: 19px;
-  }
+    @media (max-width: 1024px) {
+        font-size: 19px;
+    }
 }
 
 .hero-byline {
-  color: var(--text);
-  margin-bottom: 28px;
+    color: var(--text);
+    margin-bottom: 28px;
 }
 
 .page-status {
-  padding: 64px 0;
+    padding: 64px 0;
 }
 
 .page-error {
-  color: #dc2626;
+    color: #dc2626;
 }
 
 /* The quiet way back to the directory (ADR-0022): after the argument, in
    reference-material gray — never chrome above the question. */
 .hero-footer {
-  margin-top: 48px;
-  font-size: 14px;
+    margin-top: 48px;
+    font-size: 14px;
 }
 
 .hero-footer a {
-  color: var(--text);
-  text-decoration: none;
+    color: var(--text);
+    text-decoration: none;
 }
 
 .hero-footer a:hover,
 .hero-footer a:focus-visible {
-  color: var(--text-h);
+    color: var(--text-h);
 }
 
 /* --- Hero index (the directory of arguments, ADR-0022) ---------------------- */
 
 .index-page {
-  text-align: left;
-  padding: 0 32px 64px;
-  flex-grow: 1;
+    text-align: left;
+    padding: 0 32px 64px;
+    flex-grow: 1;
 
-  @media (max-width: 1024px) {
-    padding: 0 20px 48px;
-  }
+    @media (max-width: 1024px) {
+        padding: 0 20px 48px;
+    }
 }
 
 .index-header {
-  margin: 44px 0 32px;
+    margin: 44px 0 32px;
 
-  @media (max-width: 1024px) {
-    margin: 28px 0 24px;
-  }
+    @media (max-width: 1024px) {
+        margin: 28px 0 24px;
+    }
 }
 
 .index-kicker {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text);
-  margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 10px;
 }
 
 .index-title {
-  margin: 0 0 12px;
+    margin: 0 0 12px;
 }
 
 .index-deck {
-  max-width: 60ch;
+    max-width: 60ch;
 }
 
 .hero-index {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
 
-  @media (max-width: 1024px) {
-    gap: 16px;
-  }
+    @media (max-width: 1024px) {
+        gap: 16px;
+    }
 }
 
 /* A tile is the hero banner's narrow poster at directory scale: same B&W
@@ -260,76 +313,90 @@
    consistent tile with zero index work. White ink is theme-invariant for
    the same reason as the banner's: the tile is its own dark surface. */
 .hero-tile {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  border-radius: 8px;
-  background: #0a0a0c;
-  text-decoration: none;
-  color: #fff;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    background: #0a0a0c;
+    text-decoration: none;
+    color: #fff;
 }
 
 .hero-tile img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--hero-pos);
-  filter: grayscale(1) contrast(1.08) brightness(0.94);
-  transition: transform 200ms ease;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--hero-pos);
+    filter: grayscale(1) contrast(1.08) brightness(0.94);
+    transition: transform 200ms ease;
 }
 
 .hero-tile:hover img,
 .hero-tile:focus-visible img {
-  transform: scale(1.03);
+    transform: scale(1.03);
 }
 
 .hero-tile:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .hero-tile-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 20px 18px 18px;
-  background:
-    linear-gradient(100deg, rgba(0, 0, 0, 0.62) 18%, rgba(0, 0, 0, 0.12) 55%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 92%);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 20px 18px 18px;
+    /* Same title-zone grade and glyph halo as the banner's narrow poster —
+     the tile inherits its readability guarantees, not just its look. */
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.55),
+        0 2px 12px rgba(0, 0, 0, 0.4);
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0, 0, 0, 0.62) 18%,
+            rgba(0, 0, 0, 0.12) 55%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 40%,
+            rgba(0, 0, 0, 0.38) 66%,
+            rgba(0, 0, 0, 0.85) 96%
+        );
 }
 
 .hero-tile-kicker {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.88;
-  margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.88;
+    margin-bottom: 8px;
 }
 
 .hero-tile-title {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: clamp(30px, 3.6vw, 42px);
-  line-height: 0.96;
-  letter-spacing: 0.005em;
-  text-transform: uppercase;
-  max-width: 13ch;
-  text-wrap: balance;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(30px, 3.6vw, 42px);
+    line-height: 0.96;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    max-width: 13ch;
+    text-wrap: balance;
 }
 
 .hero-tile-cue {
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  opacity: 0.75;
-  margin-top: 14px;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-top: 14px;
 }
 
 /* --- Headline blocks ------------------------------------------------------- */
@@ -337,436 +404,591 @@
 /* The two-axis answer gets equal billing: selection and making side by side,
    stacking when a card would drop under ~340px (ADR-0016). */
 .headline-pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
 }
 
 .headline-banner {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 20px 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    /* One padding value on all four sides — the card had 20px vertical /
+     24px horizontal for no stated reason, and the mismatch read as
+     "almost uniform". */
+    padding: 24px;
 
-  /* The pair must read as one comparison: numbers beside numbers, notes
+    /* The pair must read as one comparison: numbers beside numbers, notes
      beside notes. Subgrid pins both cards' rows (header / numbers / note)
      to shared track heights, so a longer header or note in one card can
      never push its neighbor's rows out of alignment — at any width, for
      any hero's copy. `span 3` = the blocks a card renders; bump it if a
      card ever grows another. */
-  display: grid;
-  grid-template-rows: subgrid;
-  grid-row: span 3;
-  row-gap: 0; /* card-internal spacing comes from item margins, not the pair's gap */
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    row-gap: 0; /* card-internal spacing comes from item margins, not the pair's gap */
 }
 
-.headline-banner h2 {
-  font-size: 20px;
+/* One title recipe for the cards AND the zone table's section header —
+   the third instance of the pattern, not a new one. */
+.headline-banner h2,
+.zone-caption h2 {
+    font-size: 20px;
+    /* Kicker-wide tracking on the titles (the caps are typeset in the
+     content, not text-transform). Overrides the h2 base -0.24px; any
+     subtitle INSIDE the h2 must reset it or it inherits the 4px. */
+    letter-spacing: 4px;
+    /* Card rhythm is a 4/16 scale: 4px binds a thing to its caption (title
+     to subtitle, value to label), 16px separates blocks (subtitle |
+     numbers | note). The h2 base 8px bottom margin is retired for it. */
+    margin: 0;
 }
 
 .comparison-class {
-  /* Own line, not inline after the title: the two titles differ in length,
+    /* Own line, not inline after the title: the two titles differ in length,
      so sharing the line makes one header wrap before the other and the
      cards' number rows drift apart. A block subtitle keeps both headers the
      same shape and needs no separator punctuation after the title. */
-  display: block;
-  margin-top: 2px;
-  font-weight: 400;
-  font-size: 15px;
-  color: var(--text);
+    display: block;
+    margin-top: 4px;
+    font-weight: 400;
+    /* 14px like the note — the card's two description voices are one size */
+    font-size: 14px;
+    /* Body tracking, not the title's 4px (letter-spacing inherits from the
+     h2); normal line-height, not the :root 26px — description text in the
+     cards reads tight even when a narrow card wraps it. */
+    letter-spacing: 0.18px;
+    line-height: normal;
+    color: var(--text);
 }
 
 .headline-numbers {
-  /* 28px (the former narrow-viewport value, now unconditional) keeps the
-     selection card's three labels ("expected from his diet" / "expected from
-     league diet" / "his choices") on one line beside the making card's in
-     the two-column layout — at 48px the selection labels wrap while the
-     making card's don't, and the cards stop reading as a matched pair. */
-  display: flex;
-  gap: 28px;
-  margin: 14px 0 10px;
+    /* Three equal columns, not flex packing: the cards are the same width
+     (headline-pair 1fr tracks), so 1fr columns land each stat at the SAME x
+     in both cards — the shared "expected from his diet" hinge and the two
+     deltas mirror across the pair. Flex packed columns by label width and
+     the cards' numbers drifted out of register. */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0;
 }
 
 .headline-stat {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .stat-value {
-  font-family: var(--mono);
-  font-size: 34px;
-  color: var(--text-h);
+    font-family: var(--mono);
+    font-size: 34px;
+    /* Own line box: the inherited :root line-height is a fixed 26px, so
+     34px digits overhung it and visually ate the gaps above and below —
+     the margins around the numbers row lied until this. */
+    line-height: 1;
+    color: var(--text-h);
+    margin-bottom: 4px;
 
-  @media (max-width: 1024px) {
-    font-size: 26px;
-  }
+    @media (max-width: 1024px) {
+        font-size: 26px;
+    }
 }
 
 .stat-label {
-  font-size: 14px;
+    /* 12px keeps every label on one line inside an equal third: the longest
+     ("expected from his diet") needs ~128px and the column offers ~142px at
+     a 1100px viewport. That headroom exists because the league label is
+     abbreviated ("expected from lg diet", matching the zone table's "Lg
+     share" / "PPS (lg)") — spelled out it needs 150.5px and forces 11px
+     type. Lengthen a label copy and this trade reopens. Narrow cards still
+     wrap — normal line-height keeps those tight. */
+    font-size: 12px;
+    line-height: normal;
 }
 
 .headline-note {
-  font-size: 14px;
-  color: var(--text);
+    font-size: 14px;
+    /* normal, not the inherited :root 26px — see .comparison-class */
+    line-height: normal;
+    color: var(--text);
 }
 
 /* --- Layout ---------------------------------------------------------------- */
 
 .hero-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 32px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* Two shared rows (panel header / panel content): the chart and zone
+     panels subgrid onto them, so the toggle+legend block and the table
+     caption share one track and the court's top edge pins to the table's —
+     the headline pair's alignment pattern. Row-gap stays 0; each panel's
+     own subgrid row-gap provides its internal header-to-content spacing. */
+    grid-template-rows: auto auto;
+    gap: 0 32px;
+    align-items: start;
 
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
+    @media (max-width: 1024px) {
+        /* minmax(0, ...) like the wide tracks: a bare 1fr lets the table's
+         min-content width overflow the page on phones. */
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 /* --- Chart ----------------------------------------------------------------- */
 
 .visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.chart-panel {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 10px;
 }
 
 /* Toggle + legend share a row above the court: the legend is the key to the
-   hero visual and must be read before the fills. Wraps on narrow widths. */
+   hero visual and must be read before the fills. Wraps on narrow widths.
+   (Its spacing to the court is the panel's subgrid row-gap, not a margin.)
+   Everything in the shared header track hangs from the track TOP — toggle,
+   legend, and the zone table's section title across the gap. */
 .chart-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 12px 24px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px 24px;
+    flex-wrap: wrap;
 }
 
 .court-view-toggle {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 2px;
-  margin: 0;
-  gap: 2px;
-  align-self: flex-start;
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+    margin: 0;
+    gap: 2px;
 }
 
 .court-view-toggle label {
-  font-size: 14px;
-  padding: 4px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--text);
+    font-size: 14px;
+    padding: 4px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text);
 }
 
 .court-view-toggle label.toggle-active {
-  background: var(--accent-bg);
-  color: var(--text-h);
+    background: var(--accent-bg);
+    color: var(--text-h);
 }
 
 .court-view-toggle input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .court-view-toggle label:has(input:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
 }
 
 .chart-wrapper {
-  position: relative;
+    position: relative;
 }
 
 .shot-chart {
-  width: 100%;
-  height: auto;
-  display: block;
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .court-lines {
-  fill: none;
-  stroke: var(--text-h);
-  stroke-opacity: 0.35;
-  stroke-width: 1.5;
+    fill: none;
+    stroke: var(--text-h);
+    stroke-opacity: 0.35;
+    stroke-width: 1.5;
 }
 
 .dot-made {
-  fill: var(--accent);
-  fill-opacity: 0.85;
-  stroke: var(--bg);
-  stroke-width: 0.75;
-  pointer-events: none;
+    fill: var(--accent);
+    fill-opacity: 0.85;
+    stroke: var(--bg);
+    stroke-width: 0.75;
+    pointer-events: none;
 }
 
 .dot-missed {
-  fill: none;
-  stroke: var(--text);
-  stroke-opacity: 0.55;
-  stroke-width: 1.5;
-  pointer-events: none;
+    fill: none;
+    stroke: var(--text);
+    stroke-opacity: 0.55;
+    stroke-width: 1.5;
+    pointer-events: none;
 }
 
 .dot-hit {
-  fill: transparent;
-  stroke: none;
-  pointer-events: all;
+    fill: transparent;
+    stroke: none;
+    pointer-events: all;
 }
 
 /* --- Zones view -------------------------------------------------------------- */
 
 .zone-fill {
-  stroke: none;
+    stroke: none;
 }
 
-.zone-fill-cold-3 { fill: var(--making-cold-3); }
-.zone-fill-cold-2 { fill: var(--making-cold-2); }
-.zone-fill-cold-1 { fill: var(--making-cold-1); }
-.zone-fill-neutral { fill: var(--making-neutral); }
-.zone-fill-warm-1 { fill: var(--making-warm-1); }
-.zone-fill-warm-2 { fill: var(--making-warm-2); }
-.zone-fill-warm-3 { fill: var(--making-warm-3); }
-.zone-fill-nodata { fill: var(--making-nodata); }
+.zone-fill-cold-3 {
+    fill: var(--making-cold-3);
+}
+.zone-fill-cold-2 {
+    fill: var(--making-cold-2);
+}
+.zone-fill-cold-1 {
+    fill: var(--making-cold-1);
+}
+.zone-fill-neutral {
+    fill: var(--making-neutral);
+}
+.zone-fill-warm-1 {
+    fill: var(--making-warm-1);
+}
+.zone-fill-warm-2 {
+    fill: var(--making-warm-2);
+}
+.zone-fill-warm-3 {
+    fill: var(--making-warm-3);
+}
+.zone-fill-nodata {
+    fill: var(--making-nodata);
+}
 
+/* Label sizes are SVG units: the 540-unit viewBox renders ~514px wide in
+   the side-by-side column, so 1 unit ≈ 0.95px — 15/13.5 units is ~14/13px
+   on screen. The mono ships 400-weight only (font-synthesis is off), so
+   delta legibility comes from size and halo, never fake bolding. */
 .zone-label {
-  pointer-events: none;
-  fill: var(--text-h);
-  font-size: 12px;
-  text-anchor: middle;
-  /* theme-aware halo so labels stay legible over any fill */
-  paint-order: stroke;
-  stroke: var(--bg);
-  stroke-width: 3;
-  stroke-linejoin: round;
+    pointer-events: none;
+    fill: var(--text-h);
+    font-size: 15px;
+    text-anchor: middle;
+    /* surface-colored halo so labels stay legible over any fill */
+    paint-order: stroke;
+    stroke: var(--bg);
+    stroke-width: 3.5;
+    stroke-linejoin: round;
+
+    /* Phone-width courts scale the whole SVG to ~0.6x — bump the unit size
+     so rendered labels hold ~12px instead of shrinking with the floor. */
+    @media (max-width: 640px) {
+        font-size: 19px;
+    }
 }
 
 .zone-label-name {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .zone-label-delta {
-  font-family: var(--mono);
-  font-size: 11px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+
+    @media (max-width: 640px) {
+        font-size: 17px;
+    }
+}
+
+/* Rotated corner labels run name + delta on one line along the ~142-unit
+   strip, so their phone bump is smaller than the other labels' — at the
+   19/17 sizes "Left C3 −18.3†" would overrun the strip's length. Must sit
+   AFTER the .zone-label / .zone-label-delta rules to win the cascade. */
+.zone-label-rotated {
+    @media (max-width: 640px) {
+        font-size: 16px;
+    }
+}
+
+.zone-label-rotated .zone-label-delta {
+    @media (max-width: 640px) {
+        font-size: 15px;
+    }
 }
 
 .chart-skip-note {
-  font-size: 14px;
-  color: var(--text);
-  margin-top: 4px;
+    font-size: 14px;
+    color: var(--text);
+    margin-top: 4px;
 }
 
 .shot-tooltip {
-  position: absolute;
-  transform: translate(-50%, -100%);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  box-shadow: var(--shadow);
-  padding: 8px 12px;
-  font-size: 14px;
-  line-height: 1.45;
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 10;
+    position: absolute;
+    transform: translate(-50%, -100%);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
 }
 
 .shot-tooltip-when {
-  color: var(--text);
-  font-size: 13px;
+    color: var(--text);
+    font-size: 13px;
 }
 
 .shot-tooltip-result {
-  color: var(--text-h);
-  font-weight: 500;
+    color: var(--text-h);
+    font-weight: 500;
+}
+
+/* Both legends stay mounted, stacked in one cell, the inactive one hidden
+   but still sized — the controls row keeps ONE height across the
+   Zones/Shots toggle, so switching views never shifts the court or the
+   table hanging off the same shared header track. The slot flexes to the
+   row width the toggle leaves (within the bar's readable ceiling), so the
+   percentage-positioned boundary numbers inside the bar resolve against a
+   real width. */
+.chart-legend-slot {
+    flex: 1 1 auto;
+    max-width: 380px;
+    display: grid;
+}
+
+.chart-legend-layer {
+    grid-area: 1 / 1;
+    align-self: start; /* hang from the track top, like the toggle beside it */
+}
+
+.legend-inactive {
+    visibility: hidden;
 }
 
 .chart-legend {
-  display: flex;
-  gap: 20px;
-  font-size: 14px;
+    display: flex;
+    justify-content: flex-end; /* right edge of the slot, like the zones bar */
+    gap: 20px;
+    font-size: 14px;
 }
 
 .legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .legend-swatch {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
 }
 
 .legend-made {
-  background: var(--accent);
-  opacity: 0.85;
+    background: var(--accent);
+    opacity: 0.85;
 }
 
 .legend-missed {
-  border: 1.5px solid var(--text);
-  opacity: 0.55;
+    border: 1.5px solid var(--text);
+    opacity: 0.55;
 }
 
 .zones-legend {
-  font-size: 13px;
-  color: var(--text);
+    font-size: 13px;
+    color: var(--text);
 }
 
 .zones-legend-title {
-  color: var(--text-h);
-  margin-bottom: 6px;
+    color: var(--text-h);
+    margin-bottom: 4px;
 }
 
-.zones-legend-scale {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-/* The legend is the key to the default hero visual — the bar takes all the
-   row width the end-caps leave it, within a readable ceiling. */
-.zones-legend-steps {
-  flex: 1 1 220px;
-  max-width: 380px;
-}
-
-.zones-legend-swatches {
-  display: flex;
+/* Single-strip scale: the boundary values live INSIDE the bar, so the
+   legend is title + bar (~40px) instead of three stacked lines (~55px) —
+   short enough that the shared header row carries no dead band in either
+   view. The bar fills the slot up to its 380px readable ceiling. */
+.zones-legend-bar {
+    position: relative;
+    display: flex;
+    height: 20px;
 }
 
 .zones-legend-swatch {
-  flex: 1;
-  height: 14px;
-  border: 1px solid var(--border);
-  border-left-width: 0;
+    flex: 1;
+    border: 1px solid var(--border);
+    border-left-width: 0;
 }
 
 .zones-legend-swatch:first-child {
-  border-left-width: 1px;
-  border-radius: 3px 0 0 3px;
+    border-left-width: 1px;
+    border-radius: 3px 0 0 3px;
 }
 
 .zones-legend-swatch:last-child {
-  border-radius: 0 3px 3px 0;
+    border-radius: 0 3px 3px 0;
 }
 
-.zones-legend-edges {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 2px 6% 0; /* pull edge numbers under the swatch boundaries */
-}
-
-.zones-legend-end {
-  white-space: nowrap;
-  font-size: 12px;
-  padding-top: 1px;
+/* The court labels' ink+halo recipe in text-shadow form: the ADR-0014
+   guard's 4.5:1 ink floor holds on every fill the numbers straddle. */
+.zones-legend-edge {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-h);
+    text-shadow:
+        var(--bg) 0 1px 1px,
+        var(--bg) 0 -1px 1px,
+        var(--bg) 1px 0 1px,
+        var(--bg) -1px 0 1px;
+    pointer-events: none;
 }
 
 /* --- Zone table ------------------------------------------------------------ */
 
-/* The nowrap numeric columns overflow narrow viewports — scroll the table
-   inside its panel; the page itself must never scroll horizontally. */
 .zone-panel {
-  overflow-x: auto;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 10px;
+    /* The panel stopped being the scroll container when it became a
+     subgrid, so it (and .zone-body below) need explicit min-width: 0 —
+     otherwise the table's min-content width props the column open and the
+     PAGE scrolls horizontally instead of .zone-scroll. */
+    min-width: 0;
+
+    /* Stacked: the panels are consecutive rows of one column, and the
+     layout's row-gap is 0 — this margin recreates the inter-panel gap the
+     wide layout gets from its column gap. */
+    @media (max-width: 1024px) {
+        margin-top: 32px;
+    }
+}
+
+.zone-body {
+    min-width: 0; /* see .zone-panel */
+}
+
+/* The nowrap numeric columns overflow narrow viewports — scroll the table
+   inside this wrapper (never the subgridded panel); the page itself must
+   never scroll horizontally. */
+.zone-scroll {
+    overflow-x: auto;
 }
 
 .zone-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    /* normal, not the inherited :root 26px: 13-14px cell text in 26px line
+     boxes made every row ~42px tall — the loose look. */
+    line-height: normal;
 }
 
-.zone-table caption {
-  text-align: left;
-  color: var(--text-h);
-  font-weight: 500;
-  margin-bottom: 10px;
+/* Outside the <table> in the shared header track — see ZoneTable.tsx. The
+   headline cards' recipe (caps title over a gray description) so the table
+   opens like a section, not bold text above a grid; the title itself is
+   styled by the shared rule beside .headline-banner h2. */
+.zone-caption-desc {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
 }
 
 /* Sized to fit the side-by-side column (~514px in the 1126px shell) without
-   horizontal scroll — the whole point of the payoff-first column order. */
+   horizontal scroll — the whole point of the payoff-first column order.
+   6px horizontal padding (was 7) buys back the width the single-line
+   headers cost. */
 .zone-table th,
 .zone-table td {
-  padding: 8px 7px;
-  border-bottom: 1px solid var(--border);
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--border);
 }
 
 .zone-table thead th {
-  color: var(--text);
-  font-weight: 400;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+    color: var(--text);
+    font-weight: 400;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    /* One line per header on one shared baseline: without these, "Lg share"
+     and "Making Δ" wrapped while their neighbors didn't, and the default
+     middle alignment floated the short headers mid-height — the ragged row. */
+    white-space: nowrap;
+    vertical-align: bottom;
 }
 
 .zone-table td,
 .zone-table thead th:not(:first-child) {
-  text-align: right;
+    text-align: right;
 }
 
 .zone-table tbody th {
-  text-align: left;
-  font-weight: 500;
-  color: var(--text-h);
-  white-space: nowrap;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-h);
+    white-space: nowrap;
 
-  /* Narrow screens: let zone names wrap instead of pushing Making Δ into
+    /* Narrow screens: let zone names wrap instead of pushing Making Δ into
      the panel's overflow scroll. */
-  @media (max-width: 1024px) {
-    white-space: normal;
-  }
+    @media (max-width: 1024px) {
+        white-space: normal;
+    }
 }
 
 .zone-table td {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--text-h);
-  white-space: nowrap;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-h);
+    white-space: nowrap;
 }
 
 .zone-table .lg {
-  color: var(--text);
+    color: var(--text);
 }
 
 .zone-row-excluded {
-  opacity: 0.45;
+    opacity: 0.45;
 }
 
 .band-row th,
 .zone-row-child th {
-  padding-left: 26px;
-  font-weight: 400;
-  color: var(--text);
+    padding-left: 26px;
+    font-weight: 400;
+    color: var(--text);
 }
 
 .band-note {
-  display: block;
-  font-size: 12px;
-  color: var(--text);
-  /* The note must wrap: tbody th is nowrap, and an unwrappable note would
+    display: block;
+    font-size: 12px;
+    color: var(--text);
+    /* The note must wrap: tbody th is nowrap, and an unwrappable note would
      force the Zone column wide enough to push Making Δ into overflow. */
-  white-space: normal;
+    white-space: normal;
 }
 
 .table-notes {
-  font-size: 13px;
-  color: var(--text);
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+    font-size: 13px;
+    line-height: normal;
+    color: var(--text);
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }

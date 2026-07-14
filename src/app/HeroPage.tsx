@@ -3,7 +3,7 @@ import { ChartPanel } from '../chart/ChartPanel'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import type { DerivedPayload } from '../domain/payload'
 import type { HeroConfig } from '../heroes/types'
-import { heroImageUrl, payloadUrl } from '../heroes/urls'
+import { heroImageUrl, payloadUrl, teamLogoUrl } from '../heroes/urls'
 import { HeadlineBanner } from './HeadlineBanner'
 import { usePayload } from './usePayload'
 import { ZoneTable } from './ZoneTable'
@@ -41,6 +41,7 @@ function HeroReady({ hero, payload }: { hero: HeroConfig; payload: DerivedPayloa
     () => aggregateShotMetrics(payload.shots, payload.zoneBaseline),
     [payload],
   )
+  const logoUrl = teamLogoUrl(hero)
 
   return (
     <main className="hero-page">
@@ -48,6 +49,7 @@ function HeroReady({ hero, payload }: { hero: HeroConfig; payload: DerivedPayloa
           just at hero scale. */}
       <header className="hero-banner">
         <img
+          className="hero-banner-photo"
           src={heroImageUrl(hero)}
           alt={hero.hero.imageAlt}
           // Focal points as custom properties so the stylesheet can pick per
@@ -60,9 +62,19 @@ function HeroReady({ hero, payload }: { hero: HeroConfig; payload: DerivedPayloa
           }
           fetchPriority="high"
         />
+        {logoUrl && (
+          // Decorative team mark: the stylesheet ghosts it into the wide
+          // layout's dark left column and hides it on the narrow poster.
+          <img className="hero-banner-logo" src={logoUrl} alt="" aria-hidden="true" />
+        )}
         <div className="hero-banner-overlay">
-          <p className="hero-kicker">{hero.hero.kicker}</p>
-          <h1 className="hero-title">{hero.thesis}</h1>
+          {/* Kicker + title flex as one block so the cue can sit outside it,
+              pinned to the banner's bottom edge in both layouts — it is a
+              scroll affordance, not part of the title. */}
+          <div className="hero-banner-text">
+            <p className="hero-kicker">{hero.hero.kicker}</p>
+            <h1 className="hero-title">{hero.thesis}</h1>
+          </div>
           <p className="hero-cue" aria-hidden="true">
             ↓ The verdict
           </p>

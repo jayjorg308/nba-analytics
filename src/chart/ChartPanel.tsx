@@ -97,29 +97,30 @@ function ZonesLegend() {
       <div className="zones-legend-title">
         Shot making vs league average (percentage points)
       </div>
-      {/* End-caps stay terse ("below"/"above") — the signed edge numbers and
-          the title's "vs league average" carry the semantics, and the saved
-          width goes to the swatch bar. */}
-      <div className="zones-legend-scale">
-        <span className="zones-legend-end">− below</span>
-        <div className="zones-legend-steps">
-          <div className="zones-legend-swatches">
-            {MAKING_LEGEND.map((entry) => (
-              <span
-                key={entry.bin}
-                className="zones-legend-swatch"
-                title={entry.label}
-                style={{ background: `var(${makingBinVar(entry.bin)})` }}
-              />
-            ))}
-          </div>
-          <div className="zones-legend-edges">
-            {edges.map((label) => (
-              <span key={label}>{label}</span>
-            ))}
-          </div>
-        </div>
-        <span className="zones-legend-end">+ above</span>
+      {/* Boundary values render INSIDE the bar (the court labels' ink+halo
+          recipe — the ADR-0014 guard's contrast floor covers every fill), so
+          the legend is two compact lines. Both views' legends then share a
+          height and the reserved slot carries no dead band in the Shots
+          view. End caps ("below"/"above") dropped: the values are signed
+          and the title names the comparison. */}
+      <div className="zones-legend-bar">
+        {MAKING_LEGEND.map((entry) => (
+          <span
+            key={entry.bin}
+            className="zones-legend-swatch"
+            title={entry.label}
+            style={{ background: `var(${makingBinVar(entry.bin)})` }}
+          />
+        ))}
+        {edges.map((label, i) => (
+          <span
+            key={label}
+            className="zones-legend-edge"
+            style={{ left: `${((i + 1) / 7) * 100}%` }}
+          >
+            {label}
+          </span>
+        ))}
       </div>
     </div>
   )
@@ -176,18 +177,26 @@ export function ChartPanel({
             </label>
           ))}
         </fieldset>
-        {view === 'shots' ? (
-          <div className="chart-legend" aria-hidden="true">
-            <span className="legend-item">
-              <span className="legend-swatch legend-made" /> Made
-            </span>
-            <span className="legend-item">
-              <span className="legend-swatch legend-missed" /> Missed
-            </span>
+        {/* BOTH legends stay mounted, stacked in one cell: the zones legend
+            is the tallest thing in the controls row, and the row's height is
+            a shared subgrid track — if the inactive legend unmounted, the
+            court AND the table would jump ~20px on every toggle. The
+            inactive layer is visibility-hidden, never removed. */}
+        <div className="chart-legend-slot">
+          <div className={`chart-legend-layer${view === 'zones' ? '' : ' legend-inactive'}`}>
+            <ZonesLegend />
           </div>
-        ) : (
-          <ZonesLegend />
-        )}
+          <div className={`chart-legend-layer${view === 'shots' ? '' : ' legend-inactive'}`}>
+            <div className="chart-legend" aria-hidden="true">
+              <span className="legend-item">
+                <span className="legend-swatch legend-made" /> Made
+              </span>
+              <span className="legend-item">
+                <span className="legend-swatch legend-missed" /> Missed
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="chart-wrapper" ref={wrapperRef}>
         {view === 'shots' ? (

@@ -86,11 +86,25 @@ export function ZoneTable({
 
   return (
     <section className="zone-panel">
-      <table className="zone-table">
-        <caption>
-          Zone by zone: shot diet and shot making, vs league average (making Δ in FG percentage
-          points)
-        </caption>
+      {/* Caption OUTSIDE the <table> (aria-labelledby on the wrapper wires
+          both lines back as the table's accessible name): the panel is a
+          subgrid over the layout's shared header/content rows, and a
+          <caption> can't leave its table to sit in the header track beside
+          the chart controls. Split as title + description in the headline
+          cards' recipe. The description stays OUTSIDE the h2 — inside it,
+          the heading's accessible name would contain "shot making" and
+          collide with the SHOT MAKING card in role queries. */}
+      <header className="zone-caption" id="zone-table-caption">
+        <h2>ZONE BY ZONE</h2>
+        <p className="zone-caption-desc">
+          {/* nbsp: the unit phrase wraps as one — never a stranded "points)"
+              as the whole second line */}
+          shot diet and shot making, vs league average (making Δ in FG percentage&nbsp;points)
+        </p>
+      </header>
+      <div className="zone-body">
+        <div className="zone-scroll">
+          <table className="zone-table" aria-labelledby="zone-table-caption">
         {/* Column philosophy: the verdict-supporting columns lead — FGA (the
             honesty anchor that makes † interpretable, never hover-hidden),
             the diet pair, then Making Δ. PPS (lg) trails as the reference
@@ -134,8 +148,9 @@ export function ZoneTable({
             <ZoneRow key={row.zone} row={row} child />
           ))}
         </tbody>
-      </table>
-      <div className="table-notes">
+          </table>
+        </div>
+        <div className="table-notes">
         {/* No denominator footnote needed: every Share in the table — zones,
             bands, the All threes parent — is a share of evaluation attempts,
             so parent/child rows sum and league comparisons are like-for-like. */}
@@ -172,6 +187,7 @@ export function ZoneTable({
             suppressed).
           </p>
         )}
+        </div>
       </div>
     </section>
   )

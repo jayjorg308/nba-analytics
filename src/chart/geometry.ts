@@ -216,12 +216,16 @@ export function zoneRegions(): ZoneRegion[] {
     {
       zone: 'In The Paint (Non-RA)',
       shape: { id: 'zone-paint', kind: 'rect', x: paintTL.x, y: paintTL.y, width: 160, height: 190 },
-      labelAnchor: { x: hoop.x, y: 138 },
+      // 146 (was 138): spread from the RA label above — at the 15-unit
+      // label size the two stacked blocks nearly touched.
+      labelAnchor: { x: hoop.x, y: 146 },
     },
     {
       zone: 'Restricted Area',
       shape: { id: 'zone-ra', kind: 'circle', cx: hoop.x, cy: hoop.y, r: 40 },
-      labelAnchor: { x: hoop.x, y: 99 },
+      // 96 (was 99): the other half of the RA/Paint spread; the name line
+      // stays clear of the hoop mark above it.
+      labelAnchor: { x: hoop.x, y: 96 },
     },
   ]
 }
