@@ -33,9 +33,9 @@ export function HeadlineBanner({
                 aria-label="Shot selection headline"
             >
                 <h2>
-                    Shot selection
+                    SHOT SELECTION
                     <span className="comparison-class">
-                        expected points per shot: his shot diet vs. the
+                        expected points per shot: his shot diet vs the
                         league&apos;s
                     </span>
                 </h2>
@@ -53,7 +53,7 @@ export function HeadlineBanner({
                             {formatPps2(selection.leagueDietExpectedPps)}
                         </span>
                         <span className="stat-label">
-                            expected from league diet
+                            expected from lg diet
                         </span>
                     </div>
                     <div className="headline-stat">
@@ -81,9 +81,9 @@ export function HeadlineBanner({
                 aria-label="Shot making headline"
             >
                 <h2>
-                    Shot making
+                    SHOT MAKING
                     <span className="comparison-class">
-                        actual vs. expected points per shot, on the same diet
+                        actual vs expected points per shot, on the same diet
                     </span>
                 </h2>
                 <div className="headline-numbers">
@@ -113,7 +113,7 @@ export function HeadlineBanner({
                     </div>
                 </div>
                 <p className="headline-note">
-                    Comparing his actual PPS vs. what league-average shooting
+                    Comparing his actual PPS vs what league-average shooting
                     yields from the same shots.
                 </p>
             </section>

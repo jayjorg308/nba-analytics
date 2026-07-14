@@ -10,6 +10,10 @@ export interface HeroBannerConfig {
    * full-resolution source (ADR-0021). */
   imagePath: string
   imageAlt: string
+  /** Optional team mark, rendered as a faint watermark in the wide layout's
+   * dark left column (decorative — aria-hidden, and absent in the narrow
+   * poster). Path under public/, no leading slash, like imagePath. */
+  teamLogoPath?: string
   /** Focal point for the narrow full-bleed poster layout. */
   imagePosition: string
   /** Focal point for the wide right-anchored panel layout. */

@@ -60,6 +60,9 @@ The three 3-point evaluation zones rolled up into one line by summing makes and 
 **Selection benchmark**:
 The league-average shot diet. Shot selection is always framed as "vs league average," never "vs positional peers." The comparison is deliberately position-blind (see ADR-0002); position/archetype-adjusted selection is a v2 concern. The tool states its comparison class plainly. Excludes Backcourt heaves (nominal 3-zones with ~0 real value that would distort the weighting).
 
+**Abbreviation style**:
+Product copy abbreviates without periods — "vs" (never "vs."), "lg" / "Lg share" / "PPS (lg)" — one form on every surface: headline cards, zone table, chart title, byline. "lg" is for space-constrained data labels only ("expected from lg diet", where the spelled-out word forces smaller type or a wrapped line); running prose always spells out "league". The zone table teaches "lg = league" before the reader needs it anywhere denser.
+
 **Derived payload** (a.k.a. **the typed JSON contract**):
 What Python persists and the frontend consumes: `{ enriched per-shot rows + rolled-up zone baseline }`, typed and Zod-validated at the load boundary. Notably it does *not* contain the headline metrics — those are computed from it. This payload is identical regardless of where player aggregation later runs, so the storage contract is not blocked on the compute-location question.
 

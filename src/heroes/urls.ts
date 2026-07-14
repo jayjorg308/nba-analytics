@@ -13,6 +13,12 @@ export function heroImageUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}${hero.hero.imagePath}`
 }
 
+export function teamLogoUrl(hero: HeroConfig): string | null {
+  return hero.hero.teamLogoPath
+    ? `${import.meta.env.BASE_URL}${hero.hero.teamLogoPath}`
+    : null
+}
+
 export function heroPageUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}${hero.slug}`
 }

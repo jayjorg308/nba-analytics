@@ -64,7 +64,7 @@ describe('HeroPage over the golden fixture', () => {
     expect(screen.getAllByText(/vs league average/).length).toBeGreaterThanOrEqual(2)
 
     // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21"
-    screen.getByRole('heading', { name: /Shot making/ })
+    screen.getByRole('heading', { name: /Shot making/i })
     screen.getByText('1.21')
 
     // all six golden zones are < 15 attempts -> every row muted, none deleted

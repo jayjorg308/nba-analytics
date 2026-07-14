@@ -1,10 +1,10 @@
 // The committed color guard for the Zones view scale: parses the ACTUAL CSS
-// (src/App.css for --making-*, src/index.css for --text-h and surfaces) so
-// there is no hex duplication to drift, and asserts:
-//   1. every fill has >= 4.5:1 WCAG contrast against that mode's label ink
+// (src/App.css for --making-*, src/index.css for --text-h) so there is no
+// hex duplication to drift. The app ships dark-only (ADR-0024), so the guard
+// covers the one shipped theme and asserts:
+//   1. every fill has >= 4.5:1 WCAG contrast against the label ink
 //   2. per-arm luminance is strictly monotone (fills recede toward the
-//      surface at the neutral end: decreasing outward in light mode,
-//      increasing outward in dark mode)
+//      surface at the neutral end: on the dark surface, lighter outward)
 //   3. the neutral midpoint is chromatically gray (a hue at the diverging
 //      midpoint would read as data)
 
@@ -15,18 +15,9 @@ import { describe, expect, it } from 'vitest'
 const appCss = readFileSync(path.resolve(process.cwd(), 'src/App.css'), 'utf-8')
 const indexCss = readFileSync(path.resolve(process.cwd(), 'src/index.css'), 'utf-8')
 
-/** Split a css file into (light = before the dark media query, dark = inside it). */
-function modeBlocks(css: string): { light: string; dark: string } {
-  const darkStart = css.indexOf('@media (prefers-color-scheme: dark)')
-  if (darkStart === -1) return { light: css, dark: '' }
-  // the dark block ends at the media query's closing brace; a coarse split on
-  // the next top-level section is fine for variable extraction
-  return { light: css.slice(0, darkStart), dark: css.slice(darkStart) }
-}
-
-function cssVar(block: string, name: string): string {
-  const m = block.match(new RegExp(`${name}:\\s*(#[0-9a-fA-F]{6})`))
-  if (!m) throw new Error(`variable ${name} with a hex value not found in block`)
+function cssVar(css: string, name: string): string {
+  const m = css.match(new RegExp(`${name}:\\s*(#[0-9a-fA-F]{6})`))
+  if (!m) throw new Error(`variable ${name} with a hex value not found`)
   return m[1]!.toLowerCase()
 }
 
@@ -69,18 +60,12 @@ const FILL_VARS = [
   '--making-warm-3',
 ]
 
-const app = modeBlocks(appCss)
-const index = modeBlocks(indexCss)
+const ink = cssVar(indexCss, '--text-h')
 
-const modes = [
-  { name: 'light', fills: app.light, ink: cssVar(index.light, '--text-h') },
-  { name: 'dark', fills: app.dark, ink: cssVar(index.dark, '--text-h') },
-] as const
+describe('making scale (dark-only theme)', () => {
+  const hex = Object.fromEntries(FILL_VARS.map((v) => [v, cssVar(appCss, v)]))
 
-describe.each(modes)('making scale in $name mode', ({ fills, ink }) => {
-  const hex = Object.fromEntries(FILL_VARS.map((v) => [v, cssVar(fills, v)]))
-
-  it('gives every fill >= 4.5:1 label contrast against the mode ink', () => {
+  it('gives every fill >= 4.5:1 label contrast against the ink', () => {
     for (const v of FILL_VARS) {
       expect(contrast(hex[v]!, ink), `${v} (${hex[v]}) vs ink ${ink}`).toBeGreaterThanOrEqual(4.5)
     }
@@ -95,12 +80,8 @@ describe.each(modes)('making scale in $name mode', ({ fills, ink }) => {
     )
     for (const arm of [cold, warm]) {
       for (let i = 1; i < arm.length; i++) {
-        // light mode: darker outward (decreasing); dark mode: lighter outward
-        if (ink === cssVar(index.light, '--text-h')) {
-          expect(arm[i]!, `step ${i}`).toBeLessThan(arm[i - 1]!)
-        } else {
-          expect(arm[i]!, `step ${i}`).toBeGreaterThan(arm[i - 1]!)
-        }
+        // dark surface: fills lighten outward from the neutral midpoint
+        expect(arm[i]!, `step ${i}`).toBeGreaterThan(arm[i - 1]!)
       }
     }
   })
