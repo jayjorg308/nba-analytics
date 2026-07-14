@@ -28,16 +28,34 @@ const ZONE_SHORT_NAME: Record<EvalZone, string> = {
 
 function ZoneLabel({ region, row }: { region: ZoneRegion; row: ZoneMetricsRow }) {
   const { labelAnchor, labelRotate } = region
-  const transform = labelRotate
-    ? `rotate(${labelRotate} ${labelAnchor.x} ${labelAnchor.y})`
-    : undefined
+  const delta = withSmallSampleMark(formatSignedPp1(row.makingDelta), row.smallSampleMaking)
+  if (labelRotate) {
+    // Corner strips are 30 units wide: the stacked two-line label spans ~34
+    // and bled over the sideline and the corner-3 line. Rotated labels run
+    // name + delta on ONE line along the strip's ~142-unit length instead;
+    // dy centers the single baseline across the strip.
+    return (
+      <text
+        className="zone-label zone-label-rotated"
+        x={labelAnchor.x}
+        y={labelAnchor.y}
+        dy="0.35em"
+        transform={`rotate(${labelRotate} ${labelAnchor.x} ${labelAnchor.y})`}
+      >
+        <tspan className="zone-label-name">{ZONE_SHORT_NAME[row.zone]}</tspan>
+        <tspan className="zone-label-delta" dx="7">
+          {delta}
+        </tspan>
+      </text>
+    )
+  }
   return (
-    <text className="zone-label" x={labelAnchor.x} y={labelAnchor.y} transform={transform}>
+    <text className="zone-label" x={labelAnchor.x} y={labelAnchor.y}>
       <tspan className="zone-label-name" x={labelAnchor.x} dy="-0.2em">
         {ZONE_SHORT_NAME[row.zone]}
       </tspan>
       <tspan className="zone-label-delta" x={labelAnchor.x} dy="1.25em">
-        {withSmallSampleMark(formatSignedPp1(row.makingDelta), row.smallSampleMaking)}
+        {delta}
       </tspan>
     </text>
   )

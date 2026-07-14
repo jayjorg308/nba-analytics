@@ -430,11 +430,14 @@
     row-gap: 0; /* card-internal spacing comes from item margins, not the pair's gap */
 }
 
-.headline-banner h2 {
+/* One title recipe for the cards AND the zone table's section header —
+   the third instance of the pattern, not a new one. */
+.headline-banner h2,
+.zone-caption h2 {
     font-size: 20px;
-    /* Kicker-wide tracking on the card titles (the caps are typeset in the
-     content, not text-transform). Overrides the h2 base -0.24px; the
-     subtitle span below must reset it or it inherits the 4px. */
+    /* Kicker-wide tracking on the titles (the caps are typeset in the
+     content, not text-transform). Overrides the h2 base -0.24px; any
+     subtitle INSIDE the h2 must reset it or it inherits the 4px. */
     letter-spacing: 4px;
     /* Card rhythm is a 4/16 scale: 4px binds a thing to its caption (title
      to subtitle, value to label), 16px separates blocks (subtitle |
@@ -516,11 +519,19 @@
 .hero-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 32px;
+    /* Two shared rows (panel header / panel content): the chart and zone
+     panels subgrid onto them, so the toggle+legend block and the table
+     caption share one track and the court's top edge pins to the table's —
+     the headline pair's alignment pattern. Row-gap stays 0; each panel's
+     own subgrid row-gap provides its internal header-to-content spacing. */
+    grid-template-rows: auto auto;
+    gap: 0 32px;
     align-items: start;
 
     @media (max-width: 1024px) {
-        grid-template-columns: 1fr;
+        /* minmax(0, ...) like the wide tracks: a bare 1fr lets the table's
+         min-content width overflow the page on phones. */
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -538,15 +549,24 @@
     border: 0;
 }
 
+.chart-panel {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 10px;
+}
+
 /* Toggle + legend share a row above the court: the legend is the key to the
-   hero visual and must be read before the fills. Wraps on narrow widths. */
+   hero visual and must be read before the fills. Wraps on narrow widths.
+   (Its spacing to the court is the panel's subgrid row-gap, not a margin.)
+   Everything in the shared header track hangs from the track TOP — toggle,
+   legend, and the zone table's section title across the gap. */
 .chart-controls {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 12px 24px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
 }
 
 .court-view-toggle {
@@ -556,7 +576,6 @@
     padding: 2px;
     margin: 0;
     gap: 2px;
-    align-self: flex-start;
 }
 
 .court-view-toggle label {
@@ -653,16 +672,26 @@
     fill: var(--making-nodata);
 }
 
+/* Label sizes are SVG units: the 540-unit viewBox renders ~514px wide in
+   the side-by-side column, so 1 unit ≈ 0.95px — 15/13.5 units is ~14/13px
+   on screen. The mono ships 400-weight only (font-synthesis is off), so
+   delta legibility comes from size and halo, never fake bolding. */
 .zone-label {
     pointer-events: none;
     fill: var(--text-h);
-    font-size: 12px;
+    font-size: 15px;
     text-anchor: middle;
     /* surface-colored halo so labels stay legible over any fill */
     paint-order: stroke;
     stroke: var(--bg);
-    stroke-width: 3;
+    stroke-width: 3.5;
     stroke-linejoin: round;
+
+    /* Phone-width courts scale the whole SVG to ~0.6x — bump the unit size
+     so rendered labels hold ~12px instead of shrinking with the floor. */
+    @media (max-width: 640px) {
+        font-size: 19px;
+    }
 }
 
 .zone-label-name {
@@ -671,7 +700,27 @@
 
 .zone-label-delta {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 13.5px;
+
+    @media (max-width: 640px) {
+        font-size: 17px;
+    }
+}
+
+/* Rotated corner labels run name + delta on one line along the ~142-unit
+   strip, so their phone bump is smaller than the other labels' — at the
+   19/17 sizes "Left C3 −18.3†" would overrun the strip's length. Must sit
+   AFTER the .zone-label / .zone-label-delta rules to win the cascade. */
+.zone-label-rotated {
+    @media (max-width: 640px) {
+        font-size: 16px;
+    }
+}
+
+.zone-label-rotated .zone-label-delta {
+    @media (max-width: 640px) {
+        font-size: 15px;
+    }
 }
 
 .chart-skip-note {
@@ -705,8 +754,31 @@
     font-weight: 500;
 }
 
+/* Both legends stay mounted, stacked in one cell, the inactive one hidden
+   but still sized — the controls row keeps ONE height across the
+   Zones/Shots toggle, so switching views never shifts the court or the
+   table hanging off the same shared header track. The slot flexes to the
+   row width the toggle leaves (within the bar's readable ceiling), so the
+   percentage-positioned boundary numbers inside the bar resolve against a
+   real width. */
+.chart-legend-slot {
+    flex: 1 1 auto;
+    max-width: 380px;
+    display: grid;
+}
+
+.chart-legend-layer {
+    grid-area: 1 / 1;
+    align-self: start; /* hang from the track top, like the toggle beside it */
+}
+
+.legend-inactive {
+    visibility: hidden;
+}
+
 .chart-legend {
     display: flex;
+    justify-content: flex-end; /* right edge of the slot, like the zones bar */
     gap: 20px;
     font-size: 14px;
 }
@@ -742,29 +814,21 @@
 
 .zones-legend-title {
     color: var(--text-h);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
-.zones-legend-scale {
+/* Single-strip scale: the boundary values live INSIDE the bar, so the
+   legend is title + bar (~40px) instead of three stacked lines (~55px) —
+   short enough that the shared header row carries no dead band in either
+   view. The bar fills the slot up to its 380px readable ceiling. */
+.zones-legend-bar {
+    position: relative;
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
-
-/* The legend is the key to the default hero visual — the bar takes all the
-   row width the end-caps leave it, within a readable ceiling. */
-.zones-legend-steps {
-    flex: 1 1 220px;
-    max-width: 380px;
-}
-
-.zones-legend-swatches {
-    display: flex;
+    height: 20px;
 }
 
 .zones-legend-swatch {
     flex: 1;
-    height: 14px;
     border: 1px solid var(--border);
     border-left-width: 0;
 }
@@ -778,25 +842,52 @@
     border-radius: 0 3px 3px 0;
 }
 
-.zones-legend-edges {
-    display: flex;
-    justify-content: space-between;
+/* The court labels' ink+halo recipe in text-shadow form: the ADR-0014
+   guard's 4.5:1 ink floor holds on every fill the numbers straddle. */
+.zones-legend-edge {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
     font-family: var(--mono);
-    font-size: 11px;
-    padding: 2px 6% 0; /* pull edge numbers under the swatch boundaries */
-}
-
-.zones-legend-end {
-    white-space: nowrap;
-    font-size: 12px;
-    padding-top: 1px;
+    font-size: 10.5px;
+    color: var(--text-h);
+    text-shadow:
+        var(--bg) 0 1px 1px,
+        var(--bg) 0 -1px 1px,
+        var(--bg) 1px 0 1px,
+        var(--bg) -1px 0 1px;
+    pointer-events: none;
 }
 
 /* --- Zone table ------------------------------------------------------------ */
 
-/* The nowrap numeric columns overflow narrow viewports — scroll the table
-   inside its panel; the page itself must never scroll horizontally. */
 .zone-panel {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 10px;
+    /* The panel stopped being the scroll container when it became a
+     subgrid, so it (and .zone-body below) need explicit min-width: 0 —
+     otherwise the table's min-content width props the column open and the
+     PAGE scrolls horizontally instead of .zone-scroll. */
+    min-width: 0;
+
+    /* Stacked: the panels are consecutive rows of one column, and the
+     layout's row-gap is 0 — this margin recreates the inter-panel gap the
+     wide layout gets from its column gap. */
+    @media (max-width: 1024px) {
+        margin-top: 32px;
+    }
+}
+
+.zone-body {
+    min-width: 0; /* see .zone-panel */
+}
+
+/* The nowrap numeric columns overflow narrow viewports — scroll the table
+   inside this wrapper (never the subgridded panel); the page itself must
+   never scroll horizontally. */
+.zone-scroll {
     overflow-x: auto;
 }
 
@@ -804,20 +895,29 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    /* normal, not the inherited :root 26px: 13-14px cell text in 26px line
+     boxes made every row ~42px tall — the loose look. */
+    line-height: normal;
 }
 
-.zone-table caption {
-    text-align: left;
-    color: var(--text-h);
-    font-weight: 500;
-    margin-bottom: 10px;
+/* Outside the <table> in the shared header track — see ZoneTable.tsx. The
+   headline cards' recipe (caps title over a gray description) so the table
+   opens like a section, not bold text above a grid; the title itself is
+   styled by the shared rule beside .headline-banner h2. */
+.zone-caption-desc {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
 }
 
 /* Sized to fit the side-by-side column (~514px in the 1126px shell) without
-   horizontal scroll — the whole point of the payoff-first column order. */
+   horizontal scroll — the whole point of the payoff-first column order.
+   6px horizontal padding (was 7) buys back the width the single-line
+   headers cost. */
 .zone-table th,
 .zone-table td {
-    padding: 8px 7px;
+    padding: 8px 6px;
     border-bottom: 1px solid var(--border);
 }
 
@@ -827,6 +927,11 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    /* One line per header on one shared baseline: without these, "Lg share"
+     and "Making Δ" wrapped while their neighbors didn't, and the default
+     middle alignment floated the short headers mid-height — the ragged row. */
+    white-space: nowrap;
+    vertical-align: bottom;
 }
 
 .zone-table td,
@@ -880,6 +985,7 @@
 
 .table-notes {
     font-size: 13px;
+    line-height: normal;
     color: var(--text);
     margin-top: 12px;
     display: flex;
