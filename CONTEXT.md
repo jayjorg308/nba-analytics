@@ -75,6 +75,9 @@ What Python persists and the frontend consumes: `{ enriched per-shot rows + roll
 **Zone-point conflict**:
 A raw shot row whose `SHOT_TYPE` (the scorer's point value — what the shot was actually worth) contradicts its coordinate-derived zone's point value; the NBA disagreeing with itself, typically a foot-on-the-line call. Unrepresentable at the evaluation grain (zone boundaries are point-value boundaries), so the derive step drops and counts it, and the UI reports the count whenever nonzero — dropped and reported, never guessed into a zone (ADR-0019).
 
+**Matchup**:
+A shot's game context from the hero's perspective: the opponent (team abbreviation) and whether the game was home or away. Resolved per shot at the derive step (ADR-0028) — the UI only formats it (ADR-0011), per abbreviation style: "vs OKC" at home, "@ PHX" away. Descriptive context only; evaluation (selection/making) never reads it.
+
 **Deployed payload**:
 The committed copy of the derived payload the app actually fetches: `public/data/<player-slug>/<season>.json`, refreshed only by an explicit `npm run hero:sync` (ADR-0010). The third layer of the storage story — raw (append-only, gitignored) → derived (recomputed, gitignored) → deployed (committed). The app reads persisted JSON only; it never calls the NBA API (unofficial endpoint; blocks cloud IPs).
 

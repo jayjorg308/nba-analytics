@@ -38,7 +38,7 @@ import pandas as pd
 # Bump on any breaking payload change; pinned as a literal on the TS side
 # (src/domain/payload.ts) so a mismatch fails loudly at the load boundary.
 # v2: _meta.zoneConflictsDropped (ADR-0019).
-# v3: per-shot opponent/home (matchup context, derived here — ADR-0011).
+# v3: per-shot opponent/home (matchup context, derived here — ADR-0028).
 SCHEMA_VERSION = 3
 
 # --- Zone taxonomy (v1 evaluation grain = SHOT_ZONE_BASIC; see CONTEXT.md) -----
@@ -74,7 +74,7 @@ SHOT_TYPE_POINTS = {"2PT Field Goal": 2, "3PT Field Goal": 3}
 # HTM/VTM, so home/opponent derive per row — a mid-season trade changes
 # TEAM_NAME on the traded player's later rows and stays correct. An unknown
 # TEAM_NAME (expansion, rebrand, endpoint drift) must fail loudly, never
-# guess.
+# guess (ADR-0028).
 TEAM_ABBREV = {
     "Atlanta Hawks": "ATL",
     "Boston Celtics": "BOS",

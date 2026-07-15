@@ -19,7 +19,7 @@ import {
 
 // Must match SCHEMA_VERSION in ingestion/derive_payload.py; bump both on any
 // breaking payload change. v2: _meta.zoneConflictsDropped (ADR-0019).
-// v3: per-shot opponent/home (matchup context, derived in Python — ADR-0011).
+// v3: per-shot opponent/home (matchup context, derived in Python — ADR-0028).
 export const SCHEMA_VERSION = 3
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
