@@ -11,7 +11,7 @@ flags, authored-and-guarded copy — on a new axis._
 | --- | --- |
 | v1 — the two-axis argument | ✅ shipped (ADRs 0001–0021) |
 | v1.1 — close-out polish | ✅ closed 2026-07-12 (`hero:report`, the hero directory, display-grain rounding — ADRs 0022–0023) |
-| v2.0 — creation at the bucket grain | ⬅ **next up** (starts with the tracking-splits spike) |
+| v2.0 — creation at the bucket grain | 🔨 in progress — design grilled + recorded (ADRs 0029–0031) and spike done 2026-07-15; the contract build is next |
 | v2.5 — creation at the shot grain | not started |
 | v3 — living seasons and heroes at scale | not started |
 
@@ -68,6 +68,11 @@ payload**, not columns joined to the shot rows._
    second; dribbles/touch-time mostly duplicate the first split). Run a
    domain-modeling session to pin the terms (*creation context*, *creation
    diet*) before code.
+   _Done 2026-07-15: terms pinned + design recorded (ADRs 0029–0031), then
+   `ingestion/pull_tracking.py` pulled both heroes + the league. General
+   identity exact (509; 881 incl. the ADR-0019 drop), shot-clock gap zero,
+   literal traps catalogued, shot-clock product grain set at three bands —
+   closures recorded in ADR-0030._
 2. **Ingestion mirrors the v1 spine**: append-only raw pulls (same keying,
    same local-only constraint — stats.nba.com blocks cloud IPs), a derive
    step, a second typed contract with its own golden, and the reconciliation

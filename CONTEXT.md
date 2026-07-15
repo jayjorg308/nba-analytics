@@ -97,10 +97,29 @@ The page's poster-scale opening: a black-and-white action photo of the hero play
 The site root: a directory of poster tiles — each hero's banner photo and thesis at tile scale — linking to the complete hero pages at their own URLs (`/<slug>`), all served by one deployment (ADR-0022). A directory of *arguments*, deliberately not a switcher (ADR-0018): heroes are never view-state under one page, and navigation is plain full-page links (the tiles, plus each hero page's quiet "All players" footer link). Tiles read straight off the **hero registry** (`src/heroes/registry.ts`, the single source of hero truth — the index, router, sync script, and per-hero guards all consume it), so registering a hero is what publishes its tile.
 
 **v2 thesis**:
-"How does he create his shots?" — the scheduled second act. Designated engine: the Case 2 buckets (catch-and-shoot vs pull-up, contested, shot-clock). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction.
+"How does he create his shots?" — the scheduled second act. Designated engine: Case 2 creation contexts at the bucket grain (v2.0 ships the General and Shot Clock families — ADR-0030). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
 
 **Shot creation**:
-Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Explicitly v2, Case 2/3-powered. v1 has *no* creation signal — a catch-and-shoot and a pull-up from the same spot are identical dots in `shotchartdetail` — and must never imply otherwise (see ADR-0005).
+Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. v2.0 evaluates it at the bucket grain through creation contexts; creation claims are allowed iff they cite Case 2 contexts (ADR-0029). Case 1 data still carries *no* creation signal — a catch-and-shoot and a pull-up from the same spot are identical dots in `shotchartdetail` — and must never imply otherwise (ADR-0005's quarantine stands).
+
+**Creation context**:
+The pre-aggregated category describing how a shot came to be — catch-and-shoot, pull-up, a shot-clock band. The unit of v2.0's creation evaluation, assigned by the NBA's tracking dashboards, never derived per shot at the bucket grain (per-shot creation is v2.5).
+_Avoid_: "bucket" in product copy — engineering shorthand for the same concept, fine in code and ADRs.
+
+**Context family**:
+One partition of a player's attempts along a single tracking dimension. v2.0 ships two: **General** (how the shot arrived: catch-and-shoot / pull-up / less than 10 ft / other) and **Shot Clock** (product grain: three bands — Early 24–15 / Average 15–7 / Late 7–0 — rolled up from the NBA's six by summing makes and attempts, never averaging rates). A family's contexts sum to the season's attributed attempts. Closest-defender is deferred; dribbles and touch-time are rejected as restating General (ADR-0030).
+
+**Creation diet**:
+A player's attempt shares across one family's creation contexts — the creation analog of shot diet, benchmarked against the league's creation diet (the selection benchmark's stance: position-blind, comparison class stated plainly).
+
+**Creation payload**:
+The second typed contract, parallel to the derived payload: per-family player contexts plus the rolled-up league creation baseline, metric-free, with its own schema version and golden (ADR-0030). Deployed beside the shot payload and required for every registered hero.
+
+**Creation PPS**:
+Points-per-shot within a creation context, computed from that context's 2PT/3PT makes and attempts — creation speaks the same value unit as everything else (PPS, never eFG%).
+
+**Unattributed attempts**:
+Attempts a context family fails to cover (tracking gaps — e.g. shot-clock data missing). Counted and reported whenever nonzero, never guessed into a context; required to be zero for the General family, which must reconcile exactly with the shot payload's season attempts (ADR-0030).
 
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
@@ -128,10 +147,13 @@ _Hero ≠ good player._ Hero is the launch subject, nothing more. A debated/disa
 The single season v1 renders for the hero. Chosen as the hero's highest-minutes completed season, to maximize the chance of clearing the volume gate. For the launch hero this is **2025-26** (1631 MIN vs 1060; 509 attempts vs 257; all 6 evaluation zones clear the volume bar).
 
 **Hero eligibility**:
-A player is eligible to be a hero only if they have ≥1 completed season passing both gates. Rookies/incoming players are ineligible until they do (see ADR-0003).
+A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates (baseline, volume — and, since v2.0, tracking). Rookies/incoming players are ineligible until they do (see ADR-0003).
 
 **Baseline gate** (Gate 1):
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
 
 **Volume gate** (Gate 2):
 The player has enough per-zone attempts that the mix view isn't mostly suppression warnings — constraint 4 (sample-size suppression) promoted from zone-level to player-level eligibility. **Threshold: a zone is included at ≥15 attempts** (all 6 evaluation zones clear for the launch hero/season; set from real counts per ADR-0003, now ADR-0008). There is *no* second hard cutoff on the making axis: low-N zones instead carry a **small-sample uncertainty flag** on the making delta. Rationale from the data — a player's attempt *share* is stable by ~34+ attempts, but per-zone *conversion* is noisy there, so the selection/making axis split is real, not just anticipated. **The flag threshold is < 50 attempts** (`SMALL_SAMPLE_MAKING_ATTEMPTS`, `src/domain/constants.ts`; tunable): it must exceed 49 so per-corner making at L49/R34 carries the flag per ADR-0008, and at n=50 a ~40% shooter's FG% has a 95% CI of ~±13.6pp — noise-dominated.
+
+**Tracking gate** (Gate 3):
+NBA tracking data exists for the season (2013-14 onward), so the creation payload can be built. Added by v2.0 (ADR-0030): a registered hero ships both payloads, so a pre-tracking season cannot host a hero.
