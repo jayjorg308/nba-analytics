@@ -10,6 +10,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { HEROES } from '../heroes/registry'
+import { aggregateCreationMetrics } from './aggregateCreation'
 import { parseCreationPayload } from './creationPayload'
 import { parseDerivedPayload } from './payload'
 
@@ -65,6 +66,18 @@ describe('deployed creation payloads', () => {
         )
       })
 
+      it('aggregates without flags on the clock product grain (the rollup earns its keep)', () => {
+        const creation = parseCreationPayload(
+          JSON.parse(readFileSync(creationPath, 'utf-8')),
+        )
+        const m = aggregateCreationMetrics(creation)
+        // The three-band grain was chosen (ADR-0030) because it clears the
+        // small-sample bar for both current heroes — the six NBA bands do not.
+        for (const band of m.shotClock) {
+          expect(band.smallSamplePps, `${band.band} flagged`).toBe(false)
+        }
+      })
+
       it('matches the latest derived creation payload when data/ is present', () => {
         const derivedDir = path.resolve(
           process.cwd(),
@@ -88,4 +101,43 @@ describe('deployed creation payloads', () => {
       })
     })
   }
+})
+
+// The launch hero's creation anchors — the numbers the v2 why-sentence will
+// state, locked through the aggregation path (mirrors realPayload.test.ts's
+// verdict-grain anchors). Values from the 2026-07-15 spike, exact.
+const codyCreationPath = path.join(publicData, 'cody-williams', '2025-26.creation.json')
+
+describe.skipIf(!existsSync(codyCreationPath))('creation anchors (launch hero)', () => {
+  it('anchors the creation story: rim-heavy diet, catch-and-shoot collapse, late-clock cost', () => {
+    const m = aggregateCreationMetrics(
+      parseCreationPayload(JSON.parse(readFileSync(codyCreationPath, 'utf-8'))),
+    )
+    expect(m.seasonFga).toBe(509)
+    expect(m.shotClockUnattributed).toBe(0)
+
+    // More than half his diet arrives inside 10 ft (league: ~43%) — the
+    // creation mechanism behind v1's rim-heavy zone story.
+    const lt10 = m.general.find((r) => r.context === 'Less than 10 ft')!
+    expect(lt10.attemptShare).toBeCloseTo(0.5540, 4)
+    expect(lt10.leagueAttemptShare).toBeCloseTo(0.4257, 4)
+    expect(lt10.pps).toBeCloseTo(1.1844, 4) // dead on league (1.1864)
+    expect(lt10.leaguePps).toBeCloseTo(1.1864, 4)
+
+    // Catch-and-shoot is where the making collapse lives: 0.711 PPS on the
+    // league's most efficient jumper context (1.100), on 121 attempts —
+    // clear of the small-sample bar, so the claim can be stated unflagged.
+    const cs = m.general.find((r) => r.context === 'Catch and Shoot')!
+    expect(cs.attempts).toBe(121)
+    expect(cs.pps).toBeCloseTo(0.7107, 4)
+    expect(cs.leaguePps).toBeCloseTo(1.1003, 4)
+    expect(cs.smallSamplePps).toBe(false)
+
+    // The product-grain clock bands (195/243/71) all clear the bar; the
+    // late-clock cost is real but modest volume.
+    expect(m.shotClock.map((b) => b.attempts)).toEqual([195, 243, 71])
+    const late = m.shotClock.find((b) => b.band === 'Late')!
+    expect(late.pps).toBeCloseTo(0.5352, 4)
+    expect(late.leaguePps).toBeCloseTo(0.9414, 4)
+  })
 })

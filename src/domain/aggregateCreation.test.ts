@@ -1,0 +1,155 @@
+// Tests for the creation aggregation — hand-computed values over the
+// committed creation golden, plus the invariants: the clock rollup SUMS
+// counts (never averages rates — ADR-0004), zero attempts make no PPS claim
+// (ADR-0013's no-data distinction), and the † flag shares the zone table's
+// constant (ADR-0031).
+
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+import { aggregateCreationMetrics, CLOCK_BAND_ROLLUP } from './aggregateCreation'
+import { SMALL_SAMPLE_MAKING_ATTEMPTS } from './constants'
+import type { CreationPayload } from './creationPayload'
+import { GENERAL_CONTEXTS, parseCreationPayload } from './creationPayload'
+
+const goldenUrl = new URL('../../tests/fixtures/creation.golden.json', import.meta.url)
+const golden = parseCreationPayload(JSON.parse(readFileSync(goldenUrl, 'utf-8')))
+
+const clone = (): CreationPayload => structuredClone(golden)
+
+describe('aggregateCreationMetrics over the creation golden', () => {
+  const m = aggregateCreationMetrics(golden)
+
+  it('echoes the denominators and unattributed counts', () => {
+    expect(m.comparisonClass).toBe('league-average')
+    expect(m.seasonFga).toBe(15)
+    expect(m.shotClockUnattributed).toBe(1)
+    expect(m.leagueFga).toBe(250)
+    expect(m.leagueShotClockUnattributed).toBe(2)
+  })
+
+  it('emits every General context in canonical order', () => {
+    expect(m.general.map((r) => r.context)).toEqual([...GENERAL_CONTEXTS])
+  })
+
+  it('computes shares on the season/league denominators and PPS from raw makes', () => {
+    const cs = m.general[0]! // Catch and Shoot: 2/4, 2s 0/1, 3s 2/3
+    expect(cs.attempts).toBe(4)
+    expect(cs.makes).toBe(2)
+    expect(cs.attemptShare).toBeCloseTo(4 / 15, 10)
+    expect(cs.leagueAttemptShare).toBeCloseTo(80 / 250, 10)
+    expect(cs.pps).toBeCloseTo(1.5, 10) // (2·0 + 3·2) / 4
+    expect(cs.leaguePps).toBeCloseTo(95 / 80, 10) // (2·10 + 3·25) / 80
+
+    const pu = m.general[1]! // Pull Ups: 1/3, 2s 1/2, 3s 0/1
+    expect(pu.pps).toBeCloseTo(2 / 3, 10)
+    expect(pu.leaguePps).toBeCloseTo(1.0, 10)
+  })
+
+  it('a zero-attempt context keeps its share and makes no PPS claim', () => {
+    const other = m.general[3]!
+    expect(other.context).toBe('Other')
+    expect(other.attempts).toBe(0)
+    expect(other.attemptShare).toBe(0) // 0 of 15 — a real share, not missing data
+    expect(other.pps).toBeNull() // no data ≠ a value claim (ADR-0013 ported)
+    expect(other.leagueAttemptShare).toBeCloseTo(10 / 250, 10)
+    expect(other.leaguePps).toBeCloseTo(1.0, 10) // the residual still prices
+  })
+
+  it('rolls the clock to product grain by summing counts on both sides', () => {
+    expect(m.shotClock.map((r) => r.band)).toEqual(['Early', 'Average', 'Late'])
+
+    const early = m.shotClock[0]! // 0 + 3 + 3 attempts; league 8 + 40 + 50
+    expect(early.attempts).toBe(6)
+    expect(early.makes).toBe(3)
+    expect(early.attemptShare).toBeCloseTo(6 / 15, 10)
+    expect(early.pps).toBeCloseTo(1.0, 10) // (2·3 + 3·0) / 6
+    expect(early.leagueAttemptShare).toBeCloseTo(98 / 250, 10)
+    expect(early.leaguePps).toBeCloseTo(116 / 98, 10) // (2·31 + 3·18) / 98
+
+    const late = m.shotClock[2]! // 2 + 1 attempts; league 30 + 20
+    expect(late.attempts).toBe(3)
+    expect(late.pps).toBeCloseTo(2 / 3, 10)
+    expect(late.leaguePps).toBeCloseTo(0.84, 10) // (2·15 + 3·4) / 50
+  })
+
+  it('the rollup differs from averaging the band rates — summation is load-bearing', () => {
+    // League Late: per-band PPS are 26/30 and 16/20; their unweighted mean
+    // (≈0.8333) is the forbidden computation. The rolled value is 0.84.
+    const perBandMean = (26 / 30 + 16 / 20) / 2
+    const late = m.shotClock[2]!
+    expect(Math.abs(late.leaguePps! - perBandMean)).toBeGreaterThan(0.005)
+  })
+
+  it('flags every sub-50 conversion claim with the shared constant', () => {
+    // Every golden context is tiny — all flagged, one meaning of †.
+    for (const row of [...m.general, ...m.shotClock]) {
+      expect(row.smallSamplePps).toBe(true)
+    }
+  })
+
+  it('does not mutate its input', () => {
+    const payload = clone()
+    const before = structuredClone(payload)
+    aggregateCreationMetrics(payload)
+    expect(payload).toEqual(before)
+  })
+})
+
+describe('the † boundary (shared with the zone table — ADR-0031)', () => {
+  function withCatchAndShootFga(fga: number): CreationPayload {
+    const p = clone()
+    const cs = p.general.player[0]!
+    // Keep the entry internally coherent; identities with _meta are the
+    // schema's concern, not the aggregation's — it consumes typed payloads.
+    cs.fga = fga
+    cs.fg2a = fga - cs.fg3a
+    return p
+  }
+
+  it(`flags at ${SMALL_SAMPLE_MAKING_ATTEMPTS - 1} attempts, not at ${SMALL_SAMPLE_MAKING_ATTEMPTS}`, () => {
+    const flagged = aggregateCreationMetrics(
+      withCatchAndShootFga(SMALL_SAMPLE_MAKING_ATTEMPTS - 1),
+    )
+    expect(flagged.general[0]!.smallSamplePps).toBe(true)
+
+    const clear = aggregateCreationMetrics(withCatchAndShootFga(SMALL_SAMPLE_MAKING_ATTEMPTS))
+    expect(clear.general[0]!.smallSamplePps).toBe(false)
+  })
+})
+
+describe('unusable payloads fail loudly', () => {
+  it('throws when the league baseline has no attempts', () => {
+    const p = clone()
+    p._meta.leagueFga = 0
+    expect(() => aggregateCreationMetrics(p)).toThrow('league FGA is 0')
+  })
+
+  it('throws when a context is missing (bypassed load boundary)', () => {
+    const p = clone()
+    p.general.league = p.general.league.filter((e) => e.context !== 'Other')
+    expect(() => aggregateCreationMetrics(p)).toThrow("missing context 'Other'")
+  })
+
+  it('throws when a clock band constituent is missing', () => {
+    const p = clone()
+    p.shotClock.player = p.shotClock.player.filter((e) => e.context !== '7-4 Late')
+    expect(() => aggregateCreationMetrics(p)).toThrow("missing context '7-4 Late'")
+  })
+})
+
+describe('CLOCK_BAND_ROLLUP', () => {
+  it('partitions all six NBA bands exactly once', () => {
+    const covered = CLOCK_BAND_ROLLUP.flatMap((b) => b.contexts)
+    expect([...covered].sort()).toEqual(
+      [
+        '24-22',
+        '22-18 Very Early',
+        '18-15 Early',
+        '15-7 Average',
+        '7-4 Late',
+        '4-0 Very Late',
+      ].sort(),
+    )
+    expect(new Set(covered).size).toBe(covered.length)
+  })
+})
