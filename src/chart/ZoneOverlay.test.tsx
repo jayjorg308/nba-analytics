@@ -90,30 +90,47 @@ describe('ZoneOverlay', () => {
     expect(labels.some((l) => l!.includes('—'))).toBe(true)
   })
 
-  it('is a labeled image with hidden label internals', () => {
+  it('is a labeled group of zone buttons with hidden label internals', () => {
     const { container } = render(<ZoneOverlay zones={metrics.zones} ariaLabel="zone chart" />)
     const svg = container.querySelector('svg')!
-    expect(svg.getAttribute('role')).toBe('img')
+    // Interactive children are invalid inside role="img" — the svg is a
+    // labeled GROUP of six zone buttons (ADR-0027).
+    expect(svg.getAttribute('role')).toBe('group')
     expect(svg.getAttribute('aria-label')).toBe('zone chart')
+    const fills = [...container.querySelectorAll('.zone-fill')]
+    for (const fill of fills) {
+      expect(fill.getAttribute('role')).toBe('button')
+      expect(fill.getAttribute('tabindex')).toBe('0')
+      expect(fill.getAttribute('aria-haspopup')).toBe('dialog')
+      expect(fill.getAttribute('aria-label')).toBe(fill.getAttribute('data-zone'))
+    }
     expect(container.querySelector('.zone-labels')!.getAttribute('aria-hidden')).toBe('true')
   })
 
-  it('reports zone hover through the callbacks', () => {
-    const onZoneEnter = vi.fn()
-    const onZoneLeave = vi.fn()
+  it('reports zone selection on click with the row and the trigger element', () => {
+    const onZoneSelect = vi.fn()
     const { container } = render(
-      <ZoneOverlay
-        zones={metrics.zones}
-        ariaLabel="zones"
-        onZoneEnter={onZoneEnter}
-        onZoneLeave={onZoneLeave}
-      />,
+      <ZoneOverlay zones={metrics.zones} ariaLabel="zones" onZoneSelect={onZoneSelect} />,
     )
     const raFill = [...container.querySelectorAll('.zone-fill')].at(-1)! // RA is topmost
-    fireEvent.pointerEnter(raFill)
-    expect(onZoneEnter).toHaveBeenCalledTimes(1)
-    expect(onZoneEnter.mock.calls[0]![0]).toMatchObject({ zone: 'Restricted Area' })
-    fireEvent.pointerLeave(raFill)
-    expect(onZoneLeave).toHaveBeenCalledTimes(1)
+    fireEvent.click(raFill)
+    expect(onZoneSelect).toHaveBeenCalledTimes(1)
+    expect(onZoneSelect.mock.calls[0]![0]).toMatchObject({ zone: 'Restricted Area' })
+    expect(onZoneSelect.mock.calls[0]![1]).toBe(raFill)
+  })
+
+  it('activates a zone from the keyboard with Enter and Space, and no other key', () => {
+    const onZoneSelect = vi.fn()
+    const { container } = render(
+      <ZoneOverlay zones={metrics.zones} ariaLabel="zones" onZoneSelect={onZoneSelect} />,
+    )
+    const raFill = [...container.querySelectorAll('.zone-fill')].at(-1)!
+    fireEvent.keyDown(raFill, { key: 'Enter' })
+    fireEvent.keyDown(raFill, { key: ' ' })
+    expect(onZoneSelect).toHaveBeenCalledTimes(2)
+    expect(onZoneSelect.mock.calls[1]![0]).toMatchObject({ zone: 'Restricted Area' })
+    fireEvent.keyDown(raFill, { key: 'a' })
+    fireEvent.keyDown(raFill, { key: 'Tab' })
+    expect(onZoneSelect).toHaveBeenCalledTimes(2)
   })
 })

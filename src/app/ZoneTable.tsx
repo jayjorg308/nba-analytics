@@ -111,7 +111,7 @@ export function ZoneTable({
             column, so if the table ever overflows, the scroll cuts reference
             material, never the payoff. There is no FG% column: PPS is the
             unit of shot quality (ADR-0001) and Making Δ already encodes
-            FG%-vs-league; raw FG% lives on the court's zone tooltip. */}
+            FG%-vs-league; raw FG% lives on the court's zone detail card. */}
         <thead>
           <tr>
             <th scope="col">Zone</th>

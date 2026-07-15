@@ -47,7 +47,7 @@ describe('ShotChart', () => {
     expect(queryByText(/not shown/)).toBeNull()
   })
 
-  it('reports hover enter/leave through the callbacks', () => {
+  it('reports mouse hover enter/leave through the callbacks', () => {
     const onShotEnter = vi.fn()
     const onShotLeave = vi.fn()
     const { container } = render(
@@ -59,7 +59,7 @@ describe('ShotChart', () => {
       />,
     )
     const firstHit = container.querySelector('.shot-dot .dot-hit')!
-    fireEvent.pointerEnter(firstHit)
+    fireEvent.pointerEnter(firstHit, { pointerType: 'mouse' })
     expect(onShotEnter).toHaveBeenCalledTimes(1)
     // dots render missed-first in payload order; golden shots[0] is a missed
     // Mid-Range two, so it is the first dot in the DOM
@@ -68,7 +68,26 @@ describe('ShotChart', () => {
       made: false,
       distanceFt: 17,
     })
-    fireEvent.pointerLeave(firstHit)
+    fireEvent.pointerLeave(firstHit, { pointerType: 'mouse' })
     expect(onShotLeave).toHaveBeenCalledTimes(1)
+  })
+
+  it('ignores non-mouse pointers — a tap neither opens nor closes a tooltip (ADR-0027)', () => {
+    const onShotEnter = vi.fn()
+    const onShotLeave = vi.fn()
+    const { container } = render(
+      <ShotChart
+        shots={golden.shots}
+        ariaLabel="test chart"
+        onShotEnter={onShotEnter}
+        onShotLeave={onShotLeave}
+      />,
+    )
+    const firstHit = container.querySelector('.shot-dot .dot-hit')!
+    fireEvent.pointerEnter(firstHit, { pointerType: 'touch' })
+    fireEvent.pointerLeave(firstHit, { pointerType: 'touch' })
+    fireEvent.pointerEnter(firstHit, { pointerType: 'pen' })
+    expect(onShotEnter).not.toHaveBeenCalled()
+    expect(onShotLeave).not.toHaveBeenCalled()
   })
 })

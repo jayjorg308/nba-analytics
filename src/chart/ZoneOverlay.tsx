@@ -12,8 +12,9 @@ export interface ZoneOverlayProps {
    * formats and maps, it never computes (ADR-0011). */
   zones: ZoneMetricsRow[]
   ariaLabel: string
-  onZoneEnter?: (row: ZoneMetricsRow, clientAnchor: { x: number; y: number }) => void
-  onZoneLeave?: () => void
+  /** Fired on click or Enter/Space. `trigger` is the zone's <g>, so the
+   * detail-card owner can return focus to it on close (ADR-0027). */
+  onZoneSelect?: (row: ZoneMetricsRow, trigger: SVGGElement) => void
 }
 
 // Presentation copy only (descriptive names, ADR-0005-safe).
@@ -65,9 +66,14 @@ function ZoneLabel({ region, row }: { region: ZoneRegion; row: ZoneMetricsRow })
  * The Zones view: evaluation-zone regions shaded by making delta.
  *
  * Fills render in PAINTER ORDER (each inner shape covers the outer), so
- * hit-testing needs no region math — the topmost shape under the pointer is
- * the innermost zone. Court line-work draws over the fills; labels draw last
- * with pointer-events off so hover falls through to the fills.
+ * hit-testing needs no region math — the topmost shape under the click is
+ * the innermost zone. Court line-work draws over the fills with pointer
+ * events off; labels draw last, also with pointer-events off, so clicks
+ * fall through to the fills.
+ *
+ * Each zone is a real button (click or Enter/Space opens its detail card —
+ * one interaction model on every device, ADR-0027), so the svg is a labeled
+ * GROUP of controls, not an image. Hover is a CSS affordance only.
  *
  * Regions are keyed by ZONE NAME from ShotMetrics, never derived from shot
  * coordinates — drawn geometry approximates the data's zone assignments and
@@ -76,12 +82,12 @@ function ZoneLabel({ region, row }: { region: ZoneRegion; row: ZoneMetricsRow })
  * suppressed — ADR-0008), and small-sample fills keep full color: muting
  * them would corrupt the magnitude encoding.
  */
-export function ZoneOverlay({ zones, ariaLabel, onZoneEnter, onZoneLeave }: ZoneOverlayProps) {
+export function ZoneOverlay({ zones, ariaLabel, onZoneSelect }: ZoneOverlayProps) {
   const rowsByZone = new Map(zones.map((row) => [row.zone, row]))
   const regions = zoneRegions().filter((region) => rowsByZone.has(region.zone))
 
   return (
-    <svg className="shot-chart" viewBox={VIEWBOX} role="img" aria-label={ariaLabel}>
+    <svg className="shot-chart" viewBox={VIEWBOX} role="group" aria-label={ariaLabel}>
       <g className="zone-fills">
         {regions.map((region) => {
           const row = rowsByZone.get(region.zone)!
@@ -89,10 +95,18 @@ export function ZoneOverlay({ zones, ariaLabel, onZoneEnter, onZoneLeave }: Zone
             <g
               key={region.zone}
               className={`zone-fill ${makingBinClass(makingDeltaBin(row.makingDelta))}`}
-              onPointerEnter={(e) => {
-                onZoneEnter?.(row, { x: e.clientX, y: e.clientY })
+              role="button"
+              tabIndex={0}
+              aria-haspopup="dialog"
+              aria-label={row.zone}
+              data-zone={region.zone}
+              onClick={(e) => onZoneSelect?.(row, e.currentTarget)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault() // Space must not scroll the page
+                  onZoneSelect?.(row, e.currentTarget)
+                }
               }}
-              onPointerLeave={() => onZoneLeave?.()}
             >
               <CourtElementShape el={region.shape} />
             </g>

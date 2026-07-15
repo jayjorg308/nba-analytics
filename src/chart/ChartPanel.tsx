@@ -1,17 +1,11 @@
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import type { ZoneMetricsRow } from '../domain/aggregate'
+import type { EvalZone } from '../domain/constants'
 import type { EnrichedShot } from '../domain/payload'
-import {
-  formatClock,
-  formatGameDate,
-  formatPercent1,
-  formatPeriod,
-  formatPps2,
-  formatSignedPp1,
-  withSmallSampleMark,
-} from '../format'
+import { formatClock, formatGameDate, formatPeriod } from '../format'
 import { MAKING_BIN_EDGES_PP, MAKING_LEGEND, makingBinVar } from './makingScale'
 import { ShotChart } from './ShotChart'
+import { ZoneDetailCard } from './ZoneDetailCard'
 import { ZoneOverlay } from './ZoneOverlay'
 
 // Display-only view state: the toggle re-presents the same aggregation
@@ -19,27 +13,70 @@ import { ZoneOverlay } from './ZoneOverlay'
 // call site stays in HeroReady).
 type CourtView = 'shots' | 'zones'
 
-type Hovered =
-  | { kind: 'shot'; shot: EnrichedShot; x: number; y: number; wrapperWidth: number }
-  | { kind: 'zone'; row: ZoneMetricsRow; x: number; y: number; wrapperWidth: number }
+// Shots-view hover only (mouse pointers, ADR-0027) — zone details are the
+// click-opened ZoneDetailCard, not a tooltip.
+type Hovered = {
+  shot: EnrichedShot
+  x: number
+  y: number
+  wrapperWidth: number
+  wrapperHeight: number
+}
 
-// One controlled HTML tooltip for the whole chart — not per-mark <title>
+// The selected zone is stored by KEY and the row looked up from the zones
+// prop — the card re-presents the data's row for that zone name, never
+// anything derived from where the click landed (ADR-0012). The trigger
+// element is kept so close can return focus to the zone.
+type SelectedZone = { zone: EvalZone; trigger: SVGGElement | null }
+
+// One controlled HTML tooltip for the Shots view — not per-mark <title>
 // elements (delay-gated, unstylable, still invisible to touch). Content is
-// descriptive/evaluative facts only (ADR-0005 — no creation language).
+// descriptive facts only (ADR-0005 — no creation language). The box
+// measures itself and clamps to the wrapper on both axes (flipping below
+// the dot when the top would clip), so it can never overflow the court.
 function TooltipBox({
   x,
   y,
   wrapperWidth,
+  wrapperHeight,
   children,
 }: {
   x: number
   y: number
   wrapperWidth: number
+  wrapperHeight: number
   children: React.ReactNode
 }) {
-  const clampedX = Math.min(Math.max(x, 80), Math.max(wrapperWidth - 80, 80))
+  const boxRef = useRef<HTMLDivElement>(null)
+
+  // Position imperatively after every render: the box must be measured
+  // before it can be clamped, and measuring needs it in the DOM. It renders
+  // hidden at the anchor, then this effect places it and reveals it before
+  // paint — no state, so no re-render chain, and content changes re-measure
+  // automatically. (jsdom measures 0×0 — the math degrades safely.)
+  useLayoutEffect(() => {
+    const el = boxRef.current
+    if (!el) return
+    const EDGE = 8
+    const GAP = 12
+    const w = el.offsetWidth
+    const h = el.offsetHeight
+    const left = Math.min(Math.max(x - w / 2, EDGE), Math.max(wrapperWidth - w - EDGE, EDGE))
+    const above = y - h - GAP
+    const flipBelow = above < EDGE // would clip the top edge -> go under the dot
+    const rawTop = flipBelow ? y + GAP + 4 : above
+    const top = Math.min(Math.max(rawTop, EDGE), Math.max(wrapperHeight - h - EDGE, EDGE))
+    el.style.left = `${left}px`
+    el.style.top = `${top}px`
+    el.style.visibility = 'visible'
+  })
+
   return (
-    <div className="shot-tooltip" style={{ left: clampedX, top: y - 12 }}>
+    <div
+      className="shot-tooltip"
+      ref={boxRef}
+      style={{ left: x, top: y, visibility: 'hidden' }}
+    >
       {children}
     </div>
   )
@@ -56,27 +93,6 @@ function ShotTooltipContent({ shot }: { shot: EnrichedShot }) {
         {shot.zoneBasic} — {shot.distanceFt} ft
       </div>
       <div className="shot-tooltip-result">{shot.made ? 'Made' : 'Missed'}</div>
-    </>
-  )
-}
-
-function ZoneTooltipContent({ row }: { row: ZoneMetricsRow }) {
-  return (
-    <>
-      <div className="shot-tooltip-result">{row.zone}</div>
-      <div>{row.attempts} FGA</div>
-      <div>
-        FG% {formatPercent1(row.fgPct)} <span className="lg">(lg {formatPercent1(row.leagueFgPct)})</span>
-      </div>
-      <div>
-        PPS {formatPps2(row.pps)} <span className="lg">(lg {formatPps2(row.leaguePps)})</span>
-      </div>
-      <div>
-        Making Δ {withSmallSampleMark(formatSignedPp1(row.makingDelta), row.smallSampleMaking)} pp
-      </div>
-      {row.smallSampleMaking && (
-        <div className="shot-tooltip-when">† Under 50 attempts — treat as uncertain.</div>
-      )}
     </>
   )
 }
@@ -141,10 +157,21 @@ export function ChartPanel({
   // secondary, look-closer view.
   const [view, setView] = useState<CourtView>('zones')
   const [hovered, setHovered] = useState<Hovered | null>(null)
+  const [selected, setSelected] = useState<SelectedZone | null>(null)
+  const selectedRow = selected ? (zones.find((z) => z.zone === selected.zone) ?? null) : null
 
+  // The toggle dismisses both the shot tooltip and the zone card. No focus
+  // juggling here — the toggle itself holds focus.
   function switchView(next: CourtView) {
     setView(next)
     setHovered(null)
+    setSelected(null)
+  }
+
+  function closeDetail() {
+    const trigger = selected?.trigger
+    setSelected(null)
+    if (trigger?.isConnected) trigger.focus()
   }
 
   function anchorInWrapper(clientAnchor: { x: number; y: number }) {
@@ -154,6 +181,7 @@ export function ChartPanel({
       x: clientAnchor.x - rect.left,
       y: clientAnchor.y - rect.top,
       wrapperWidth: rect.width,
+      wrapperHeight: rect.height,
     }
   }
 
@@ -205,7 +233,7 @@ export function ChartPanel({
             ariaLabel={ariaLabel}
             onShotEnter={(shot, clientAnchor) => {
               const pos = anchorInWrapper(clientAnchor)
-              if (pos) setHovered({ kind: 'shot', shot, ...pos })
+              if (pos) setHovered({ shot, ...pos })
             }}
             onShotLeave={() => setHovered(null)}
           />
@@ -213,21 +241,23 @@ export function ChartPanel({
           <ZoneOverlay
             zones={zones}
             ariaLabel="Zone-shaded half court: shot making vs league average by zone"
-            onZoneEnter={(row, clientAnchor) => {
-              const pos = anchorInWrapper(clientAnchor)
-              if (pos) setHovered({ kind: 'zone', row, ...pos })
-            }}
-            onZoneLeave={() => setHovered(null)}
+            onZoneSelect={(row, trigger) => setSelected({ zone: row.zone, trigger })}
           />
         )}
         {hovered && (
-          <TooltipBox x={hovered.x} y={hovered.y} wrapperWidth={hovered.wrapperWidth}>
-            {hovered.kind === 'shot' ? (
-              <ShotTooltipContent shot={hovered.shot} />
-            ) : (
-              <ZoneTooltipContent row={hovered.row} />
-            )}
+          <TooltipBox
+            x={hovered.x}
+            y={hovered.y}
+            wrapperWidth={hovered.wrapperWidth}
+            wrapperHeight={hovered.wrapperHeight}
+          >
+            <ShotTooltipContent shot={hovered.shot} />
           </TooltipBox>
+        )}
+        {/* Out of flow inside the wrapper: opening/closing the card never
+            moves the page (ADR-0026's companion invariant). */}
+        {view === 'zones' && selectedRow && (
+          <ZoneDetailCard row={selectedRow} onClose={closeDetail} />
         )}
       </div>
     </div>
