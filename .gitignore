@@ -15,6 +15,7 @@ dist-ssr
 # Installed third-party agent skills (own upstream/license; managed by `skills`,
 # not vendored here — committing would drift from upstream and fight updates)
 .claude/skills/
+/.agents/
 
 # Python (ingestion layer)
 __pycache__/
