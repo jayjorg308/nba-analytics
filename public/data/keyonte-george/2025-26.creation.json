@@ -1,0 +1,208 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "player": "Keyonte George",
+    "playerId": 1641718,
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "pullDate": "2026-07-15",
+    "sourceSnapshot": "data/raw/keyonte-george/2025-26/tracking/2026-07-15.json",
+    "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-15.json",
+    "seasonFga": 881,
+    "shotClockUnattributed": 0,
+    "leagueFga": 218352,
+    "leagueShotClockUnattributed": 0
+  },
+  "general": {
+    "player": [
+      {
+        "context": "Catch and Shoot",
+        "fga": 198,
+        "fgm": 87,
+        "fg2a": 14,
+        "fg2m": 9,
+        "fg3a": 184,
+        "fg3m": 78
+      },
+      {
+        "context": "Pull Ups",
+        "fga": 365,
+        "fgm": 130,
+        "fg2a": 190,
+        "fg2m": 76,
+        "fg3a": 175,
+        "fg3m": 54
+      },
+      {
+        "context": "Less than 10 ft",
+        "fga": 316,
+        "fgm": 183,
+        "fg2a": 316,
+        "fg2m": 183,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "Other",
+        "fga": 2,
+        "fgm": 2,
+        "fg2a": 0,
+        "fg2m": 0,
+        "fg3a": 2,
+        "fg3m": 2
+      }
+    ],
+    "league": [
+      {
+        "context": "Catch and Shoot",
+        "fga": 69260,
+        "fgm": 25997,
+        "fg2a": 3886,
+        "fg2m": 1786,
+        "fg3a": 65374,
+        "fg3m": 24211
+      },
+      {
+        "context": "Pull Ups",
+        "fga": 54929,
+        "fgm": 21229,
+        "fg2a": 30447,
+        "fg2m": 13147,
+        "fg3a": 24482,
+        "fg3m": 8082
+      },
+      {
+        "context": "Less than 10 ft",
+        "fga": 92963,
+        "fgm": 55146,
+        "fg2a": 92963,
+        "fg2m": 55146,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "Other",
+        "fga": 1200,
+        "fgm": 468,
+        "fg2a": 376,
+        "fg2m": 155,
+        "fg3a": 824,
+        "fg3m": 313
+      }
+    ]
+  },
+  "shotClock": {
+    "player": [
+      {
+        "context": "24-22",
+        "fga": 8,
+        "fgm": 6,
+        "fg2a": 7,
+        "fg2m": 6,
+        "fg3a": 1,
+        "fg3m": 0
+      },
+      {
+        "context": "22-18 Very Early",
+        "fga": 133,
+        "fgm": 59,
+        "fg2a": 69,
+        "fg2m": 43,
+        "fg3a": 64,
+        "fg3m": 16
+      },
+      {
+        "context": "18-15 Early",
+        "fga": 208,
+        "fgm": 106,
+        "fg2a": 127,
+        "fg2m": 70,
+        "fg3a": 81,
+        "fg3m": 36
+      },
+      {
+        "context": "15-7 Average",
+        "fga": 377,
+        "fgm": 171,
+        "fg2a": 229,
+        "fg2m": 111,
+        "fg3a": 148,
+        "fg3m": 60
+      },
+      {
+        "context": "7-4 Late",
+        "fga": 69,
+        "fgm": 29,
+        "fg2a": 42,
+        "fg2m": 18,
+        "fg3a": 27,
+        "fg3m": 11
+      },
+      {
+        "context": "4-0 Very Late",
+        "fga": 86,
+        "fgm": 31,
+        "fg2a": 46,
+        "fg2m": 20,
+        "fg3a": 40,
+        "fg3m": 11
+      }
+    ],
+    "league": [
+      {
+        "context": "24-22",
+        "fga": 7095,
+        "fgm": 4184,
+        "fg2a": 6692,
+        "fg2m": 4045,
+        "fg3a": 403,
+        "fg3m": 139
+      },
+      {
+        "context": "22-18 Very Early",
+        "fga": 32225,
+        "fgm": 17280,
+        "fg2a": 19330,
+        "fg2m": 12500,
+        "fg3a": 12895,
+        "fg3m": 4780
+      },
+      {
+        "context": "18-15 Early",
+        "fga": 37420,
+        "fgm": 17764,
+        "fg2a": 20309,
+        "fg2m": 11422,
+        "fg3a": 17111,
+        "fg3m": 6342
+      },
+      {
+        "context": "15-7 Average",
+        "fga": 102990,
+        "fgm": 47973,
+        "fg2a": 58848,
+        "fg2m": 31710,
+        "fg3a": 44142,
+        "fg3m": 16263
+      },
+      {
+        "context": "7-4 Late",
+        "fga": 19889,
+        "fgm": 8622,
+        "fg2a": 11779,
+        "fg2m": 5813,
+        "fg3a": 8110,
+        "fg3m": 2809
+      },
+      {
+        "context": "4-0 Very Late",
+        "fga": 18733,
+        "fgm": 7017,
+        "fg2a": 10714,
+        "fg2m": 4744,
+        "fg3a": 8019,
+        "fg3m": 2273
+      }
+    ]
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "player": "Cody Williams",
+    "playerId": 1642262,
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "pullDate": "2026-07-15",
+    "sourceSnapshot": "tests/fixtures/tracking.truncated.json",
+    "leagueSourceSnapshot": "tests/fixtures/tracking.league.truncated.json",
+    "seasonFga": 15,
+    "shotClockUnattributed": 1,
+    "leagueFga": 250,
+    "leagueShotClockUnattributed": 2
+  },
+  "general": {
+    "player": [
+      {
+        "context": "Catch and Shoot",
+        "fga": 4,
+        "fgm": 2,
+        "fg2a": 1,
+        "fg2m": 0,
+        "fg3a": 3,
+        "fg3m": 2
+      },
+      {
+        "context": "Pull Ups",
+        "fga": 3,
+        "fgm": 1,
+        "fg2a": 2,
+        "fg2m": 1,
+        "fg3a": 1,
+        "fg3m": 0
+      },
+      {
+        "context": "Less than 10 ft",
+        "fga": 8,
+        "fgm": 5,
+        "fg2a": 8,
+        "fg2m": 5,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "Other",
+        "fga": 0,
+        "fgm": 0,
+        "fg2a": 0,
+        "fg2m": 0,
+        "fg3a": 0,
+        "fg3m": 0
+      }
+    ],
+    "league": [
+      {
+        "context": "Catch and Shoot",
+        "fga": 80,
+        "fgm": 35,
+        "fg2a": 20,
+        "fg2m": 10,
+        "fg3a": 60,
+        "fg3m": 25
+      },
+      {
+        "context": "Pull Ups",
+        "fga": 70,
+        "fgm": 30,
+        "fg2a": 40,
+        "fg2m": 20,
+        "fg3a": 30,
+        "fg3m": 10
+      },
+      {
+        "context": "Less than 10 ft",
+        "fga": 90,
+        "fgm": 45,
+        "fg2a": 90,
+        "fg2m": 45,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "Other",
+        "fga": 10,
+        "fgm": 5,
+        "fg2a": 10,
+        "fg2m": 5,
+        "fg3a": 0,
+        "fg3m": 0
+      }
+    ]
+  },
+  "shotClock": {
+    "player": [
+      {
+        "context": "24-22",
+        "fga": 0,
+        "fgm": 0,
+        "fg2a": 0,
+        "fg2m": 0,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "22-18 Very Early",
+        "fga": 3,
+        "fgm": 2,
+        "fg2a": 2,
+        "fg2m": 2,
+        "fg3a": 1,
+        "fg3m": 0
+      },
+      {
+        "context": "18-15 Early",
+        "fga": 3,
+        "fgm": 1,
+        "fg2a": 2,
+        "fg2m": 1,
+        "fg3a": 1,
+        "fg3m": 0
+      },
+      {
+        "context": "15-7 Average",
+        "fga": 5,
+        "fgm": 2,
+        "fg2a": 3,
+        "fg2m": 1,
+        "fg3a": 2,
+        "fg3m": 1
+      },
+      {
+        "context": "7-4 Late",
+        "fga": 2,
+        "fgm": 1,
+        "fg2a": 1,
+        "fg2m": 1,
+        "fg3a": 1,
+        "fg3m": 0
+      },
+      {
+        "context": "4-0 Very Late",
+        "fga": 1,
+        "fgm": 0,
+        "fg2a": 1,
+        "fg2m": 0,
+        "fg3a": 0,
+        "fg3m": 0
+      }
+    ],
+    "league": [
+      {
+        "context": "24-22",
+        "fga": 8,
+        "fgm": 4,
+        "fg2a": 8,
+        "fg2m": 4,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "22-18 Very Early",
+        "fga": 40,
+        "fgm": 20,
+        "fg2a": 20,
+        "fg2m": 12,
+        "fg3a": 20,
+        "fg3m": 8
+      },
+      {
+        "context": "18-15 Early",
+        "fga": 50,
+        "fgm": 25,
+        "fg2a": 30,
+        "fg2m": 15,
+        "fg3a": 20,
+        "fg3m": 10
+      },
+      {
+        "context": "15-7 Average",
+        "fga": 100,
+        "fgm": 45,
+        "fg2a": 60,
+        "fg2m": 30,
+        "fg3a": 40,
+        "fg3m": 15
+      },
+      {
+        "context": "7-4 Late",
+        "fga": 30,
+        "fgm": 12,
+        "fg2a": 24,
+        "fg2m": 10,
+        "fg3a": 6,
+        "fg3m": 2
+      },
+      {
+        "context": "4-0 Very Late",
+        "fga": 20,
+        "fgm": 7,
+        "fg2a": 16,
+        "fg2m": 5,
+        "fg3a": 4,
+        "fg3m": 2
+      }
+    ]
+  }
+}

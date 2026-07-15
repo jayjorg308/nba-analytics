@@ -1,0 +1,138 @@
+{
+  "_meta": {
+    "season": "2025-26",
+    "season_type": "Regular Season",
+    "pull_date": "2026-07-15",
+    "per_mode": "Totals",
+    "grain": "team (30 rows per context in real pulls; 1-2 here; summed at derive per ADR-0004)",
+    "source": "stats.nba.com leaguedashteamptshot (unofficial)",
+    "resolved_filters": {
+      "Catch and Shoot": "Catch and Shoot",
+      "Pull Ups": "Pullups",
+      "Less than 10 ft": "Less Than 10 ft",
+      "24-22": "24-22",
+      "22-18 Very Early": "22-18 Very Early",
+      "18-15 Early": "18-15 Early",
+      "15-7 Average": "15-7 Average",
+      "7-4 Late": "7-4 Late",
+      "4-0 Very Late": "4-0 Very Late"
+    },
+    "fixture_note": "Hand-built league fixture: 'Other' is DELIBERATELY unresolved (residual-by-subtraction path: Overall 250 - resolved 240 = 10); filter literals differ in case from row literals ('Pullups', 'Less Than 10 ft' — the spike's trap #2); Shot Clock sums to 248 (league unattributed 2); Catch and Shoot has two team rows to exercise summation."
+  },
+  "overall": {
+    "resultSets": [
+      {
+        "name": "LeagueDashPTShots",
+        "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+        "rowSet": [
+          [1610612762, "Utah Jazz", "UTA", 82, 82, 1.0, 70, 150, 0.467, 0.533, 0.667, 50, 100, 0.5, 0.333, 20, 50, 0.4],
+          [1610612756, "Phoenix Suns", "PHX", 82, 82, 1.0, 45, 100, 0.45, 0.525, 0.6, 30, 60, 0.5, 0.4, 15, 40, 0.375]
+        ]
+      }
+    ]
+  },
+  "general": {
+    "Catch and Shoot": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.333, 21, 50, 0.42, 0.57, 0.24, 6, 12, 0.5, 0.76, 15, 38, 0.395],
+            [1610612756, "Phoenix Suns", "PHX", 82, 82, 0.3, 14, 30, 0.467, 0.633, 0.267, 4, 8, 0.5, 0.733, 10, 22, 0.455]
+          ]
+        }
+      ]
+    },
+    "Pullups": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.467, 30, 70, 0.429, 0.5, 0.571, 20, 40, 0.5, 0.429, 10, 30, 0.333]
+          ]
+        }
+      ]
+    },
+    "Less Than 10 ft": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.6, 45, 90, 0.5, 0.5, 1.0, 45, 90, 0.5, 0.0, 0, 0, 0.0]
+          ]
+        }
+      ]
+    }
+  },
+  "shot_clock": {
+    "24-22": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.053, 4, 8, 0.5, 0.5, 1.0, 4, 8, 0.5, 0.0, 0, 0, 0.0]
+          ]
+        }
+      ]
+    },
+    "22-18 Very Early": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.267, 20, 40, 0.5, 0.6, 0.5, 12, 20, 0.6, 0.5, 8, 20, 0.4]
+          ]
+        }
+      ]
+    },
+    "18-15 Early": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.333, 25, 50, 0.5, 0.6, 0.6, 15, 30, 0.5, 0.4, 10, 20, 0.5]
+          ]
+        }
+      ]
+    },
+    "15-7 Average": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.667, 45, 100, 0.45, 0.525, 0.6, 30, 60, 0.5, 0.4, 15, 40, 0.375]
+          ]
+        }
+      ]
+    },
+    "7-4 Late": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.2, 12, 30, 0.4, 0.433, 0.8, 10, 24, 0.417, 0.2, 2, 6, 0.333]
+          ]
+        }
+      ]
+    },
+    "4-0 Very Late": {
+      "resultSets": [
+        {
+          "name": "LeagueDashPTShots",
+          "headers": ["TEAM_ID", "TEAM_NAME", "TEAM_ABBREVIATION", "GP", "G", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+          "rowSet": [
+            [1610612762, "Utah Jazz", "UTA", 82, 82, 0.133, 7, 20, 0.35, 0.4, 0.8, 5, 16, 0.313, 0.2, 2, 4, 0.5]
+          ]
+        }
+      ]
+    }
+  }
+}
