@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import type { ZoneMetricsRow } from '../domain/aggregate'
 import type { EvalZone } from '../domain/constants'
 import type { EnrichedShot } from '../domain/payload'
-import { formatClock, formatGameDate, formatPeriod } from '../format'
+import { formatClock, formatGameDate, formatMatchup, formatPeriod } from '../format'
 import { MAKING_BIN_EDGES_PP, MAKING_LEGEND, makingBinVar } from './makingScale'
 import { ShotChart } from './ShotChart'
 import { ZoneDetailCard } from './ZoneDetailCard'
@@ -86,8 +86,8 @@ function ShotTooltipContent({ shot }: { shot: EnrichedShot }) {
   return (
     <>
       <div className="shot-tooltip-when">
-        {formatGameDate(shot.gameDate)} · {formatPeriod(shot.period)} ·{' '}
-        {formatClock(shot.minutesRemaining, shot.secondsRemaining)}
+        {formatGameDate(shot.gameDate)} · {formatMatchup(shot.opponent, shot.home)} ·{' '}
+        {formatPeriod(shot.period)} · {formatClock(shot.minutesRemaining, shot.secondsRemaining)}
       </div>
       <div>
         {shot.zoneBasic} — {shot.distanceFt} ft

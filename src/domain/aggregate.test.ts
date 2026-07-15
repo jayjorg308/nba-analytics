@@ -17,6 +17,8 @@ function shot(zoneBasic: BasicZone, made: boolean, over: Partial<EnrichedShot> =
     gameId: '0022500001',
     gameEventId: 1,
     gameDate: '2025-11-01',
+    opponent: 'PHX',
+    home: false,
     period: 1,
     minutesRemaining: 5,
     secondsRemaining: 30,

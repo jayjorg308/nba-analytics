@@ -19,7 +19,8 @@ import {
 
 // Must match SCHEMA_VERSION in ingestion/derive_payload.py; bump both on any
 // breaking payload change. v2: _meta.zoneConflictsDropped (ADR-0019).
-export const SCHEMA_VERSION = 2
+// v3: per-shot opponent/home (matchup context, derived in Python — ADR-0011).
+export const SCHEMA_VERSION = 3
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
 
@@ -28,6 +29,8 @@ const enrichedShotSchema = z
     gameId: z.string().min(1),
     gameEventId: z.number().int(),
     gameDate: z.string().regex(isoDate),
+    opponent: z.string().regex(/^[A-Z]{2,3}$/), // team abbreviation (e.g. PHX)
+    home: z.boolean(),
     period: z.number().int().min(1), // >4 legal (overtime)
     minutesRemaining: z.number().int().min(0).max(11),
     secondsRemaining: z.number().int().min(0).max(59),

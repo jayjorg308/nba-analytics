@@ -142,10 +142,10 @@ describe('HeroPage over the golden fixture', () => {
 
     fireEvent.click(screen.getByLabelText('Shots')) // dots live in the secondary view
     // first dot in DOM order = first missed shot in payload order:
-    // the Mid-Range 17-footer, Q2 with 7:52 left, Oct 31 2025
+    // the Mid-Range 17-footer, at Phoenix, Q2 with 7:52 left, Oct 31 2025
     const hit = document.querySelector('.shot-dot .dot-hit')!
     fireEvent.pointerEnter(hit, { pointerType: 'mouse' })
-    screen.getByText(/Oct 31, 2025 · Q2 · 7:52/)
+    screen.getByText(/Oct 31, 2025 · @ PHX · Q2 · 7:52/)
     screen.getByText(/Mid-Range — 17 ft/)
     expect(document.querySelector('.shot-tooltip-result')!.textContent).toBe('Missed')
 

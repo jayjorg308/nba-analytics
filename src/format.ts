@@ -53,6 +53,15 @@ export function withSmallSampleMark(s: string, flagged: boolean): string {
   return flagged ? `${s}†` : s
 }
 
+/**
+ * ("UTA", true) -> "vs UTA"; ("PHX", false) -> "@ PHX". House style: "vs"
+ * without a period, a space before the abbreviation. Opponent/home arrive
+ * derived from the payload — this only formats them (ADR-0011).
+ */
+export function formatMatchup(opponent: string, home: boolean): string {
+  return `${home ? 'vs' : '@'} ${opponent}`
+}
+
 /** (1, 19) -> "1:19"; (7, 5) -> "7:05" */
 export function formatClock(minutes: number, seconds: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`

@@ -150,6 +150,7 @@ def test_enrich_shots_field_mapping():
     assert dp.enrich_shots(shots) == [
         {
             "gameId": "0022500025", "gameEventId": 233, "gameDate": "2025-10-31",
+            "opponent": "PHX", "home": False,  # Jazz row, HTM=PHX -> away at PHX
             "period": 2, "minutesRemaining": 7, "secondsRemaining": 52,
             "made": True, "pointValue": 2, "zoneBasic": "Restricted Area",
             "zoneArea": "Center(C)", "zoneRange": "Less Than 8 ft",
@@ -157,12 +158,40 @@ def test_enrich_shots_field_mapping():
         },
         {
             "gameId": "0022500025", "gameEventId": 239, "gameDate": "2025-10-31",
+            "opponent": "PHX", "home": False,
             "period": 4, "minutesRemaining": 0, "secondsRemaining": 9,
             "made": False, "pointValue": 3, "zoneBasic": "Left Corner 3",
             "zoneArea": "Left Side(L)", "zoneRange": "24+ ft",
             "distanceFt": 23, "locX": -234, "locY": 27,
         },
     ]
+
+
+# --- Matchup derivation (v3: opponent/home derive here, ADR-0011) ----------------
+
+def test_matchup_home_and_away():
+    # per-row TEAM_NAME lookup — HTM side is home, the other abbrev is the opponent
+    assert dp.matchup("Utah Jazz", "UTA", "PHX") == ("PHX", True)
+    assert dp.matchup("Utah Jazz", "PHX", "UTA") == ("PHX", False)
+    assert dp.matchup("Phoenix Suns", "PHX", "UTA") == ("UTA", True)
+
+
+def test_matchup_unknown_team_name_fails():
+    with pytest.raises(SystemExit, match="unknown TEAM_NAME"):
+        dp.matchup("Seattle SuperSonics", "UTA", "PHX")
+
+
+def test_matchup_team_not_in_game_fails():
+    # a mapped abbreviation that is neither HTM nor VTM means the map or the
+    # row is wrong — never guess a matchup into the payload
+    with pytest.raises(SystemExit, match="maps to UTA but the game is BOS @ MIA"):
+        dp.matchup("Utah Jazz", "MIA", "BOS")
+
+
+def test_team_abbrev_map_covers_thirty_teams():
+    assert len(dp.TEAM_ABBREV) == 30
+    assert len(set(dp.TEAM_ABBREV.values())) == 30
+    assert all(2 <= len(a) <= 3 and a.isupper() for a in dp.TEAM_ABBREV.values())
 
 
 # --- Validation ----------------------------------------------------------------

@@ -52,6 +52,12 @@ describe('parseDerivedPayload', () => {
     expectRejected(p)
   })
 
+  it('rejects a malformed opponent (full name where the abbreviation belongs)', () => {
+    const p = clone()
+    p.shots[0]!.opponent = 'Phoenix Suns'
+    expectRejected(p)
+  })
+
   it('rejects pointValue outside 2|3', () => {
     const p = clone()
     p.shots[0]!.pointValue = 1

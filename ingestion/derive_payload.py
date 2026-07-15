@@ -38,7 +38,8 @@ import pandas as pd
 # Bump on any breaking payload change; pinned as a literal on the TS side
 # (src/domain/payload.ts) so a mismatch fails loudly at the load boundary.
 # v2: _meta.zoneConflictsDropped (ADR-0019).
-SCHEMA_VERSION = 2
+# v3: per-shot opponent/home (matchup context, derived here — ADR-0011).
+SCHEMA_VERSION = 3
 
 # --- Zone taxonomy (v1 evaluation grain = SHOT_ZONE_BASIC; see CONTEXT.md) -----
 BASIC_ZONES = [
@@ -67,6 +68,45 @@ ZONE_RANGES = ["Less Than 8 ft", "8-16 ft", "16-24 ft", "24+ ft", "Back Court Sh
 MID_RANGE_BANDS = ["Less Than 8 ft", "8-16 ft", "16-24 ft"]
 
 SHOT_TYPE_POINTS = {"2PT Field Goal": 2, "3PT Field Goal": 3}
+
+# Static 30-team map, stats.nba.com naming (note "LA Clippers", not "Los
+# Angeles Clippers"). Maps each row's TEAM_NAME to the abbreviation used by
+# HTM/VTM, so home/opponent derive per row — a mid-season trade changes
+# TEAM_NAME on the traded player's later rows and stays correct. An unknown
+# TEAM_NAME (expansion, rebrand, endpoint drift) must fail loudly, never
+# guess.
+TEAM_ABBREV = {
+    "Atlanta Hawks": "ATL",
+    "Boston Celtics": "BOS",
+    "Brooklyn Nets": "BKN",
+    "Charlotte Hornets": "CHA",
+    "Chicago Bulls": "CHI",
+    "Cleveland Cavaliers": "CLE",
+    "Dallas Mavericks": "DAL",
+    "Denver Nuggets": "DEN",
+    "Detroit Pistons": "DET",
+    "Golden State Warriors": "GSW",
+    "Houston Rockets": "HOU",
+    "Indiana Pacers": "IND",
+    "LA Clippers": "LAC",
+    "Los Angeles Lakers": "LAL",
+    "Memphis Grizzlies": "MEM",
+    "Miami Heat": "MIA",
+    "Milwaukee Bucks": "MIL",
+    "Minnesota Timberwolves": "MIN",
+    "New Orleans Pelicans": "NOP",
+    "New York Knicks": "NYK",
+    "Oklahoma City Thunder": "OKC",
+    "Orlando Magic": "ORL",
+    "Philadelphia 76ers": "PHI",
+    "Phoenix Suns": "PHX",
+    "Portland Trail Blazers": "POR",
+    "Sacramento Kings": "SAC",
+    "San Antonio Spurs": "SAS",
+    "Toronto Raptors": "TOR",
+    "Utah Jazz": "UTA",
+    "Washington Wizards": "WAS",
+}
 
 # Exact expected headers — any drift in the (unofficial) endpoint shape must
 # fail loudly here, never flow silently into the payload.
@@ -225,22 +265,43 @@ def validate_snapshot(snapshot: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame,
     return meta, shots, league, zone_conflicts_dropped
 
 
+def matchup(team_name: str, htm: str, vtm: str) -> tuple[str, bool]:
+    """(opponent abbreviation, home) for one shot row, derived HERE — the UI
+    only formats, never computes (ADR-0011).
+
+    Per-row on TEAM_NAME so mid-season trades stay correct. Unknowns fail
+    loudly: an unmapped TEAM_NAME, or a mapped abbreviation that is neither
+    HTM nor VTM (map drift), must never guess a matchup into the payload.
+    """
+    abbrev = TEAM_ABBREV.get(team_name)
+    if abbrev is None:
+        fail(f"unknown TEAM_NAME: {team_name!r} — update TEAM_ABBREV")
+    if abbrev not in (htm, vtm):
+        fail(f"TEAM_NAME {team_name!r} maps to {abbrev} but the game is {vtm} @ {htm}")
+    home = abbrev == htm
+    return (vtm if home else htm), home
+
+
 def enrich_shots(shots: pd.DataFrame) -> list[dict]:
     """Map validated shot rows to the typed EnrichedShot shape, order preserved.
 
-    Omitted on purpose: PLAYER_*/TEAM_*/HTM/VTM (provenance lives in _meta),
-    GRID_TYPE, SHOT_ATTEMPTED_FLAG (validated ==1, then dropped), EVENT_TYPE
-    (redundant with `made`), and ACTION_TYPE — excluded because it is
-    creation-flavored data whose presence would invite the Case-1 creation
+    TEAM_NAME/HTM/VTM are consumed here (folded into opponent/home, v3) and
+    not carried raw. Omitted on purpose: PLAYER_*/TEAM_ID (provenance lives
+    in _meta), GRID_TYPE, SHOT_ATTEMPTED_FLAG (validated ==1, then dropped),
+    EVENT_TYPE (redundant with `made`), and ACTION_TYPE — excluded because it
+    is creation-flavored data whose presence would invite the Case-1 creation
     proxy ADR-0005 forbids. The raw layer retains it for a legitimate v2.
     """
     enriched = []
     for row in shots.itertuples(index=False):
         d = str(row.GAME_DATE)
+        opponent, home = matchup(str(row.TEAM_NAME), str(row.HTM), str(row.VTM))
         enriched.append({
             "gameId": str(row.GAME_ID),
             "gameEventId": int(row.GAME_EVENT_ID),
             "gameDate": f"{d[:4]}-{d[4:6]}-{d[6:]}",
+            "opponent": opponent,
+            "home": home,
             "period": int(row.PERIOD),
             "minutesRemaining": int(row.MINUTES_REMAINING),
             "secondsRemaining": int(row.SECONDS_REMAINING),
