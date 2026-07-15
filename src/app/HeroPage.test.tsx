@@ -135,7 +135,7 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText('Shot making vs league average (percentage points)')
   })
 
-  it('shows a descriptive tooltip on hover and removes it on leave', async () => {
+  it('shows a descriptive shot tooltip on mouse hover and removes it on leave', async () => {
     stubFetch({ ok: true, json: goldenJson })
     render(<HeroPage hero={hero} />)
     await screen.findByText(hero.thesis)
@@ -144,13 +144,26 @@ describe('HeroPage over the golden fixture', () => {
     // first dot in DOM order = first missed shot in payload order:
     // the Mid-Range 17-footer, Q2 with 7:52 left, Oct 31 2025
     const hit = document.querySelector('.shot-dot .dot-hit')!
-    fireEvent.pointerEnter(hit)
+    fireEvent.pointerEnter(hit, { pointerType: 'mouse' })
     screen.getByText(/Oct 31, 2025 · Q2 · 7:52/)
     screen.getByText(/Mid-Range — 17 ft/)
     expect(document.querySelector('.shot-tooltip-result')!.textContent).toBe('Missed')
 
-    fireEvent.pointerLeave(hit)
+    fireEvent.pointerLeave(hit, { pointerType: 'mouse' })
     expect(document.querySelector('.shot-tooltip')).toBeNull()
+  })
+
+  it('opens the zone detail card from the default view and closes on Escape (ADR-0027)', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(hero.thesis)
+
+    // RA is the topmost fill (painter order); clicking opens its card
+    const raFill = [...document.querySelectorAll('.zone-fill')].at(-1)!
+    fireEvent.click(raFill)
+    const dialog = screen.getByRole('dialog', { name: 'Restricted Area details' })
+    fireEvent.keyDown(dialog, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 })
 

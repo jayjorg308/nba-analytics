@@ -21,8 +21,10 @@ export interface ShotChartProps {
  *
  * A11y: the svg is a labeled image; dots are aria-hidden. The zone table is
  * the accessible data representation — 509 tab stops would help no one.
- * Tooltips are pointer-hover only; touch/keyboard users get every number in
- * the table.
+ * Tooltips are MOUSE-hover only (ADR-0027): on touch, pointerenter fires on
+ * tap and pointerleave never follows, so a tooltip would stick — non-mouse
+ * pointers are ignored and touch/keyboard users get every number in the
+ * table.
  */
 export function ShotChart({ shots, ariaLabel, onShotEnter, onShotLeave }: ShotChartProps) {
   const visible = shots.filter(isOnCourt)
@@ -52,10 +54,14 @@ export function ShotChart({ shots, ariaLabel, onShotEnter, onShotLeave }: ShotCh
                   cy={p.y}
                   r={HIT_R}
                   onPointerEnter={(e) => {
+                    if (e.pointerType !== 'mouse') return
                     const r = e.currentTarget.getBoundingClientRect()
                     onShotEnter?.(shot, { x: r.x + r.width / 2, y: r.y + r.height / 2 })
                   }}
-                  onPointerLeave={() => onShotLeave?.()}
+                  onPointerLeave={(e) => {
+                    if (e.pointerType !== 'mouse') return
+                    onShotLeave?.()
+                  }}
                 />
               </g>
             )
