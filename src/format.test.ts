@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   formatClock,
   formatGameDate,
+  formatMatchup,
   formatPercent1,
   formatPeriod,
   formatPps2,
@@ -46,6 +47,12 @@ describe('format', () => {
   it('appends the dagger only when flagged', () => {
     expect(withSmallSampleMark('−6.1', true)).toBe('−6.1†')
     expect(withSmallSampleMark('−6.1', false)).toBe('−6.1')
+  })
+
+  it('formats matchups in house style: "vs" home (no period), "@" away', () => {
+    expect(formatMatchup('UTA', true)).toBe('vs UTA')
+    expect(formatMatchup('PHX', false)).toBe('@ PHX')
+    expect(formatMatchup('OKC', true)).toBe('vs OKC')
   })
 
   it('formats the game clock with zero-padded seconds', () => {
