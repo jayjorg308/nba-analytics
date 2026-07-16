@@ -97,7 +97,7 @@ The page's poster-scale opening: a black-and-white action photo of the hero play
 The site root: a directory of poster tiles — each hero's banner photo and thesis at tile scale — linking to the complete hero pages at their own URLs (`/<slug>`), all served by one deployment (ADR-0022). A directory of *arguments*, deliberately not a switcher (ADR-0018): heroes are never view-state under one page, and navigation is plain full-page links (the tiles, plus each hero page's quiet "All players" footer link). Tiles read straight off the **hero registry** (`src/heroes/registry.ts`, the single source of hero truth — the index, router, sync script, and per-hero guards all consume it), so registering a hero is what publishes its tile.
 
 **v2 thesis**:
-"How does he create his shots?" — the scheduled second act. Designated engine: Case 2 creation contexts at the bucket grain (v2.0 ships the General and Shot Clock families — ADR-0030). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
+"How does he create his shots?" — the second act, shipped: Case 2 creation contexts at the bucket grain, three families (see Context family; ADR-0030 plus the v2.1 defender fast-follow). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
 
 **Shot creation**:
 Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. v2.0 evaluates it at the bucket grain through creation contexts; creation claims are allowed iff they cite Case 2 contexts (ADR-0029). Case 1 data still carries *no* creation signal — a catch-and-shoot and a pull-up from the same spot are identical dots in `shotchartdetail` — and must never imply otherwise (ADR-0005's quarantine stands).
@@ -108,6 +108,9 @@ _Avoid_: "bucket" in product copy — engineering shorthand for the same concept
 
 **Context family**:
 One partition of a player's attempts along a single tracking dimension. Three ship: **General** (product grain: two-tier — inside 10 ft, where the NBA classifies no creation, vs **jumpers** 10 ft and out, the summed catch-and-shoot / pull-up / other parent whose children refine how the jumper was created — ADR-0031), **Shot Clock** (product grain: three bands — Early 24–15 / Average 15–7 / Late 7–0), and **Closest Defender** (v2.1; product grain: Tight 0–4 / Open 4–6 / Wide open 6+ ft, from the NBA's four distances). Finer grains always roll up by summing makes and attempts, never averaging rates. A family's contexts sum to the season's attributed attempts. Dribbles and touch-time are rejected as restating General (ADR-0030).
+
+**Product grain**:
+The grain a context family renders at, computed in the aggregation by summing makes and attempts from the finer grain the payload persists — never by averaging rates (ADR-0004), and chosen so every rendered band clears the small-sample bar (the combined-threes pattern, ADR-0016). The payload always keeps the NBA's grain, so retuning a product grain is an aggregation change, never a schema bump. Current product grains: General's two tiers (inside 10 ft / jumpers), Shot Clock's three bands, Closest Defender's three bands.
 
 **Creation diet**:
 A player's attempt shares across one family's creation contexts — the creation analog of shot diet, benchmarked against the league's creation diet (the selection benchmark's stance: position-blind, comparison class stated plainly).
@@ -120,6 +123,9 @@ Points-per-shot within a creation context, computed from that context's 2PT/3PT 
 
 **Unattributed attempts**:
 Attempts a context family fails to cover (tracking gaps — e.g. shot-clock data missing). Counted and reported whenever nonzero, never guessed into a context; required to be zero for the General family, which must reconcile exactly with the shot payload's season attempts (ADR-0030).
+
+**Shot creation section**:
+The hero page's second act (ADR-0031): after the court and zone table close the two-axis argument, this section backs the verdict's why-sentence. Its visual is the **creation value chart** — a PPS dumbbell per creation context, his value vs the league's on one positional axis (no color scale, no tooltips; the making palette belongs to the making axis alone). The creation table is the accessible data twin and the home of the diet shares — deliberately not charted, because the diet cut largely restates the zone story. The catch-and-shoot row carries the **three-arrival annotation** ("N of his M threes"), the bridge between the creation story and the zone table's three-point verdict.
 
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.

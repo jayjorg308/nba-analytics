@@ -7,18 +7,18 @@
 // The index tile falls out of the registry for free.
 
 import { codyWilliams } from './cody-williams'
-// TEMPORARY(single-hero): Keyonte George is unregistered while the Cody
-// Williams page is polished (2026-07-12; revisit after v2/v3 — ROADMAP
-// status note). His module, colocated guard, deployed payload, and photo
-// all stay — the guard keeps running against his committed payload — so
-// re-registering him is uncommenting this import and the entry below.
+// Keyonte George is REGISTERED deliberately (confirmed 2026-07-16): his page
+// is live at /keyonte-george with the full two-act argument and guards, and
+// argless hero:sync covers him. Only the hero INDEX stays hidden for now —
+// the root serves Cody directly; the TEMPORARY(single-hero) markers for that
+// live in src/App.tsx and src/app/HeroPage.tsx (ROADMAP status note).
 import { keyonteGeorge } from './keyonte-george'
 import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
 export const HEROES: readonly HeroConfig[] = [
   codyWilliams,
-  keyonteGeorge, // TEMPORARY(single-hero) — see note above
+  keyonteGeorge,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {

@@ -5,7 +5,7 @@ dependency and value-per-effort, not by calendar. Each phase repeats the v1
 recipe — a data spine with a golden fixture, a pure metrics function, honesty
 flags, authored-and-guarded copy — on a new axis._
 
-## Status — updated 2026-07-12
+## Status — updated 2026-07-16
 
 | Phase | State |
 | --- | --- |
@@ -13,17 +13,21 @@ flags, authored-and-guarded copy — on a new axis._
 | v1.1 — close-out polish | ✅ closed 2026-07-12 (`hero:report`, the hero directory, display-grain rounding — ADRs 0022–0023) |
 | v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
-| v2.5 — creation at the shot grain | not started |
+| v2.5 — creation at the shot grain | ⬅ **next up** (play-by-play join; unlocks "assisted", the zone × creation cross, and per-shot bucket identification) |
 | v3 — living seasons and heroes at scale | not started |
 
-> **Temporarily single-hero (2026-07-12):** while the Cody Williams page is
-> being fully polished, Keyonte George is unregistered and the hero index is
-> hidden — the root serves Cody directly and unknown paths fall back to him.
-> Everything needed to restore multi-hero stays committed and guarded (his
-> config module, colocated verdict guard, deployed payload, photo — and the
-> dormant `HeroIndexPage` keeps its tests). The revert is a grep for
-> `TEMPORARY(single-hero)` — three files. Revisit once v2/v3 land and the
-> Cody page is solidified.
+> **Directory-less by choice (confirmed 2026-07-16):** Keyonte George is
+> deliberately registered — both hero pages are live at their URLs with full
+> two-act arguments and guards, and argless `hero:sync` covers both — while
+> the hero index stays hidden: the root serves Cody directly, unknown paths
+> fall back to him, and the "All players" footer link stays commented. The
+> restore, when the Cody page is deemed done, is a grep for
+> `TEMPORARY(single-hero)` in `src/App.tsx` + `src/app/HeroPage.tsx`.
+>
+> _Near-term side quest: stress-test the v2 creation charts against the
+> league's max-FGA stars — pulls + `hero:report` (and `--file` mode) work
+> for unregistered players, no registry entry needed. Each experiment needs
+> both pulls (`pull_shots.py` + `pull_tracking.py`), then both derives._
 
 **Where v1 ended:** the thesis ("Is this player taking good shots?") is
 answered by the two-axis model, argued verdict-first (ADR-0018), guarded
@@ -123,8 +127,11 @@ creationPayload.real.test.ts)._
 
 _Play-by-play reconstruction, joined to the dots by gameId + gameEventId.
 Unlocks what buckets cannot: the zone × creation cross ("his corner threes
-are assisted; his above-break threes are pull-ups") and per-shot possession
-context in the tooltip (the 0.8-seconds-on-the-clock touchstone)._
+are assisted; his above-break threes are pull-ups"), per-shot possession
+context in the tooltip (the 0.8-seconds-on-the-clock touchstone), the
+"assisted" verdict vocabulary (the last unshipped lexicon tier —
+ADR-0029), and per-shot bucket identification — e.g. naming which two shots
+were George's held-catch "Other" threes, which bucket grain provably cannot._
 
 Two honesty constraints, both flag-shaped like everything else here:
 
@@ -158,7 +165,9 @@ Two honesty constraints, both flag-shaped like everything else here:
   a directory of pages at real URLs — one deployment, plain links — never a
   dropdown over one page.
 - **No creation inference from Case 1 data.** `ACTION_TYPE` stays quarantined
-  in the raw layer until Case 2/3 can back the claim (ADR-0005).
+  in the raw layer (ADR-0005); creation claims are legal only when they cite
+  shipped Case 2 contexts (ADR-0029), and vocabulary whose family hasn't
+  shipped stays out of verdicts entirely — today only "assisted", until v2.5.
 - **No rate averaging.** Rollups sum makes and attempts, always (ADR-0004).
 - **No loosened guards.** Palette, verdict claims, golden, drift: when a
   guard fails, fix the thing it guards — never the assertion (ADR-0014/0017).
