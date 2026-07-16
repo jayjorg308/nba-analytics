@@ -25,6 +25,7 @@ interface MutablePayload extends Json {
   _meta: Json
   general: { player: MutableEntry[]; league: MutableEntry[] }
   shotClock: { player: MutableEntry[]; league: MutableEntry[] }
+  closestDefender: { player: MutableEntry[]; league: MutableEntry[] }
 }
 const clone = (): MutablePayload => structuredClone(golden) as MutablePayload
 
@@ -39,6 +40,8 @@ describe('parseCreationPayload', () => {
     expect(payload._meta.seasonFga).toBe(15)
     expect(payload.general.player).toHaveLength(4)
     expect(payload.shotClock.player).toHaveLength(6)
+    expect(payload.closestDefender.player).toHaveLength(4) // v2 family
+    expect(payload._meta.defenderUnattributed).toBe(2)
     // The sparse-row zero-fill (spike trap #1) survives the round trip.
     expect(payload.general.player.find((e) => e.context === 'Other')).toEqual({
       context: 'Other',
@@ -110,6 +113,28 @@ describe('parseCreationPayload', () => {
   it('rejects a shot-clock sum inconsistent with the unattributed count', () => {
     const p = clone()
     p._meta.shotClockUnattributed = 0 // bands sum to 14, seasonFga is 15
+    expectRejected(p)
+  })
+
+  it('rejects a defender sum inconsistent with the unattributed count', () => {
+    const p = clone()
+    p._meta.defenderUnattributed = 0 // ranges sum to 13, seasonFga is 15
+    expectRejected(p)
+  })
+
+  it('rejects an unknown defender range', () => {
+    const p = clone()
+    p.closestDefender.player[0]!.context = '10+ Feet - Alone'
+    expectRejected(p)
+  })
+
+  it('rejects a missing defender range (the partition must be whole)', () => {
+    const p = clone()
+    // the zero-filled 'Very Tight' row: removing it keeps sums intact, so
+    // ONLY the exactly-once rule fires
+    p.closestDefender.player = p.closestDefender.player.filter(
+      (e) => e.context !== '0-2 Feet - Very Tight',
+    )
     expectRejected(p)
   })
 

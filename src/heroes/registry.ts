@@ -12,13 +12,13 @@ import { codyWilliams } from './cody-williams'
 // status note). His module, colocated guard, deployed payload, and photo
 // all stay — the guard keeps running against his committed payload — so
 // re-registering him is uncommenting this import and the entry below.
-// import { keyonteGeorge } from './keyonte-george'
+import { keyonteGeorge } from './keyonte-george'
 import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
 export const HEROES: readonly HeroConfig[] = [
   codyWilliams,
-  // keyonteGeorge, // TEMPORARY(single-hero) — see note above
+  keyonteGeorge, // TEMPORARY(single-hero) — see note above
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {

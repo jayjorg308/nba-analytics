@@ -11,7 +11,8 @@ flags, authored-and-guarded copy — on a new axis._
 | --- | --- |
 | v1 — the two-axis argument | ✅ shipped (ADRs 0001–0021) |
 | v1.1 — close-out polish | ✅ closed 2026-07-12 (`hero:report`, the hero directory, display-grain rounding — ADRs 0022–0023) |
-| v2.0 — creation at the bucket grain | 🔨 in progress — design grilled + recorded (ADRs 0029–0031) and spike done 2026-07-15; the contract build is next |
+| v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
+| v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
 | v2.5 — creation at the shot grain | not started |
 | v3 — living seasons and heroes at scale | not started |
 
@@ -88,6 +89,35 @@ payload**, not columns joined to the shot rows._
 5. **Presentation**: a creation panel below the two-axis headline blocks
    (context diet vs league, PPS by context), and the verdict grows its *why*
    sentence — the extension ADR-0018 anticipated.
+
+_Items 2–5 done 2026-07-15 (ADRs 0029–0031 + amendments). The build taught
+two presentation lessons, both recorded on ADR-0031: the NBA's General
+taxonomy renders two-tier (rim vs jumpers), and the section's chart encodes
+VALUE (a PPS dumbbell per context), not diet — the diet cut restates the
+zone story. The verdicts now close with guarded why-sentences (Cody: the
+catch-and-shoot collapse behind "cold from three"; George: the pull-up-heavy
+diet behind his selection cost)._
+
+## v2.1 — Creation: defender distance (the fast-follow)
+
+_Deliberately cut from v2.0 (ADR-0030) to keep the first creation panel from
+becoming a dashboard. The player-side tables (`ClosestDefenderShooting` /
+`ClosestDefender10ftPlusShooting`) are ALREADY in every raw tracking
+snapshot — the increment is: league pull extension (CloseDefDistRange
+filtered calls) → creation schema v2 → golden regen → a third family in the
+aggregation (likely a Tight/Open product rollup, the clock-band pattern) →
+a third group in the chart and table. Payoff: the catch-and-shoot story
+tightens to "wide-open threes, measured" — and the 'contested'/'wide open'
+vocabulary moves from the guard lexicon's unshipped list to the backed list._
+
+_Done 2026-07-16, exactly as scoped above. The family partitions the season
+EXACTLY for both heroes and league-wide (zero unattributed everywhere), and
+the filter literals match the row literals — no case traps. The payoff row
+delivered: the launch hero produces 0.880 PPS on 117 wide-open attempts
+against a league 1.178, while his tight/open bands sit at league — the value
+leaks precisely where nobody is guarding him, corroborating the
+catch-and-shoot story from independent tracking data (anchored in
+creationPayload.real.test.ts)._
 
 ## v2.5 — Creation at the shot grain (the Case 3 stretch)
 

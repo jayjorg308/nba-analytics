@@ -13,7 +13,9 @@ import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import { SMALL_SAMPLE_MAKING_ATTEMPTS } from '../domain/constants'
 import type { CreationPayload } from '../domain/creationPayload'
 import {
+  formatClockBand,
   formatCreationContext,
+  formatDefenderBand,
   formatPercent1,
   JUMPERS_LABEL,
   withSmallSampleMark,
@@ -99,7 +101,16 @@ export function renderCreationReport(payload: CreationPayload): string {
   )
   lines.push(`  ${tableHeader('band')}`)
   for (const row of m.shotClock) {
-    lines.push(`  ${metricLine(`${row.band} (${row.seconds}s)`, row)}`)
+    lines.push(`  ${metricLine(formatClockBand(row.band, row.seconds), row)}`)
+  }
+
+  lines.push(
+    '',
+    "  CLOSEST DEFENDER — product grain (the NBA's four distances, summed to three — v2.1)",
+  )
+  lines.push(`  ${tableHeader('band')}`)
+  for (const row of m.closestDefender) {
+    lines.push(`  ${metricLine(formatDefenderBand(row.band, row.feet), row)}`)
   }
 
   // The coverage counters, always printed: the UI reports them when nonzero;
@@ -109,6 +120,8 @@ export function renderCreationReport(payload: CreationPayload): string {
     '',
     `  unattributed shot-clock attempts: ${m.shotClockUnattributed} (player) · ` +
       `${m.leagueShotClockUnattributed} (league)`,
+    `  unattributed defender attempts: ${m.defenderUnattributed} (player) · ` +
+      `${m.leagueDefenderUnattributed} (league)`,
     `  † PPS on <${SMALL_SAMPLE_MAKING_ATTEMPTS} FGA — small-sample flag (flagged, never suppressed)`,
   )
 

@@ -14,7 +14,8 @@ import { z } from 'zod'
 
 // Must match SCHEMA_VERSION in ingestion/derive_creation.py; bump both on any
 // breaking payload change. v1: General + Shot Clock families (ADR-0030).
-export const CREATION_SCHEMA_VERSION = 1
+// v2: Closest Defender family (the ADR-0030 fast-follow, ROADMAP v2.1).
+export const CREATION_SCHEMA_VERSION = 2
 
 // NBA row literals, verbatim (the spike catalogued them — ADR-0030 closures).
 // The payload always carries every context of a shipped family exactly once:
@@ -39,8 +40,20 @@ export const SHOT_CLOCK_BANDS = [
   '4-0 Very Late',
 ] as const
 
+// The NBA's four defender distances, persisted verbatim (v2); the product
+// grain (Tight 0-4 / Open 4-6 / Wide open 6+) is likewise an aggregation
+// rollup — chosen so every band clears the small-sample bar for the current
+// heroes ('Very Tight' alone sits just under it at 44/48 attempts).
+export const DEFENDER_RANGES = [
+  '0-2 Feet - Very Tight',
+  '2-4 Feet - Tight',
+  '4-6 Feet - Open',
+  '6+ Feet - Wide Open',
+] as const
+
 export type GeneralContext = (typeof GENERAL_CONTEXTS)[number]
 export type ShotClockBand = (typeof SHOT_CLOCK_BANDS)[number]
+export type DefenderRange = (typeof DEFENDER_RANGES)[number]
 
 const count = z.number().int().min(0)
 
@@ -67,6 +80,7 @@ function contextEntrySchema<const T extends readonly [string, ...string[]]>(cont
 
 const generalEntrySchema = contextEntrySchema(GENERAL_CONTEXTS)
 const shotClockEntrySchema = contextEntrySchema(SHOT_CLOCK_BANDS)
+const defenderEntrySchema = contextEntrySchema(DEFENDER_RANGES)
 
 // One family: the player's contexts and the league baseline side by side —
 // the baseline rides inside the payload exactly as zoneBaseline does in the
@@ -93,12 +107,16 @@ export const creationPayloadSchema = z
        * counted and reported in the UI whenever nonzero, never guessed
        * into a band (ADR-0019 pattern; zero in launch data). */
       shotClockUnattributed: count,
+      /** Same coverage counter for the Closest Defender family (v2). */
+      defenderUnattributed: count,
       /** League Overall FGA — the league-side diet denominator. */
       leagueFga: count,
       leagueShotClockUnattributed: count,
+      leagueDefenderUnattributed: count,
     }),
     general: familySchema(generalEntrySchema),
     shotClock: familySchema(shotClockEntrySchema),
+    closestDefender: familySchema(defenderEntrySchema),
   })
   .superRefine((p, ctx) => {
     // Every context of a shipped family, exactly once, on both sides — a
@@ -109,6 +127,8 @@ export const creationPayloadSchema = z
       ['general.league', GENERAL_CONTEXTS, p.general.league],
       ['shotClock.player', SHOT_CLOCK_BANDS, p.shotClock.player],
       ['shotClock.league', SHOT_CLOCK_BANDS, p.shotClock.league],
+      ['closestDefender.player', DEFENDER_RANGES, p.closestDefender.player],
+      ['closestDefender.league', DEFENDER_RANGES, p.closestDefender.league],
     ]
     for (const [label, contexts, entries] of sides) {
       for (const context of contexts) {
@@ -132,11 +152,21 @@ export const creationPayloadSchema = z
         sum(p.shotClock.player),
         p._meta.seasonFga - p._meta.shotClockUnattributed,
       ],
+      [
+        'closestDefender.player',
+        sum(p.closestDefender.player),
+        p._meta.seasonFga - p._meta.defenderUnattributed,
+      ],
       ['general.league', sum(p.general.league), p._meta.leagueFga],
       [
         'shotClock.league',
         sum(p.shotClock.league),
         p._meta.leagueFga - p._meta.leagueShotClockUnattributed,
+      ],
+      [
+        'closestDefender.league',
+        sum(p.closestDefender.league),
+        p._meta.leagueFga - p._meta.leagueDefenderUnattributed,
       ],
     ]
     for (const [label, actual, expected] of identities) {

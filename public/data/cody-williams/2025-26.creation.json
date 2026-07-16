@@ -1,17 +1,19 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
     "seasonType": "Regular Season",
-    "pullDate": "2026-07-15",
-    "sourceSnapshot": "data/raw/cody-williams/2025-26/tracking/2026-07-15.json",
-    "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-15.json",
+    "pullDate": "2026-07-16",
+    "sourceSnapshot": "data/raw/cody-williams/2025-26/tracking/2026-07-16.json",
+    "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-16.json",
     "seasonFga": 509,
     "shotClockUnattributed": 0,
+    "defenderUnattributed": 0,
     "leagueFga": 218352,
-    "leagueShotClockUnattributed": 0
+    "leagueShotClockUnattributed": 0,
+    "leagueDefenderUnattributed": 0
   },
   "general": {
     "player": [
@@ -202,6 +204,84 @@
         "fg2m": 4744,
         "fg3a": 8019,
         "fg3m": 2273
+      }
+    ]
+  },
+  "closestDefender": {
+    "player": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 44,
+        "fgm": 21,
+        "fg2a": 44,
+        "fg2m": 21,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 213,
+        "fgm": 114,
+        "fg2a": 211,
+        "fg2m": 113,
+        "fg3a": 2,
+        "fg3m": 1
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 135,
+        "fgm": 60,
+        "fg2a": 88,
+        "fg2m": 50,
+        "fg3a": 47,
+        "fg3m": 10
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 117,
+        "fgm": 43,
+        "fg2a": 35,
+        "fg2m": 26,
+        "fg3a": 82,
+        "fg3m": 17
+      }
+    ],
+    "league": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 14468,
+        "fgm": 6702,
+        "fg2a": 14172,
+        "fg2m": 6606,
+        "fg3a": 296,
+        "fg3m": 96
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 83893,
+        "fgm": 43968,
+        "fg2a": 75760,
+        "fg2m": 41504,
+        "fg3a": 8133,
+        "fg3m": 2464
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 65275,
+        "fgm": 29080,
+        "fg2a": 30439,
+        "fg2m": 17300,
+        "fg3a": 34836,
+        "fg3m": 11780
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 54716,
+        "fgm": 23090,
+        "fg2a": 7301,
+        "fg2m": 4824,
+        "fg3a": 47415,
+        "fg3m": 18266
       }
     ]
   }

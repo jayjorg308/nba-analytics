@@ -45,6 +45,20 @@ export const INSIDE_CONTEXT = 'Less than 10 ft' satisfies GeneralContext
 /** The 10-ft-and-out contexts whose sum is the jumper parent, in display order. */
 export const JUMPER_CONTEXTS = ['Catch and Shoot', 'Pull Ups', 'Other'] as const
 
+/**
+ * The Closest Defender PRODUCT grain (ROADMAP v2.1): the NBA's four
+ * distances roll up to three, same rules as the clock — 'Very Tight' alone
+ * sits just under the small-sample bar for both current heroes (44/48
+ * attempts), so it sums into Tight; 'Wide Open' stays its own band because
+ * it is the payoff row (open shots, measured).
+ */
+export const DEFENDER_BAND_ROLLUP = [
+  { band: 'Tight', feet: '0-4', contexts: ['0-2 Feet - Very Tight', '2-4 Feet - Tight'] },
+  { band: 'Open', feet: '4-6', contexts: ['4-6 Feet - Open'] },
+  { band: 'Wide open', feet: '6+', contexts: ['6+ Feet - Wide Open'] },
+] as const
+export type DefenderBand = (typeof DEFENDER_BAND_ROLLUP)[number]['band']
+
 interface CreationCells {
   attempts: number
   makes: number
@@ -75,6 +89,12 @@ export interface ClockBandRow extends CreationCells {
   band: ClockBand
   /** The band's seconds range ("24-15") — display material for labels. */
   seconds: string
+}
+
+export interface DefenderBandRow extends CreationCells {
+  band: DefenderBand
+  /** The band's feet range ("0-4") — display material for labels. */
+  feet: string
 }
 
 /**
@@ -114,12 +134,17 @@ export interface CreationMetrics {
   /** Attempts the Shot Clock family does not cover — reported whenever
    * nonzero, never guessed into a band (ADR-0019 pattern). */
   shotClockUnattributed: number
+  /** Same coverage counter for the Closest Defender family (v2.1). */
+  defenderUnattributed: number
   leagueFga: number
   leagueShotClockUnattributed: number
+  leagueDefenderUnattributed: number
   /** The General family at its two-tier product grain. */
   general: GeneralFamilyMetrics
   /** The Shot Clock family at PRODUCT grain, in CLOCK_BAND_ROLLUP order. */
   shotClock: ClockBandRow[]
+  /** The Closest Defender family at PRODUCT grain, in DEFENDER_BAND_ROLLUP order. */
+  closestDefender: DefenderBandRow[]
 }
 
 function pps(fga: number, fg2m: number, fg3m: number): number | null {
@@ -230,13 +255,29 @@ export function aggregateCreationMetrics(payload: CreationPayload): CreationMetr
     ),
   }))
 
+  const closestDefender: DefenderBandRow[] = DEFENDER_BAND_ROLLUP.map(
+    ({ band, feet, contexts }) => ({
+      band,
+      feet,
+      ...cells(
+        sumContexts(payload.closestDefender.player, contexts, 'closestDefender.player'),
+        sumContexts(payload.closestDefender.league, contexts, 'closestDefender.league'),
+        seasonFga,
+        leagueFga,
+      ),
+    }),
+  )
+
   return {
     comparisonClass: 'league-average',
     seasonFga,
     shotClockUnattributed,
+    defenderUnattributed: payload._meta.defenderUnattributed,
     leagueFga,
     leagueShotClockUnattributed,
+    leagueDefenderUnattributed: payload._meta.leagueDefenderUnattributed,
     general,
     shotClock,
+    closestDefender,
   }
 }

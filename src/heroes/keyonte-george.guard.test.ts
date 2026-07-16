@@ -14,16 +14,26 @@
 //    trading it for paint floaters and mid-range"           -> claim 2
 //   "converts at or above league expectation in every zone" -> claim 3
 //   "Making is not the problem"                             -> claim 3 (rollup)
+//   "far more of his shots are pull-up jumpers than is
+//    typical"                                               -> why 1 (creation)
+//   "the catch-and-shoot looks he does take convert well
+//    above league value"                                    -> why 2 (creation)
+//   ("the diet is how he creates" is the rhetorical frame of why 1: the
+//    selection cost and the pull-up-heavy creation are the same fact.)
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { makingDeltaBin } from '../chart/makingScale'
 import { aggregateShotMetrics } from '../domain/aggregate'
+import { aggregateCreationMetrics } from '../domain/aggregateCreation'
+import { parseCreationPayload } from '../domain/creationPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { keyonteGeorge as hero } from './keyonte-george'
+import type { CreationClaim } from './verdictLexicon'
+import { unbackedCreationTerms, unshippedTermsIn } from './verdictLexicon'
 
-// One source of hero truth: the guard reads the same deployed payload the
+// One source of hero truth: the guard reads the same deployed payloads the
 // app fetches for this slug/season (see src/heroes/urls.ts).
 const payloadPath = path.resolve(
   process.cwd(),
@@ -31,6 +41,13 @@ const payloadPath = path.resolve(
   'data',
   hero.slug,
   `${hero.season}.json`,
+)
+const creationPath = path.resolve(
+  process.cwd(),
+  'public',
+  'data',
+  hero.slug,
+  `${hero.season}.creation.json`,
 )
 
 // Verdict semantics — thresholds the prose is held to:
@@ -43,11 +60,48 @@ const RIM_SHARE_HALF_CEILING = 0.6
 // "Making is not the problem": the making rollup must be positive by more
 // than rounding (George: +0.044).
 const MATERIAL_MAKING_PPS = 0.02
+// "far more ... than is typical": a pull-up share at least 10 percentage
+// points above the league's — double the diet-lean bar (George: 41.4% vs
+// 25.2%).
+const FAR_MORE_SHARE_PP = 0.1
+// "well above league value": a PPS gap of at least 0.10 — twice the
+// materiality bar (George: 1.273 vs 1.100).
+const WELL_ABOVE_PPS = 0.1
 
-describe.skipIf(!existsSync(payloadPath))('verdict guard: Keyonte George (ADR-0017)', () => {
+// The creation-kind claims (ADR-0029): declaring these — asserted against
+// aggregateCreationMetrics over the DEPLOYED creation payload — is what
+// licenses the verdict's creation vocabulary.
+const creationClaims: CreationClaim[] = [
+  {
+    name: 'why 1: pull-up share far above the league diet',
+    assert: (c) => {
+      const pu = c.general.jumperContexts.find((r) => r.context === 'Pull Ups')!
+      expect(pu.attemptShare).not.toBeNull()
+      expect(pu.attemptShare! - pu.leagueAttemptShare).toBeGreaterThanOrEqual(FAR_MORE_SHARE_PP)
+    },
+  },
+  {
+    name: 'why 2: catch-and-shoot converts well above league value, sample-safe',
+    assert: (c) => {
+      const cs = c.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
+      expect(cs.pps).not.toBeNull()
+      expect(cs.leaguePps).not.toBeNull()
+      // stated unhedged in the verdict, so it must clear the † bar
+      expect(cs.smallSamplePps).toBe(false)
+      expect(cs.pps! - cs.leaguePps!).toBeGreaterThanOrEqual(WELL_ABOVE_PPS)
+    },
+  },
+]
+
+describe.skipIf(!existsSync(payloadPath) || !existsSync(creationPath))(
+  'verdict guard: Keyonte George (ADR-0017/0029)',
+  () => {
   const payload = parseDerivedPayload(JSON.parse(readFileSync(payloadPath, 'utf-8')))
   const m = aggregateShotMetrics(payload.shots, payload.zoneBaseline)
   const zone = (z: string) => m.zones.find((r) => r.zone === z)!
+  const creation = aggregateCreationMetrics(
+    parseCreationPayload(JSON.parse(readFileSync(creationPath, 'utf-8'))),
+  )
 
   it('claim 1: selection is materially below the league diet', () => {
     expect(m.selection.selectionDelta).not.toBeNull()
@@ -74,25 +128,18 @@ describe.skipIf(!existsSync(payloadPath))('verdict guard: Keyonte George (ADR-00
     expect(m.making.makingPpsDelta!).toBeGreaterThanOrEqual(MATERIAL_MAKING_PPS)
   })
 
-  it('stays inside the v1 thesis: no creation language (ADR-0005)', () => {
-    // Lexical tripwire, not NLP: the obvious creation vocabulary must never
-    // appear in the verdict — v1 has no creation signal to back it.
-    const forbidden = [
-      'catch-and-shoot',
-      'pull-up',
-      'pull up',
-      'assisted',
-      'unassisted',
-      'contested',
-      'uncontested',
-      'off the dribble',
-      'creates',
-      'creation',
-      'settles',
-      'shot clock',
-    ]
-    for (const term of forbidden) {
-      expect(hero.verdict.toLowerCase()).not.toContain(term)
-    }
+  // The why-sentence's creation-kind claims (ADR-0029), run against the
+  // deployed creation payload's metrics.
+  for (const claim of creationClaims) {
+    it(claim.name, () => claim.assert(creation))
+  }
+
+  it('creation vocabulary is bucket-backed; unshipped vocabulary absent (ADR-0029)', () => {
+    // The flipped tripwire: shipped creation vocabulary requires >=1
+    // declared creation-kind claim; assisted/contested vocabulary stays
+    // forbidden until its data ships (v2.5 / the defender fast-follow).
+    expect(unshippedTermsIn(hero.verdict)).toEqual([])
+    expect(unbackedCreationTerms(hero.verdict, creationClaims.length)).toEqual([])
   })
-})
+  },
+)

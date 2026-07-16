@@ -66,14 +66,15 @@ describe('deployed creation payloads', () => {
         )
       })
 
-      it('aggregates without flags on the clock product grain (the rollup earns its keep)', () => {
+      it('aggregates without flags on the product grains (the rollups earn their keep)', () => {
         const creation = parseCreationPayload(
           JSON.parse(readFileSync(creationPath, 'utf-8')),
         )
         const m = aggregateCreationMetrics(creation)
-        // The three-band grain was chosen (ADR-0030) because it clears the
-        // small-sample bar for both current heroes — the six NBA bands do not.
-        for (const band of m.shotClock) {
+        // The product grains were chosen (ADR-0030 / v2.1) because they
+        // clear the small-sample bar for both current heroes — the NBA's
+        // finer bands do not.
+        for (const band of [...m.shotClock, ...m.closestDefender]) {
           expect(band.smallSamplePps, `${band.band} flagged`).toBe(false)
         }
       })
@@ -159,5 +160,19 @@ describe.skipIf(!existsSync(codyCreationPath))('creation anchors (launch hero)',
     const late = m.shotClock.find((b) => b.band === 'Late')!
     expect(late.pps).toBeCloseTo(0.5352, 4)
     expect(late.leaguePps).toBeCloseTo(0.9414, 4)
+
+    // The defender family (v2.1) measures "open" directly: on 117 wide-open
+    // attempts he produces 0.880 against a league 1.178 — while his tight
+    // and open bands sit near league. Being left alone is where the value
+    // leaks, which corroborates the catch-and-shoot story from independent
+    // tracking data.
+    expect(m.defenderUnattributed).toBe(0)
+    expect(m.closestDefender.map((b) => b.attempts)).toEqual([257, 135, 117])
+    const wideOpen = m.closestDefender.find((b) => b.band === 'Wide open')!
+    expect(wideOpen.pps).toBeCloseTo(0.8803, 4)
+    expect(wideOpen.leaguePps).toBeCloseTo(1.1778, 4)
+    const tight = m.closestDefender.find((b) => b.band === 'Tight')!
+    expect(tight.pps).toBeCloseTo(1.0545, 4)
+    expect(tight.leaguePps).toBeCloseTo(1.0563, 4)
   })
 })

@@ -3,6 +3,7 @@ import { SMALL_SAMPLE_MAKING_ATTEMPTS } from '../domain/constants'
 import {
   formatClockBand,
   formatCreationContext,
+  formatDefenderBand,
   formatPercent1,
   formatPps2,
   JUMPERS_LABEL,
@@ -68,7 +69,13 @@ function CreationRow({
  */
 export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
   const { inside, jumpers, jumperContexts, catchAndShootThrees } = metrics.general
-  const anyFlagged = [inside, jumpers, ...jumperContexts, ...metrics.shotClock].some(ppsMarked)
+  const anyFlagged = [
+    inside,
+    jumpers,
+    ...jumperContexts,
+    ...metrics.shotClock,
+    ...metrics.closestDefender,
+  ].some(ppsMarked)
 
   return (
     <div className="creation-table-body">
@@ -128,6 +135,20 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
               />
             ))}
           </tbody>
+          <tbody>
+            <tr className="creation-group-row">
+              <th scope="colgroup" colSpan={5}>
+                Closest defender
+              </th>
+            </tr>
+            {metrics.closestDefender.map((row) => (
+              <CreationRow
+                key={row.band}
+                label={formatDefenderBand(row.band, row.feet)}
+                row={row}
+              />
+            ))}
+          </tbody>
         </table>
       </div>
       <div className="table-notes">
@@ -136,13 +157,20 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
           catch-vs-dribble split covers jumpers from 10 ft and out.
         </p>
         <p>
-          Shot clock rows roll the NBA&apos;s six ranges up to three bands — makes and
-          attempts summed, never rates averaged.
+          Shot clock and defender rows roll the NBA&apos;s finer ranges up to three bands
+          each — makes and attempts summed, never rates averaged.
         </p>
         {metrics.shotClockUnattributed > 0 && (
           <p>
             {metrics.shotClockUnattributed} attempt
             {metrics.shotClockUnattributed === 1 ? '' : 's'} without shot-clock tracking —
+            counted here, never guessed into a band.
+          </p>
+        )}
+        {metrics.defenderUnattributed > 0 && (
+          <p>
+            {metrics.defenderUnattributed} attempt
+            {metrics.defenderUnattributed === 1 ? '' : 's'} without defender tracking —
             counted here, never guessed into a band.
           </p>
         )}

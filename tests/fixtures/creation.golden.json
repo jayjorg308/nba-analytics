@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
@@ -10,8 +10,10 @@
     "leagueSourceSnapshot": "tests/fixtures/tracking.league.truncated.json",
     "seasonFga": 15,
     "shotClockUnattributed": 1,
+    "defenderUnattributed": 2,
     "leagueFga": 250,
-    "leagueShotClockUnattributed": 2
+    "leagueShotClockUnattributed": 2,
+    "leagueDefenderUnattributed": 5
   },
   "general": {
     "player": [
@@ -202,6 +204,84 @@
         "fg2m": 5,
         "fg3a": 4,
         "fg3m": 2
+      }
+    ]
+  },
+  "closestDefender": {
+    "player": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 0,
+        "fgm": 0,
+        "fg2a": 0,
+        "fg2m": 0,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 5,
+        "fgm": 3,
+        "fg2a": 4,
+        "fg2m": 3,
+        "fg3a": 1,
+        "fg3m": 0
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 4,
+        "fgm": 2,
+        "fg2a": 2,
+        "fg2m": 1,
+        "fg3a": 2,
+        "fg3m": 1
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 4,
+        "fgm": 1,
+        "fg2a": 1,
+        "fg2m": 0,
+        "fg3a": 3,
+        "fg3m": 1
+      }
+    ],
+    "league": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 20,
+        "fgm": 10,
+        "fg2a": 20,
+        "fg2m": 10,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 80,
+        "fgm": 40,
+        "fg2a": 70,
+        "fg2m": 35,
+        "fg3a": 10,
+        "fg3m": 5
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 90,
+        "fgm": 40,
+        "fg2a": 40,
+        "fg2m": 20,
+        "fg3a": 50,
+        "fg3m": 20
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 55,
+        "fgm": 25,
+        "fg2a": 10,
+        "fg2m": 5,
+        "fg3a": 45,
+        "fg3m": 20
       }
     ]
   }

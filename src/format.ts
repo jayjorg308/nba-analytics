@@ -86,6 +86,11 @@ export function formatClockBand(band: string, seconds: string): string {
   return `${band} (${seconds}s)`
 }
 
+/** ("Tight", "0-4") -> "Tight (0-4 ft)" — the defender product grain's label. */
+export function formatDefenderBand(band: string, feet: string): string {
+  return `${band} (${feet} ft)`
+}
+
 /** (1, 19) -> "1:19"; (7, 5) -> "7:05" */
 export function formatClock(minutes: number, seconds: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`

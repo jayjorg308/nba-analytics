@@ -24,17 +24,19 @@ its own fixtures and its own schema version.
 - **`derived.golden.json`** — the derive step's output over the truncated
   snapshot. **Never edit by hand**; regenerate via `npm run golden:regen`.
 
-## Creation payload (ADR-0030; schema v1)
+## Creation payload (ADR-0030; schema v2 — Closest Defender added in v2.1)
 
 - **`tracking.truncated.json`** — a hand-built player tracking snapshot
   (playerdashptshots shape, real headers). Deliberate traps locked in:
   - The General family **sums to 15 FGA** — reconciling against
     `derived.golden.json`'s pre-drop total (15 totalShots + 0 dropped), so the
     fixture pair itself exercises the ADR-0030 cross-payload identity.
-  - The `'Other'` General row and the `'24-22'` clock band are **absent**
-    (the dashboards emit sparse rows — zero-attempt contexts are omitted; the
-    derive must zero-fill).
-  - Shot Clock sums to 14 → `shotClockUnattributed: 1` (the coverage path).
+  - The `'Other'` General row, the `'24-22'` clock band, and the
+    `'0-2 Feet - Very Tight'` defender range are **absent** (the dashboards
+    emit sparse rows — zero-attempt contexts are omitted; the derive must
+    zero-fill).
+  - Shot Clock sums to 14 → `shotClockUnattributed: 1`; Closest Defender to
+    13 → `defenderUnattributed: 2` — independent coverage counters.
 
 - **`tracking.league.truncated.json`** — a hand-built league tracking snapshot
   (leaguedashteamptshot shape, 1–2 team rows per context vs 30 real ones):
@@ -42,7 +44,8 @@ its own fixtures and its own schema version.
     `'Less Than 10 ft'`) — the resolved-filters mapping path.
   - `'Other'` is **unresolved**: its league totals are the residual by count
     subtraction (Overall 250 − resolved 240 = 10).
-  - Shot Clock sums to 248 → `leagueShotClockUnattributed: 2`.
+  - Shot Clock sums to 248 → `leagueShotClockUnattributed: 2`; Closest
+    Defender to 245 → `leagueDefenderUnattributed: 5`.
 
 - **`creation.golden.json`** — the creation derive's output over the two
   tracking fixtures. **Never edit by hand**; regenerate via

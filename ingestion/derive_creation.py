@@ -55,9 +55,10 @@ import pandas as pd
 # Bump on any breaking payload change; pinned as a literal on the TS side
 # (src/domain/creationPayload.ts) so a mismatch fails loudly at the load
 # boundary. v1: General + Shot Clock families (ADR-0030).
-SCHEMA_VERSION = 1
+# v2: Closest Defender family (the ADR-0030 fast-follow, ROADMAP v2.1).
+SCHEMA_VERSION = 2
 
-# --- Context families (v2.0 ships two; see CONTEXT.md and ADR-0030) ------------
+# --- Context families (see CONTEXT.md and ADR-0030) ----------------------------
 # NBA row literals, verbatim, in deterministic payload order.
 GENERAL_CONTEXTS = ["Catch and Shoot", "Pull Ups", "Less than 10 ft", "Other"]
 SHOT_CLOCK_BANDS = [
@@ -68,11 +69,18 @@ SHOT_CLOCK_BANDS = [
     "7-4 Late",
     "4-0 Very Late",
 ]
+DEFENDER_RANGES = [
+    "0-2 Feet - Very Tight",
+    "2-4 Feet - Tight",
+    "4-6 Feet - Open",
+    "6+ Feet - Wide Open",
+]
 
 FAMILIES = [
     # (payload key, result set, context column, canonical contexts)
     ("general", "GeneralShooting", "SHOT_TYPE", GENERAL_CONTEXTS),
     ("shotClock", "ShotClockShooting", "SHOT_CLOCK_RANGE", SHOT_CLOCK_BANDS),
+    ("closestDefender", "ClosestDefenderShooting", "CLOSE_DEF_DIST_RANGE", DEFENDER_RANGES),
 ]
 
 STAT_COLS = ["FGA", "FGM", "FG2A", "FG2M", "FG3A", "FG3M"]
@@ -246,27 +254,31 @@ def league_general(snapshot: dict, overall: dict[str, int]) -> list[dict]:
     return [totals_entry(c, totals[c]) for c in GENERAL_CONTEXTS]
 
 
-def league_shot_clock(snapshot: dict, overall: dict[str, int]) -> tuple[list[dict], int]:
-    """League Shot Clock entries + the league-wide unattributed count.
+def league_coverage_family(snapshot: dict, section: str, contexts: list[str],
+                           family_label: str,
+                           overall: dict[str, int]) -> tuple[list[dict], int]:
+    """League entries + the league-wide unattributed count, for a COVERAGE
+    family (Shot Clock, Closest Defender — every context filtered directly,
+    no residual context).
 
-    Every band must be present — an absent band means the league baseline is
-    incomplete for the season (the Gate-1 ethos: an unpopulated baseline
+    Every context must be present — an absent one means the league baseline
+    is incomplete for the season (the Gate-1 ethos: an unpopulated baseline
     fails, it doesn't limp)."""
-    responses: dict = snapshot.get("shot_clock", {})
+    responses: dict = snapshot.get(section, {})
     entries: list[dict] = []
     total_fga = 0
-    for band in SHOT_CLOCK_BANDS:
-        raw = responses.get(band)
+    for context in contexts:
+        raw = responses.get(context)
         if raw is None:
-            fail(f"league snapshot missing Shot Clock band {band!r} — "
+            fail(f"league snapshot missing {family_label} context {context!r} — "
                  f"baseline incomplete; re-run the league pull")
-        t = sum_league(raw, f"league Shot Clock {band!r}")
+        t = sum_league(raw, f"league {family_label} {context!r}")
         total_fga += t["FGA"]
-        entries.append(totals_entry(band, t))
+        entries.append(totals_entry(context, t))
     unattributed = overall["FGA"] - total_fga
     if unattributed < 0:
-        fail(f"league Shot Clock bands sum to {total_fga}, exceeding Overall "
-             f"{overall['FGA']} — snapshots inconsistent")
+        fail(f"league {family_label} contexts sum to {total_fga}, exceeding "
+             f"Overall {overall['FGA']} — snapshots inconsistent")
     return entries, unattributed
 
 
@@ -337,16 +349,25 @@ def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
              f"pre-drop season total is {season_fga} — payloads contradict; "
              f"re-pull both sources together, never force one to fit the other")
 
-    # Shot Clock: coverage, not equality — count the shortfall, never guess.
-    clock_fga = sum(e["fga"] for e in families["shotClock"])
-    unattributed = season_fga - clock_fga
-    if unattributed < 0:
-        fail(f"Shot Clock family sums to {clock_fga}, exceeding the season "
-             f"total {season_fga} — snapshots inconsistent")
+    # Coverage families (Shot Clock, Closest Defender): count the shortfall,
+    # never guess it into a context.
+    def player_unattributed(key: str, label: str) -> int:
+        total = sum(e["fga"] for e in families[key])
+        gap = season_fga - total
+        if gap < 0:
+            fail(f"{label} family sums to {total}, exceeding the season "
+                 f"total {season_fga} — snapshots inconsistent")
+        return gap
+
+    clock_unattributed = player_unattributed("shotClock", "Shot Clock")
+    defender_unattributed = player_unattributed("closestDefender", "Closest Defender")
 
     overall = sum_league(league_snapshot["overall"], "league Overall")
     lg_general = league_general(league_snapshot, overall)
-    lg_clock, lg_unattributed = league_shot_clock(league_snapshot, overall)
+    lg_clock, lg_clock_unattributed = league_coverage_family(
+        league_snapshot, "shot_clock", SHOT_CLOCK_BANDS, "Shot Clock", overall)
+    lg_defender, lg_defender_unattributed = league_coverage_family(
+        league_snapshot, "closest_defender", DEFENDER_RANGES, "Closest Defender", overall)
 
     return {
         "_meta": {
@@ -359,12 +380,15 @@ def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
             "sourceSnapshot": source,
             "leagueSourceSnapshot": league_source,
             "seasonFga": season_fga,
-            "shotClockUnattributed": unattributed,
+            "shotClockUnattributed": clock_unattributed,
+            "defenderUnattributed": defender_unattributed,
             "leagueFga": overall["FGA"],
-            "leagueShotClockUnattributed": lg_unattributed,
+            "leagueShotClockUnattributed": lg_clock_unattributed,
+            "leagueDefenderUnattributed": lg_defender_unattributed,
         },
         "general": {"player": families["general"], "league": lg_general},
         "shotClock": {"player": families["shotClock"], "league": lg_clock},
+        "closestDefender": {"player": families["closestDefender"], "league": lg_defender},
     }
 
 
@@ -449,9 +473,10 @@ def main() -> None:
     m = payload["_meta"]
     print(f"derived creation payload -> {out_path}")
     print(f"  {m['player']} {m['season']}  General Σ == {m['seasonFga']} (exact)  "
-          f"shot-clock unattributed: {m['shotClockUnattributed']}")
-    print(f"  league FGA {m['leagueFga']}  league shot-clock unattributed: "
-          f"{m['leagueShotClockUnattributed']}")
+          f"unattributed: clock {m['shotClockUnattributed']} · "
+          f"defender {m['defenderUnattributed']}")
+    print(f"  league FGA {m['leagueFga']}  league unattributed: clock "
+          f"{m['leagueShotClockUnattributed']} · defender {m['leagueDefenderUnattributed']}")
 
 
 if __name__ == "__main__":

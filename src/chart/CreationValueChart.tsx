@@ -18,6 +18,7 @@ import type { CreationMetrics } from '../domain/aggregateCreation'
 import {
   formatClockBand,
   formatCreationContext,
+  formatDefenderBand,
   formatPps2,
   JUMPERS_LABEL,
   withSmallSampleMark,
@@ -77,6 +78,10 @@ function groups(metrics: CreationMetrics): Group[] {
     {
       title: 'SHOT CLOCK',
       rows: metrics.shotClock.map((r) => row(formatClockBand(r.band, r.seconds), r)),
+    },
+    {
+      title: 'CLOSEST DEFENDER',
+      rows: metrics.closestDefender.map((r) => row(formatDefenderBand(r.band, r.feet), r)),
     },
   ]
 }

@@ -12,6 +12,12 @@
 //   "nets out to an essentially league-average shot diet"  -> claim 3
 //   "he converts below what his shot diet should yield"    -> claim 4
 //   "the gap comes almost entirely from three"             -> claim 5
+//   "almost all of his threes arrive off the catch"        -> why 1 (creation)
+//   "those catch-and-shoot looks he converts far below
+//    league value"                                         -> why 2 (creation)
+//   ("the misses are not self-created difficulty" is the rhetorical frame
+//    of why 1 + why 2 together — his threes are overwhelmingly not
+//    self-created, and those are the ones missing.)
 // One engine-copy claim rides along: the zone table's Restricted Area
 // annotation ("highest-value shot on the floor") states a league value
 // hierarchy, asserted against the same deployed payload    -> table claim
@@ -21,11 +27,15 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { makingDeltaBin } from '../chart/makingScale'
 import { aggregateShotMetrics } from '../domain/aggregate'
+import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import { ZONE_POINT_VALUE } from '../domain/constants'
+import { parseCreationPayload } from '../domain/creationPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { codyWilliams as hero } from './cody-williams'
+import type { CreationClaim } from './verdictLexicon'
+import { unbackedCreationTerms, unshippedTermsIn } from './verdictLexicon'
 
-// One source of hero truth: the guard reads the same deployed payload the
+// One source of hero truth: the guard reads the same deployed payloads the
 // app fetches for this slug/season (see src/heroes/urls.ts).
 const payloadPath = path.resolve(
   process.cwd(),
@@ -33,6 +43,13 @@ const payloadPath = path.resolve(
   'data',
   hero.slug,
   `${hero.season}.json`,
+)
+const creationPath = path.resolve(
+  process.cwd(),
+  'public',
+  'data',
+  hero.slug,
+  `${hero.season}.creation.json`,
 )
 
 // Verdict semantics — thresholds the prose is held to:
@@ -46,10 +63,47 @@ const MATERIAL_MAKING_PPS = 0.05
 // points of attempt share — several shots per hundred, well outside
 // single-season share noise (shares stabilize by ~34 attempts, CONTEXT.md).
 const MATERIAL_DIET_LEAN_PP = 0.05
+// "almost all": at least four of five — below that the phrase is a lie
+// (actual: 117/131 = 89.3%).
+const ALMOST_ALL_SHARE = 0.8
+// "far below league value": a PPS gap of at least 0.25 — five times the
+// materiality bar; a quarter point per shot (actual: 0.711 vs 1.100).
+const FAR_BELOW_PPS = 0.25
 
-describe.skipIf(!existsSync(payloadPath))('verdict guard (ADR-0017)', () => {
+// The creation-kind claims (ADR-0029): declaring these — asserted against
+// aggregateCreationMetrics over the DEPLOYED creation payload — is what
+// licenses the verdict's creation vocabulary. Zero declared claims + any
+// creation vocabulary = tripwire failure.
+const creationClaims: CreationClaim[] = [
+  {
+    name: 'why 1: almost all of his threes arrive off the catch',
+    assert: (c) => {
+      const cs3 = c.general.catchAndShootThrees
+      expect(cs3.share).not.toBeNull()
+      expect(cs3.share!).toBeGreaterThanOrEqual(ALMOST_ALL_SHARE)
+    },
+  },
+  {
+    name: 'why 2: catch-and-shoot converts far below league value, sample-safe',
+    assert: (c) => {
+      const cs = c.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
+      expect(cs.pps).not.toBeNull()
+      expect(cs.leaguePps).not.toBeNull()
+      // stated unhedged in the verdict, so it must clear the † bar
+      expect(cs.smallSamplePps).toBe(false)
+      expect(cs.leaguePps! - cs.pps!).toBeGreaterThanOrEqual(FAR_BELOW_PPS)
+    },
+  },
+]
+
+describe.skipIf(!existsSync(payloadPath) || !existsSync(creationPath))(
+  'verdict guard (ADR-0017/0029)',
+  () => {
   const payload = parseDerivedPayload(JSON.parse(readFileSync(payloadPath, 'utf-8')))
   const m = aggregateShotMetrics(payload.shots, payload.zoneBaseline)
+  const creation = aggregateCreationMetrics(
+    parseCreationPayload(JSON.parse(readFileSync(creationPath, 'utf-8'))),
+  )
 
   it('claim 1: lives at the rim — rim share materially above league', () => {
     const rim = m.zones.find((z) => z.zone === 'Restricted Area')
@@ -100,25 +154,18 @@ describe.skipIf(!existsSync(payloadPath))('verdict guard (ADR-0017)', () => {
     }
   })
 
-  it('stays inside the v1 thesis: no creation language (ADR-0005)', () => {
-    // Lexical tripwire, not NLP: the obvious creation vocabulary must never
-    // appear in the verdict — v1 has no creation signal to back it.
-    const forbidden = [
-      'catch-and-shoot',
-      'pull-up',
-      'pull up',
-      'assisted',
-      'unassisted',
-      'contested',
-      'uncontested',
-      'off the dribble',
-      'creates',
-      'creation',
-      'settles',
-      'shot clock',
-    ]
-    for (const term of forbidden) {
-      expect(hero.verdict.toLowerCase()).not.toContain(term)
-    }
+  // The why-sentence's creation-kind claims (ADR-0029), run against the
+  // deployed creation payload's metrics.
+  for (const claim of creationClaims) {
+    it(claim.name, () => claim.assert(creation))
+  }
+
+  it('creation vocabulary is bucket-backed; unshipped vocabulary absent (ADR-0029)', () => {
+    // The flipped tripwire: shipped creation vocabulary requires >=1
+    // declared creation-kind claim; assisted/contested vocabulary stays
+    // forbidden until its data ships (v2.5 / the defender fast-follow).
+    expect(unshippedTermsIn(hero.verdict)).toEqual([])
+    expect(unbackedCreationTerms(hero.verdict, creationClaims.length)).toEqual([])
   })
-})
+  },
+)

@@ -50,11 +50,15 @@ try:
 except ImportError:
     sys.exit("nba_api not installed. Run: pip install -r ingestion/requirements.txt")
 
-# --- v2.0 context families (ADR-0030): General + Shot Clock ship ---------------
+# --- Context families (ADR-0030; defender added by the v2.1 fast-follow) ------
 # Result-set names / context columns in the playerdashptshots response.
 FAMILIES = {
     "general": {"result_set": "GeneralShooting", "context_col": "SHOT_TYPE"},
     "shot_clock": {"result_set": "ShotClockShooting", "context_col": "SHOT_CLOCK_RANGE"},
+    "closest_defender": {
+        "result_set": "ClosestDefenderShooting",
+        "context_col": "CLOSE_DEF_DIST_RANGE",
+    },
 }
 
 # League-dash filter literals are NOT guaranteed to match the player-dash row
@@ -126,13 +130,15 @@ def pull_player_tracking(player_id: int, season: str, season_type: str, timeout:
 
 
 def pull_league_context(season: str, season_type: str, timeout: int,
-                        general_range: str = "", shot_clock_range: str = "") -> dict:
+                        general_range: str = "", shot_clock_range: str = "",
+                        close_def_dist_range: str = "") -> dict:
     resp = leaguedashteamptshot.LeagueDashTeamPtShot(
         season=season,
         season_type_all_star=season_type,
         per_mode_simple="Totals",  # See header.
         general_range_nullable=general_range,
         shot_clock_range_nullable=shot_clock_range,
+        close_def_dist_range_nullable=close_def_dist_range,
         timeout=timeout,
     )
     return resp.get_dict()
@@ -289,6 +295,7 @@ def main() -> None:
         "overall": overall_raw,
         "general": {},
         "shot_clock": {},
+        "closest_defender": {},
     }
 
     def sum_cols(df: pd.DataFrame) -> dict[str, int]:
@@ -366,6 +373,39 @@ def main() -> None:
     if sc_literals:
         gap = overall_fga - sc_total
         print(f"    Σ Shot Clock FGA = {sc_total} vs Overall {overall_fga} "
+              f">> league-wide unattributed: {gap} ({gap / overall_fga:.1%})")
+
+    # Closest Defender (the v2.1 fast-follow): filter literals expected to
+    # match row literals, same mechanics as the clock bands.
+    print("  CLOSEST DEFENDER (per-context filtered calls):")
+    cd_literals: list[str] = []
+    for frames in hero_frames.values():
+        df = frames.get("closest_defender", pd.DataFrame())
+        if not df.empty:
+            cd_literals = list(df["CLOSE_DEF_DIST_RANGE"])
+            break
+    cd_total = 0
+    for literal in cd_literals:
+        throttle()
+        try:
+            raw = pull_league_context(args.season, args.season_type, args.timeout,
+                                      close_def_dist_range=literal)
+            df = league_frame(raw)
+            if df.empty or int(df["FGA"].sum()) == 0:
+                print(f"    {literal!r}: accepted but returned no data")
+                continue
+            league_snapshot["closest_defender"][literal] = raw
+            league_snapshot["_meta"]["resolved_filters"][literal] = literal
+            s = sum_cols(df)
+            cd_total += s["FGA"]
+            p = (2 * s["FG2M"] + 3 * s["FG3M"]) / s["FGA"]
+            share = s["FGA"] / overall_fga
+            print(f"    {literal!r:<28} FGA={s['FGA']:>6} share={share:.1%} PPS={p:.3f}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"    {literal!r}: FAILED ({exc})")
+    if cd_literals:
+        gap = overall_fga - cd_total
+        print(f"    Σ Closest Defender FGA = {cd_total} vs Overall {overall_fga} "
               f">> league-wide unattributed: {gap} ({gap / overall_fga:.1%})")
 
     write_snapshot(out_root / "_league" / args.season / "tracking" / f"{pull_date}.json",

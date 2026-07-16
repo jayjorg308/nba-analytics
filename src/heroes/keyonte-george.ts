@@ -28,9 +28,14 @@ export const keyonteGeorge: HeroConfig = {
   // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
   // when the data moves, rewrite this; the committed guard
   // (./keyonte-george.guard.test.ts) fails if any directional claim stops
-  // matching the deployed payload. Selection/making language only (ADR-0005).
+  // matching the deployed payloads. The final sentence is the v2 WHY
+  // (ADR-0029): creation vocabulary, licensed by the guard's creation-kind
+  // claims against the deployed creation payload — authored from
+  // hero:report's creation section, like the rest is from its decomposition.
   verdict:
     'No — his shot selection costs him: he gets to the rim about half as often as the league, ' +
     'trading it for paint floaters and mid-range. Making is not the problem — he converts at or ' +
-    'above league expectation in every zone on the floor.',
+    'above league expectation in every zone on the floor. ' +
+    'The diet is how he creates: far more of his shots are pull-up jumpers than is typical, ' +
+    'while the catch-and-shoot looks he does take convert well above league value.',
 }

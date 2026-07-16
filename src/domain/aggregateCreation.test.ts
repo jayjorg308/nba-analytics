@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest'
 import {
   aggregateCreationMetrics,
   CLOCK_BAND_ROLLUP,
+  DEFENDER_BAND_ROLLUP,
   JUMPER_CONTEXTS,
 } from './aggregateCreation'
 import { SMALL_SAMPLE_MAKING_ATTEMPTS } from './constants'
@@ -27,8 +28,10 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(m.comparisonClass).toBe('league-average')
     expect(m.seasonFga).toBe(15)
     expect(m.shotClockUnattributed).toBe(1)
+    expect(m.defenderUnattributed).toBe(2)
     expect(m.leagueFga).toBe(250)
     expect(m.leagueShotClockUnattributed).toBe(2)
+    expect(m.leagueDefenderUnattributed).toBe(5)
   })
 
   it('presents the General family two-tier: rim, jumper parent, jumper children', () => {
@@ -100,6 +103,23 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(late.leaguePps).toBeCloseTo(0.84, 10) // (2·15 + 3·4) / 50
   })
 
+  it('rolls the defender distances to product grain by summing counts on both sides', () => {
+    expect(m.closestDefender.map((r) => r.band)).toEqual(['Tight', 'Open', 'Wide open'])
+
+    const tight = m.closestDefender[0]! // Very Tight (zero-filled) + Tight
+    expect(tight.attempts).toBe(5)
+    expect(tight.makes).toBe(3)
+    expect(tight.attemptShare).toBeCloseTo(5 / 15, 10)
+    expect(tight.pps).toBeCloseTo(1.2, 10) // (2·3 + 3·0) / 5
+    expect(tight.leagueAttemptShare).toBeCloseTo(100 / 250, 10) // 20 + 80
+    expect(tight.leaguePps).toBeCloseTo(105 / 100, 10) // (2·45 + 3·5) / 100
+
+    const wideOpen = m.closestDefender[2]!
+    expect(wideOpen.attempts).toBe(4)
+    expect(wideOpen.pps).toBeCloseTo(3 / 4, 10) // (2·0 + 3·1) / 4
+    expect(wideOpen.leaguePps).toBeCloseTo(70 / 55, 10) // (2·5 + 3·20) / 55
+  })
+
   it('the rollup differs from averaging the band rates — summation is load-bearing', () => {
     // League Late: per-band PPS are 26/30 and 16/20; their unweighted mean
     // (≈0.8333) is the forbidden computation. The rolled value is 0.84.
@@ -110,7 +130,13 @@ describe('aggregateCreationMetrics over the creation golden', () => {
 
   it('flags every sub-50 conversion claim with the shared constant', () => {
     // Every golden context is tiny — all flagged, one meaning of †.
-    const rows = [m.general.inside, m.general.jumpers, ...m.general.jumperContexts, ...m.shotClock]
+    const rows = [
+      m.general.inside,
+      m.general.jumpers,
+      ...m.general.jumperContexts,
+      ...m.shotClock,
+      ...m.closestDefender,
+    ]
     for (const row of rows) {
       expect(row.smallSamplePps).toBe(true)
     }
@@ -177,6 +203,21 @@ describe('CLOCK_BAND_ROLLUP', () => {
         '15-7 Average',
         '7-4 Late',
         '4-0 Very Late',
+      ].sort(),
+    )
+    expect(new Set(covered).size).toBe(covered.length)
+  })
+})
+
+describe('DEFENDER_BAND_ROLLUP', () => {
+  it('partitions all four NBA distances exactly once', () => {
+    const covered = DEFENDER_BAND_ROLLUP.flatMap((b) => b.contexts)
+    expect([...covered].sort()).toEqual(
+      [
+        '0-2 Feet - Very Tight',
+        '2-4 Feet - Tight',
+        '4-6 Feet - Open',
+        '6+ Feet - Wide Open',
       ].sort(),
     )
     expect(new Set(covered).size).toBe(covered.length)

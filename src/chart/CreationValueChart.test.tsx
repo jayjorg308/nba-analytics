@@ -29,11 +29,12 @@ function xs(selector: string): number[] {
 describe('CreationValueChart', () => {
   it('draws a league dot per row, a player dot only where a PPS claim exists', () => {
     render(<CreationValueChart metrics={metrics} />)
-    // 8 rows (rim + jumper parent, 3 jumper children, 3 clock bands); the
-    // golden's zero-attempt 'Other' draws no player dot and no connector.
-    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(8)
-    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(7)
-    expect(document.querySelectorAll('.creation-connector')).toHaveLength(7)
+    // 11 rows (rim + jumper parent, 3 jumper children, 3 clock bands,
+    // 3 defender bands); the golden's zero-attempt 'Other' draws no player
+    // dot and no connector.
+    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(11)
+    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(10)
+    expect(document.querySelectorAll('.creation-connector')).toHaveLength(10)
   })
 
   it('keeps image semantics and points at the data twin', () => {
@@ -71,6 +72,8 @@ describe('CreationValueChart', () => {
     screen.getByText('Jumpers (10 ft and out)')
     screen.getByText('JUMPERS, BY CREATION')
     screen.getByText('Late (7-0s)')
+    screen.getByText('CLOSEST DEFENDER')
+    screen.getByText('Wide open (6+ ft)')
     // his values carry the shared † under 50 attempts (every golden row)
     screen.getByText('1.50†') // Catch and Shoot, 4 attempts
     // axis ticks frame the non-zero baseline honestly (domain 0.60–1.60)

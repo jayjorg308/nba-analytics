@@ -1,17 +1,19 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Keyonte George",
     "playerId": 1641718,
     "season": "2025-26",
     "seasonType": "Regular Season",
-    "pullDate": "2026-07-15",
-    "sourceSnapshot": "data/raw/keyonte-george/2025-26/tracking/2026-07-15.json",
-    "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-15.json",
+    "pullDate": "2026-07-16",
+    "sourceSnapshot": "data/raw/keyonte-george/2025-26/tracking/2026-07-16.json",
+    "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-16.json",
     "seasonFga": 881,
     "shotClockUnattributed": 0,
+    "defenderUnattributed": 0,
     "leagueFga": 218352,
-    "leagueShotClockUnattributed": 0
+    "leagueShotClockUnattributed": 0,
+    "leagueDefenderUnattributed": 0
   },
   "general": {
     "player": [
@@ -202,6 +204,84 @@
         "fg2m": 4744,
         "fg3a": 8019,
         "fg3m": 2273
+      }
+    ]
+  },
+  "closestDefender": {
+    "player": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 48,
+        "fgm": 19,
+        "fg2a": 46,
+        "fg2m": 19,
+        "fg3a": 2,
+        "fg3m": 0
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 406,
+        "fgm": 185,
+        "fg2a": 318,
+        "fg2m": 160,
+        "fg3a": 88,
+        "fg3m": 25
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 322,
+        "fgm": 139,
+        "fg2a": 136,
+        "fg2m": 73,
+        "fg3a": 186,
+        "fg3m": 66
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 105,
+        "fgm": 59,
+        "fg2a": 20,
+        "fg2m": 16,
+        "fg3a": 85,
+        "fg3m": 43
+      }
+    ],
+    "league": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 14468,
+        "fgm": 6702,
+        "fg2a": 14172,
+        "fg2m": 6606,
+        "fg3a": 296,
+        "fg3m": 96
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 83893,
+        "fgm": 43968,
+        "fg2a": 75760,
+        "fg2m": 41504,
+        "fg3a": 8133,
+        "fg3m": 2464
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 65275,
+        "fgm": 29080,
+        "fg2a": 30439,
+        "fg2m": 17300,
+        "fg3a": 34836,
+        "fg3m": 11780
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 54716,
+        "fgm": 23090,
+        "fg2a": 7301,
+        "fg2m": 4824,
+        "fg3a": 47415,
+        "fg3m": 18266
       }
     ]
   }

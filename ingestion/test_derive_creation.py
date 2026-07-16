@@ -142,8 +142,38 @@ def test_multiple_unresolved_general_contexts_fail():
 def test_missing_league_shot_clock_band_fails():
     league = load_fixture("tracking.league.truncated.json")
     del league["shot_clock"]["7-4 Late"]
-    with pytest.raises(SystemExit, match="missing Shot Clock band"):
+    with pytest.raises(SystemExit, match="missing Shot Clock context"):
         derive_fixtures(league=league)
+
+
+def test_missing_league_defender_range_fails():
+    league = load_fixture("tracking.league.truncated.json")
+    del league["closest_defender"]["4-6 Feet - Open"]
+    with pytest.raises(SystemExit, match="missing Closest Defender context"):
+        derive_fixtures(league=league)
+
+
+def test_defender_coverage_counted_independently():
+    payload = derive_fixtures()
+    # sparse 'Very Tight' zero-filled; Σ defender = 13 of 15 -> gap 2, while
+    # the clock family's own gap stays 1 — independent coverage counters
+    assert payload["_meta"]["defenderUnattributed"] == 2
+    assert payload["_meta"]["shotClockUnattributed"] == 1
+    assert payload["_meta"]["leagueDefenderUnattributed"] == 5  # 250 - 245
+    ranges = [e["context"] for e in payload["closestDefender"]["player"]]
+    assert ranges == dc.DEFENDER_RANGES
+    assert payload["closestDefender"]["player"][0] == dc.entry("0-2 Feet - Very Tight")
+
+
+def test_defender_overrun_fails():
+    player = load_fixture("tracking.truncated.json")
+    rs = player["response"]["resultSets"][2]  # ClosestDefenderShooting
+    h = rs["headers"]
+    row = rs["rowSet"][0]  # '2-4 Feet - Tight': FGA 5 -> 8 (sane: all 2s)
+    row[h.index("FGA")], row[h.index("FG2A")] = 8, 7
+    row[h.index("FG_PCT")] = 0.375  # 3/8
+    with pytest.raises(SystemExit, match="Closest Defender family sums to 16"):
+        derive_fixtures(player=player)
 
 
 def test_missing_resolved_filter_response_fails():

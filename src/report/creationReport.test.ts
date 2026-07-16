@@ -20,7 +20,7 @@ describe('renderCreationReport', () => {
     expect(report).toContain(`(${metrics.seasonFga} attempts)`)
   })
 
-  it('prints the two-tier General rows and every product clock band', () => {
+  it('prints the two-tier General rows and every product band', () => {
     expect(report).toContain('Inside 10 ft')
     expect(report).toContain('Jumpers (10 ft and out)')
     expect(report).toContain('Catch and shoot')
@@ -29,6 +29,9 @@ describe('renderCreationReport', () => {
     expect(report).toContain('Early (24-15s)')
     expect(report).toContain('Average (15-7s)')
     expect(report).toContain('Late (7-0s)')
+    expect(report).toContain('Tight (0-4 ft)')
+    expect(report).toContain('Open (4-6 ft)')
+    expect(report).toContain('Wide open (6+ ft)')
   })
 
   it('prints PPS from the aggregation at 3 decimals', () => {
@@ -48,6 +51,10 @@ describe('renderCreationReport', () => {
     expect(report).toContain(
       `unattributed shot-clock attempts: ${metrics.shotClockUnattributed} (player) · ` +
         `${metrics.leagueShotClockUnattributed} (league)`,
+    )
+    expect(report).toContain(
+      `unattributed defender attempts: ${metrics.defenderUnattributed} (player) · ` +
+        `${metrics.leagueDefenderUnattributed} (league)`,
     )
   })
 })
