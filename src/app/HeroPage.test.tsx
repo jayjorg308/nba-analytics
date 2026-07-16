@@ -10,15 +10,35 @@ import { HeroPage } from './HeroPage'
 // root (the repo root) instead
 const goldenPath = path.resolve(process.cwd(), 'tests/fixtures/derived.golden.json')
 const goldenJson = JSON.parse(readFileSync(goldenPath, 'utf-8')) as Record<string, unknown>
+// the sibling creation golden — the fixtures reconcile with each other by
+// construction (tests/fixtures/README.md), so they stub one coherent hero
+const creationGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/creation.golden.json')
+const creationGoldenJson = JSON.parse(readFileSync(creationGoldenPath, 'utf-8')) as Record<
+  string,
+  unknown
+>
 
-function stubFetch(response: { ok: boolean; status?: number; json?: unknown }) {
+interface StubResponse {
+  ok: boolean
+  status?: number
+  json?: unknown
+}
+
+/** Routes by URL: the page now fetches both payloads (ADR-0030). */
+function stubFetch(
+  shot: StubResponse,
+  creation: StubResponse = { ok: true, json: creationGoldenJson },
+) {
   vi.stubGlobal(
     'fetch',
-    vi.fn(async () => ({
-      ok: response.ok,
-      status: response.status ?? 200,
-      json: async () => response.json,
-    })),
+    vi.fn(async (url: unknown) => {
+      const r = String(url).endsWith('.creation.json') ? creation : shot
+      return {
+        ok: r.ok,
+        status: r.status ?? 200,
+        json: async () => r.json,
+      }
+    }),
   )
 }
 
@@ -81,7 +101,7 @@ describe('HeroPage over the golden fixture', () => {
     // payoff columns lead, reference trails; FGA stays visible (the honesty
     // anchor for †) and there is deliberately no FG% column (ADR-0001: PPS
     // is the unit; Making Δ already encodes FG%-vs-league)
-    const headers = [...document.querySelectorAll('.zone-table thead th')].map(
+    const headers = [...document.querySelectorAll('.zone-panel .zone-table thead th')].map(
       (th) => th.textContent,
     )
     expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
@@ -115,6 +135,38 @@ describe('HeroPage over the golden fixture', () => {
     fireEvent.click(screen.getByLabelText('Shots'))
     expect(document.querySelectorAll('.shot-dot')).toHaveLength(14)
     screen.getByText(/1 shot beyond half-court not shown/)
+
+    // the second act (ADR-0031): creation renders AFTER the court + table,
+    // in the section-title recipe, with its comparison class stated plainly
+    screen.getByRole('heading', { name: 'SHOT CREATION' })
+    screen.getByText(/creation diet and points per shot by context, vs league/)
+
+    // the diet chart: 7 paired bars (4 General contexts + 3 product clock
+    // bands) in neutral ink, with the table as its accessible data twin
+    expect(document.querySelectorAll('.creation-bar-player')).toHaveLength(7)
+    expect(document.querySelectorAll('.creation-bar-league')).toHaveLength(7)
+
+    // the creation table: zone-table column philosophy — FGA anchors, the
+    // diet pair argues, PPS (lg) trails as reference; no eFG% (ADR-0001)
+    const creationTable = screen.getByRole('table', {
+      name: /Shot creation by context/,
+    })
+    const creationHeaders = [...creationTable.querySelectorAll('thead th')].map(
+      (th) => th.textContent,
+    )
+    expect(creationHeaders).toEqual(['Context', 'FGA', 'Share', 'Lg share', 'PPS (lg)'])
+
+    // product display labels over NBA literals ("Pull Ups" never renders);
+    // each label appears twice — chart row and table row, the data twin
+    expect(screen.getAllByText('Pull-ups')).toHaveLength(2)
+    expect(screen.getAllByText('Early (24-15s)')).toHaveLength(2)
+    expect(screen.queryByText('Pull Ups')).toBeNull()
+
+    // the golden's coverage story: 1 unattributed shot-clock attempt is
+    // reported (never guessed into a band), and the zero-attempt 'Other'
+    // context still renders — a partition is never punctured
+    screen.getByText(/1 attempt without shot-clock tracking/)
+    expect(screen.getAllByText('Other')).toHaveLength(2)
   })
 
   it('shades all six zones in the default Zones view despite included=false everywhere', async () => {
@@ -189,6 +241,20 @@ describe('HeroPage failure states', () => {
     const bad = structuredClone(goldenJson)
     bad.surprise = true // strict schema: unknown key = contract violation
     stubFetch({ ok: true, json: bad })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/Payload contract violation/)
+  })
+
+  it('surfaces a missing creation payload — required per hero, no lesser page (ADR-0030)', async () => {
+    stubFetch({ ok: true, json: goldenJson }, { ok: false, status: 404 })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/HTTP 404 loading creation data/)
+  })
+
+  it('surfaces creation contract violations from the Zod boundary', async () => {
+    const bad = structuredClone(creationGoldenJson)
+    ;(bad._meta as { seasonFga: number }).seasonFga = 16 // breaks the partition identity
+    stubFetch({ ok: true, json: goldenJson }, { ok: true, json: bad })
     render(<HeroPage hero={hero} />)
     await screen.findByText(/Payload contract violation/)
   })

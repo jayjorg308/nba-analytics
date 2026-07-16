@@ -9,6 +9,12 @@ export function payloadUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}data/${hero.slug}/${hero.season}.json`
 }
 
+/** The sibling creation payload (ADR-0030) — deployed beside the shot
+ * payload and required for every registered hero. */
+export function creationPayloadUrl(hero: HeroConfig): string {
+  return `${import.meta.env.BASE_URL}data/${hero.slug}/${hero.season}.creation.json`
+}
+
 export function heroImageUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}${hero.hero.imagePath}`
 }

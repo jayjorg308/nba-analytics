@@ -62,6 +62,23 @@ export function formatMatchup(opponent: string, home: boolean): string {
   return `${home ? 'vs' : '@'} ${opponent}`
 }
 
+// Product display labels for the NBA's creation-context literals: the data
+// keeps the literals verbatim (ADR-0030); the page speaks the product's
+// words. Unmapped literals pass through.
+const CREATION_CONTEXT_LABEL: Record<string, string> = {
+  'Catch and Shoot': 'Catch and shoot',
+  'Pull Ups': 'Pull-ups',
+}
+
+export function formatCreationContext(context: string): string {
+  return CREATION_CONTEXT_LABEL[context] ?? context
+}
+
+/** ("Early", "24-15") -> "Early (24-15s)" — the product clock grain's label. */
+export function formatClockBand(band: string, seconds: string): string {
+  return `${band} (${seconds}s)`
+}
+
 /** (1, 19) -> "1:19"; (7, 5) -> "7:05" */
 export function formatClock(minutes: number, seconds: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`

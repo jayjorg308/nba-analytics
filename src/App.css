@@ -431,9 +431,11 @@
 }
 
 /* One title recipe for the cards AND the zone table's section header —
-   the third instance of the pattern, not a new one. */
+   the third instance of the pattern, not a new one. (Fourth: the creation
+   section's header, ADR-0031.) */
 .headline-banner h2,
-.zone-caption h2 {
+.zone-caption h2,
+.creation-caption h2 {
     font-size: 20px;
     /* Kicker-wide tracking on the titles (the caps are typeset in the
      content, not text-transform). Overrides the h2 base -0.24px; any
@@ -1193,4 +1195,139 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+}
+
+/* --- Shot creation (the second act — ADR-0031) ------------------------------ */
+
+/* An act break, not a row gap: the creation section opens the verdict's
+   "why" after the two-axis evidence closes. */
+.creation-section {
+    margin-top: 48px;
+    text-align: left;
+}
+
+/* Section header in the shared title recipe (the h2 is styled by the rule
+   beside .headline-banner h2); description outside the h2 so the heading's
+   accessible name stays "SHOT CREATION" (the zone caption's lesson). */
+.creation-caption {
+    margin-bottom: 20px;
+}
+
+.creation-caption-desc {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+/* Mirrors .hero-layout: chart left, data twin right. No subgrid needed —
+   the section header spans above both panels, so there are no per-panel
+   header tracks to register. */
+.creation-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.creation-table-body {
+    min-width: 0; /* same overflow chain as .zone-body */
+}
+
+/* Family-group header rows: quiet dividers, not data rows. */
+.creation-group-row th {
+    padding-top: 14px;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text);
+}
+
+/* --- The diet chart: paired bars, neutral ink (never the making palette) ---- */
+
+.creation-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    line-height: normal;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.creation-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 8px;
+    border-radius: 1px;
+}
+
+.creation-swatch-league {
+    margin-left: 12px;
+}
+
+.creation-chart svg {
+    width: 100%;
+    /* Cap the render near 1:1 (viewBox 520): in the stacked single-column
+     layout an uncapped SVG balloons to page width and the chart's type
+     dwarfs the table's. */
+    max-width: 560px;
+    height: auto;
+    display: block;
+}
+
+/* Figure vs reference in the page's own ink hierarchy: his bar bright,
+   the league's the body gray — the same relationship as the table's
+   .lg parentheticals. */
+.creation-bar-player,
+.creation-swatch-player {
+    fill: var(--text-h);
+    background: var(--text-h);
+}
+
+.creation-bar-league,
+.creation-swatch-league {
+    fill: var(--text);
+    background: var(--text);
+    opacity: 0.55;
+}
+
+/* Font sizes are SVG user units (viewBox 520): ~1:1 in the desktop column;
+   small phones scale the box down to ~0.66, so ≤640px bumps the units the
+   same way the court's zone labels do. */
+.creation-chart-group {
+    font: 400 12px var(--sans);
+    letter-spacing: 0.05em;
+    fill: var(--text);
+
+    @media (max-width: 640px) {
+        font-size: 15px;
+    }
+}
+
+.creation-chart-label {
+    font: 500 13px var(--sans);
+    fill: var(--text-h);
+
+    @media (max-width: 640px) {
+        font-size: 17px;
+    }
+}
+
+.creation-chart-value {
+    font: 400 11px var(--mono);
+    fill: var(--text-h);
+
+    @media (max-width: 640px) {
+        font-size: 14px;
+    }
+}
+
+.creation-chart-value-lg {
+    fill: var(--text);
 }
