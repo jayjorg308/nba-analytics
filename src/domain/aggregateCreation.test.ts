@@ -63,6 +63,16 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(m.general.inside.attempts + j.attempts).toBe(m.seasonFga)
   })
 
+  it('bridges the three-point story: catch-and-shoot 3PA over all 3PA, both sides', () => {
+    const cs3 = m.general.catchAndShootThrees
+    // golden 3PA by context: C&S 3, Pull Ups 1, inside 0, Other 0
+    expect(cs3.attempts).toBe(3)
+    expect(cs3.totalThrees).toBe(4)
+    expect(cs3.share).toBeCloseTo(3 / 4, 10)
+    // league: C&S 60, Pull Ups 30 → 60 of 90
+    expect(cs3.leagueShare).toBeCloseTo(60 / 90, 10)
+  })
+
   it('a zero-attempt context keeps its share and makes no PPS claim', () => {
     const other = m.general.jumperContexts[2]!
     expect(other.context).toBe('Other')

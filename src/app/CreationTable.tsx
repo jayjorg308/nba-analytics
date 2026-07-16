@@ -28,14 +28,22 @@ function CreationRow({
   label,
   row,
   child = false,
+  note,
 }: {
   label: string
   row: CreationCells
   child?: boolean
+  /** Small gray annotation under the label — the zone table's band-note
+   * pattern (e.g. "highest-value shot"), here carrying computed story
+   * context like the three-arrival bridge. */
+  note?: string
 }) {
   return (
     <tr className={child ? 'zone-row-child' : undefined}>
-      <th scope="row">{label}</th>
+      <th scope="row">
+        {label}
+        {note && <span className="band-note">{note}</span>}
+      </th>
       <td>{row.attempts}</td>
       <td>
         {withSmallSampleMark(formatPps2(row.pps), ppsMarked(row))}{' '}
@@ -59,7 +67,7 @@ function CreationRow({
  * (ADR-0001).
  */
 export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
-  const { inside, jumpers, jumperContexts } = metrics.general
+  const { inside, jumpers, jumperContexts, catchAndShootThrees } = metrics.general
   const anyFlagged = [inside, jumpers, ...jumperContexts, ...metrics.shotClock].some(ppsMarked)
 
   return (
@@ -96,6 +104,13 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
                 label={formatCreationContext(row.context)}
                 row={row}
                 child
+                // The three-arrival bridge (read beside the PPS gap): which
+                // KIND of three the zone table's verdict is about.
+                note={
+                  row.context === 'Catch and Shoot' && catchAndShootThrees.share !== null
+                    ? `${catchAndShootThrees.attempts} of his ${catchAndShootThrees.totalThrees} threes`
+                    : undefined
+                }
               />
             ))}
           </tbody>

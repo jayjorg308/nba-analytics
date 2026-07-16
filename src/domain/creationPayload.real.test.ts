@@ -144,6 +144,15 @@ describe.skipIf(!existsSync(codyCreationPath))('creation anchors (launch hero)',
     expect(cs.leaguePps).toBeCloseTo(1.1003, 4)
     expect(cs.smallSamplePps).toBe(false)
 
+    // ...and it is nearly his WHOLE three-point story: 117 of his 131
+    // threes arrive off the catch (89.3%; league 72.1%) — "cold from three"
+    // means missing open, off-the-catch looks, not self-created difficulty.
+    const cs3 = m.general.catchAndShootThrees
+    expect(cs3.attempts).toBe(117)
+    expect(cs3.totalThrees).toBe(131)
+    expect(cs3.share).toBeCloseTo(0.8931, 4)
+    expect(cs3.leagueShare).toBeCloseTo(0.7209, 4)
+
     // The product-grain clock bands (195/243/71) all clear the bar; the
     // late-clock cost is real but modest volume.
     expect(m.shotClock.map((b) => b.attempts)).toEqual([195, 243, 71])

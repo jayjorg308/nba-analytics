@@ -176,6 +176,10 @@ describe('HeroPage over the golden fixture', () => {
     expect(screen.queryByText('Less than 10 ft')).toBeNull()
     screen.getByText(/tracking doesn't classify creation/)
 
+    // the three-arrival bridge annotates the Catch and shoot row (the
+    // band-note pattern): which KIND of three the verdict is about
+    screen.getByText('3 of his 4 threes')
+
     // the golden's coverage story: 1 unattributed shot-clock attempt is
     // reported (never guessed into a band), and the zero-attempt 'Other'
     // context still renders — a partition is never punctured

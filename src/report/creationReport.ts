@@ -83,6 +83,15 @@ export function renderCreationReport(payload: CreationPayload): string {
   for (const row of m.general.jumperContexts) {
     lines.push(`  ${metricLine(`  ${formatCreationContext(row.context)}`, row)}`)
   }
+  // The three-arrival bridge, with the league comparison the page's row
+  // annotation omits — verdict-authoring material for the why-sentence.
+  const cs3 = m.general.catchAndShootThrees
+  if (cs3.share !== null) {
+    lines.push(
+      `  catch-and-shoot carries ${cs3.attempts} of his ${cs3.totalThrees} threes ` +
+        `(${formatPercent1(cs3.share)}; lg ${formatPercent1(cs3.leagueShare)})`,
+    )
+  }
 
   lines.push(
     '',

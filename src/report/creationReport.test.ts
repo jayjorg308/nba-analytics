@@ -39,6 +39,10 @@ describe('renderCreationReport', () => {
     expect(report).toContain(jumpers.pps!.toFixed(3)) // 1.143 — the parent rollup
   })
 
+  it('prints the three-arrival bridge with the league comparison', () => {
+    expect(report).toContain('catch-and-shoot carries 3 of his 4 threes (75.0%; lg 66.7%)')
+  })
+
   it('carries the honesty furniture: † flags and the unattributed counters', () => {
     expect(report).toContain('†') // every golden context is sub-50
     expect(report).toContain(
