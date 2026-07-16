@@ -118,16 +118,27 @@ describe.skipIf(!existsSync(codyCreationPath))('creation anchors (launch hero)',
 
     // More than half his diet arrives inside 10 ft (league: ~43%) — the
     // creation mechanism behind v1's rim-heavy zone story.
-    const lt10 = m.general.find((r) => r.context === 'Less than 10 ft')!
-    expect(lt10.attemptShare).toBeCloseTo(0.5540, 4)
-    expect(lt10.leagueAttemptShare).toBeCloseTo(0.4257, 4)
-    expect(lt10.pps).toBeCloseTo(1.1844, 4) // dead on league (1.1864)
-    expect(lt10.leaguePps).toBeCloseTo(1.1864, 4)
+    const inside = m.general.inside
+    expect(inside.attemptShare).toBeCloseTo(0.5540, 4)
+    expect(inside.leagueAttemptShare).toBeCloseTo(0.4257, 4)
+    expect(inside.pps).toBeCloseTo(1.1844, 4) // dead on league (1.1864)
+    expect(inside.leaguePps).toBeCloseTo(1.1864, 4)
+
+    // The jumper parent states his jump shooting in one line: 227 attempts
+    // at 0.749 PPS against a 1.021 league jumper baseline — the whole
+    // making story, at a grain far clear of the small-sample bar.
+    const jumpers = m.general.jumpers
+    expect(jumpers.attempts).toBe(227)
+    expect(jumpers.attemptShare).toBeCloseTo(0.4460, 4)
+    expect(jumpers.leagueAttemptShare).toBeCloseTo(0.5743, 4)
+    expect(jumpers.pps).toBeCloseTo(0.7489, 4)
+    expect(jumpers.leaguePps).toBeCloseTo(1.0208, 4)
+    expect(jumpers.smallSamplePps).toBe(false)
 
     // Catch-and-shoot is where the making collapse lives: 0.711 PPS on the
     // league's most efficient jumper context (1.100), on 121 attempts —
     // clear of the small-sample bar, so the claim can be stated unflagged.
-    const cs = m.general.find((r) => r.context === 'Catch and Shoot')!
+    const cs = m.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
     expect(cs.attempts).toBe(121)
     expect(cs.pps).toBeCloseTo(0.7107, 4)
     expect(cs.leaguePps).toBeCloseTo(1.1003, 4)

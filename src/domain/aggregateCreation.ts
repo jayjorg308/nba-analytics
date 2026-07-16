@@ -12,7 +12,6 @@
 
 import { SMALL_SAMPLE_MAKING_ATTEMPTS } from './constants'
 import type { CreationPayload, GeneralContext } from './creationPayload'
-import { GENERAL_CONTEXTS } from './creationPayload'
 
 /** Structural entry shape shared by both families (their `context` unions
  * differ, so the schema-inferred types don't unify). */
@@ -41,6 +40,11 @@ export const CLOCK_BAND_ROLLUP = [
 ] as const
 export type ClockBand = (typeof CLOCK_BAND_ROLLUP)[number]['band']
 
+/** The rim/short bucket — the one General context with no creation signal. */
+export const INSIDE_CONTEXT = 'Less than 10 ft' satisfies GeneralContext
+/** The 10-ft-and-out contexts whose sum is the jumper parent, in display order. */
+export const JUMPER_CONTEXTS = ['Catch and Shoot', 'Pull Ups', 'Other'] as const
+
 interface CreationCells {
   attempts: number
   makes: number
@@ -64,10 +68,32 @@ export interface GeneralContextRow extends CreationCells {
   context: GeneralContext
 }
 
+/** A summed rollup line with no single source context (the jumper parent). */
+export type CreationRollupRow = CreationCells
+
 export interface ClockBandRow extends CreationCells {
   band: ClockBand
   /** The band's seconds range ("24-15") — display material for labels. */
   seconds: string
+}
+
+/**
+ * The General family re-presented at its TRUE two-tier shape: the NBA's
+ * classifier only classifies jump shots outside 10 feet, so 'Less than
+ * 10 ft' is a location bucket (creation unclassified at the rim) while
+ * catch-and-shoot / pull-ups / the tiny 'Other' residual split the jumpers.
+ * A flat four-row list reads as three creation categories plus an intruder;
+ * the tier makes the taxonomy honest — and the jumper parent (summed
+ * makes/attempts, the ADR-0016 combined-threes pattern) states the value of
+ * his jump shooting as one line.
+ */
+export interface GeneralFamilyMetrics {
+  /** 'Less than 10 ft' — rim & short; tracking classifies no creation here. */
+  inside: GeneralContextRow
+  /** 10 ft and out, all of it: Catch and Shoot + Pull Ups + Other, summed. */
+  jumpers: CreationRollupRow
+  /** The jumper children, in JUMPER_CONTEXTS order. */
+  jumperContexts: GeneralContextRow[]
 }
 
 export interface CreationMetrics {
@@ -80,8 +106,8 @@ export interface CreationMetrics {
   shotClockUnattributed: number
   leagueFga: number
   leagueShotClockUnattributed: number
-  /** The General family at NBA grain, in GENERAL_CONTEXTS order. */
-  general: GeneralContextRow[]
+  /** The General family at its two-tier product grain. */
+  general: GeneralFamilyMetrics
   /** The Shot Clock family at PRODUCT grain, in CLOCK_BAND_ROLLUP order. */
   shotClock: ClockBandRow[]
 }
@@ -142,7 +168,7 @@ export function aggregateCreationMetrics(payload: CreationPayload): CreationMetr
     throw new Error('creation baseline unusable: league FGA is 0')
   }
 
-  const general: GeneralContextRow[] = GENERAL_CONTEXTS.map((context) => ({
+  const generalRow = (context: GeneralContext): GeneralContextRow => ({
     context,
     ...cells(
       entryByContext(payload.general.player, context, 'general.player'),
@@ -150,7 +176,21 @@ export function aggregateCreationMetrics(payload: CreationPayload): CreationMetr
       seasonFga,
       leagueFga,
     ),
-  }))
+  })
+
+  const general: GeneralFamilyMetrics = {
+    inside: generalRow(INSIDE_CONTEXT),
+    // The jumper parent: summed counts on both sides (ADR-0004/0016 —
+    // never averaged rates), so "his jump shooting vs the league's" is
+    // stated at a grain with one number.
+    jumpers: cells(
+      sumContexts(payload.general.player, JUMPER_CONTEXTS, 'general.player'),
+      sumContexts(payload.general.league, JUMPER_CONTEXTS, 'general.league'),
+      seasonFga,
+      leagueFga,
+    ),
+    jumperContexts: JUMPER_CONTEXTS.map(generalRow),
+  }
 
   const shotClock: ClockBandRow[] = CLOCK_BAND_ROLLUP.map(({ band, seconds, contexts }) => ({
     band,

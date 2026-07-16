@@ -6,10 +6,14 @@
 
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { aggregateCreationMetrics, CLOCK_BAND_ROLLUP } from './aggregateCreation'
+import {
+  aggregateCreationMetrics,
+  CLOCK_BAND_ROLLUP,
+  JUMPER_CONTEXTS,
+} from './aggregateCreation'
 import { SMALL_SAMPLE_MAKING_ATTEMPTS } from './constants'
 import type { CreationPayload } from './creationPayload'
-import { GENERAL_CONTEXTS, parseCreationPayload } from './creationPayload'
+import { parseCreationPayload } from './creationPayload'
 
 const goldenUrl = new URL('../../tests/fixtures/creation.golden.json', import.meta.url)
 const golden = parseCreationPayload(JSON.parse(readFileSync(goldenUrl, 'utf-8')))
@@ -27,12 +31,13 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(m.leagueShotClockUnattributed).toBe(2)
   })
 
-  it('emits every General context in canonical order', () => {
-    expect(m.general.map((r) => r.context)).toEqual([...GENERAL_CONTEXTS])
+  it('presents the General family two-tier: rim, jumper parent, jumper children', () => {
+    expect(m.general.inside.context).toBe('Less than 10 ft')
+    expect(m.general.jumperContexts.map((r) => r.context)).toEqual([...JUMPER_CONTEXTS])
   })
 
   it('computes shares on the season/league denominators and PPS from raw makes', () => {
-    const cs = m.general[0]! // Catch and Shoot: 2/4, 2s 0/1, 3s 2/3
+    const cs = m.general.jumperContexts[0]! // Catch and Shoot: 2/4, 2s 0/1, 3s 2/3
     expect(cs.attempts).toBe(4)
     expect(cs.makes).toBe(2)
     expect(cs.attemptShare).toBeCloseTo(4 / 15, 10)
@@ -40,13 +45,26 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(cs.pps).toBeCloseTo(1.5, 10) // (2·0 + 3·2) / 4
     expect(cs.leaguePps).toBeCloseTo(95 / 80, 10) // (2·10 + 3·25) / 80
 
-    const pu = m.general[1]! // Pull Ups: 1/3, 2s 1/2, 3s 0/1
+    const pu = m.general.jumperContexts[1]! // Pull Ups: 1/3, 2s 1/2, 3s 0/1
     expect(pu.pps).toBeCloseTo(2 / 3, 10)
     expect(pu.leaguePps).toBeCloseTo(1.0, 10)
   })
 
+  it('rolls the jumper parent up by summing counts on both sides', () => {
+    const j = m.general.jumpers // C&S 4 + Pull Ups 3 + Other 0
+    expect(j.attempts).toBe(7)
+    expect(j.makes).toBe(3)
+    expect(j.attemptShare).toBeCloseTo(7 / 15, 10)
+    expect(j.pps).toBeCloseTo(8 / 7, 10) // (2·1 + 3·2) / 7
+    // league: 80 + 70 + 10 = 160 FGA; (2·35 + 3·35) / 160
+    expect(j.leagueAttemptShare).toBeCloseTo(160 / 250, 10)
+    expect(j.leaguePps).toBeCloseTo(175 / 160, 10)
+    // the family still partitions: inside + jumpers = every season attempt
+    expect(m.general.inside.attempts + j.attempts).toBe(m.seasonFga)
+  })
+
   it('a zero-attempt context keeps its share and makes no PPS claim', () => {
-    const other = m.general[3]!
+    const other = m.general.jumperContexts[2]!
     expect(other.context).toBe('Other')
     expect(other.attempts).toBe(0)
     expect(other.attemptShare).toBe(0) // 0 of 15 — a real share, not missing data
@@ -82,7 +100,8 @@ describe('aggregateCreationMetrics over the creation golden', () => {
 
   it('flags every sub-50 conversion claim with the shared constant', () => {
     // Every golden context is tiny — all flagged, one meaning of †.
-    for (const row of [...m.general, ...m.shotClock]) {
+    const rows = [m.general.inside, m.general.jumpers, ...m.general.jumperContexts, ...m.shotClock]
+    for (const row of rows) {
       expect(row.smallSamplePps).toBe(true)
     }
   })
@@ -110,10 +129,10 @@ describe('the † boundary (shared with the zone table — ADR-0031)', () => {
     const flagged = aggregateCreationMetrics(
       withCatchAndShootFga(SMALL_SAMPLE_MAKING_ATTEMPTS - 1),
     )
-    expect(flagged.general[0]!.smallSamplePps).toBe(true)
+    expect(flagged.general.jumperContexts[0]!.smallSamplePps).toBe(true)
 
     const clear = aggregateCreationMetrics(withCatchAndShootFga(SMALL_SAMPLE_MAKING_ATTEMPTS))
-    expect(clear.general[0]!.smallSamplePps).toBe(false)
+    expect(clear.general.jumperContexts[0]!.smallSamplePps).toBe(false)
   })
 })
 

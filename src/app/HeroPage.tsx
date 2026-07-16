@@ -1,6 +1,6 @@
 import { useEffect, useMemo, type CSSProperties } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
-import { CreationDietChart } from '../chart/CreationDietChart'
+import { CreationValueChart } from '../chart/CreationValueChart'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import type { CreationPayload } from '../domain/creationPayload'
@@ -124,17 +124,20 @@ function HeroReady({
       </div>
       {/* The second act (ADR-0031): creation evidence backs the verdict's
           why AFTER the court and table back the two-axis thesis — the
-          evidence unfolds in the order the verdict argues (ADR-0018). */}
+          evidence unfolds in the order the verdict argues (ADR-0018). The
+          section's job is the WHY behind the making verdict: what each kind
+          of shot is worth (the diet cut largely restates the zone story and
+          stays table-only). */}
       <section className="creation-section" aria-labelledby="creation-caption">
         <header className="creation-caption">
           <h2 id="creation-caption">SHOT CREATION</h2>
           <p className="creation-caption-desc">
-            how his shots come to be — creation diet and points per shot by context, vs league
-            average
+            why his conversion lands where it does — points per shot by creation context, vs
+            league average
           </p>
         </header>
         <div className="creation-layout">
-          <CreationDietChart metrics={creationMetrics} />
+          <CreationValueChart metrics={creationMetrics} />
           <CreationTable metrics={creationMetrics} />
         </div>
       </section>

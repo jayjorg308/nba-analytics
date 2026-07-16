@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
-import { GENERAL_CONTEXTS, parseCreationPayload } from '../domain/creationPayload'
+import { parseCreationPayload } from '../domain/creationPayload'
 import { renderCreationReport } from './creationReport'
 
 const goldenUrl = new URL('../../tests/fixtures/creation.golden.json', import.meta.url)
@@ -20,17 +20,23 @@ describe('renderCreationReport', () => {
     expect(report).toContain(`(${metrics.seasonFga} attempts)`)
   })
 
-  it('prints a row for every General context and every product clock band', () => {
-    for (const context of GENERAL_CONTEXTS) expect(report).toContain(context)
+  it('prints the two-tier General rows and every product clock band', () => {
+    expect(report).toContain('Inside 10 ft')
+    expect(report).toContain('Jumpers (10 ft and out)')
+    expect(report).toContain('Catch and shoot')
+    expect(report).toContain('Pull-ups')
+    expect(report).toContain('Other')
     expect(report).toContain('Early (24-15s)')
     expect(report).toContain('Average (15-7s)')
     expect(report).toContain('Late (7-0s)')
   })
 
   it('prints PPS from the aggregation at 3 decimals', () => {
-    const cs = metrics.general[0]!
+    const cs = metrics.general.jumperContexts[0]!
     expect(report).toContain(cs.pps!.toFixed(3)) // 1.500
     expect(report).toContain(cs.leaguePps!.toFixed(3)) // 1.188
+    const jumpers = metrics.general.jumpers
+    expect(report).toContain(jumpers.pps!.toFixed(3)) // 1.143 — the parent rollup
   })
 
   it('carries the honesty furniture: † flags and the unattributed counters', () => {

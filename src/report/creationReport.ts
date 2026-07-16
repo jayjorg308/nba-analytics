@@ -12,7 +12,12 @@
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import { SMALL_SAMPLE_MAKING_ATTEMPTS } from '../domain/constants'
 import type { CreationPayload } from '../domain/creationPayload'
-import { formatPercent1, withSmallSampleMark } from '../format'
+import {
+  formatCreationContext,
+  formatPercent1,
+  JUMPERS_LABEL,
+  withSmallSampleMark,
+} from '../format'
 
 const EM_DASH = '—'
 
@@ -68,10 +73,15 @@ export function renderCreationReport(payload: CreationPayload): string {
     `  league baseline ${meta.leagueSourceSnapshot} (${m.leagueFga} FGA)`,
   )
 
-  lines.push('', '  HOW THE SHOT ARRIVED (General)')
+  // The General family at its two-tier product grain: the NBA classifies
+  // creation only for jumpers outside 10 ft — the rim bucket and the summed
+  // jumper parent split the diet; catch-vs-dribble refines the jumpers.
+  lines.push('', '  HOW THE SHOT ARRIVED (General — two-tier product grain)')
   lines.push(`  ${tableHeader('context')}`)
-  for (const row of m.general) {
-    lines.push(`  ${metricLine(row.context, row)}`)
+  lines.push(`  ${metricLine(formatCreationContext(m.general.inside.context), m.general.inside)}`)
+  lines.push(`  ${metricLine(JUMPERS_LABEL, m.general.jumpers)}`)
+  for (const row of m.general.jumperContexts) {
+    lines.push(`  ${metricLine(`  ${formatCreationContext(row.context)}`, row)}`)
   }
 
   lines.push(

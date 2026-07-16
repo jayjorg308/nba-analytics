@@ -107,7 +107,7 @@ The pre-aggregated category describing how a shot came to be — catch-and-shoot
 _Avoid_: "bucket" in product copy — engineering shorthand for the same concept, fine in code and ADRs.
 
 **Context family**:
-One partition of a player's attempts along a single tracking dimension. v2.0 ships two: **General** (how the shot arrived: catch-and-shoot / pull-up / less than 10 ft / other) and **Shot Clock** (product grain: three bands — Early 24–15 / Average 15–7 / Late 7–0 — rolled up from the NBA's six by summing makes and attempts, never averaging rates). A family's contexts sum to the season's attributed attempts. Closest-defender is deferred; dribbles and touch-time are rejected as restating General (ADR-0030).
+One partition of a player's attempts along a single tracking dimension. v2.0 ships two: **General** (product grain: two-tier — inside 10 ft, where the NBA classifies no creation, vs **jumpers** 10 ft and out, the summed catch-and-shoot / pull-up / other parent whose children refine how the jumper was created — ADR-0031) and **Shot Clock** (product grain: three bands — Early 24–15 / Average 15–7 / Late 7–0 — rolled up from the NBA's six by summing makes and attempts, never averaging rates). A family's contexts sum to the season's attributed attempts. Closest-defender is deferred; dribbles and touch-time are rejected as restating General (ADR-0030).
 
 **Creation diet**:
 A player's attempt shares across one family's creation contexts — the creation analog of shot diet, benchmarked against the league's creation diet (the selection benchmark's stance: position-blind, comparison class stated plainly).

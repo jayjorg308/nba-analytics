@@ -79,13 +79,18 @@ describe('HeroPage over the golden fixture', () => {
     expect(deployedMeta.season).toBe(hero.season)
 
     // headline: league diet from the verbatim league frame (1.09124 -> "1.09"),
-    // with the comparison class stated beside the numbers (ADR-0002)
-    screen.getByText('1.09')
+    // with the comparison class stated beside the numbers (ADR-0002).
+    // Scoped to the stat cells — the creation value chart legitimately
+    // prints overlapping figures elsewhere on the page.
+    const statValues = [...document.querySelectorAll('.headline-numbers .stat-value')].map(
+      (el) => el.textContent,
+    )
+    expect(statValues).toContain('1.09')
     expect(screen.getAllByText(/vs league average/).length).toBeGreaterThanOrEqual(2)
 
     // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21"
     screen.getByRole('heading', { name: /Shot making/i })
-    screen.getByText('1.21')
+    expect(statValues).toContain('1.21')
 
     // all six golden zones are < 15 attempts -> every row muted, none deleted
     expect(document.querySelectorAll('.zone-row-excluded')).toHaveLength(6)
@@ -114,7 +119,7 @@ describe('HeroPage over the golden fixture', () => {
     expect(rowHeads.indexOf('3 Pointers')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
     // child rows drop the "3" — the 3 Pointers parent already carries it
     expect(rowHeads.indexOf('3 Pointers')).toBeLessThan(rowHeads.indexOf('Left Corner'))
-    expect(document.querySelectorAll('.zone-row-child')).toHaveLength(3)
+    expect(document.querySelectorAll('.zone-panel .zone-row-child')).toHaveLength(3)
 
     // backcourt reported, never hidden (1 synthetic attempt in the golden)
     screen.getByText(/Backcourt heaves: 1 attempt \(0 made\)/)
@@ -137,30 +142,39 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText(/1 shot beyond half-court not shown/)
 
     // the second act (ADR-0031): creation renders AFTER the court + table,
-    // in the section-title recipe, with its comparison class stated plainly
+    // in the section-title recipe, framed as the WHY behind the conversion
+    // verdict, comparison class stated plainly
     screen.getByRole('heading', { name: 'SHOT CREATION' })
-    screen.getByText(/creation diet and points per shot by context, vs league/)
+    screen.getByText(/points per shot by creation context, vs\s+league average/)
 
-    // the diet chart: 7 paired bars (4 General contexts + 3 product clock
-    // bands) in neutral ink, with the table as its accessible data twin
-    expect(document.querySelectorAll('.creation-bar-player')).toHaveLength(7)
-    expect(document.querySelectorAll('.creation-bar-league')).toHaveLength(7)
+    // the value chart: a dumbbell per row (rim + jumper parent, 3 jumper
+    // children, 3 clock bands); the golden's zero-attempt 'Other' makes no
+    // PPS claim, so it draws a league dot but no player dot
+    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(8)
+    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(7)
 
-    // the creation table: zone-table column philosophy — FGA anchors, the
-    // diet pair argues, PPS (lg) trails as reference; no eFG% (ADR-0001)
+    // the creation table: FGA anchors, PPS (lg) — the section's payoff —
+    // leads, the diet pair trails as context; no eFG% (ADR-0001)
     const creationTable = screen.getByRole('table', {
       name: /Shot creation by context/,
     })
     const creationHeaders = [...creationTable.querySelectorAll('thead th')].map(
       (th) => th.textContent,
     )
-    expect(creationHeaders).toEqual(['Context', 'FGA', 'Share', 'Lg share', 'PPS (lg)'])
+    expect(creationHeaders).toEqual(['Context', 'FGA', 'PPS (lg)', 'Share', 'Lg share'])
 
-    // product display labels over NBA literals ("Pull Ups" never renders);
-    // each label appears twice — chart row and table row, the data twin
+    // product display labels over NBA literals ("Pull Ups" / "Less than
+    // 10 ft" never render); each label appears twice — chart row and table
+    // row, the data twin. The General family is two-tier: rim vs the jumper
+    // parent, with catch-vs-dribble refining the jumpers (the intruder-row
+    // incoherence of the flat NBA taxonomy, fixed).
+    expect(screen.getAllByText('Inside 10 ft')).toHaveLength(2)
+    expect(screen.getAllByText('Jumpers (10 ft and out)')).toHaveLength(2)
     expect(screen.getAllByText('Pull-ups')).toHaveLength(2)
     expect(screen.getAllByText('Early (24-15s)')).toHaveLength(2)
     expect(screen.queryByText('Pull Ups')).toBeNull()
+    expect(screen.queryByText('Less than 10 ft')).toBeNull()
+    screen.getByText(/tracking doesn't classify creation/)
 
     // the golden's coverage story: 1 unattributed shot-clock attempt is
     // reported (never guessed into a band), and the zero-attempt 'Other'

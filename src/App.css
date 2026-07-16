@@ -1261,10 +1261,11 @@
 }
 
 .creation-swatch {
+    /* Dot swatches — the chart's marks are dumbbell dots, not bars. */
     display: inline-block;
-    width: 14px;
-    height: 8px;
-    border-radius: 1px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
 }
 
 .creation-swatch-league {
@@ -1281,20 +1282,38 @@
     display: block;
 }
 
-/* Figure vs reference in the page's own ink hierarchy: his bar bright,
+/* Figure vs reference in the page's own ink hierarchy: his dot bright,
    the league's the body gray — the same relationship as the table's
-   .lg parentheticals. */
-.creation-bar-player,
+   .lg parentheticals. Positional encoding only; never the making palette. */
+.creation-dot-player,
 .creation-swatch-player {
     fill: var(--text-h);
     background: var(--text-h);
 }
 
-.creation-bar-league,
+.creation-dot-league,
 .creation-swatch-league {
     fill: var(--text);
     background: var(--text);
-    opacity: 0.55;
+    opacity: 0.7;
+}
+
+/* The dumbbell's bar: the value gap itself, quiet enough that the dots and
+   their numbers stay the figures. */
+.creation-connector {
+    stroke: var(--text);
+    stroke-opacity: 0.35;
+    stroke-width: 2;
+}
+
+.creation-gridline {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.creation-grid-label {
+    font: 400 10px var(--mono);
+    fill: var(--text);
 }
 
 /* Font sizes are SVG user units (viewBox 520): ~1:1 in the desktop column;
@@ -1319,7 +1338,23 @@
     }
 }
 
-.creation-chart-value {
+/* Long-label swap: the bumped ≤640px font clips 'Jumpers (10 ft and out)'
+   off the viewBox's left edge, so phones get the short form instead. */
+.creation-label-short {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .creation-label-full {
+        display: none;
+    }
+
+    .creation-label-short {
+        display: initial;
+    }
+}
+
+.creation-value-his {
     font: 400 11px var(--mono);
     fill: var(--text-h);
 
@@ -1328,6 +1363,11 @@
     }
 }
 
-.creation-chart-value-lg {
+.creation-value-lg {
+    font: 400 11px var(--mono);
     fill: var(--text);
+
+    @media (max-width: 640px) {
+        font-size: 14px;
+    }
 }
