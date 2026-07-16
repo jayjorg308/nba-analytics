@@ -15,6 +15,7 @@ export const keyonteGeorge: HeroConfig = {
   thesis: 'Is Keyonte George taking good shots?',
   hero: {
     imagePath: 'img/keyonte-george-hero.webp',
+    teamLogoPath: 'img/utah-logo.png',
     imageAlt:
       'Keyonte George rises for a one-handed finish at the rim between two Oklahoma City Thunder defenders',
     // Narrow (full-bleed 3:4) shows nearly the full frame height, so the
