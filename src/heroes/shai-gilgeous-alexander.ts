@@ -12,9 +12,9 @@ export const shaiGilgeousAlexander: HeroConfig = {
   hero: {
     imagePath: 'img/sga-hero.jpg',
     teamLogoPath: 'img/okc-logo.png',
-    imageAlt: 'Shai Gilgeous-Alexander drives with the ball against Washington',
-    imagePosition: '50% 38%',
-    imagePositionWide: '50% 35%',
+    imageAlt: 'Stylized action image of Shai Gilgeous-Alexander extending for a layup',
+    imagePosition: '50% 50%',
+    imagePositionWide: '50% 50%',
     kicker: 'Shai Gilgeous-Alexander · Oklahoma City Thunder · Nº 2 · 2025-26',
   },
   // Authored from hero:report and held to the colocated guard: selection

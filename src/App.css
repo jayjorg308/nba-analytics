@@ -91,11 +91,11 @@
     }
 }
 
-/* Optional team mark (hero config teamLogoPath): a ghost watermark in the
-   wide layout's dark left column, behind the scrim and the title. Grayscale
-   + invert lifts the mark to a light neutral regardless of team color; the
-   low opacity is what reads as "shadow" — tune it, not the filter. The
-   narrow poster is all photo, so the mark hides there. */
+/* Optional team mark (hero config teamLogoPath): one team-agnostic slot for
+   the normalized 1024px square asset contract. Its 60% visible footprint
+   turns this 46% canvas into a ~28% banner mark. Grayscale + invert lifts the
+   mark to a light neutral regardless of team color; low opacity makes the
+   shadow. The narrow poster is all image, so the mark hides there. */
 .hero-banner-logo {
     position: absolute;
     top: 80%;

@@ -1,7 +1,5 @@
-# Image credits
+# Image provenance
 
-- `public/img/sga-hero.jpg` — Shai Gilgeous-Alexander, Oklahoma City Thunder
-  at Washington Wizards, 11 January 2022. Photo by All-Pro Reels, sourced
-  from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Shai_Gilgeous-Alexander_(51815871018)_(cropped).jpg),
-  resized from the Commons crop and used under
-  [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/).
+- `public/img/sga-hero.jpg` — the project's original generated Shai action
+  artwork, intentionally adopted as the production banner. It is presented as
+  a stylized illustration, not as a documentary photograph of a named game.

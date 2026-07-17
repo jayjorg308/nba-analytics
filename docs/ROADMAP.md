@@ -27,7 +27,8 @@ flags, authored-and-guarded copy — on a new axis._
 > _The max-FGA stress test is now a shipped v2.5 commitment: Shai's 2025-26
 > MVP season is the positive control. His action banner, guarded copy, and all
 > three required payloads are production data; he receives no payload, gate,
-> or guard exemption._
+> or guard exemption. The original action artwork is intentionally retained
+> as a stylized production illustration, not a documentary game photo._
 
 **Where v1 ended:** the thesis ("Is this player taking good shots?") is
 answered by the two-axis model, argued verdict-first (ADR-0018), guarded
