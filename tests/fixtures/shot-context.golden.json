@@ -1,0 +1,154 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "player": "Cody Williams",
+    "playerId": 1642262,
+    "season": "2025-26",
+    "sourceShotPayload": "tests/fixtures/derived.golden.json",
+    "totalShots": 15,
+    "gamesExpected": 6,
+    "gamesLoaded": 1,
+    "eventMatchCounts": {
+      "matched": 2,
+      "missingGame": 8,
+      "missingEvent": 5,
+      "duplicateEvent": 0,
+      "contradiction": 0
+    },
+    "assistStatusCounts": {
+      "assisted": 1,
+      "unassisted": 0,
+      "notApplicable": 8,
+      "unknown": 6
+    },
+    "sourceGames": [
+      {
+        "gameId": "0022500025",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      }
+    ]
+  },
+  "shots": [
+    {
+      "gameId": "0022500025",
+      "gameEventId": 233,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 239,
+      "eventMatch": "missingEvent",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingEvent"
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 453,
+      "eventMatch": "missingEvent",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingEvent"
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 480,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 491,
+      "eventMatch": "missingEvent",
+      "assistStatus": "unknown",
+      "assistEvidence": "unavailable",
+      "failureReason": "missingEvent"
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 704,
+      "eventMatch": "missingEvent",
+      "assistStatus": "unknown",
+      "assistEvidence": "unavailable",
+      "failureReason": "missingEvent"
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 591,
+      "eventMatch": "missingGame",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 719,
+      "eventMatch": "missingGame",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 739,
+      "eventMatch": "missingGame",
+      "assistStatus": "unknown",
+      "assistEvidence": "unavailable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 579,
+      "eventMatch": "missingGame",
+      "assistStatus": "unknown",
+      "assistEvidence": "unavailable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 653,
+      "eventMatch": "missingGame",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500475",
+      "gameEventId": 93,
+      "eventMatch": "missingGame",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500475",
+      "gameEventId": 462,
+      "eventMatch": "missingGame",
+      "assistStatus": "unknown",
+      "assistEvidence": "unavailable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 145,
+      "eventMatch": "missingGame",
+      "assistStatus": "unknown",
+      "assistEvidence": "unavailable",
+      "failureReason": "missingGame"
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 999,
+      "eventMatch": "missingEvent",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": "missingEvent"
+    }
+  ]
+}

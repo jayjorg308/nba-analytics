@@ -62,6 +62,35 @@ export function formatMatchup(opponent: string, home: boolean): string {
   return `${home ? 'vs' : '@'} ${opponent}`
 }
 
+// Product display labels for the NBA's creation-context literals: the data
+// keeps the literals verbatim (ADR-0030); the page speaks the product's
+// words. Unmapped literals pass through.
+const CREATION_CONTEXT_LABEL: Record<string, string> = {
+  'Catch and Shoot': 'Catch and shoot',
+  'Pull Ups': 'Pull-ups',
+  // The rim/short bucket, named as the counterpart of the jumper parent —
+  // the NBA literal reads like a distance stat, not a tier.
+  'Less than 10 ft': 'Inside 10 ft',
+}
+
+export function formatCreationContext(context: string): string {
+  return CREATION_CONTEXT_LABEL[context] ?? context
+}
+
+/** The jumper parent's one label everywhere (table, chart, report): the
+ * summed 10-ft-and-out rollup over catch-and-shoot / pull-ups / other. */
+export const JUMPERS_LABEL = 'Jumpers (10 ft and out)'
+
+/** ("Early", "24-15") -> "Early (24-15s)" — the product clock grain's label. */
+export function formatClockBand(band: string, seconds: string): string {
+  return `${band} (${seconds}s)`
+}
+
+/** ("Tight", "0-4") -> "Tight (0-4 ft)" — the defender product grain's label. */
+export function formatDefenderBand(band: string, feet: string): string {
+  return `${band} (${feet} ft)`
+}
+
 /** (1, 19) -> "1:19"; (7, 5) -> "7:05" */
 export function formatClock(minutes: number, seconds: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`

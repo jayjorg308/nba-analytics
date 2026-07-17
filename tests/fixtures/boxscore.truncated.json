@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "game_id": "0022500025",
+    "pull_date": "2026-07-16",
+    "source": "NBA Stats BoxScoreTraditionalV3",
+    "fixture_note": "Hand-trimmed validation pair for playbyplay.truncated.json"
+  },
+  "response": {
+    "meta": { "version": 1, "code": 200 },
+    "boxScoreTraditional": {
+      "gameId": "0022500025",
+      "homeTeam": {
+        "teamId": 1610612756,
+        "teamTricode": "PHX",
+        "statistics": { "assists": 1 }
+      },
+      "awayTeam": {
+        "teamId": 1610612762,
+        "teamTricode": "UTA",
+        "statistics": { "assists": 1 }
+      }
+    }
+  }
+}

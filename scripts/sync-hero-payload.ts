@@ -2,6 +2,12 @@
 // can fetch them (the app reads persisted JSON, never the API — stats.nba.com
 // blocks cloud IPs). public/data/ is committed; /data/ is not (ADR-0010).
 //
+// Each target syncs all three required contracts: shot, creation, and
+// shot-context (ADRs 0030/0032). A target with any missing derived sibling
+// fails rather than shipping a partial argument. Derived sibling payloads
+// live in dedicated subdirectories, keeping the root shot-payload glob blind
+// to them by construction.
+//
 // Runs under tsx so it reads the hero registry directly — the single source
 // of hero truth (ADR-0022); no slug/season duplicated in package.json.
 //
@@ -14,8 +20,7 @@ import { copyFileSync, mkdirSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { HEROES } from '../src/heroes/registry'
 
-function syncOne(slug: string, season: string): boolean {
-  const sourceDir = join('data', 'derived', slug, season)
+function latestSource(sourceDir: string, deriveHint: string): string | null {
   let candidates: string[]
   try {
     candidates = readdirSync(sourceDir)
@@ -25,18 +30,45 @@ function syncOne(slug: string, season: string): boolean {
     candidates = []
   }
   if (candidates.length === 0) {
-    console.error(`no derived payloads under ${sourceDir} — run ingestion/derive_payload.py first`)
-    return false
+    console.error(`no derived payloads under ${sourceDir} — run ${deriveHint} first`)
+    return null
   }
 
   // ISO pull-date filenames sort lexicographically == chronologically.
   const latest = candidates[candidates.length - 1]!
-  const source = join(sourceDir, latest)
-  const dest = join('public', 'data', slug, `${season}.json`)
+  return join(sourceDir, latest)
+}
+
+interface SyncFile {
+  source: string
+  dest: string
+}
+
+function syncResolved({ source, dest }: SyncFile): void {
   mkdirSync(dirname(dest), { recursive: true })
   copyFileSync(source, dest)
   console.log(`synced ${source} -> ${dest}`)
-  return true
+}
+
+function resolveOne(slug: string, season: string): SyncFile[] | null {
+  const derivedDir = join('data', 'derived', slug, season)
+  const sources = [
+    latestSource(derivedDir, 'ingestion/derive_payload.py'),
+    latestSource(join(derivedDir, 'creation'), 'ingestion/derive_creation.py'),
+    latestSource(join(derivedDir, 'shot-context'), 'ingestion/derive_shot_context.py'),
+  ]
+  if (sources.some((source) => source === null)) return null
+  return [
+    { source: sources[0]!, dest: join('public', 'data', slug, `${season}.json`) },
+    {
+      source: sources[1]!,
+      dest: join('public', 'data', slug, `${season}.creation.json`),
+    },
+    {
+      source: sources[2]!,
+      dest: join('public', 'data', slug, `${season}.context.json`),
+    },
+  ]
 }
 
 const [slug, season] = process.argv.slice(2)
@@ -48,8 +80,10 @@ if ((slug === undefined) !== (season === undefined)) {
 const targets: readonly { slug: string; season: string }[] =
   slug !== undefined && season !== undefined ? [{ slug, season }] : HEROES
 
-let allSynced = true
-for (const t of targets) {
-  if (!syncOne(t.slug, t.season)) allSynced = false
+// Resolve every required sibling for every target before copying anything.
+// A missing context can therefore never leave a one-sided deployment update.
+const resolved = targets.map((target) => resolveOne(target.slug, target.season))
+if (resolved.some((files) => files === null)) process.exit(1)
+for (const files of resolved) {
+  for (const file of files!) syncResolved(file)
 }
-process.exit(allSynced ? 0 : 1)

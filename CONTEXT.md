@@ -88,19 +88,89 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 "Is this player taking good shots?" — answered completely by the two-axis model (shot selection + shot making). This is the whole of v1's claim; the tool states this question and no more.
 
 **Verdict**:
-The two-or-three-sentence answer to the v1 thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by a committed guard test that asserts each directional claim against the deployed payload's metrics (ADR-0017); its language stays inside selection/making (ADR-0005).
+The few-sentence answer to the thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by committed claim guards (ADR-0017). Its creation why-sentence may use shipped vocabulary only when a matching claim is declared; Case 3 assist language becomes available in v2.5 but remains optional per hero.
+
+**Assist claim**:
+An optional authored verdict assertion about assisted makes, backed by shot-context metrics and required to remain true across the full worst-case assist-share bounds. Shipping assist analysis licenses the vocabulary; it does not force every hero's verdict to use it.
 
 **Hero banner**:
-The page's poster-scale opening: a black-and-white action photo of the hero player carrying the thesis question as the page's `h1` (kicker · question · "↓ the verdict" cue pinned to the banner's bottom edge as the scroll affordance), leading directly into the verdict — ADR-0018's question-first order at poster volume. Its content (photo, per-layout focal points, kicker, optional `teamLogoPath` team-mark watermark for the wide layout's dark left column) is authored per hero in the hero's config module (`src/heroes/<slug>.ts`), like the verdict; its treatment (grayscale filter, wide panel / narrow full-bleed layouts, the display face, the portrait full-viewport landing screen with its graded title zone and glyph halo) is product (ADR-0021, ADR-0020, ADR-0025). The committed image is always a web-sized derivative, never a full-resolution source.
+The page's poster-scale opening: a black-and-white action image of the hero player carrying the thesis question as the page's `h1` (kicker · question · "↓ the verdict" cue pinned to the banner's bottom edge as the scroll affordance), leading directly into the verdict — ADR-0018's question-first order at poster volume. Its content (image, per-layout focal points, kicker, optional `teamLogoPath` team-mark watermark for the wide layout's dark left column) is authored per hero in the hero's config module (`src/heroes/<slug>.ts`), like the verdict; its treatment (grayscale filter, wide panel / narrow full-bleed layouts, the display face, the portrait full-viewport landing screen with its graded title zone and glyph halo) is product (ADR-0021, ADR-0020, ADR-0025). The committed image is always a web-sized derivative, never a full-resolution source. Team marks use a normalized 1024×1024 transparent canvas with a centered visible mark occupying 58–62% of the longest side; `ingestion/test_team_logo_assets.py` enforces that asset interface so one CSS slot styles every team without per-hero scale overrides.
 
 **Hero index** (a.k.a. **the directory**):
 The site root: a directory of poster tiles — each hero's banner photo and thesis at tile scale — linking to the complete hero pages at their own URLs (`/<slug>`), all served by one deployment (ADR-0022). A directory of *arguments*, deliberately not a switcher (ADR-0018): heroes are never view-state under one page, and navigation is plain full-page links (the tiles, plus each hero page's quiet "All players" footer link). Tiles read straight off the **hero registry** (`src/heroes/registry.ts`, the single source of hero truth — the index, router, sync script, and per-hero guards all consume it), so registering a hero is what publishes its tile.
 
 **v2 thesis**:
-"How does he create his shots?" — the scheduled second act. Designated engine: the Case 2 buckets (catch-and-shoot vs pull-up, contested, shot-clock). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction.
+"How does he create his shots?" — the second act, shipped: Case 2 creation contexts at the bucket grain, three families (see Context family; ADR-0030 plus the v2.1 defender fast-follow). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
 
 **Shot creation**:
-Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Explicitly v2, Case 2/3-powered. v1 has *no* creation signal — a catch-and-shoot and a pull-up from the same spot are identical dots in `shotchartdetail` — and must never imply otherwise (see ADR-0005).
+Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Case 2 tracking evaluates catch/pull-up, clock, and contest at the aggregate context grain; Case 3 play-by-play adds official assist status for made shots, but does not identify Case 2 tracking contexts per shot (ADR-0033). Approximate per-shot clock was independently gated and omitted from v2.5 (ADRs 0034/0047/0050).
+
+**Creation context**:
+The pre-aggregated category describing how a shot came to be — catch-and-shoot, pull-up, a shot-clock band. The unit of v2.0's creation evaluation, assigned by the NBA's tracking dashboards, never derived per shot. v2.5 adds official assist context at the shot grain without manufacturing any of these Case 2 labels.
+_Avoid_: "bucket" in product copy — engineering shorthand for the same concept, fine in code and ADRs.
+
+**Context family**:
+One partition of a player's attempts along a single tracking dimension. Three ship: **General** (product grain: two-tier — inside 10 ft, where the NBA classifies no creation, vs **jumpers** 10 ft and out, the summed catch-and-shoot / pull-up / other parent whose children refine how the jumper was created — ADR-0031), **Shot Clock** (product grain: three bands — Early 24–15 / Average 15–7 / Late 7–0), and **Closest Defender** (v2.1; product grain: Tight 0–4 / Open 4–6 / Wide open 6+ ft, from the NBA's four distances). Finer grains always roll up by summing makes and attempts, never averaging rates. A family's contexts sum to the season's attributed attempts. Dribbles and touch-time are rejected as restating General (ADR-0030).
+
+**Product grain**:
+The grain a context family renders at, computed in the aggregation by summing makes and attempts from the finer grain the payload persists — never by averaging rates (ADR-0004), and chosen so every rendered band clears the small-sample bar (the combined-threes pattern, ADR-0016). The payload always keeps the NBA's grain, so retuning a product grain is an aggregation change, never a schema bump. Current product grains: General's two tiers (inside 10 ft / jumpers), Shot Clock's three bands, Closest Defender's three bands.
+
+**Creation diet**:
+A player's attempt shares across one family's creation contexts — the creation analog of shot diet, benchmarked against the league's creation diet (the selection benchmark's stance: position-blind, comparison class stated plainly).
+
+**Creation payload**:
+The second typed contract, parallel to the derived payload: per-family player contexts plus the rolled-up league creation baseline, metric-free, with its own schema version and golden (ADR-0030). Deployed beside the shot payload and required for every registered hero.
+
+**Shot context payload**:
+The third typed contract: exactly one normalized Case 3 context row for every post-drop shot, matched by shot identity. It carries statuses, evidence kinds, and typed failure reasons—not raw NBA event prose—while keeping Case 1 shots, Case 2 creation contexts, and Case 3 reconstruction separate.
+
+**Shot identity**:
+The exact cross-source identity of a shot: NBA game ID plus game event/action number. Time, location, player, and result confirm an identity match; similarity on those facts never creates one.
+
+**Event match status**:
+The Case 3 linkage state of a shot: matched, missing game, missing event, duplicate event, or contradictory event. It is independent of assist status because a miss can lack an event while still having no applicable assist question, and a matched make can still have ambiguous assist evidence.
+
+**Assist status**:
+A four-state classification of a shot: **assisted** or **unassisted** for classified makes, **not applicable** for misses, and **unknown** when a make cannot be matched or classified safely. Unknown is a coverage failure, never evidence that the make was unassisted.
+
+**Unassisted make**:
+A made field goal for which the official scorer credited no assist. It is not synonymous with self-created, solo, or without teammate help; assist credit measures one attribution rule, not the whole possession's creation.
+
+**Assist evidence**:
+An explicit official scoring credit attached to a made-shot event, supplied by a stable structured field or a narrowly parsed NBA event description. A prior pass, nearby event, or plausible basketball sequence is not assist evidence.
+
+**Assist reconciliation**:
+The exact per-team, per-game equality between assist credits parsed from play-by-play and the official `BoxScoreTraditionalV3` assist total. The box score validates the parser but never supplies or repairs a per-shot classification.
+
+**Assist coverage**:
+The share of made shots whose assist status is classified as assisted or unassisted. Unknown makes remain in the full made-shot denominator and bound the true assisted share rather than being silently discarded.
+
+**Assisted share of makes**:
+The observed fraction of classified made field goals credited with an assist for the stated hero-season. It has no league baseline or small-sample ability claim; visible denominators and worst-case source-coverage bounds carry its honesty.
+
+**Assisted-make zone grain**:
+The existing shot-zone hierarchy reused for assist analysis: all makes, the six evaluation zones with their established refinements, and the combined 3 Pointers parent. Thin child zones remain visible with their denominators, while authored claims use a broader data-supported parent grain.
+
+**Estimated shot-clock remaining**:
+The approximate time left on the shot clock when a shot occurred, reconstructed from Case 3 event timing, possession changes, and reset rules. It ships only when the reconstruction exactly reproduces the authoritative six-band tracking totals for every current hero, and is never presented without approximation language. The completed-season Stats V3 source adopted for v2.5 does not preserve enough possession/reset state to attempt that gate safely, so estimated clock is absent from the v2.5 contract and UI (ADR-0050).
+
+**Creation PPS**:
+Points-per-shot within a creation context, computed from that context's 2PT/3PT makes and attempts — creation speaks the same value unit as everything else (PPS, never eFG%).
+
+**Unattributed attempts**:
+Attempts a context family fails to cover (tracking gaps — e.g. shot-clock data missing). Counted and reported whenever nonzero, never guessed into a context; required to be zero for the General family, which must reconcile exactly with the shot payload's season attempts (ADR-0030).
+
+**Shot creation section**:
+The hero page's second act (ADR-0031): after the court and zone table close the two-axis argument, this section backs the verdict's why-sentence. Its visual is the **creation value chart** — a PPS dumbbell per creation context, his value vs the league's on one positional axis (no color scale, no tooltips; the making palette belongs to the making axis alone). The creation table is the accessible data twin and the home of the diet shares — deliberately not charted, because the diet cut largely restates the zone story. The catch-and-shoot row carries the **three-arrival annotation** ("N of his M threes"), the bridge between the creation story and the zone table's three-point verdict.
+
+**Assisted makes section**:
+The distinct Case 3 subsection at the end of the Shot Creation second act: hero-only assisted-make evidence by the established zone hierarchy. It never shares a chart or comparison language with the league-relative Case 2 creation contexts, and per-shot assist details remain available in the Shots view.
+
+**Assisted-share plot**:
+The Assisted Makes section's bounded-share dot plot: each zone's classified assisted share is a dot, and unknown makes widen a minimum-to-maximum interval over all makes. The interval represents source coverage only, not statistical confidence; the table is the complete numerical twin.
+
+**Assisted-makes presentation**:
+The Assisted Makes product surface suppresses the Unknown / Coverage / Bounds table group when every displayed row has complete classification, and restores the whole group when any unknown make exists. Attempt-empty refinement rows are omitted until data makes them informative. The underlying coverage metrics and worst-case bounds remain part of the domain and authoring contracts in both states (ADR-0043).
 
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
@@ -108,8 +178,14 @@ The v1 build increment: pull `shotchartdetail` for one player/one season, valida
 **Raw artifact**:
 One verbatim blob of a `shotchartdetail` response (player shots + `LeagueAverages` frame), stored exactly as returned. Keyed per **(player, season, pull-date)**. Self-describing: records at minimum its pull-date and games-included (or date-range), so a blob's contents are knowable without re-deriving.
 
+**Raw play-by-play artifact**:
+One verbatim NBA Stats `PlayByPlayV3` response for a completed-season game, stored once by game ID and pull date and shared by every hero who appeared in that game. It is the sole v2.5 Case 3 source; a missing game is an explicit coverage failure, never permission to substitute a different play-by-play feed silently (ADR-0050).
+
+**Raw game-validation artifact**:
+The verbatim NBA Stats `BoxScoreTraditionalV3` response paired with a raw play-by-play artifact. It is a reconciliation oracle for official game totals, not an alternate source of per-shot events.
+
 **Pull unit**:
-The season — not the game. `shotchartdetail` returns a whole player-season per response; there is no "game N" mode in v1. (Per-game pulls return in v2 for Case 3 play-by-play, where per-game *is* the endpoint's unit.)
+The source's natural response grain: a season for `shotchartdetail`, and one game for Case 3 play-by-play. A source response is stored whole rather than decomposed into an invented storage grain.
 
 **Snapshot**:
 A single dated raw pull for a (player, season). A completed season has exactly one; an in-progress season accrues several.
@@ -124,14 +200,23 @@ The raw storage layer is append-only from day one: new snapshots are added, neve
 The single player a given hero page is focused on (one deployment now serves a directory of hero pages — ADR-0022). The engine is player-agnostic; the hero player is a configuration/parameter, not a hardcoded assumption. Launch hero: **Cody Williams** (2024 Utah pick, has completed NBA seasons). Peterson (2026 #2 pick, no NBA shots until 2026-27) is the later "spin up cheaply" demo, not the launch subject.
 _Hero ≠ good player._ Hero is the launch subject, nothing more. A debated/disappointing high-pick is the *better* subject: analyzing a known star mostly confirms the obvious, whereas the two-axis model (selection vs making) earns its keep on an open-question player by separating "chooses bad shots" from "chooses fine shots, misses them." Williams's disappointment is a feature of the subject. Only a Gate 2 (volume) failure should bump him — and then to another debated, higher-volume young Jazz player (e.g. Keyonte George), never to an established star.
 
+**Positive-control hero**:
+An established elite player whose known-good outcome tests whether the same engine can explain success rather than only diagnose failure. Shai Gilgeous-Alexander's 2025-26 MVP season is v2.5's positive control and passes the same contracts, gates, and guards as every other registered hero.
+
 **Launch season**:
 The single season v1 renders for the hero. Chosen as the hero's highest-minutes completed season, to maximize the chance of clearing the volume gate. For the launch hero this is **2025-26** (1631 MIN vs 1060; 509 attempts vs 257; all 6 evaluation zones clear the volume bar).
 
 **Hero eligibility**:
-A player is eligible to be a hero only if they have ≥1 completed season passing both gates. Rookies/incoming players are ineligible until they do (see ADR-0003).
+A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, and play-by-play. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044).
 
 **Baseline gate** (Gate 1):
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
 
 **Volume gate** (Gate 2):
 The player has enough per-zone attempts that the mix view isn't mostly suppression warnings — constraint 4 (sample-size suppression) promoted from zone-level to player-level eligibility. **Threshold: a zone is included at ≥15 attempts** (all 6 evaluation zones clear for the launch hero/season; set from real counts per ADR-0003, now ADR-0008). There is *no* second hard cutoff on the making axis: low-N zones instead carry a **small-sample uncertainty flag** on the making delta. Rationale from the data — a player's attempt *share* is stable by ~34+ attempts, but per-zone *conversion* is noisy there, so the selection/making axis split is real, not just anticipated. **The flag threshold is < 50 attempts** (`SMALL_SAMPLE_MAKING_ATTEMPTS`, `src/domain/constants.ts`; tunable): it must exceed 49 so per-corner making at L49/R34 carries the flag per ADR-0008, and at n=50 a ~40% shooter's FG% has a 95% CI of ~±13.6pp — noise-dominated.
+
+**Tracking gate** (Gate 3):
+NBA tracking data exists for the season (2013-14 onward), so the creation payload can be built. Added by v2.0 (ADR-0030): a registered hero ships both payloads, so a pre-tracking season cannot host a hero.
+
+**Play-by-play gate** (Gate 4):
+A valid canonical Case 3 artifact exists for every game containing a hero shot. Whole-game absence makes the season ineligible; individual event ambiguities remain explicit unknowns handled by assist coverage and bounds.

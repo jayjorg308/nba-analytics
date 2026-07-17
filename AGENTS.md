@@ -20,6 +20,7 @@ Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agen
 - `python ingestion/derive_payload.py --player "Name" --season 2025-26` — derive the typed payload from the latest raw snapshot.
 - `npm run hero:sync` — copy the latest derived payload(s) to the committed `public/data/` deployment copy (ADR-0010). No args = every hero in the registry (`src/heroes/registry.ts`); `-- <slug> <season>` syncs one, registered or not.
 - `npm run hero:report -- <player-slug> <season>` — print the hero's computed story (gates, ADR-0016 decomposition, per-zone bins/flags) from the latest derived payload; `--deployed` reads the committed copy, `--file <path>` any payload. Every hero swap starts by reading this.
+- `npm run logo:normalize -- public/img/<team>-logo.png` — normalize a team mark to the guarded shared banner-logo canvas before assigning `teamLogoPath`.
 - `npm run golden:regen` — regenerate `tests/fixtures/derived.golden.json`; required whenever the payload shape changes, committed in the same PR as the schema change.
 - `python -m pytest ingestion -q` — Python suite (includes the ADR-0004 reconciliation tests).
 - `npm test` / `npm run lint` / `npm run build` — TypeScript gate. Run all three before calling a change done.

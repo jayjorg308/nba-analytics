@@ -1,0 +1,80 @@
+{
+  "_meta": {
+    "game_id": "0022500025",
+    "pull_date": "2026-07-16",
+    "source": "NBA Stats PlayByPlayV3",
+    "fixture_note": "Hand-trimmed from the real 2025-26 PlayByPlayV3 action shape; counts pair with boxscore.truncated.json"
+  },
+  "response": {
+    "meta": { "version": 1, "code": 200 },
+    "game": {
+      "gameId": "0022500025",
+      "actions": [
+        {
+          "actionNumber": 13,
+          "clock": "PT11M04.00S",
+          "period": 1,
+          "teamId": 1610612756,
+          "teamTricode": "PHX",
+          "personId": 1626164,
+          "shotDistance": 15,
+          "shotResult": "Made",
+          "isFieldGoal": 1,
+          "description": "Booker 15' Pullup Jump Shot (2 PTS) (Dunn 1 AST)",
+          "actionType": "Made Shot",
+          "subType": "Pullup Jump shot",
+          "shotValue": 2,
+          "actionId": 9
+        },
+        {
+          "actionNumber": 233,
+          "clock": "PT07M52.00S",
+          "period": 2,
+          "teamId": 1610612762,
+          "teamTricode": "UTA",
+          "personId": 1642262,
+          "shotDistance": 18,
+          "shotResult": "Missed",
+          "isFieldGoal": 1,
+          "description": "MISS Williams 18' Step Back Jump Shot",
+          "actionType": "Missed Shot",
+          "subType": "Step Back Jump shot",
+          "shotValue": 2,
+          "actionId": 170
+        },
+        {
+          "actionNumber": 480,
+          "clock": "PT03M48.00S",
+          "period": 3,
+          "teamId": 1610612762,
+          "teamTricode": "UTA",
+          "personId": 1642262,
+          "shotDistance": 24,
+          "shotResult": "Made",
+          "isFieldGoal": 1,
+          "description": "Williams 24' 3PT Jump Shot (3 PTS) (George 5 AST)",
+          "actionType": "Made Shot",
+          "subType": "Jump Shot",
+          "shotValue": 3,
+          "actionId": 350
+        },
+        {
+          "actionNumber": 520,
+          "clock": "PT01M12.00S",
+          "period": 3,
+          "teamId": 1610612756,
+          "teamTricode": "PHX",
+          "personId": 101,
+          "shotDistance": 4,
+          "shotResult": "Made",
+          "isFieldGoal": 1,
+          "description": "Example 4' Driving Layup (2 PTS)",
+          "actionType": "Made Shot",
+          "subType": "Driving Layup Shot",
+          "shotValue": 2,
+          "actionId": 379
+        }
+      ]
+    }
+  }
+}

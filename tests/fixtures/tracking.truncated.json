@@ -1,0 +1,46 @@
+{
+  "_meta": {
+    "player": "Cody Williams",
+    "player_id": 1642262,
+    "season": "2025-26",
+    "season_type": "Regular Season",
+    "pull_date": "2026-07-15",
+    "pull_unit": "season",
+    "per_mode": "Totals",
+    "source": "stats.nba.com playerdashptshots (unofficial)",
+    "fixture_note": "Hand-built tracking fixture: General sums to 15 FGA to reconcile against derived.golden.json (totalShots 15 + 0 dropped); the 'Other' General row, the '24-22' clock band, and the '0-2 Feet - Very Tight' defender range are DELIBERATELY absent (sparse-row zero-fill path); Shot Clock sums to 14 (unattributed 1) and Closest Defender to 13 (unattributed 2) — independent coverage counters. Only the shipped result sets are included."
+  },
+  "response": {
+    "resultSets": [
+      {
+        "name": "GeneralShooting",
+        "headers": ["PLAYER_ID", "PLAYER_NAME_LAST_FIRST", "SORT_ORDER", "GP", "G", "SHOT_TYPE", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+        "rowSet": [
+          [1642262, "Williams, Cody", 1, 67, 62, "Catch and Shoot", 0.267, 2, 4, 0.5, 0.75, 0.25, 0, 1, 0.0, 0.75, 2, 3, 0.667],
+          [1642262, "Williams, Cody", 2, 67, 62, "Pull Ups", 0.2, 1, 3, 0.333, 0.333, 0.667, 1, 2, 0.5, 0.333, 0, 1, 0.0],
+          [1642262, "Williams, Cody", 3, 67, 62, "Less than 10 ft", 0.533, 5, 8, 0.625, 0.625, 1.0, 5, 8, 0.625, 0.0, 0, 0, 0.0]
+        ]
+      },
+      {
+        "name": "ShotClockShooting",
+        "headers": ["PLAYER_ID", "PLAYER_NAME_LAST_FIRST", "SORT_ORDER", "GP", "G", "SHOT_CLOCK_RANGE", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+        "rowSet": [
+          [1642262, "Williams, Cody", 1, 67, 62, "22-18 Very Early", 0.2, 2, 3, 0.667, 0.667, 0.667, 2, 2, 1.0, 0.333, 0, 1, 0.0],
+          [1642262, "Williams, Cody", 2, 67, 62, "18-15 Early", 0.2, 1, 3, 0.333, 0.333, 0.667, 1, 2, 0.5, 0.333, 0, 1, 0.0],
+          [1642262, "Williams, Cody", 3, 67, 62, "15-7 Average", 0.333, 2, 5, 0.4, 0.5, 0.6, 1, 3, 0.333, 0.4, 1, 2, 0.5],
+          [1642262, "Williams, Cody", 4, 67, 62, "7-4 Late", 0.133, 1, 2, 0.5, 0.5, 0.5, 1, 1, 1.0, 0.5, 0, 1, 0.0],
+          [1642262, "Williams, Cody", 5, 67, 62, "4-0 Very Late", 0.067, 0, 1, 0.0, 0.0, 1.0, 0, 1, 0.0, 0.0, 0, 0, 0.0]
+        ]
+      },
+      {
+        "name": "ClosestDefenderShooting",
+        "headers": ["PLAYER_ID", "PLAYER_NAME_LAST_FIRST", "SORT_ORDER", "GP", "G", "CLOSE_DEF_DIST_RANGE", "FGA_FREQUENCY", "FGM", "FGA", "FG_PCT", "EFG_PCT", "FG2A_FREQUENCY", "FG2M", "FG2A", "FG2_PCT", "FG3A_FREQUENCY", "FG3M", "FG3A", "FG3_PCT"],
+        "rowSet": [
+          [1642262, "Williams, Cody", 1, 67, 62, "2-4 Feet - Tight", 0.333, 3, 5, 0.6, 0.6, 0.8, 3, 4, 0.75, 0.2, 0, 1, 0.0],
+          [1642262, "Williams, Cody", 2, 67, 62, "4-6 Feet - Open", 0.267, 2, 4, 0.5, 0.625, 0.5, 1, 2, 0.5, 0.5, 1, 2, 0.5],
+          [1642262, "Williams, Cody", 3, 67, 62, "6+ Feet - Wide Open", 0.267, 1, 4, 0.25, 0.375, 0.25, 0, 1, 0.0, 0.75, 1, 3, 0.333]
+        ]
+      }
+    ]
+  }
+}

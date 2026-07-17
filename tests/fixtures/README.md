@@ -1,9 +1,12 @@
 # Cross-language golden fixtures
 
-The committed handshake between the Python derive step and the TypeScript
-payload contract (see ADR-0007). `data/` is gitignored; these fixtures are not.
+The committed handshake between the Python derive steps and the TypeScript
+payload contracts (see ADR-0007, ADR-0030). `data/` is gitignored; these
+fixtures are not. There are three independent golden contracts — the shot,
+creation, and shot-context payloads version on different clocks
+(ADR-0030/0032), so each has its own fixtures and schema version.
 
-## Files
+## Shot payload (ADR-0007; schema v3)
 
 - **`snapshot.truncated.json`** — a hand-trimmed copy of the real raw snapshot
   `data/raw/cody-williams/2025-26/2026-07-09.json`:
@@ -19,22 +22,58 @@ payload contract (see ADR-0007). `data/` is gitignored; these fixtures are not.
     the trimmed row set; `_meta.fixture_note` marks the file as a fixture.
 
 - **`derived.golden.json`** — the derive step's output over the truncated
-  snapshot. **Never edit by hand**; regenerate from the repo root:
+  snapshot. **Never edit by hand**; regenerate via `npm run golden:regen`.
 
-  ```
-  python ingestion/derive_payload.py --snapshot-file tests/fixtures/snapshot.truncated.json --out-file tests/fixtures/derived.golden.json
-  ```
+## Creation payload (ADR-0030; schema v2 — Closest Defender added in v2.1)
 
-  (also available as `npm run golden:regen`)
+- **`tracking.truncated.json`** — a hand-built player tracking snapshot
+  (playerdashptshots shape, real headers). Deliberate traps locked in:
+  - The General family **sums to 15 FGA** — reconciling against
+    `derived.golden.json`'s pre-drop total (15 totalShots + 0 dropped), so the
+    fixture pair itself exercises the ADR-0030 cross-payload identity.
+  - The `'Other'` General row, the `'24-22'` clock band, and the
+    `'0-2 Feet - Very Tight'` defender range are **absent** (the dashboards
+    emit sparse rows — zero-attempt contexts are omitted; the derive must
+    zero-fill).
+  - Shot Clock sums to 14 → `shotClockUnattributed: 1`; Closest Defender to
+    13 → `defenderUnattributed: 2` — independent coverage counters.
+
+- **`tracking.league.truncated.json`** — a hand-built league tracking snapshot
+  (leaguedashteamptshot shape, 1–2 team rows per context vs 30 real ones):
+  - Filter literals differ in case from row literals (`'Pullups'`,
+    `'Less Than 10 ft'`) — the resolved-filters mapping path.
+  - `'Other'` is **unresolved**: its league totals are the residual by count
+    subtraction (Overall 250 − resolved 240 = 10).
+  - Shot Clock sums to 248 → `leagueShotClockUnattributed: 2`; Closest
+    Defender to 245 → `leagueDefenderUnattributed: 5`.
+
+- **`creation.golden.json`** — the creation derive's output over the two
+  tracking fixtures. **Never edit by hand**; regenerate via
+  `npm run golden:regen`.
+
+## Shot-context payload (ADR-0032; schema v1)
+
+- **`playbyplay.truncated.json`** — a hand-trimmed NBA Stats PlayByPlayV3 response
+  containing an explicitly assisted make, an unassisted make, and a miss.
+- **`boxscore.truncated.json`** — the matching BoxScoreTraditionalV3 response. Its per-team
+  assist totals exactly reconcile with parsed scorer credits.
+- **`shot-context.golden.json`** — the total one-row-per-shot derive over the
+  shot golden and the one fixture game. Missing games/events stay explicit;
+  they are never silently dropped or classified. **Never edit by hand**;
+  regenerate via `npm run golden:regen`.
 
 ## How the handshake works
 
-- `ingestion/test_derive_payload.py` asserts `derive(truncated) == golden`.
-- `src/domain/payload.test.ts` asserts the golden strict-parses through the
-  Zod schema (unknown keys rejected).
+- `ingestion/test_derive_payload.py` asserts `derive(truncated) == golden`;
+  `ingestion/test_derive_creation.py` does the same for the creation pair.
+- `src/domain/payload.test.ts`, `src/domain/creationPayload.test.ts`, and
+  `src/domain/shotContextPayload.test.ts` assert each golden strict-parses
+  through its Zod schema (unknown keys rejected).
 
-Any payload-shape change on either side breaks one of the two suites until the
-schema and the regenerated golden move together in the same PR. This depends on
-the derive step being deterministic — same snapshot in, byte-identical payload
-out. Bump `schemaVersion` (both `ingestion/derive_payload.py` and
-`src/domain/payload.ts`) on any breaking change.
+Any payload-shape change on either side breaks one of the suites until the
+schema and the regenerated golden move together in the same PR. This depends
+on the derive steps being deterministic — same inputs in, byte-identical
+payload out. Bump the schema version on any breaking change (shot:
+`ingestion/derive_payload.py` + `src/domain/payload.ts`; creation:
+`ingestion/derive_creation.py` + `src/domain/creationPayload.ts`; context:
+`ingestion/derive_shot_context.py` + `src/domain/shotContextPayload.ts`).

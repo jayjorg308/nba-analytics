@@ -1,0 +1,7339 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "player": "Keyonte George",
+    "playerId": 1641718,
+    "season": "2025-26",
+    "sourceShotPayload": "public/data/keyonte-george/2025-26.json",
+    "totalShots": 880,
+    "gamesExpected": 54,
+    "gamesLoaded": 54,
+    "eventMatchCounts": {
+      "matched": 880,
+      "missingGame": 0,
+      "missingEvent": 0,
+      "duplicateEvent": 0,
+      "contradiction": 0
+    },
+    "assistStatusCounts": {
+      "assisted": 235,
+      "unassisted": 167,
+      "notApplicable": 478,
+      "unknown": 0
+    },
+    "sourceGames": [
+      {
+        "gameId": "0022500025",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500036",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500055",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500077",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500087",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500098",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500120",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500135",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500150",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500158",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500172",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500205",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500211",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500227",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500240",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500253",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500282",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500291",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500301",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500316",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500335",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500343",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500363",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500379",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500393",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500405",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500419",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500430",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500440",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500459",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500492",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500509",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500525",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500531",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500547",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500558",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500573",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500583",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500593",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500611",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500616",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500632",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500649",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500678",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500694",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500750",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500867",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500881",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500895",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500919",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500934",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500949",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022501213",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022501224",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      }
+    ]
+  },
+  "shots": [
+    {
+      "gameId": "0022500025",
+      "gameEventId": 24,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 78,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 264,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 300,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 333,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 337,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 384,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 388,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 502,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500025",
+      "gameEventId": 538,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 11,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 55,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 60,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 241,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 248,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 254,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 262,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 289,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 292,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 353,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 361,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 394,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 437,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500036",
+      "gameEventId": 466,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 35,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 52,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 71,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 120,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 283,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 387,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 446,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 500,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500055",
+      "gameEventId": 508,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 76,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 84,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 95,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 109,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 134,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 149,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 280,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 301,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 315,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 348,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 363,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 390,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 424,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 432,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 449,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 468,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 471,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 611,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500077",
+      "gameEventId": 627,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 53,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 66,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 82,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 265,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 280,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 326,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 344,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 370,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 405,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 443,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 557,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500087",
+      "gameEventId": 613,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 58,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 65,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 91,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 285,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 292,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 306,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 331,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 341,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 429,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 576,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 579,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 610,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 613,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 649,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500098",
+      "gameEventId": 676,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 12,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 18,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 27,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 39,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 257,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 276,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 342,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 420,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 482,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 505,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 605,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 628,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 656,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 711,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 792,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 803,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 858,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500120",
+      "gameEventId": 861,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 19,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 49,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 127,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 326,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 359,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 404,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 446,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 462,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 490,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 522,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 687,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 712,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 781,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500135",
+      "gameEventId": 783,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 33,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 51,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 58,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 61,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 171,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 175,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 192,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 240,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 269,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 334,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 372,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 393,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 430,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 436,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 464,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 485,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 502,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500150",
+      "gameEventId": 604,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 14,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 33,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 75,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 85,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 260,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 280,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 311,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 351,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 368,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 401,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 412,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 469,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 477,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 637,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 653,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500158",
+      "gameEventId": 722,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 31,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 39,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 66,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 69,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 122,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 283,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 311,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 315,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 330,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 363,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 380,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 401,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 406,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 563,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 632,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 639,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 652,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500172",
+      "gameEventId": 678,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 39,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 90,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 95,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 115,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 124,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 128,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 262,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 278,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 313,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 359,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 399,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 440,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 530,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 642,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 655,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 686,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 692,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500205",
+      "gameEventId": 695,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 28,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 59,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 73,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 324,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 343,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 363,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 671,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 683,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 702,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 721,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 725,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500211",
+      "gameEventId": 738,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 69,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 89,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 117,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 131,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 236,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 301,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 385,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 419,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 428,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 438,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 473,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 631,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 658,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 678,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 682,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 697,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 718,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500227",
+      "gameEventId": 727,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 12,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 30,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 53,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 61,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 82,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 120,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 277,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 303,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 339,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 385,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 419,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 428,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 434,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 463,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 467,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 502,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 507,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 510,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 665,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 729,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 737,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 740,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 776,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 803,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 903,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 911,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500240",
+      "gameEventId": 947,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 31,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 43,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 50,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 66,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 80,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 93,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 103,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 105,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 240,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 244,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 248,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 280,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 295,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 358,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 385,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 412,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 436,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 451,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 600,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 622,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 650,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500253",
+      "gameEventId": 743,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 18,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 49,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 91,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 122,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 130,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 243,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 305,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 317,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 339,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 350,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 368,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 381,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 385,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 390,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 414,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 437,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 450,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 461,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 482,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 611,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 636,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 645,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500282",
+      "gameEventId": 682,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 18,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 91,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 99,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 117,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 125,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 150,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 287,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 320,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 329,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 348,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 402,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 448,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 483,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 505,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 624,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 647,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500291",
+      "gameEventId": 655,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500301",
+      "gameEventId": 39,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500301",
+      "gameEventId": 94,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500301",
+      "gameEventId": 107,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500301",
+      "gameEventId": 248,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500301",
+      "gameEventId": 431,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500301",
+      "gameEventId": 438,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 11,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 36,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 110,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 119,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 278,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 320,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 339,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 357,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 466,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 509,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 531,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 632,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 656,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500316",
+      "gameEventId": 679,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 25,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 36,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 69,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 91,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 100,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 234,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 238,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 266,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 358,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 370,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 390,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 409,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 438,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 442,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 450,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 463,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 626,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 639,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 666,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500335",
+      "gameEventId": 669,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 50,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 68,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 82,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 94,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 110,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 260,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 262,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 365,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 397,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 467,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 491,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500343",
+      "gameEventId": 502,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 82,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 88,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 92,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 108,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 141,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 235,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 251,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 275,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 391,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 400,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 407,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500363",
+      "gameEventId": 431,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 28,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 49,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 93,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 271,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 274,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 277,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 301,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 366,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 422,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 430,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 477,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 505,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 525,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 634,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 639,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 710,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 714,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 729,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500379",
+      "gameEventId": 756,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 10,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 22,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 34,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 47,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 67,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 137,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 261,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 332,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 347,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 354,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 370,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 397,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 457,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 465,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 498,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 596,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 614,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 654,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 738,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 746,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500393",
+      "gameEventId": 799,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 62,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 94,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 98,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 131,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 134,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 303,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 332,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 336,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 339,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 365,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 376,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 390,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 464,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500405",
+      "gameEventId": 588,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 9,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 29,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 59,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 110,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 307,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 339,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 343,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 381,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 403,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 609,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 684,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500419",
+      "gameEventId": 721,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 32,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 48,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 60,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 70,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 102,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 278,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 281,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 309,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 320,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 324,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 352,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 357,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 376,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 409,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 444,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 482,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 494,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 643,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 657,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 728,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 731,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500430",
+      "gameEventId": 743,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 71,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 102,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 114,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 117,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 239,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 255,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 320,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 357,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 362,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 395,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 419,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 430,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 455,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 470,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 525,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 580,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 606,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500440",
+      "gameEventId": 611,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 13,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 26,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 28,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 32,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 48,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 67,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 75,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 132,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 142,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 157,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 285,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 315,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 323,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 331,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 345,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 389,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 419,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 591,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 595,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 606,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 612,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 622,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500459",
+      "gameEventId": 629,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 10,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 35,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 55,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 70,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 85,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 110,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 139,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 227,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 231,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 296,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 414,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 441,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 600,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 706,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 648,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 659,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500492",
+      "gameEventId": 677,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 13,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 36,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 55,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 58,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 221,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 240,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 255,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 259,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 279,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 376,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 400,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500509",
+      "gameEventId": 468,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 19,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 84,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 117,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 129,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 270,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 274,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 301,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 317,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 385,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 393,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 466,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 552,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 635,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 638,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 679,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 691,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 725,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 763,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 787,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 792,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500525",
+      "gameEventId": 819,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 13,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 60,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 78,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 83,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 104,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 302,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 319,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 352,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 397,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 400,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 566,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500531",
+      "gameEventId": 605,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 51,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 59,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 122,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 138,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 153,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 159,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500547",
+      "gameEventId": 236,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 46,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 49,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 214,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 361,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 366,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 370,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 417,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 426,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 442,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 459,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 469,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 582,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 594,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 636,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 668,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500558",
+      "gameEventId": 671,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 7,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 111,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 246,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 261,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 265,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 291,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 300,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 348,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 376,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 380,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 465,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 596,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 607,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 617,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 648,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 667,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500573",
+      "gameEventId": 708,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 29,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 35,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 60,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 73,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 145,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 238,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 269,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 290,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 338,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 418,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500583",
+      "gameEventId": 472,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 24,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 218,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 251,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 293,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 310,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 314,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 452,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 342,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 357,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 365,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 383,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 466,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 472,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 658,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500593",
+      "gameEventId": 695,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 34,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 45,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 53,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 85,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 89,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 94,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 98,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 249,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 280,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 282,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 381,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 389,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 397,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 410,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 422,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 472,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 474,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 482,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 637,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500611",
+      "gameEventId": 660,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 11,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 52,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 60,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 63,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 67,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 71,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 108,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 115,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 220,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 245,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 255,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 264,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 286,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 296,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 302,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 311,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 352,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 369,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 419,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 462,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 471,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 581,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 588,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 592,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 603,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 607,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 620,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500616",
+      "gameEventId": 663,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 78,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 123,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 125,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 269,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 288,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 302,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 318,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 335,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 348,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 351,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 375,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 400,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 406,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 461,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500632",
+      "gameEventId": 485,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 25,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 30,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 47,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 72,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 99,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 102,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 151,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 340,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 361,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 369,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 375,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 387,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 419,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 471,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 502,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 518,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 542,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 744,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500649",
+      "gameEventId": 781,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 8,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 12,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 76,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 310,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 329,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 341,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 357,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 433,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 489,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 512,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 550,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 568,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 653,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 665,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500678",
+      "gameEventId": 677,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 37,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 43,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 65,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 92,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 117,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 273,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 324,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 360,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 367,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 377,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500694",
+      "gameEventId": 582,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500750",
+      "gameEventId": 11,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500750",
+      "gameEventId": 25,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500750",
+      "gameEventId": 90,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500750",
+      "gameEventId": 263,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500750",
+      "gameEventId": 309,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 46,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 80,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 264,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 345,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 380,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 391,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 402,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 422,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 426,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 433,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500867",
+      "gameEventId": 443,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 31,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 61,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 66,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 90,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 230,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 243,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 277,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 288,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 296,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 358,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 376,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 379,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 527,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 558,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 564,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 572,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 576,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 585,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 597,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 602,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 620,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500881",
+      "gameEventId": 644,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 13,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 19,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 51,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 72,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 81,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 101,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 249,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 298,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 348,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 358,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 362,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 376,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 386,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 395,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 405,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 428,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 432,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 602,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 612,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 627,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 638,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 649,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 653,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500895",
+      "gameEventId": 660,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 44,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 51,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 58,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 62,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 67,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 96,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 125,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 232,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 255,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 290,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 336,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 356,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 366,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 448,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 621,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 642,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500919",
+      "gameEventId": 651,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 13,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 17,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 20,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 25,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 36,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 79,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 285,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 289,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 309,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 331,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 340,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 354,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 407,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 426,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500934",
+      "gameEventId": 452,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 37,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 100,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 301,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 327,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 339,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 350,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 380,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 404,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 412,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022500949",
+      "gameEventId": 416,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 15,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 49,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 54,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 79,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 94,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 117,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 265,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 278,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 284,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 292,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 296,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 365,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 372,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 433,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 625,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 628,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 642,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 695,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 710,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501213",
+      "gameEventId": 714,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 36,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 39,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 57,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 98,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 111,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 275,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 279,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 285,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 318,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 329,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 346,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 349,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 356,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 377,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 440,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 479,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 482,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 496,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 802,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022501224",
+      "gameEventId": 822,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    }
+  ]
+}

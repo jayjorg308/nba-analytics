@@ -10,15 +10,46 @@ import { HeroPage } from './HeroPage'
 // root (the repo root) instead
 const goldenPath = path.resolve(process.cwd(), 'tests/fixtures/derived.golden.json')
 const goldenJson = JSON.parse(readFileSync(goldenPath, 'utf-8')) as Record<string, unknown>
+// the sibling creation golden — the fixtures reconcile with each other by
+// construction (tests/fixtures/README.md), so they stub one coherent hero
+const creationGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/creation.golden.json')
+const creationGoldenJson = JSON.parse(readFileSync(creationGoldenPath, 'utf-8')) as Record<
+  string,
+  unknown
+>
+const contextGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/shot-context.golden.json')
+const contextGoldenJson = JSON.parse(readFileSync(contextGoldenPath, 'utf-8')) as Record<
+  string,
+  unknown
+>
 
-function stubFetch(response: { ok: boolean; status?: number; json?: unknown }) {
+interface StubResponse {
+  ok: boolean
+  status?: number
+  json?: unknown
+}
+
+/** Routes by URL: the page now fetches both payloads (ADR-0030). */
+function stubFetch(
+  shot: StubResponse,
+  creation: StubResponse = { ok: true, json: creationGoldenJson },
+  context: StubResponse = { ok: true, json: contextGoldenJson },
+) {
   vi.stubGlobal(
     'fetch',
-    vi.fn(async () => ({
-      ok: response.ok,
-      status: response.status ?? 200,
-      json: async () => response.json,
-    })),
+    vi.fn(async (url: unknown) => {
+      const value = String(url)
+      const r = value.endsWith('.creation.json')
+        ? creation
+        : value.endsWith('.context.json')
+          ? context
+          : shot
+      return {
+        ok: r.ok,
+        status: r.status ?? 200,
+        json: async () => r.json,
+      }
+    }),
   )
 }
 
@@ -59,13 +90,18 @@ describe('HeroPage over the golden fixture', () => {
     expect(deployedMeta.season).toBe(hero.season)
 
     // headline: league diet from the verbatim league frame (1.09124 -> "1.09"),
-    // with the comparison class stated beside the numbers (ADR-0002)
-    screen.getByText('1.09')
+    // with the comparison class stated beside the numbers (ADR-0002).
+    // Scoped to the stat cells — the creation value chart legitimately
+    // prints overlapping figures elsewhere on the page.
+    const statValues = [...document.querySelectorAll('.headline-numbers .stat-value')].map(
+      (el) => el.textContent,
+    )
+    expect(statValues).toContain('1.09')
     expect(screen.getAllByText(/vs league average/).length).toBeGreaterThanOrEqual(2)
 
     // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21"
     screen.getByRole('heading', { name: /Shot making/i })
-    screen.getByText('1.21')
+    expect(statValues).toContain('1.21')
 
     // all six golden zones are < 15 attempts -> every row muted, none deleted
     expect(document.querySelectorAll('.zone-row-excluded')).toHaveLength(6)
@@ -81,7 +117,7 @@ describe('HeroPage over the golden fixture', () => {
     // payoff columns lead, reference trails; FGA stays visible (the honesty
     // anchor for †) and there is deliberately no FG% column (ADR-0001: PPS
     // is the unit; Making Δ already encodes FG%-vs-league)
-    const headers = [...document.querySelectorAll('.zone-table thead th')].map(
+    const headers = [...document.querySelectorAll('.zone-panel .zone-table thead th')].map(
       (th) => th.textContent,
     )
     expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
@@ -94,7 +130,7 @@ describe('HeroPage over the golden fixture', () => {
     expect(rowHeads.indexOf('3 Pointers')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
     // child rows drop the "3" — the 3 Pointers parent already carries it
     expect(rowHeads.indexOf('3 Pointers')).toBeLessThan(rowHeads.indexOf('Left Corner'))
-    expect(document.querySelectorAll('.zone-row-child')).toHaveLength(3)
+    expect(document.querySelectorAll('.zone-panel .zone-row-child')).toHaveLength(3)
 
     // backcourt reported, never hidden (1 synthetic attempt in the golden)
     screen.getByText(/Backcourt heaves: 1 attempt \(0 made\)/)
@@ -115,6 +151,63 @@ describe('HeroPage over the golden fixture', () => {
     fireEvent.click(screen.getByLabelText('Shots'))
     expect(document.querySelectorAll('.shot-dot')).toHaveLength(14)
     screen.getByText(/1 shot beyond half-court not shown/)
+
+    // the second act (ADR-0031): creation renders AFTER the court + table,
+    // in the section-title recipe, framed as the WHY behind the conversion
+    // verdict, comparison class stated plainly
+    screen.getByRole('heading', { name: 'SHOT CREATION' })
+    screen.getByText(/points per shot by creation context, vs\s+league average/)
+
+    // the value chart: a dumbbell per row (rim + jumper parent, 3 jumper
+    // children, 3 clock bands, 3 defender bands); the golden's zero-attempt
+    // 'Other' makes no PPS claim, so it draws a league dot but no player dot
+    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(11)
+    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(10)
+
+    // the defender family (v2.1): third group in chart and table
+    expect(screen.getAllByText('Wide open (6+ ft)')).toHaveLength(2)
+
+    // the creation table: FGA anchors, PPS (lg) — the section's payoff —
+    // leads, the diet pair trails as context; no eFG% (ADR-0001)
+    const creationTable = screen.getByRole('table', {
+      name: /Shot creation by context/,
+    })
+    const creationHeaders = [...creationTable.querySelectorAll('thead th')].map(
+      (th) => th.textContent,
+    )
+    expect(creationHeaders).toEqual(['Context', 'FGA', 'PPS (lg)', 'Share', 'Lg share'])
+
+    // product display labels over NBA literals ("Pull Ups" / "Less than
+    // 10 ft" never render); each label appears twice — chart row and table
+    // row, the data twin. The General family is two-tier: rim vs the jumper
+    // parent, with catch-vs-dribble refining the jumpers (the intruder-row
+    // incoherence of the flat NBA taxonomy, fixed).
+    expect(screen.getAllByText('Inside 10 ft')).toHaveLength(2)
+    expect(screen.getAllByText('Jumpers (10 ft and out)')).toHaveLength(2)
+    expect(screen.getAllByText('Pull-ups')).toHaveLength(2)
+    expect(screen.getAllByText('Early (24-15s)')).toHaveLength(2)
+    expect(screen.queryByText('Pull Ups')).toBeNull()
+    expect(screen.queryByText('Less than 10 ft')).toBeNull()
+    screen.getByText(/tracking doesn't classify creation/)
+
+    // the three-arrival bridge annotates the Catch and shoot row (the
+    // band-note pattern): which KIND of three the verdict is about
+    screen.getByText('3 of his 4 threes')
+
+    // the golden's coverage story: 1 unattributed shot-clock attempt and 2
+    // unattributed defender attempts are reported (never guessed into a
+    // band), and the zero-attempt 'Other' context still renders — a
+    // partition is never punctured
+    screen.getByText(/1 attempt without shot-clock tracking/)
+    screen.getByText(/2 attempts without defender tracking/)
+    expect(screen.getAllByText('Other')).toHaveLength(2)
+
+    // Case 3 follows the creation evidence: bounded assist shares plus the
+    // existing zone hierarchy, with unknown makes explicit.
+    screen.getByRole('heading', { name: 'ASSISTED MAKES' })
+    screen.getByRole('img', { name: /Assisted-share bounds/i })
+    screen.getByRole('table', { name: /Assisted makes by shooting area/i })
+    screen.getByText(/not necessarily self-created/i)
   })
 
   it('shades all six zones in the default Zones view despite included=false everywhere', async () => {
@@ -148,9 +241,15 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText(/Oct 31, 2025 · @ PHX · Q2 · 7:52/)
     screen.getByText(/Mid-Range — 17 ft/)
     expect(document.querySelector('.shot-tooltip-result')!.textContent).toBe('Missed')
+    expect(document.querySelector('.shot-tooltip-assist')).toBeNull()
 
     fireEvent.pointerLeave(hit, { pointerType: 'mouse' })
     expect(document.querySelector('.shot-tooltip')).toBeNull()
+
+    // Misses sort first; the first made dot is Cody's assisted action 480.
+    const firstMade = document.querySelectorAll('.shot-dot .dot-hit')[7]!
+    fireEvent.pointerEnter(firstMade, { pointerType: 'mouse' })
+    expect(document.querySelector('.shot-tooltip-assist')!.textContent).toBe('Assisted')
   })
 
   it('opens the zone detail card from the default view and closes on Escape (ADR-0027)', async () => {
@@ -191,5 +290,41 @@ describe('HeroPage failure states', () => {
     stubFetch({ ok: true, json: bad })
     render(<HeroPage hero={hero} />)
     await screen.findByText(/Payload contract violation/)
+  })
+
+  it('surfaces a missing creation payload — required per hero, no lesser page (ADR-0030)', async () => {
+    stubFetch({ ok: true, json: goldenJson }, { ok: false, status: 404 })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/HTTP 404 loading creation data/)
+  })
+
+  it('surfaces creation contract violations from the Zod boundary', async () => {
+    const bad = structuredClone(creationGoldenJson)
+    ;(bad._meta as { seasonFga: number }).seasonFga = 16 // breaks the partition identity
+    stubFetch({ ok: true, json: goldenJson }, { ok: true, json: bad })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/Payload contract violation/)
+  })
+
+  it('surfaces a missing shot-context payload — required per hero', async () => {
+    stubFetch(
+      { ok: true, json: goldenJson },
+      { ok: true, json: creationGoldenJson },
+      { ok: false, status: 404 },
+    )
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/HTTP 404 loading shot context data/)
+  })
+
+  it('surfaces cross-sibling identity contradictions plainly', async () => {
+    const badContext = structuredClone(contextGoldenJson)
+    ;(badContext._meta as { player: string }).player = 'Different Player'
+    stubFetch(
+      { ok: true, json: goldenJson },
+      { ok: true, json: creationGoldenJson },
+      { ok: true, json: badContext },
+    )
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/Payloads contradict: shot-context sibling player\/season identity/i)
   })
 })

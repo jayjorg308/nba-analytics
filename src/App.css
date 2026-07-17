@@ -91,11 +91,11 @@
     }
 }
 
-/* Optional team mark (hero config teamLogoPath): a ghost watermark in the
-   wide layout's dark left column, behind the scrim and the title. Grayscale
-   + invert lifts the mark to a light neutral regardless of team color; the
-   low opacity is what reads as "shadow" — tune it, not the filter. The
-   narrow poster is all photo, so the mark hides there. */
+/* Optional team mark (hero config teamLogoPath): one team-agnostic slot for
+   the normalized 1024px square asset contract. Its 60% visible footprint
+   turns this 46% canvas into a ~28% banner mark. Grayscale + invert lifts the
+   mark to a light neutral regardless of team color; low opacity makes the
+   shadow. The narrow poster is all image, so the mark hides there. */
 .hero-banner-logo {
     position: absolute;
     top: 80%;
@@ -431,9 +431,11 @@
 }
 
 /* One title recipe for the cards AND the zone table's section header —
-   the third instance of the pattern, not a new one. */
+   the third instance of the pattern, not a new one. (Fourth: the creation
+   section's header, ADR-0031.) */
 .headline-banner h2,
-.zone-caption h2 {
+.zone-caption h2,
+.creation-caption h2 {
     font-size: 20px;
     /* Kicker-wide tracking on the titles (the caps are typeset in the
      content, not text-transform). Overrides the h2 base -0.24px; any
@@ -1193,4 +1195,282 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+}
+
+/* --- Shot creation (the second act — ADR-0031) ------------------------------ */
+
+/* An act break, not a row gap: the creation section opens the verdict's
+   "why" after the two-axis evidence closes. */
+.creation-section {
+    margin-top: 48px;
+    text-align: left;
+}
+
+/* Section header in the shared title recipe (the h2 is styled by the rule
+   beside .headline-banner h2); description outside the h2 so the heading's
+   accessible name stays "SHOT CREATION" (the zone caption's lesson). */
+.creation-caption {
+    margin-bottom: 20px;
+}
+
+.creation-caption-desc {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+/* Mirrors .hero-layout: chart left, data twin right. No subgrid needed —
+   the section header spans above both panels, so there are no per-panel
+   header tracks to register. */
+.creation-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.creation-table-body {
+    min-width: 0; /* same overflow chain as .zone-body */
+}
+
+/* Family-group header rows: quiet dividers, not data rows. */
+.creation-group-row th {
+    padding-top: 14px;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text);
+}
+
+/* --- The diet chart: paired bars, neutral ink (never the making palette) ---- */
+
+.creation-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    line-height: normal;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.creation-swatch {
+    /* Dot swatches — the chart's marks are dumbbell dots, not bars. */
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.creation-swatch-league {
+    margin-left: 12px;
+}
+
+.creation-chart svg {
+    width: 100%;
+    /* Cap the render near 1:1 (viewBox 520): in the stacked single-column
+     layout an uncapped SVG balloons to page width and the chart's type
+     dwarfs the table's. */
+    max-width: 560px;
+    height: auto;
+    display: block;
+}
+
+/* Figure vs reference in the page's own ink hierarchy: his dot bright,
+   the league's the body gray — the same relationship as the table's
+   .lg parentheticals. Positional encoding only; never the making palette. */
+.creation-dot-player,
+.creation-swatch-player {
+    fill: var(--text-h);
+    background: var(--text-h);
+}
+
+.creation-dot-league,
+.creation-swatch-league {
+    fill: var(--text);
+    background: var(--text);
+    opacity: 0.7;
+}
+
+/* The dumbbell's bar: the value gap itself, quiet enough that the dots and
+   their numbers stay the figures. */
+.creation-connector {
+    stroke: var(--text);
+    stroke-opacity: 0.35;
+    stroke-width: 2;
+}
+
+.creation-gridline {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.creation-grid-label {
+    font: 400 10px var(--mono);
+    fill: var(--text);
+}
+
+/* Font sizes are SVG user units (viewBox 520): ~1:1 in the desktop column;
+   small phones scale the box down to ~0.66, so ≤640px bumps the units the
+   same way the court's zone labels do. */
+.creation-chart-group {
+    font: 400 12px var(--sans);
+    letter-spacing: 0.05em;
+    fill: var(--text);
+
+    @media (max-width: 640px) {
+        font-size: 15px;
+    }
+}
+
+.creation-chart-label {
+    font: 500 13px var(--sans);
+    fill: var(--text-h);
+
+    @media (max-width: 640px) {
+        font-size: 17px;
+    }
+}
+
+/* Long-label swap: the bumped ≤640px font clips 'Jumpers (10 ft and out)'
+   off the viewBox's left edge, so phones get the short form instead. */
+.creation-label-short {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .creation-label-full {
+        display: none;
+    }
+
+    .creation-label-short {
+        display: initial;
+    }
+}
+
+.creation-value-his {
+    font: 400 11px var(--mono);
+    fill: var(--text-h);
+
+    @media (max-width: 640px) {
+        font-size: 14px;
+    }
+}
+
+.creation-value-lg {
+    font: 400 11px var(--mono);
+    fill: var(--text);
+
+    @media (max-width: 640px) {
+        font-size: 14px;
+    }
+}
+
+/* --- Assisted makes (Case 3, ADR-0032/0049) ------------------------------- */
+
+.assisted-section {
+    margin-top: 48px;
+    text-align: left;
+}
+
+.assisted-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+    gap: 32px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.assist-plot {
+    min-width: 0;
+    padding-top: 8px;
+}
+
+.assist-axis,
+.assist-plot-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.72fr) minmax(140px, 1fr);
+    gap: 14px;
+}
+
+.assist-axis {
+    margin-bottom: 8px;
+    color: var(--text);
+    font: 400 11px var(--mono);
+}
+
+.assist-axis::before {
+    content: '';
+}
+
+.assist-axis-scale {
+    grid-column: 2;
+    display: flex;
+    justify-content: space-between;
+}
+
+.assist-plot-row {
+    min-height: 42px;
+    align-items: center;
+}
+
+.assist-plot-label {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-h);
+    font-size: 13px;
+    text-align: right;
+}
+
+.assist-plot-row-child .assist-plot-label {
+    padding-right: 12px;
+}
+
+.assist-plot-denominator {
+    color: var(--text);
+    font: 400 10px var(--mono);
+}
+
+.assist-track {
+    position: relative;
+    height: 2px;
+    background: var(--border);
+}
+
+.assist-track::before {
+    content: '';
+    position: absolute;
+    inset: -7px 50% -7px auto;
+    border-left: 1px solid var(--border);
+}
+
+.assist-bound {
+    position: absolute;
+    top: -3px;
+    height: 8px;
+    min-width: 2px;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.assist-share-dot {
+    position: absolute;
+    top: 1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-h);
+    transform: translate(-50%, -50%);
+}
+
+.assisted-section .zone-table {
+    font-size: 12px;
 }
