@@ -13,21 +13,21 @@ flags, authored-and-guarded copy — on a new axis._
 | v1.1 — close-out polish | ✅ closed 2026-07-12 (`hero:report`, the hero directory, display-grain rounding — ADRs 0022–0023) |
 | v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
-| v2.5 — creation at the shot grain | ⬅ **next up** (play-by-play join; unlocks "assisted", the zone × creation cross, and per-shot bucket identification) |
+| v2.5 — creation at the shot grain | ⬅ **next up** — planned 2026-07-16 (ADRs 0032–0049); Case 3 assists required, estimated shot clock independently gated |
 | v3 — living seasons and heroes at scale | not started |
 
-> **Directory-less by choice (confirmed 2026-07-16):** Keyonte George is
-> deliberately registered — both hero pages are live at their URLs with full
-> two-act arguments and guards, and argless `hero:sync` covers both — while
+> **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
+> Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
+> registered, and argless `hero:sync` covers all three — while
 > the hero index stays hidden: the root serves Cody directly, unknown paths
 > fall back to him, and the "All players" footer link stays commented. The
 > restore, when the Cody page is deemed done, is a grep for
 > `TEMPORARY(single-hero)` in `src/App.tsx` + `src/app/HeroPage.tsx`.
 >
-> _Near-term side quest: stress-test the v2 creation charts against the
-> league's max-FGA stars — pulls + `hero:report` (and `--file` mode) work
-> for unregistered players, no registry entry needed. Each experiment needs
-> both pulls (`pull_shots.py` + `pull_tracking.py`), then both derives._
+> _The max-FGA stress test is now a product commitment for v2.5: Shai's
+> 2025-26 MVP season is the positive control. His current placeholder banner,
+> absent colocated verdict guard, and experimental copy must be productionized
+> before v2.5 can ship; he receives no payload, gate, or guard exemption._
 
 **Where v1 ended:** the thesis ("Is this player taking good shots?") is
 answered by the two-axis model, argued verdict-first (ADR-0018), guarded
@@ -125,20 +125,151 @@ creationPayload.real.test.ts)._
 
 ## v2.5 — Creation at the shot grain (the Case 3 stretch)
 
-_Play-by-play reconstruction, joined to the dots by gameId + gameEventId.
-Unlocks what buckets cannot: the zone × creation cross ("his corner threes
-are assisted; his above-break threes are pull-ups"), per-shot possession
-context in the tooltip (the 0.8-seconds-on-the-clock touchstone), the
-"assisted" verdict vocabulary (the last unshipped lexicon tier —
-ADR-0029), and per-shot bucket identification — e.g. naming which two shots
-were George's held-catch "Other" threes, which bucket grain provably cannot._
+_The scope: reconstruct official assist credit at the shot grain, join it to
+the existing dots by exact shot identity, and show the zone × assisted-makes
+cross. Estimated shot-clock remaining is an independently gated experiment,
+not a release dependency. Case 3 does not identify Case 2 catch-and-shoot,
+pull-up, or Other contexts per shot (ADRs 0032–0034)._
 
-Two honesty constraints, both flag-shaped like everything else here:
+All work covers the three registered heroes: Cody Williams, Keyonte George,
+and Shai Gilgeous-Alexander. Shai's 2025-26 MVP season is the positive
+control—the engine must explain elite success with the same contracts, gates,
+and guards used for the two young-player arguments. His current placeholder
+banner, missing colocated guard, and experimental copy are release work, not
+an exemption.
 
-- Play-by-play records assists **only on makes** — so the stat is "assisted
-  share of makes," never of attempts, and the UI must say so.
-- Per-shot clock is reconstructed timing, not tracking data — approximate,
-  and labeled as such.
+### Phase 0 — Raw spine and real-data spike
+
+1. Add a per-game pull over the shot snapshot's unique game IDs. Store the
+   verbatim NBA live-data play-by-play once at
+   `data/raw/play-by-play/<game-id>/<pull-date>.json`, shared by every hero in
+   that game (ADR-0045). Pair it with the verbatim live-data box score as a
+   validation artifact (ADR-0046). Both are append-only; completed games
+   normally have one snapshot, and a corrected re-pull adds a dated snapshot.
+2. Pull every game for all three heroes. Gate 4 requires a valid canonical
+   play-by-play artifact for every game containing a hero shot; there is no
+   silent fallback to another feed (ADRs 0035/0044).
+3. Produce an audit before fixing the schema:
+   - confirm `gameId + gameEventId` ↔ `gameId + actionNumber`;
+   - cross-check player, period, game clock, result, and point value;
+   - catalogue missing, duplicate, contradictory, and assist-ambiguous cases;
+   - discover whether structured assist credit is stable, otherwise fix a
+     narrow versioned grammar for explicit scorer credit;
+   - reconcile parsed assists exactly to each team's official box-score total;
+   - record any structured assister identity without adding it to v2.5 scope.
+4. Run the shot-clock experiment as a separate branch. Reconstruct the
+   pre-drop season, roll it into the NBA's six Case 2 bands, and require exact
+   FGA / FGM / 2PT-make / 3PT-make equality in every band for all three heroes
+   (ADRs 0034/0047). If any hero fails, close the branch and omit estimated
+   clock from the v2.5 schema and UI; assist work continues unchanged.
+
+**Spike exit:** all three heroes pass the game-level source gate; the exact
+join, assist evidence grammar, box-score reconciliation, and failure taxonomy
+are established; the global clock branch has a recorded pass/fail decision.
+
+### Phase 1 — Third contract and derive
+
+1. Add the required metric-free **shot context payload**, with its own schema
+   version and golden. It is a sibling of—not an extension to—the Case 1 shot
+   payload and Case 2 creation payload (ADR-0032).
+2. Make the contract total: exactly one row per post-drop shot with an
+   identical shot-key set (ADR-0039). Each normalized row carries:
+   - shot identity;
+   - event-match status: matched / missing game / missing event / duplicate /
+     contradiction;
+   - assist status: assisted / unassisted / not applicable / unknown;
+   - evidence kind and typed failure reason;
+   - estimated shot-clock remaining only if Phase 0 passed its global gate.
+3. Keep event linkage and assist classification independent (ADR-0040): a
+   miss is assist-not-applicable even when its event is missing, while an
+   exact event match may still have ambiguous assist evidence.
+4. Deploy normalized facts only (ADR-0048). Raw event prose, action objects,
+   parser captures, and box-score rows remain in raw artifacts and audit
+   output. Assister IDs/names and teammate breakdowns are deferred.
+5. Enforce exact joins with no nearest-event rescue (ADR-0036), exact sibling
+   key-set reconciliation, complete source provenance, and the per-game
+   assist-total invariant before persisting.
+
+**Contract exit:** Python derives the golden byte-for-byte; Zod strict-parses
+the same golden; mismatch/failure fixtures cover every event and assist state;
+all three real hero payloads derive and reconcile.
+
+### Phase 2 — Pure metrics and report-first authoring seam
+
+1. Add one pure TypeScript aggregation over the shot payload plus its context
+   sibling. Presentation receives its output and computes no shares, bounds,
+   joins, or rollups.
+2. Emit all-makes and existing-zone-hierarchy rows: the six evaluation zones,
+   established mid-range/corner refinements, and combined 3 Pointers parent.
+   Per row carry makes, assisted, unassisted, unknown, classified coverage,
+   classified assisted share, and minimum/maximum share over all makes.
+3. Add the Case 3 section to `hero:report` before UI work. Every verdict edit
+   starts from this output, consistent with the existing hero-swap recipe.
+4. Do not add a league baseline, confidence interval, or the conversion
+   `<50 attempts` † flag. This is hero-season description; denominators and
+   source-coverage bounds are its honesty mechanism (ADRs 0037/0038).
+
+**Metrics exit:** hand-computed golden tests cover complete and incomplete
+coverage, bounds telescope correctly, unknowns can never become unassisted,
+and broader parent claims remain aggregation-owned rather than UI-computed.
+
+### Phase 3 — Assisted Makes product surface
+
+1. Load the third payload as required hero data; any contract/load failure
+   fails the page plainly, preserving one class of registered hero page.
+2. Add a distinct **ASSISTED MAKES** subsection after the existing Case 2
+   creation chart/table—not a third headline or third act (ADR-0042).
+3. Render a neutral 0–100% bounded-share dot plot plus accessible table
+   (ADR-0043). A dot shows the classified share; unknown makes create the
+   min–max coverage interval. The interval is not statistical confidence, no
+   facts are hover-only, and the table owns all counts, coverage, and bounds.
+4. Enrich made-shot tooltips with assisted / unassisted / unavailable status.
+   Misses omit assist status. Add approximate shot-clock text only if the
+   global Phase 0 gate passed.
+
+**Surface exit:** desktop/touch/accessibility tests cover all states, the
+making palette is never reused, the existing headline/court layout does not
+shift, and every visible number comes from the pure aggregation plus
+`src/format.ts`.
+
+### Phase 4 — Copy, guards, and Shai productionization
+
+1. Graduate assisted/unassisted from the unshipped lexicon to backed creation
+   vocabulary. Add a shot-context claim type whose assertions consume the
+   worst-case assist bounds; assist language becomes legal, not mandatory.
+2. Keep or rewrite each hero's why-sentence according to whether Case 3
+   materially sharpens the argument. A claim must hold across the entire
+   unknown interval, not merely the classified subset.
+3. Hard-guard the semantic boundary: unassisted means no official assist
+   credit, never self-created, solo, or without teammate help (ADRs 0041/0049).
+4. Replace Shai's placeholder banner with a production asset, author his
+   positive-control copy from the full report, and add the same colocated
+   verdict guard required of Cody and Keyonte.
+
+### Phase 5 — Deployment and release gates
+
+1. Extend argless `hero:sync` to copy all three required sibling contracts for
+   Cody, Keyonte, and Shai; a partial sync fails.
+2. Add deployed-payload guards: every registered hero has a context sibling;
+   every deployed context strict-parses, matches its shot key set and
+   provenance, aggregates, and matches the latest derived copy when present.
+3. Regenerate and commit the Case 3 golden with every schema change. Keep the
+   shot and Case 2 creation goldens byte-stable unless their own contracts
+   genuinely change.
+4. Run the full repository gate before calling v2.5 done:
+   `python -m pytest ingestion -q`, `npm test`, `npm run lint`, and
+   `npm run build`.
+
+### Standing non-goals and honesty constraints
+
+- Assisted share is a share of **makes**, never attempts.
+- No Case 1 or play-by-play proxy labels a shot catch-and-shoot, pull-up, or
+  Other (ADR-0033).
+- No fuzzy shot-to-event joins, alternate-feed fallback, raw NBA prose in the
+  deployed payload, passer analysis, or league Case 3 baseline.
+- Unassisted is official scorer attribution, not proof of self-creation.
+- Estimated shot-clock remaining is approximate even if its band
+  reconciliation passes, and is absent everywhere if any hero fails the gate.
 
 ## v3 — Living seasons and heroes at scale
 
