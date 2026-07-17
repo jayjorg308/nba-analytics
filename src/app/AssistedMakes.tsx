@@ -32,7 +32,7 @@ function tableRows(metrics: ShotContextMetrics, showMidRangeBands: boolean): Dis
   ]
   if (showMidRangeBands) {
     result.push(
-      ...metrics.midRangeBands.map(
+      ...metrics.midRangeBands.filter((band) => band.attempts > 0).map(
         (band: AssistBandMetricsRow): DisplayRow => ({
           key: `mid-${band.band}`,
           label: band.band,
@@ -61,12 +61,16 @@ function bounds(row: AssistMetricsRow): string {
   return `${formatPercent1(row.minAssistedShare)}–${formatPercent1(row.maxAssistedShare)}`
 }
 
-function BoundedSharePlot({ rows }: { rows: DisplayRow[] }) {
+function AssistedSharePlot({ rows, showBounds }: { rows: DisplayRow[]; showBounds: boolean }) {
   return (
     <div
       className="assist-plot"
       role="img"
-      aria-label="Assisted-share bounds by shooting area; exact values are in the assisted makes table"
+      aria-label={
+        showBounds
+          ? 'Assisted-share bounds by shooting area; exact values are in the assisted makes table'
+          : 'Assisted share by shooting area; exact values are in the assisted makes table'
+      }
     >
       <div className="assist-axis" aria-hidden="true">
         <span className="assist-axis-scale">
@@ -88,13 +92,15 @@ function BoundedSharePlot({ rows }: { rows: DisplayRow[] }) {
           <span className="assist-track">
             {row.minAssistedShare !== null && row.maxAssistedShare !== null && (
               <>
-                <span
-                  className="assist-bound"
-                  style={{
-                    left: `${row.minAssistedShare * 100}%`,
-                    width: `${(row.maxAssistedShare - row.minAssistedShare) * 100}%`,
-                  }}
-                />
+                {showBounds && (
+                  <span
+                    className="assist-bound"
+                    style={{
+                      left: `${row.minAssistedShare * 100}%`,
+                      width: `${(row.maxAssistedShare - row.minAssistedShare) * 100}%`,
+                    }}
+                  />
+                )}
                 {row.assistedShare !== null && (
                   <span
                     className="assist-share-dot"
@@ -118,16 +124,19 @@ export function AssistedMakes({
   showMidRangeBands: boolean
 }) {
   const rows = tableRows(metrics, showMidRangeBands)
+  const hasCoverageGaps = rows.some(({ row }) => row.unknownMakes > 0)
   return (
     <section className="assisted-section" aria-labelledby="assisted-caption">
       <header className="creation-caption">
         <h2 id="assisted-caption">ASSISTED MAKES</h2>
         <p className="creation-caption-desc">
-          scorer-credit assist share, with unknown makes kept visible as a bounded range
+          {hasCoverageGaps
+            ? 'scorer-credit assist share, with unknown makes kept visible as a bounded range'
+            : 'scorer-credit assist share by shooting area'}
         </p>
       </header>
       <div className="assisted-layout">
-        <BoundedSharePlot rows={rows} />
+        <AssistedSharePlot rows={rows} showBounds={hasCoverageGaps} />
         <div className="creation-table-body">
           <div className="zone-scroll">
             <table className="zone-table" aria-label="Assisted makes by shooting area">
@@ -137,10 +146,10 @@ export function AssistedMakes({
                   <th scope="col">FGM</th>
                   <th scope="col">Ast</th>
                   <th scope="col">Unast</th>
-                  <th scope="col">Unknown</th>
+                  {hasCoverageGaps && <th scope="col">Unknown</th>}
                   <th scope="col">Ast share</th>
-                  <th scope="col">Coverage</th>
-                  <th scope="col">Bounds</th>
+                  {hasCoverageGaps && <th scope="col">Coverage</th>}
+                  {hasCoverageGaps && <th scope="col">Bounds</th>}
                 </tr>
               </thead>
               <tbody>
@@ -150,20 +159,22 @@ export function AssistedMakes({
                     <td>{row.makes}</td>
                     <td>{row.assistedMakes}</td>
                     <td>{row.unassistedMakes}</td>
-                    <td>{row.unknownMakes}</td>
+                    {hasCoverageGaps && <td>{row.unknownMakes}</td>}
                     <td>{formatPercent1(row.assistedShare)}</td>
-                    <td>{formatPercent1(row.coverage)}</td>
-                    <td>{bounds(row)}</td>
+                    {hasCoverageGaps && <td>{formatPercent1(row.coverage)}</td>}
+                    {hasCoverageGaps && <td>{bounds(row)}</td>}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <div className="table-notes">
-            <p>
-              Assist share uses classified makes only. Unknown makes stay in the denominator for
-              the minimum–maximum bounds; they are never guessed into either class.
-            </p>
+            {hasCoverageGaps && (
+              <p>
+                Assist share uses classified makes only. Unknown makes stay in the denominator for
+                the minimum–maximum bounds; they are never guessed into either class.
+              </p>
+            )}
             <p>Unassisted means no scorer assist was credited, not necessarily self-created.</p>
           </div>
         </div>

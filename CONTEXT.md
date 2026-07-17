@@ -169,6 +169,9 @@ The distinct Case 3 subsection at the end of the Shot Creation second act: hero-
 **Assisted-share plot**:
 The Assisted Makes section's bounded-share dot plot: each zone's classified assisted share is a dot, and unknown makes widen a minimum-to-maximum interval over all makes. The interval represents source coverage only, not statistical confidence; the table is the complete numerical twin.
 
+**Assisted-makes presentation**:
+The Assisted Makes product surface suppresses the Unknown / Coverage / Bounds table group when every displayed row has complete classification, and restores the whole group when any unknown make exists. Attempt-empty refinement rows are omitted until data makes them informative. The underlying coverage metrics and worst-case bounds remain part of the domain and authoring contracts in both states (ADR-0043).
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 

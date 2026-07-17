@@ -231,6 +231,9 @@ and broader parent claims remain aggregation-owned rather than UI-computed.
    (ADR-0043). A dot shows the classified share; unknown makes create the
    min–max coverage interval. The interval is not statistical confidence, no
    facts are hover-only, and the table owns all counts, coverage, and bounds.
+   Shipped presentation suppresses attempt-empty refinements and the redundant
+   Unknown / Coverage / Bounds group at complete coverage; either reappears
+   automatically when its data becomes informative.
 4. Enrich made-shot tooltips with assisted / unassisted / unavailable status.
    Misses omit assist status. Add approximate shot-clock text only if the
    global Phase 0 gate passed.
