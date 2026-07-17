@@ -17,6 +17,11 @@ const creationGoldenJson = JSON.parse(readFileSync(creationGoldenPath, 'utf-8'))
   string,
   unknown
 >
+const contextGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/shot-context.golden.json')
+const contextGoldenJson = JSON.parse(readFileSync(contextGoldenPath, 'utf-8')) as Record<
+  string,
+  unknown
+>
 
 interface StubResponse {
   ok: boolean
@@ -28,11 +33,17 @@ interface StubResponse {
 function stubFetch(
   shot: StubResponse,
   creation: StubResponse = { ok: true, json: creationGoldenJson },
+  context: StubResponse = { ok: true, json: contextGoldenJson },
 ) {
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: unknown) => {
-      const r = String(url).endsWith('.creation.json') ? creation : shot
+      const value = String(url)
+      const r = value.endsWith('.creation.json')
+        ? creation
+        : value.endsWith('.context.json')
+          ? context
+          : shot
       return {
         ok: r.ok,
         status: r.status ?? 200,
@@ -190,6 +201,13 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText(/1 attempt without shot-clock tracking/)
     screen.getByText(/2 attempts without defender tracking/)
     expect(screen.getAllByText('Other')).toHaveLength(2)
+
+    // Case 3 follows the creation evidence: bounded assist shares plus the
+    // existing zone hierarchy, with unknown makes explicit.
+    screen.getByRole('heading', { name: 'ASSISTED MAKES' })
+    screen.getByRole('img', { name: /Assisted-share bounds/i })
+    screen.getByRole('table', { name: /Assisted makes by shooting area/i })
+    screen.getByText(/not necessarily self-created/i)
   })
 
   it('shades all six zones in the default Zones view despite included=false everywhere', async () => {
@@ -223,9 +241,15 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText(/Oct 31, 2025 · @ PHX · Q2 · 7:52/)
     screen.getByText(/Mid-Range — 17 ft/)
     expect(document.querySelector('.shot-tooltip-result')!.textContent).toBe('Missed')
+    expect(document.querySelector('.shot-tooltip-assist')).toBeNull()
 
     fireEvent.pointerLeave(hit, { pointerType: 'mouse' })
     expect(document.querySelector('.shot-tooltip')).toBeNull()
+
+    // Misses sort first; the first made dot is Cody's assisted action 480.
+    const firstMade = document.querySelectorAll('.shot-dot .dot-hit')[7]!
+    fireEvent.pointerEnter(firstMade, { pointerType: 'mouse' })
+    expect(document.querySelector('.shot-tooltip-assist')!.textContent).toBe('Assisted')
   })
 
   it('opens the zone detail card from the default view and closes on Escape (ADR-0027)', async () => {
@@ -280,5 +304,27 @@ describe('HeroPage failure states', () => {
     stubFetch({ ok: true, json: goldenJson }, { ok: true, json: bad })
     render(<HeroPage hero={hero} />)
     await screen.findByText(/Payload contract violation/)
+  })
+
+  it('surfaces a missing shot-context payload — required per hero', async () => {
+    stubFetch(
+      { ok: true, json: goldenJson },
+      { ok: true, json: creationGoldenJson },
+      { ok: false, status: 404 },
+    )
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/HTTP 404 loading shot context data/)
+  })
+
+  it('surfaces cross-sibling identity contradictions plainly', async () => {
+    const badContext = structuredClone(contextGoldenJson)
+    ;(badContext._meta as { player: string }).player = 'Different Player'
+    stubFetch(
+      { ok: true, json: goldenJson },
+      { ok: true, json: creationGoldenJson },
+      { ok: true, json: badContext },
+    )
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/Payloads contradict: shot-context sibling player\/season identity/i)
   })
 })

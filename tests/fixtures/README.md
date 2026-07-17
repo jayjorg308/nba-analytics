@@ -2,9 +2,9 @@
 
 The committed handshake between the Python derive steps and the TypeScript
 payload contracts (see ADR-0007, ADR-0030). `data/` is gitignored; these
-fixtures are not. There are two independent golden pairs — the shot payload
-and the creation payload version on different clocks (ADR-0030), so each has
-its own fixtures and its own schema version.
+fixtures are not. There are three independent golden contracts — the shot,
+creation, and shot-context payloads version on different clocks
+(ADR-0030/0032), so each has its own fixtures and schema version.
 
 ## Shot payload (ADR-0007; schema v3)
 
@@ -51,16 +51,29 @@ its own fixtures and its own schema version.
   tracking fixtures. **Never edit by hand**; regenerate via
   `npm run golden:regen`.
 
+## Shot-context payload (ADR-0032; schema v1)
+
+- **`playbyplay.truncated.json`** — a hand-trimmed NBA Stats PlayByPlayV3 response
+  containing an explicitly assisted make, an unassisted make, and a miss.
+- **`boxscore.truncated.json`** — the matching BoxScoreTraditionalV3 response. Its per-team
+  assist totals exactly reconcile with parsed scorer credits.
+- **`shot-context.golden.json`** — the total one-row-per-shot derive over the
+  shot golden and the one fixture game. Missing games/events stay explicit;
+  they are never silently dropped or classified. **Never edit by hand**;
+  regenerate via `npm run golden:regen`.
+
 ## How the handshake works
 
 - `ingestion/test_derive_payload.py` asserts `derive(truncated) == golden`;
   `ingestion/test_derive_creation.py` does the same for the creation pair.
-- `src/domain/payload.test.ts` / `src/domain/creationPayload.test.ts` assert
-  each golden strict-parses through its Zod schema (unknown keys rejected).
+- `src/domain/payload.test.ts`, `src/domain/creationPayload.test.ts`, and
+  `src/domain/shotContextPayload.test.ts` assert each golden strict-parses
+  through its Zod schema (unknown keys rejected).
 
 Any payload-shape change on either side breaks one of the suites until the
 schema and the regenerated golden move together in the same PR. This depends
 on the derive steps being deterministic — same inputs in, byte-identical
 payload out. Bump the schema version on any breaking change (shot:
 `ingestion/derive_payload.py` + `src/domain/payload.ts`; creation:
-`ingestion/derive_creation.py` + `src/domain/creationPayload.ts`).
+`ingestion/derive_creation.py` + `src/domain/creationPayload.ts`; context:
+`ingestion/derive_shot_context.py` + `src/domain/shotContextPayload.ts`).

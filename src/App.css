@@ -1371,3 +1371,106 @@
         font-size: 14px;
     }
 }
+
+/* --- Assisted makes (Case 3, ADR-0032/0049) ------------------------------- */
+
+.assisted-section {
+    margin-top: 48px;
+    text-align: left;
+}
+
+.assisted-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+    gap: 32px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.assist-plot {
+    min-width: 0;
+    padding-top: 8px;
+}
+
+.assist-axis,
+.assist-plot-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.72fr) minmax(140px, 1fr);
+    gap: 14px;
+}
+
+.assist-axis {
+    margin-bottom: 8px;
+    color: var(--text);
+    font: 400 11px var(--mono);
+}
+
+.assist-axis::before {
+    content: '';
+}
+
+.assist-axis-scale {
+    grid-column: 2;
+    display: flex;
+    justify-content: space-between;
+}
+
+.assist-plot-row {
+    min-height: 42px;
+    align-items: center;
+}
+
+.assist-plot-label {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-h);
+    font-size: 13px;
+    text-align: right;
+}
+
+.assist-plot-row-child .assist-plot-label {
+    padding-right: 12px;
+}
+
+.assist-plot-denominator {
+    color: var(--text);
+    font: 400 10px var(--mono);
+}
+
+.assist-track {
+    position: relative;
+    height: 2px;
+    background: var(--border);
+}
+
+.assist-track::before {
+    content: '';
+    position: absolute;
+    inset: -7px 50% -7px auto;
+    border-left: 1px solid var(--border);
+}
+
+.assist-bound {
+    position: absolute;
+    top: -3px;
+    height: 8px;
+    min-width: 2px;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.assist-share-dot {
+    position: absolute;
+    top: 1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-h);
+    transform: translate(-50%, -50%);
+}
+
+.assisted-section .zone-table {
+    font-size: 12px;
+}

@@ -4,7 +4,12 @@
 // surface regardless of claims.
 
 import { describe, expect, it } from 'vitest'
-import { unbackedCreationTerms, unshippedTermsIn } from './verdictLexicon'
+import {
+  invalidAssistInterpretationsIn,
+  unbackedAssistTerms,
+  unbackedCreationTerms,
+  unshippedTermsIn,
+} from './verdictLexicon'
 
 describe('the ADR-0029 tripwire', () => {
   it('flags shipped creation vocabulary when no creation claim is declared', () => {
@@ -25,10 +30,19 @@ describe('the ADR-0029 tripwire', () => {
     )
   })
 
-  it('flags unshipped vocabulary regardless of claims — a claim cannot outrun its data', () => {
-    // assisted/unassisted is v2.5 (Case 3). 'assisted' matching inside
-    // 'unassisted' is the point, not an accident.
-    expect(unshippedTermsIn('his unassisted threes')).toEqual(['assisted'])
+  it('graduates assist vocabulary but requires its own Case 3 claim', () => {
+    expect(unshippedTermsIn('his unassisted threes')).toEqual([])
+    expect(unbackedAssistTerms('his unassisted threes', 0)).toEqual(['assisted'])
+    expect(unbackedAssistTerms('his unassisted threes', 1)).toEqual([])
+    // A Case 2 creation claim cannot accidentally license Case 3 language.
+    expect(unbackedCreationTerms('his unassisted threes', 1)).toEqual([])
+  })
+
+  it('rejects translating scorer credit into self-creation language', () => {
+    expect(invalidAssistInterpretationsIn('Most makes were unassisted, so he created alone')).toEqual([
+      'created alone',
+    ])
+    expect(invalidAssistInterpretationsIn('His pull-ups are self-created difficulty')).toEqual([])
   })
 
   it('defender vocabulary graduated to backed-required in v2.1', () => {

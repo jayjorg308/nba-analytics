@@ -13,7 +13,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v1.1 — close-out polish | ✅ closed 2026-07-12 (`hero:report`, the hero directory, display-grain rounding — ADRs 0022–0023) |
 | v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
-| v2.5 — creation at the shot grain | ⬅ **next up** — planned 2026-07-16 (ADRs 0032–0049); Case 3 assists required, estimated shot clock independently gated |
+| v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v3 — living seasons and heroes at scale | not started |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
@@ -24,10 +24,10 @@ flags, authored-and-guarded copy — on a new axis._
 > restore, when the Cody page is deemed done, is a grep for
 > `TEMPORARY(single-hero)` in `src/App.tsx` + `src/app/HeroPage.tsx`.
 >
-> _The max-FGA stress test is now a product commitment for v2.5: Shai's
-> 2025-26 MVP season is the positive control. His current placeholder banner,
-> absent colocated verdict guard, and experimental copy must be productionized
-> before v2.5 can ship; he receives no payload, gate, or guard exemption._
+> _The max-FGA stress test is now a shipped v2.5 commitment: Shai's 2025-26
+> MVP season is the positive control. His action banner, guarded copy, and all
+> three required payloads are production data; he receives no payload, gate,
+> or guard exemption._
 
 **Where v1 ended:** the thesis ("Is this player taking good shots?") is
 answered by the two-axis model, argued verdict-first (ADR-0018), guarded
@@ -133,22 +133,29 @@ pull-up, or Other contexts per shot (ADRs 0032–0034)._
 
 All work covers the three registered heroes: Cody Williams, Keyonte George,
 and Shai Gilgeous-Alexander. Shai's 2025-26 MVP season is the positive
-control—the engine must explain elite success with the same contracts, gates,
-and guards used for the two young-player arguments. His current placeholder
-banner, missing colocated guard, and experimental copy are release work, not
-an exemption.
+control—the engine explains elite success with the same contracts, gates,
+and guards used for the two young-player arguments.
+
+_Built 2026-07-16. The completed-season source changed deliberately to paired
+`PlayByPlayV3` / `BoxScoreTraditionalV3` artifacts after the live-data CDN
+returned HTTP 403 (ADR-0050). The launch audit covered 146 unique games, 184
+hero-game references, and all 2,710 post-drop shots: every shot joined exactly,
+every team assist total reconciled, and no context remained unknown. The Stats
+V3 source does not preserve enough possession/reset state for the exact
+six-band clock gate, so estimated clock was omitted without delaying assists._
 
 ### Phase 0 — Raw spine and real-data spike
 
 1. Add a per-game pull over the shot snapshot's unique game IDs. Store the
-   verbatim NBA live-data play-by-play once at
+   verbatim NBA Stats `PlayByPlayV3` response once at
    `data/raw/play-by-play/<game-id>/<pull-date>.json`, shared by every hero in
-   that game (ADR-0045). Pair it with the verbatim live-data box score as a
-   validation artifact (ADR-0046). Both are append-only; completed games
+   that game (ADR-0045). Pair it with the verbatim
+   `BoxScoreTraditionalV3` response as a validation artifact (ADR-0046/0050).
+   Both are append-only; completed games
    normally have one snapshot, and a corrected re-pull adds a dated snapshot.
 2. Pull every game for all three heroes. Gate 4 requires a valid canonical
    play-by-play artifact for every game containing a hero shot; there is no
-   silent fallback to another feed (ADRs 0035/0044).
+   silent fallback to another feed (ADRs 0044/0050; ADR-0035 superseded).
 3. Produce an audit before fixing the schema:
    - confirm `gameId + gameEventId` ↔ `gameId + actionNumber`;
    - cross-check player, period, game clock, result, and point value;
@@ -297,8 +304,9 @@ shift, and every visible number comes from the pure aggregation plus
   dropdown over one page.
 - **No creation inference from Case 1 data.** `ACTION_TYPE` stays quarantined
   in the raw layer (ADR-0005); creation claims are legal only when they cite
-  shipped Case 2 contexts (ADR-0029), and vocabulary whose family hasn't
-  shipped stays out of verdicts entirely — today only "assisted", until v2.5.
+  shipped Case 2 contexts (ADR-0029). Case 3 assist claims use their own
+  worst-case-bounds guard; vocabulary whose family has not shipped stays out
+  of verdicts entirely.
 - **No rate averaging.** Rollups sum makes and attempts, always (ADR-0004).
 - **No loosened guards.** Palette, verdict claims, golden, drift: when a
   guard fails, fix the thing it guards — never the assertion (ADR-0014/0017).

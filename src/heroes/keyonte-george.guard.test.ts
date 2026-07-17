@@ -31,7 +31,12 @@ import { parseCreationPayload } from '../domain/creationPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { keyonteGeorge as hero } from './keyonte-george'
 import type { CreationClaim } from './verdictLexicon'
-import { unbackedCreationTerms, unshippedTermsIn } from './verdictLexicon'
+import {
+  invalidAssistInterpretationsIn,
+  unbackedAssistTerms,
+  unbackedCreationTerms,
+  unshippedTermsIn,
+} from './verdictLexicon'
 
 // One source of hero truth: the guard reads the same deployed payloads the
 // app fetches for this slug/season (see src/heroes/urls.ts).
@@ -135,11 +140,12 @@ describe.skipIf(!existsSync(payloadPath) || !existsSync(creationPath))(
   }
 
   it('creation vocabulary is bucket-backed; unshipped vocabulary absent (ADR-0029)', () => {
-    // The flipped tripwire: shipped creation vocabulary requires >=1
-    // declared creation-kind claim; assisted/contested vocabulary stays
-    // forbidden until its data ships (v2.5 / the defender fast-follow).
+    // Case 2 vocabulary requires a creation claim. Case 3 assist vocabulary
+    // is independently gated; Keyonte's current verdict chooses not to use it.
     expect(unshippedTermsIn(hero.verdict)).toEqual([])
     expect(unbackedCreationTerms(hero.verdict, creationClaims.length)).toEqual([])
+    expect(unbackedAssistTerms(hero.verdict, 0)).toEqual([])
+    expect(invalidAssistInterpretationsIn(hero.verdict)).toEqual([])
   })
   },
 )

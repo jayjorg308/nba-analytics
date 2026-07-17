@@ -1,26 +1,29 @@
 // Print a hero's computed story from a derived payload (ROADMAP v1.1 #2),
-// plus its creation section (ADR-0031) from the sibling creation payload.
+// plus its Case 2 creation and Case 3 assisted-makes sections from the two
+// required sibling payloads (ADRs 0031/0032).
 // Runs under tsx so it reuses the production load boundaries and aggregations
-// (parseDerivedPayload → aggregateShotMetrics, parseCreationPayload →
-// aggregateCreationMetrics) — the metrics live in TypeScript by decision
+// (parseDerivedPayload → aggregateShotMetrics and the two sibling parse +
+// aggregate paths) — the metrics live in TypeScript by decision
 // (ADR-0009); a second implementation would drift.
 //
 // Usage:
 //   npm run hero:report -- <player-slug> <season>             latest payloads under data/derived/
 //   npm run hero:report -- <player-slug> <season> --deployed  the committed public/data/ copies
-//   npm run hero:report -- --file <path> [--creation-file <path>]   explicit files
+//   npm run hero:report -- --file <path> [--creation-file <path>] [--context-file <path>]
 
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseCreationPayload } from '../src/domain/creationPayload'
 import { parseDerivedPayload } from '../src/domain/payload'
+import { parseShotContextPayload } from '../src/domain/shotContextPayload'
 import { renderCreationReport } from '../src/report/creationReport'
 import { renderHeroReport } from '../src/report/heroReport'
+import { renderShotContextReport } from '../src/report/shotContextReport'
 
 const USAGE = [
   'usage:',
   '  npm run hero:report -- <player-slug> <season> [--deployed]',
-  '  npm run hero:report -- --file <path/to/payload.json> [--creation-file <path>]',
+  '  npm run hero:report -- --file <path/to/payload.json> [--creation-file <path>] [--context-file <path>]',
 ].join('\n')
 
 function fail(message: string): never {
@@ -99,6 +102,35 @@ function resolveCreationPayloadPath(): { path: string | null; note?: string } {
   return { path: join(sourceDir, candidates[candidates.length - 1]!) }
 }
 
+function resolveContextPayloadPath(): { path: string | null; note?: string } {
+  const contextFlag = args.indexOf('--context-file')
+  if (contextFlag !== -1) {
+    const file = args[contextFlag + 1]
+    if (!file) fail(USAGE)
+    return { path: file }
+  }
+  if (args.indexOf('--file') !== -1) {
+    return { path: null, note: 'no --context-file given alongside --file' }
+  }
+  const [slug, season] = args.filter((a) => !a.startsWith('--'))
+  if (args.includes('--deployed')) {
+    return { path: join('public', 'data', slug!, `${season}.context.json`) }
+  }
+  const sourceDir = join('data', 'derived', slug!, season!, 'shot-context')
+  let candidates: string[]
+  try {
+    candidates = readdirSync(sourceDir)
+      .filter((f) => f.endsWith('.json'))
+      .sort()
+  } catch {
+    candidates = []
+  }
+  if (candidates.length === 0) {
+    return { path: null, note: `no derived shot-context payloads under ${sourceDir}` }
+  }
+  return { path: join(sourceDir, candidates[candidates.length - 1]!) }
+}
+
 const payloadPath = resolvePayloadPath()
 
 let raw: string
@@ -110,10 +142,11 @@ try {
 
 let report: string
 let seasonFgaTarget: number
+let shotPayload: ReturnType<typeof parseDerivedPayload>
 try {
-  const payload = parseDerivedPayload(JSON.parse(raw))
-  report = renderHeroReport(payload)
-  seasonFgaTarget = payload._meta.totalShots + payload._meta.zoneConflictsDropped
+  shotPayload = parseDerivedPayload(JSON.parse(raw))
+  report = renderHeroReport(shotPayload)
+  seasonFgaTarget = shotPayload._meta.totalShots + shotPayload._meta.zoneConflictsDropped
 } catch (e) {
   // A payload that fails the contract is a real error, surfaced plainly —
   // never swallowed (ADR-0007).
@@ -158,6 +191,35 @@ if (creation.path === null) {
   } catch (e) {
     fail(
       `creation payload contract violation in ${creation.path}:\n${e instanceof Error ? e.message : String(e)}`,
+    )
+  }
+}
+
+const context = resolveContextPayloadPath()
+if (context.path === null) {
+  fail(
+    `cannot render required assisted-makes section: ${context.note} — ` +
+      'run ingestion/derive_shot_context.py (ADR-0032)',
+  )
+} else {
+  let contextRaw: string
+  try {
+    contextRaw = readFileSync(context.path, 'utf-8')
+  } catch (e) {
+    fail(
+      `cannot read ${context.path}: ${e instanceof Error ? e.message : String(e)}\n` +
+        'run ingestion/derive_shot_context.py (the shot-context payload is required per hero, ADR-0032)',
+    )
+  }
+  try {
+    const contextPayload = parseShotContextPayload(JSON.parse(contextRaw))
+    console.log('')
+    console.log(`shot-context payload: ${context.path}`)
+    console.log('')
+    console.log(renderShotContextReport(shotPayload, contextPayload))
+  } catch (e) {
+    fail(
+      `shot-context payload contract violation in ${context.path}:\n${e instanceof Error ? e.message : String(e)}`,
     )
   }
 }

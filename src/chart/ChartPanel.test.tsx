@@ -21,7 +21,12 @@ afterEach(cleanup)
 
 function renderPanel() {
   return render(
-    <ChartPanel shots={golden.shots} zones={metrics.zones} ariaLabel="test chart" />,
+    <ChartPanel
+      shots={golden.shots}
+      zones={metrics.zones}
+      ariaLabel="test chart"
+      assistStatusByShotKey={new Map()}
+    />,
   )
 }
 

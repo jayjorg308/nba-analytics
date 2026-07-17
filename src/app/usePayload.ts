@@ -3,6 +3,8 @@ import type { CreationPayload } from '../domain/creationPayload'
 import { parseCreationPayload } from '../domain/creationPayload'
 import type { DerivedPayload } from '../domain/payload'
 import { parseDerivedPayload } from '../domain/payload'
+import type { ShotContextPayload } from '../domain/shotContextPayload'
+import { parseShotContextPayload } from '../domain/shotContextPayload'
 
 export type PayloadState<T> =
   | { status: 'loading' }
@@ -56,7 +58,7 @@ function useParsedPayload<T>(
 
     void load()
     return () => controller.abort()
-    // parse and noun are stable module-level arguments at both call sites.
+    // parse and noun are stable module-level arguments at every call site.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
@@ -68,7 +70,11 @@ export function usePayload(url: string): PayloadState<DerivedPayload> {
 }
 
 /** The sibling creation payload (ADR-0030) — one class of hero page: the
- * page waits for both payloads and surfaces either one's failure. */
+ * page waits for every required payload and surfaces any failure. */
 export function useCreationPayload(url: string): PayloadState<CreationPayload> {
   return useParsedPayload(url, parseCreationPayload, 'creation data')
+}
+
+export function useShotContextPayload(url: string): PayloadState<ShotContextPayload> {
+  return useParsedPayload(url, parseShotContextPayload, 'shot context data')
 }

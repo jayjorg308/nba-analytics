@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import type { ZoneMetricsRow } from '../domain/aggregate'
 import type { EvalZone } from '../domain/constants'
 import type { EnrichedShot } from '../domain/payload'
+import type { AssistStatus } from '../domain/shotContextPayload'
+import { shotIdentity } from '../domain/aggregateShotContext'
 import { formatClock, formatGameDate, formatMatchup, formatPeriod } from '../format'
 import { MAKING_BIN_EDGES_PP, MAKING_LEGEND, makingBinVar } from './makingScale'
 import { ShotChart } from './ShotChart'
@@ -82,7 +84,15 @@ function TooltipBox({
   )
 }
 
-function ShotTooltipContent({ shot }: { shot: EnrichedShot }) {
+function ShotTooltipContent({ shot, assistStatus }: { shot: EnrichedShot; assistStatus?: AssistStatus }) {
+  const assistLabel =
+    assistStatus === 'assisted'
+      ? 'Assisted'
+      : assistStatus === 'unassisted'
+        ? 'Unassisted'
+        : assistStatus === 'unknown'
+          ? 'Assist status unavailable'
+          : null
   return (
     <>
       <div className="shot-tooltip-when">
@@ -93,6 +103,7 @@ function ShotTooltipContent({ shot }: { shot: EnrichedShot }) {
         {shot.zoneBasic} — {shot.distanceFt} ft
       </div>
       <div className="shot-tooltip-result">{shot.made ? 'Made' : 'Missed'}</div>
+      {shot.made && assistLabel && <div className="shot-tooltip-assist">{assistLabel}</div>}
     </>
   )
 }
@@ -146,10 +157,12 @@ export function ChartPanel({
   shots,
   zones,
   ariaLabel,
+  assistStatusByShotKey,
 }: {
   shots: EnrichedShot[]
   zones: ZoneMetricsRow[]
   ariaLabel: string
+  assistStatusByShotKey: ReadonlyMap<string, AssistStatus>
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   // Zones is the DEFAULT view: the zone-shaded court is the argument (the
@@ -251,7 +264,10 @@ export function ChartPanel({
             wrapperWidth={hovered.wrapperWidth}
             wrapperHeight={hovered.wrapperHeight}
           >
-            <ShotTooltipContent shot={hovered.shot} />
+            <ShotTooltipContent
+              shot={hovered.shot}
+              assistStatus={assistStatusByShotKey.get(shotIdentity(hovered.shot))}
+            />
           </TooltipBox>
         )}
         {/* Out of flow inside the wrapper: opening/closing the card never

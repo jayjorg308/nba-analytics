@@ -103,10 +103,10 @@ The site root: a directory of poster tiles — each hero's banner photo and thes
 "How does he create his shots?" — the second act, shipped: Case 2 creation contexts at the bucket grain, three families (see Context family; ADR-0030 plus the v2.1 defender fast-follow). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
 
 **Shot creation**:
-Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Case 2 tracking evaluates catch/pull-up, clock, and contest at the aggregate context grain; Case 3 play-by-play adds assist status for made shots and approximate per-shot clock, but does not identify Case 2 tracking contexts per shot (ADR-0033).
+Assisted/unassisted + catch-and-shoot/pull-up + clock/contest context. Case 2 tracking evaluates catch/pull-up, clock, and contest at the aggregate context grain; Case 3 play-by-play adds official assist status for made shots, but does not identify Case 2 tracking contexts per shot (ADR-0033). Approximate per-shot clock was independently gated and omitted from v2.5 (ADRs 0034/0047/0050).
 
 **Creation context**:
-The pre-aggregated category describing how a shot came to be — catch-and-shoot, pull-up, a shot-clock band. The unit of v2.0's creation evaluation, assigned by the NBA's tracking dashboards, never derived per shot at the bucket grain (per-shot creation is v2.5).
+The pre-aggregated category describing how a shot came to be — catch-and-shoot, pull-up, a shot-clock band. The unit of v2.0's creation evaluation, assigned by the NBA's tracking dashboards, never derived per shot. v2.5 adds official assist context at the shot grain without manufacturing any of these Case 2 labels.
 _Avoid_: "bucket" in product copy — engineering shorthand for the same concept, fine in code and ADRs.
 
 **Context family**:
@@ -140,7 +140,7 @@ A made field goal for which the official scorer credited no assist. It is not sy
 An explicit official scoring credit attached to a made-shot event, supplied by a stable structured field or a narrowly parsed NBA event description. A prior pass, nearby event, or plausible basketball sequence is not assist evidence.
 
 **Assist reconciliation**:
-The exact per-team, per-game equality between assist credits parsed from play-by-play and the official live box-score assist total. The box score validates the parser but never supplies or repairs a per-shot classification.
+The exact per-team, per-game equality between assist credits parsed from play-by-play and the official `BoxScoreTraditionalV3` assist total. The box score validates the parser but never supplies or repairs a per-shot classification.
 
 **Assist coverage**:
 The share of made shots whose assist status is classified as assisted or unassisted. Unknown makes remain in the full made-shot denominator and bound the true assisted share rather than being silently discarded.
@@ -152,7 +152,7 @@ The observed fraction of classified made field goals credited with an assist for
 The existing shot-zone hierarchy reused for assist analysis: all makes, the six evaluation zones with their established refinements, and the combined 3 Pointers parent. Thin child zones remain visible with their denominators, while authored claims use a broader data-supported parent grain.
 
 **Estimated shot-clock remaining**:
-The approximate time left on the shot clock when a shot occurred, reconstructed from Case 3 event timing, possession changes, and reset rules. It ships only when the reconstruction exactly reproduces the authoritative six-band tracking totals for every current hero, and is never presented without approximation language.
+The approximate time left on the shot clock when a shot occurred, reconstructed from Case 3 event timing, possession changes, and reset rules. It ships only when the reconstruction exactly reproduces the authoritative six-band tracking totals for every current hero, and is never presented without approximation language. The completed-season Stats V3 source adopted for v2.5 does not preserve enough possession/reset state to attempt that gate safely, so estimated clock is absent from the v2.5 contract and UI (ADR-0050).
 
 **Creation PPS**:
 Points-per-shot within a creation context, computed from that context's 2PT/3PT makes and attempts — creation speaks the same value unit as everything else (PPS, never eFG%).
@@ -176,10 +176,10 @@ The v1 build increment: pull `shotchartdetail` for one player/one season, valida
 One verbatim blob of a `shotchartdetail` response (player shots + `LeagueAverages` frame), stored exactly as returned. Keyed per **(player, season, pull-date)**. Self-describing: records at minimum its pull-date and games-included (or date-range), so a blob's contents are knowable without re-deriving.
 
 **Raw play-by-play artifact**:
-One verbatim NBA live-data play-by-play response for a game, stored once by game ID and pull date and shared by every hero who appeared in that game. It is the sole Case 3 source; a missing game is an explicit coverage failure, never permission to substitute a different play-by-play feed silently.
+One verbatim NBA Stats `PlayByPlayV3` response for a completed-season game, stored once by game ID and pull date and shared by every hero who appeared in that game. It is the sole v2.5 Case 3 source; a missing game is an explicit coverage failure, never permission to substitute a different play-by-play feed silently (ADR-0050).
 
 **Raw game-validation artifact**:
-The verbatim NBA live-data box score paired with a raw play-by-play artifact. It is a reconciliation oracle for official game totals, not an alternate source of per-shot events.
+The verbatim NBA Stats `BoxScoreTraditionalV3` response paired with a raw play-by-play artifact. It is a reconciliation oracle for official game totals, not an alternate source of per-shot events.
 
 **Pull unit**:
 The source's natural response grain: a season for `shotchartdetail`, and one game for Case 3 play-by-play. A source response is stored whole rather than decomposed into an invented storage grain.
