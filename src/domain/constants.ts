@@ -67,7 +67,10 @@ export const ZONE_POINT_VALUE: Record<BasicZone, 2 | 3> = {
 }
 
 // Gate-2-derived inclusion bar: a zone is included in the mix view at >= 15
-// attempts (ADR-0008, set from the launch hero's real counts).
+// attempts (ADR-0008, set from the launch hero's real counts). Deliberately
+// shared with the creation value chart's dot floor (ADR-0031 amendment):
+// below it a context draws only its league dot. Retuning this bar moves
+// both surfaces — "enough attempts to state" means one thing product-wide.
 export const ZONE_INCLUSION_MIN_ATTEMPTS = 15
 
 // TUNABLE. Below this many attempts the making delta carries a small-sample

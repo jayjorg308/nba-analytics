@@ -1274,10 +1274,10 @@
 
 .creation-chart svg {
     width: 100%;
-    /* Cap the render near 1:1 (viewBox 520): in the stacked single-column
-     layout an uncapped SVG balloons to page width and the chart's type
-     dwarfs the table's. */
-    max-width: 560px;
+    /* No width cap: the component's viewBox tracks the rendered width
+     (never below the 520 design width), so a wider column extends the PPS
+     axis at 1:1 type — growth never balloons the chart's type past the
+     table's. */
     height: auto;
     display: block;
 }
@@ -1316,15 +1316,17 @@
     fill: var(--text);
 }
 
-/* Font sizes are SVG user units (viewBox 520): ~1:1 in the desktop column;
-   small phones scale the box down to ~0.66, so ≤640px bumps the units the
-   same way the court's zone labels do. */
+/* Font sizes are SVG user units: 1:1 wherever the container clears the 520
+   design width (the responsive viewBox holds that scale). Below it the box
+   scales down — small phones reach ~0.66 — so ≤480px (the viewport where
+   the single-column box first drops meaningfully under 520) bumps the units
+   the same way the court's zone labels do. */
 .creation-chart-group {
     font: 400 12px var(--sans);
     letter-spacing: 0.05em;
     fill: var(--text);
 
-    @media (max-width: 640px) {
+    @media (max-width: 480px) {
         font-size: 15px;
     }
 }
@@ -1333,18 +1335,18 @@
     font: 500 13px var(--sans);
     fill: var(--text-h);
 
-    @media (max-width: 640px) {
+    @media (max-width: 480px) {
         font-size: 17px;
     }
 }
 
-/* Long-label swap: the bumped ≤640px font clips 'Jumpers (10 ft and out)'
+/* Long-label swap: the bumped ≤480px font clips 'Jumpers (10 ft and out)'
    off the viewBox's left edge, so phones get the short form instead. */
 .creation-label-short {
     display: none;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
     .creation-label-full {
         display: none;
     }
@@ -1358,7 +1360,7 @@
     font: 400 11px var(--mono);
     fill: var(--text-h);
 
-    @media (max-width: 640px) {
+    @media (max-width: 480px) {
         font-size: 14px;
     }
 }
@@ -1367,7 +1369,7 @@
     font: 400 11px var(--mono);
     fill: var(--text);
 
-    @media (max-width: 640px) {
+    @media (max-width: 480px) {
         font-size: 14px;
     }
 }
@@ -1400,6 +1402,15 @@
     display: grid;
     grid-template-columns: minmax(120px, 0.72fr) minmax(140px, 1fr);
     gap: 14px;
+
+    /* Stacked single-column layout: a proportional label column would eat
+     0.72fr of the whole page for right-aligned short labels — clamp it so
+     the 0–100% track takes the width instead. The clamp is a fixed range
+     (not max-content) because every row is its own grid: content-sized
+     columns would resolve per row and break the shared axis alignment. */
+    @media (max-width: 1024px) {
+        grid-template-columns: minmax(120px, 160px) minmax(140px, 1fr);
+    }
 }
 
 .assist-axis {
