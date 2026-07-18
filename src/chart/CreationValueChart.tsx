@@ -11,10 +11,18 @@
 // aggregateCreationMetrics untouched; the only quantities computed here are
 // pixel positions. The creation table is the accessible data twin (ADR-0027
 // stance) — this SVG keeps image semantics, no tooltips, nothing hover-only.
-// A zero-attempt context draws only the league dot: no data is not a value
-// claim (ADR-0013 ported).
+// Two exclusions, both ADR-0031 amendment, both table-covered: the 'Other'
+// residual draws no chart row at all — the classifier's gap is a coverage
+// fact, not a creation category worth a dumbbell (its attempts stay inside
+// the jumper parent; the table keeps its full row) — and a charted context
+// under the shared zone-inclusion bar draws only the league dot, like a
+// zero-attempt one (no data is not a value claim, ADR-0013 ported): a
+// shared positional axis has no open-ended outer bin to absorb a 1-attempt
+// 2.00-PPS outlier, so one unplaceable dot would cost every real dumbbell
+// its resolution. The section notes state both plainly.
 
-import type { CreationMetrics } from '../domain/aggregateCreation'
+import type { CreationMetrics, CreationRollupRow } from '../domain/aggregateCreation'
+import { ZONE_INCLUSION_MIN_ATTEMPTS } from '../domain/constants'
 import {
   formatClockBand,
   formatCreationContext,
@@ -55,9 +63,14 @@ interface Group {
 
 function groups(metrics: CreationMetrics): Group[] {
   const { inside, jumpers, jumperContexts } = metrics.general
-  const row = (label: string, r: Pick<ValueRow, 'pps' | 'leaguePps' | 'smallSamplePps'>) => ({
+  const row = (
+    label: string,
+    r: Pick<CreationRollupRow, 'attempts' | 'pps' | 'leaguePps' | 'smallSamplePps'>,
+  ): ValueRow => ({
     label,
-    pps: r.pps,
+    // The dot floor: below the inclusion bar the row renders like a
+    // zero-attempt one — league dot only, numbers in the table.
+    pps: r.attempts >= ZONE_INCLUSION_MIN_ATTEMPTS ? r.pps : null,
     leaguePps: r.leaguePps,
     smallSamplePps: r.smallSamplePps,
   })
@@ -73,7 +86,12 @@ function groups(metrics: CreationMetrics): Group[] {
     },
     {
       title: 'JUMPERS, BY CREATION',
-      rows: jumperContexts.map((r) => row(formatCreationContext(r.context), r)),
+      // The Other residual is table-only (ADR-0031 amendment): the
+      // classifier's gap gets no dumbbell, and the jumper parent above
+      // already carries its attempts.
+      rows: jumperContexts
+        .filter((r) => r.context !== 'Other')
+        .map((r) => row(formatCreationContext(r.context), r)),
     },
     {
       title: 'SHOT CLOCK',

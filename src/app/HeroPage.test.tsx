@@ -158,11 +158,15 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByRole('heading', { name: 'SHOT CREATION' })
     screen.getByText(/points per shot by creation context, vs\s+league average/)
 
-    // the value chart: a dumbbell per row (rim + jumper parent, 3 jumper
-    // children, 3 clock bands, 3 defender bands); the golden's zero-attempt
-    // 'Other' makes no PPS claim, so it draws a league dot but no player dot
-    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(11)
-    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(10)
+    // the value chart: a row per charted context (rim + jumper parent, the
+    // 2 real jumper children, 3 clock bands, 3 defender bands — the Other
+    // residual is table-only, ADR-0031 amendment); every golden context sits
+    // under the dot floor, so each row draws its league dot and no player
+    // dot — the table carries the numbers, and the notes disclose both
+    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(10)
+    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(0)
+    screen.getByText(/draw no PPS dot in the chart/)
+    screen.getByText(/the jumper parent includes its attempts/)
 
     // the defender family (v2.1): third group in chart and table
     expect(screen.getAllByText('Wide open (6+ ft)')).toHaveLength(2)
@@ -196,11 +200,11 @@ describe('HeroPage over the golden fixture', () => {
 
     // the golden's coverage story: 1 unattributed shot-clock attempt and 2
     // unattributed defender attempts are reported (never guessed into a
-    // band), and the zero-attempt 'Other' context still renders — a
-    // partition is never punctured
+    // band), and the 'Other' context still renders in the TABLE — the
+    // partition display is never punctured; only the chart declines its row
     screen.getByText(/1 attempt without shot-clock tracking/)
     screen.getByText(/2 attempts without defender tracking/)
-    expect(screen.getAllByText('Other')).toHaveLength(2)
+    expect(screen.getAllByText('Other')).toHaveLength(1)
 
     // Case 3 follows the creation evidence: bounded assist shares plus the
     // existing zone hierarchy, with unknown makes explicit.

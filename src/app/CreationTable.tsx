@@ -1,5 +1,5 @@
 import type { CreationMetrics } from '../domain/aggregateCreation'
-import { SMALL_SAMPLE_MAKING_ATTEMPTS } from '../domain/constants'
+import { SMALL_SAMPLE_MAKING_ATTEMPTS, ZONE_INCLUSION_MIN_ATTEMPTS } from '../domain/constants'
 import {
   formatClockBand,
   formatCreationContext,
@@ -69,13 +69,24 @@ function CreationRow({
  */
 export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
   const { inside, jumpers, jumperContexts, catchAndShootThrees } = metrics.general
-  const anyFlagged = [
+  const allRows = [
     inside,
     jumpers,
     ...jumperContexts,
     ...metrics.shotClock,
     ...metrics.closestDefender,
-  ].some(ppsMarked)
+  ]
+  const anyFlagged = allRows.some(ppsMarked)
+  // The chart's dot floor (ADR-0031 amendment): a nonzero CHARTED context
+  // under the inclusion bar has a figure here that the chart declines to
+  // place — that omission is disclosed, never silent. The Other residual is
+  // outside the scan: it has no chart row at all (its own standing note).
+  const anyUnplaced = allRows.some(
+    (row) =>
+      !('context' in row && row.context === 'Other') &&
+      row.attempts > 0 &&
+      row.attempts < ZONE_INCLUSION_MIN_ATTEMPTS,
+  )
 
   return (
     <div className="creation-table-body">
@@ -157,6 +168,10 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
           catch-vs-dribble split covers jumpers from 10 ft and out.
         </p>
         <p>
+          The tiny Other residual — jumpers fitting neither catch-and-shoot nor
+          pull-up — appears only here; the jumper parent includes its attempts.
+        </p>
+        <p>
           Shot clock and defender rows roll the NBA&apos;s finer ranges up to three bands
           each — makes and attempts summed, never rates averaged.
         </p>
@@ -172,6 +187,12 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
             {metrics.defenderUnattributed} attempt
             {metrics.defenderUnattributed === 1 ? '' : 's'} without defender tracking —
             counted here, never guessed into a band.
+          </p>
+        )}
+        {anyUnplaced && (
+          <p>
+            Contexts under {ZONE_INCLUSION_MIN_ATTEMPTS} attempts draw no PPS dot in the
+            chart — too thin to place a value on; their numbers stay here.
           </p>
         )}
         {anyFlagged && (
