@@ -21,6 +21,7 @@
 // 2.00-PPS outlier, so one unplaceable dot would cost every real dumbbell
 // its resolution. The section notes state both plainly.
 
+import { useEffect, useRef, useState } from 'react'
 import type { CreationMetrics, CreationRollupRow } from '../domain/aggregateCreation'
 import { ZONE_INCLUSION_MIN_ATTEMPTS } from '../domain/constants'
 import {
@@ -32,14 +33,18 @@ import {
   withSmallSampleMark,
 } from '../format'
 
-// viewBox geometry (SVG user units), calibrated like the court's: the
-// 520-unit width renders ~1:1 in the desktop column (the court is 540);
-// ≤640px viewports get the same font-size bump the court labels get
-// (App.css).
+// viewBox geometry (SVG user units), calibrated like the court's: WIDTH is
+// the DESIGN width — ~1:1 in the desktop column (the court is 540) and the
+// floor the viewBox never shrinks below. Wider containers (the stacked
+// single-column layout) extend the viewBox to the rendered width, so the
+// extra room lengthens the PPS axis at 1:1 type instead of scaling the
+// whole image up. Below WIDTH the box scales down as before, and ≤480px
+// viewports get the same font-size bump the court labels get (App.css).
 const WIDTH = 520
 const LABEL_X = 170 // row labels right-align just before the plot
-const PLOT_X0 = 186 // the PPS axis spans this range
+const PLOT_X0 = 186 // the PPS axis spans from here to the right padding
 const PLOT_X1 = 490
+const PLOT_RIGHT_PAD = WIDTH - PLOT_X1
 const DOT_R = 4.5
 const ROW_H = 44
 const GROUP_HEADER_H = 34
@@ -48,7 +53,7 @@ const TOP_PAD = 22 // room for the axis tick labels above the first group
 
 interface ValueRow {
   label: string
-  /** ≤640px swap (CSS-driven): the bumped mobile font clips labels longer
+  /** ≤480px swap (CSS-driven): the bumped mobile font clips labels longer
    * than the label column — the short form must carry the same meaning. */
   shortLabel?: string
   pps: number | null
@@ -129,6 +134,22 @@ function layout(gs: Group[]): { positioned: PositionedGroup[]; height: number } 
 }
 
 export function CreationValueChart({ metrics }: { metrics: CreationMetrics }) {
+  // Responsive width: track the container and never shrink the viewBox
+  // below the design width. jsdom has no ResizeObserver, so tests (and any
+  // environment without it) render at the design geometry.
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState(WIDTH)
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(([entry]) => {
+      setWidth(Math.max(WIDTH, Math.round(entry.contentRect.width)))
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  const plotX1 = width - PLOT_RIGHT_PAD
+
   const gs = groups(metrics)
   const values = gs
     .flatMap((g) => g.rows)
@@ -140,7 +161,7 @@ export function CreationValueChart({ metrics }: { metrics: CreationMetrics }) {
   // keep it honest.
   const lo = Math.floor((Math.min(...values) - 0.05) * 10) / 10
   const hi = Math.ceil((Math.max(...values) + 0.05) * 10) / 10
-  const x = (v: number) => PLOT_X0 + ((v - lo) / (hi - lo)) * (PLOT_X1 - PLOT_X0)
+  const x = (v: number) => PLOT_X0 + ((v - lo) / (hi - lo)) * (plotX1 - PLOT_X0)
   const ticks: number[] = []
   for (let t = Math.ceil(lo / 0.2) * 0.2; t <= hi + 1e-9; t += 0.2) {
     ticks.push(Math.round(t * 10) / 10)
@@ -149,13 +170,13 @@ export function CreationValueChart({ metrics }: { metrics: CreationMetrics }) {
   const { positioned, height } = layout(gs)
 
   return (
-    <div className="creation-chart">
+    <div className="creation-chart" ref={containerRef}>
       <div className="creation-legend" aria-hidden="true">
         <span className="creation-swatch creation-swatch-player" /> his PPS
         <span className="creation-swatch creation-swatch-league" /> lg PPS
       </div>
       <svg
-        viewBox={`0 0 ${WIDTH} ${height}`}
+        viewBox={`0 0 ${width} ${height}`}
         role="img"
         aria-label={`Creation value: points per shot by creation context over ${metrics.seasonFga} attempts, his conversion vs league average — full numbers in the shot creation table`}
       >

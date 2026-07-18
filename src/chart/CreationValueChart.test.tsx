@@ -8,8 +8,8 @@
 
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { cleanup, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { act, cleanup, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import { parseCreationPayload } from '../domain/creationPayload'
 import { CreationValueChart } from './CreationValueChart'
@@ -141,5 +141,54 @@ describe('CreationValueChart', () => {
     render(<CreationValueChart metrics={metrics} />)
     expect(screen.getByText(/his PPS/)).toBeTruthy()
     expect(screen.getByText(/lg PPS/)).toBeTruthy()
+  })
+
+  it('extends the PPS axis to a wider container, never shrinking below design width', () => {
+    // jsdom has no ResizeObserver (the other tests render at the 520 design
+    // geometry); stub one to drive the responsive viewBox directly.
+    const callbacks: ResizeObserverCallback[] = []
+    class StubResizeObserver {
+      constructor(cb: ResizeObserverCallback) {
+        callbacks.push(cb)
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', StubResizeObserver)
+    try {
+      render(<CreationValueChart metrics={metrics} />)
+      const svg = document.querySelector('svg')!
+      const fire = (width: number) =>
+        act(() => {
+          callbacks[0]!(
+            [{ contentRect: { width } }] as unknown as ResizeObserverEntry[],
+            {} as ResizeObserver,
+          )
+        })
+      const maxTickX = () =>
+        Math.max(
+          ...[...document.querySelectorAll('.creation-grid-label')].map((el) =>
+            parseFloat(el.getAttribute('x')!),
+          ),
+        )
+
+      expect(svg.getAttribute('viewBox')).toMatch(/^0 0 520 /)
+
+      // a wider stacked column: the viewBox tracks it 1:1 and the top tick
+      // (the axis end) moves out to the new right padding — the extra width
+      // becomes axis, not scaled-up type
+      fire(900)
+      expect(svg.getAttribute('viewBox')).toMatch(/^0 0 900 /)
+      expect(maxTickX()).toBeCloseTo(870, 3)
+
+      // a phone-width container: the viewBox floors at the design width and
+      // the box scales down instead (the ≤480px font bump's regime)
+      fire(320)
+      expect(svg.getAttribute('viewBox')).toMatch(/^0 0 520 /)
+      expect(maxTickX()).toBeCloseTo(490, 3)
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })
