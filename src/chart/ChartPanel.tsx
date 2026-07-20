@@ -219,10 +219,10 @@ export function ChartPanel({
           ))}
         </fieldset>
         {/* BOTH legends stay mounted, stacked in one cell: the zones legend
-            is the tallest thing in the controls row, and the row's height is
-            a shared subgrid track — if the inactive legend unmounted, the
-            court AND the table would jump ~20px on every toggle. The
-            inactive layer is visibility-hidden, never removed. */}
+            is the tallest thing in the controls row — if the inactive legend
+            unmounted, the row would shrink and the court below it would jump
+            ~20px on every toggle. The inactive layer is visibility-hidden,
+            never removed. */}
         <div className="chart-legend-slot">
           <div className={`chart-legend-layer${view === 'zones' ? '' : ' legend-inactive'}`}>
             <ZonesLegend />

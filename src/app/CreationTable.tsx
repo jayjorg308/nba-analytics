@@ -89,7 +89,7 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
   )
 
   return (
-    <div className="creation-table-body">
+    <div className="table-panel">
       <div className="zone-scroll">
         <table className="zone-table" aria-label="Shot creation by context, vs league average">
           <thead>

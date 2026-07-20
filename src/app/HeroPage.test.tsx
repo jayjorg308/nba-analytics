@@ -114,23 +114,26 @@ describe('HeroPage over the golden fixture', () => {
     // small-sample daggers on making deltas + the footnote
     expect(screen.getAllByText(/†/).length).toBeGreaterThan(1)
 
+    // the first act opens in the shared section recipe (ADR-0051) and the
+    // table names itself — the h2 stopped being the table's caption
+    screen.getByRole('heading', { name: 'ZONE BY ZONE' })
+    const zoneTable = screen.getByRole('table', {
+      name: /Zone by zone shot diet and shot making/,
+    })
+
     // payoff columns lead, reference trails; FGA stays visible (the honesty
     // anchor for †) and there is deliberately no FG% column (ADR-0001: PPS
     // is the unit; Making Δ already encodes FG%-vs-league)
-    const headers = [...document.querySelectorAll('.zone-panel .zone-table thead th')].map(
-      (th) => th.textContent,
-    )
+    const headers = [...zoneTable.querySelectorAll('thead th')].map((th) => th.textContent)
     expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
 
     // the verdict-grain parent row (ADR-0016): '3 Pointers' sits between the
     // two-point rows and its three child zone rows
-    const rowHeads = [...document.querySelectorAll('.zone-table tbody th')].map(
-      (th) => th.textContent,
-    )
+    const rowHeads = [...zoneTable.querySelectorAll('tbody th')].map((th) => th.textContent)
     expect(rowHeads.indexOf('3 Pointers')).toBeGreaterThan(rowHeads.indexOf('Mid-Range'))
     // child rows drop the "3" — the 3 Pointers parent already carries it
     expect(rowHeads.indexOf('3 Pointers')).toBeLessThan(rowHeads.indexOf('Left Corner'))
-    expect(document.querySelectorAll('.zone-panel .zone-row-child')).toHaveLength(3)
+    expect(zoneTable.querySelectorAll('.zone-row-child')).toHaveLength(3)
 
     // backcourt reported, never hidden (1 synthetic attempt in the golden)
     screen.getByText(/Backcourt heaves: 1 attempt \(0 made\)/)
