@@ -156,10 +156,13 @@ function HeroReady({
           both columns, so the zone table names itself via aria-label. */}
       <section className="zone-section" aria-labelledby="zone-caption">
         <header className="section-caption">
-          {/* Act kickers name each act's beat in the argument (ADR-0051
-              amendment): structural, direction-free copy — never a per-hero
-              claim, so no verdict-guard obligations and no change on a hero
-              swap. THE WHY is ADR-0031's own word for the creation act. */}
+          {/* Act kickers name each act's CUT of the same reconciled shots —
+              place, manner, credit (ADR-0051 amendment). Dimension words
+              only, never rhetoric: the argumentative payoff lives in each
+              description (the creation act's "why his conversion lands
+              where it does", ADR-0031). Structural, direction-free copy —
+              never a per-hero claim, so no verdict-guard obligations and
+              no change on a hero swap. */}
           <p className="section-kicker">01 · THE WHERE</p>
           <h2 id="zone-caption">ZONE BY ZONE</h2>
           <p className="section-caption-desc">
@@ -186,7 +189,7 @@ function HeroReady({
           stays table-only). */}
       <section className="creation-section" aria-labelledby="creation-caption">
         <header className="section-caption">
-          <p className="section-kicker">02 · THE WHY</p>
+          <p className="section-kicker">02 · THE HOW</p>
           <h2 id="creation-caption">SHOT CREATION</h2>
           <p className="section-caption-desc">
             why his conversion lands where it does — points per shot by creation context, vs
