@@ -430,12 +430,10 @@
     row-gap: 0; /* card-internal spacing comes from item margins, not the pair's gap */
 }
 
-/* One title recipe for the cards AND the zone table's section header —
-   the third instance of the pattern, not a new one. (Fourth: the creation
-   section's header, ADR-0031.) */
+/* One title recipe for the headline cards AND every act's section header
+   (ADR-0051) — instances of one pattern, never new ones. */
 .headline-banner h2,
-.zone-caption h2,
-.creation-caption h2 {
+.section-caption h2 {
     font-size: 20px;
     /* Kicker-wide tracking on the titles (the caps are typeset in the
      content, not text-transform). Overrides the h2 base -0.24px; any
@@ -445,6 +443,35 @@
      to subtitle, value to label), 16px separates blocks (subtitle |
      numbers | note). The h2 base 8px bottom margin is retired for it. */
     margin: 0;
+}
+
+/* Every act opens the same way (ADR-0051): a numbered kicker over the caps
+   title over a gray one-line description — the headline cards' recipe at
+   section scale, with the story beat named above it. The kicker and the
+   description stay OUTSIDE the h2 so the heading's accessible name is the
+   title alone — inside it, ZONE BY ZONE's name would contain "shot making"
+   and collide with the SHOT MAKING card in role queries. */
+.section-caption {
+    margin-bottom: 20px;
+}
+
+/* The hero banner kicker's type metrics in the caption's color system; caps
+   are typeset in the content, never text-transform (the title recipe's
+   rule). 4px binds it to the title per the 4/16 scale. */
+.section-kicker {
+    margin: 0 0 4px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: normal;
+    color: var(--text);
+}
+
+.section-caption-desc {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
 }
 
 .comparison-class {
@@ -518,23 +545,30 @@
 
 /* --- Layout ---------------------------------------------------------------- */
 
-.hero-layout {
+/* One split recipe for every act (ADR-0051): the visual left, its data twin
+   right, top-aligned. Per-act column ratios come in via --section-columns
+   (see .assisted-layout) rather than a grid-template-columns override, so
+   the stacked query below always wins at narrow widths. */
+.section-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    /* Two shared rows (panel header / panel content): the chart and zone
-     panels subgrid onto them, so the toggle+legend block and the table
-     caption share one track and the court's top edge pins to the table's —
-     the headline pair's alignment pattern. Row-gap stays 0; each panel's
-     own subgrid row-gap provides its internal header-to-content spacing. */
-    grid-template-rows: auto auto;
-    gap: 0 32px;
+    /* minmax(0, ...): a bare 1fr lets a table's min-content width overflow
+     the page — see .table-panel. */
+    grid-template-columns: var(--section-columns, minmax(0, 1fr) minmax(0, 1fr));
+    gap: 32px;
     align-items: start;
 
     @media (max-width: 1024px) {
-        /* minmax(0, ...) like the wide tracks: a bare 1fr lets the table's
-         min-content width overflow the page on phones. */
         grid-template-columns: minmax(0, 1fr);
     }
+}
+
+/* An act break, not a row gap: each act opens 48px below the block before
+   it — the first act below the headline cards, the later acts below the
+   evidence that precedes them. */
+.zone-section,
+.creation-section,
+.assisted-section {
+    margin-top: 48px;
 }
 
 /* --- Chart ----------------------------------------------------------------- */
@@ -553,16 +587,12 @@
 
 .chart-panel {
     display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
     row-gap: 10px;
 }
 
 /* Toggle + legend share a row above the court: the legend is the key to the
    hero visual and must be read before the fills. Wraps on narrow widths.
-   (Its spacing to the court is the panel's subgrid row-gap, not a margin.)
-   Everything in the shared header track hangs from the track TOP — toggle,
-   legend, and the zone table's section title across the gap. */
+   (Its spacing to the court is the panel's row-gap, not a margin.) */
 .chart-controls {
     display: flex;
     justify-content: space-between;
@@ -1065,32 +1095,18 @@
 
 /* --- Zone table ------------------------------------------------------------ */
 
-.zone-panel {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    row-gap: 10px;
-    /* The panel stopped being the scroll container when it became a
-     subgrid, so it (and .zone-body below) need explicit min-width: 0 —
-     otherwise the table's min-content width props the column open and the
-     PAGE scrolls horizontally instead of .zone-scroll. */
+/* The data-twin column of every act (zone, creation, assisted). min-width: 0
+   keeps the scroll chain honest — without it a table's min-content width
+   props its grid column open and the PAGE scrolls horizontally instead of
+   .zone-scroll. */
+.table-panel {
     min-width: 0;
-
-    /* Stacked: the panels are consecutive rows of one column, and the
-     layout's row-gap is 0 — this margin recreates the inter-panel gap the
-     wide layout gets from its column gap. */
-    @media (max-width: 1024px) {
-        margin-top: 32px;
-    }
-}
-
-.zone-body {
-    min-width: 0; /* see .zone-panel */
 }
 
 /* The nowrap numeric columns overflow narrow viewports — scroll the table
-   inside this wrapper (never the subgridded panel); the page itself must
-   never scroll horizontally. */
+   inside this wrapper (never the panel or the page). Desktop never engages
+   it: in the split layout's tight band the row labels wrap instead (see the
+   tbody th media rule below). */
 .zone-scroll {
     overflow-x: auto;
 }
@@ -1102,17 +1118,6 @@
     /* normal, not the inherited :root 26px: 13-14px cell text in 26px line
      boxes made every row ~42px tall — the loose look. */
     line-height: normal;
-}
-
-/* Outside the <table> in the shared header track — see ZoneTable.tsx. The
-   headline cards' recipe (caps title over a gray description) so the table
-   opens like a section, not bold text above a grid; the title itself is
-   styled by the shared rule beside .headline-banner h2. */
-.zone-caption-desc {
-    margin: 4px 0 0;
-    font-size: 14px;
-    line-height: normal;
-    color: var(--text);
 }
 
 /* Sized to fit the side-by-side column (~514px in the 1126px shell) without
@@ -1149,9 +1154,12 @@
     color: var(--text-h);
     white-space: nowrap;
 
-    /* Narrow screens: let zone names wrap instead of pushing Making Δ into
-     the panel's overflow scroll. */
-    @media (max-width: 1024px) {
+    /* Let row labels wrap instead of engaging .zone-scroll: below ~1140px
+     viewport the split column dips under the zone table's ~503px nowrap
+     min-content (the 6-column act), and a scrollbar on one desktop table
+     read as an inconsistency — desktop tables never scroll. Wrapping only
+     happens under actual width pressure, so tables that fit are unaffected. */
+    @media (max-width: 1140px) {
         white-space: normal;
     }
 }
@@ -1199,44 +1207,8 @@
 
 /* --- Shot creation (the second act — ADR-0031) ------------------------------ */
 
-/* An act break, not a row gap: the creation section opens the verdict's
-   "why" after the two-axis evidence closes. */
-.creation-section {
-    margin-top: 48px;
-    text-align: left;
-}
-
-/* Section header in the shared title recipe (the h2 is styled by the rule
-   beside .headline-banner h2); description outside the h2 so the heading's
-   accessible name stays "SHOT CREATION" (the zone caption's lesson). */
-.creation-caption {
-    margin-bottom: 20px;
-}
-
-.creation-caption-desc {
-    margin: 4px 0 0;
-    font-size: 14px;
-    line-height: normal;
-    color: var(--text);
-}
-
-/* Mirrors .hero-layout: chart left, data twin right. No subgrid needed —
-   the section header spans above both panels, so there are no per-panel
-   header tracks to register. */
-.creation-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 32px;
-    align-items: start;
-
-    @media (max-width: 1024px) {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
-
-.creation-table-body {
-    min-width: 0; /* same overflow chain as .zone-body */
-}
+/* Section header, split layout, and act break all come from the shared act
+   recipe (ADR-0051): .section-caption / .section-layout / .table-panel. */
 
 /* Family-group header rows: quiet dividers, not data rows. */
 .creation-group-row th {
@@ -1376,20 +1348,12 @@
 
 /* --- Assisted makes (Case 3, ADR-0032/0049) ------------------------------- */
 
-.assisted-section {
-    margin-top: 48px;
-    text-align: left;
-}
-
+/* The bounded-share plot reads at less than half width — narrow its track
+   and give the wider assisted table the difference. A custom-property knob,
+   not a grid-template-columns override: .section-layout's stacked query
+   must still win below 1024px. */
 .assisted-layout {
-    display: grid;
-    grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
-    gap: 32px;
-    align-items: start;
-
-    @media (max-width: 1024px) {
-        grid-template-columns: minmax(0, 1fr);
-    }
+    --section-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
 }
 
 .assist-plot {
@@ -1482,6 +1446,8 @@
     transform: translate(-50%, -50%);
 }
 
-.assisted-section .zone-table {
-    font-size: 12px;
-}
+/* No font-size override on the assisted table: one table voice on every act
+   (measured 2026-07: even the 8-column coverage-gaps variant with worst-case
+   digits fits its 1.28fr column at every desktop width — 645px nowrap vs
+   658px available above 1140px, 570px label-wrapped min-content vs 584px at
+   the 1025px worst; phones scroll via .zone-scroll as everywhere). */

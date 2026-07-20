@@ -151,15 +151,36 @@ function HeroReady({
         </p>
       </header>
       <HeadlineBanner selection={metrics.selection} making={metrics.making} />
-      <div className="hero-layout">
-        <ChartPanel
-          shots={payload.shots}
-          zones={metrics.zones}
-          assistStatusByShotKey={contextMetrics.assistStatusByShotKey}
-          ariaLabel={`Half-court shot chart: ${metrics.totalAttempts} shots by ${payload._meta.player}, ${payload._meta.season}`}
-        />
-        <ZoneTable metrics={metrics} zoneConflictsDropped={payload._meta.zoneConflictsDropped} />
-      </div>
+      {/* The first act: the two-axis evidence, opened by the same full-width
+          section header as the acts that follow (ADR-0051). The header spans
+          both columns, so the zone table names itself via aria-label. */}
+      <section className="zone-section" aria-labelledby="zone-caption">
+        <header className="section-caption">
+          {/* Act kickers name each act's CUT of the same reconciled shots —
+              place, manner, credit (ADR-0051 amendment). Dimension words
+              only, never rhetoric: the argumentative payoff lives in each
+              description (the creation act's "why his conversion lands
+              where it does", ADR-0031). Structural, direction-free copy —
+              never a per-hero claim, so no verdict-guard obligations and
+              no change on a hero swap. */}
+          <p className="section-kicker">01 · THE WHERE</p>
+          <h2 id="zone-caption">ZONE BY ZONE</h2>
+          <p className="section-caption-desc">
+            {/* nbsp: the unit phrase wraps as one — never a stranded "points)"
+                as the whole second line */}
+            shot diet and shot making, vs league average (making Δ in FG percentage&nbsp;points)
+          </p>
+        </header>
+        <div className="section-layout">
+          <ChartPanel
+            shots={payload.shots}
+            zones={metrics.zones}
+            assistStatusByShotKey={contextMetrics.assistStatusByShotKey}
+            ariaLabel={`Half-court shot chart: ${metrics.totalAttempts} shots by ${payload._meta.player}, ${payload._meta.season}`}
+          />
+          <ZoneTable metrics={metrics} zoneConflictsDropped={payload._meta.zoneConflictsDropped} />
+        </div>
+      </section>
       {/* The second act (ADR-0031): creation evidence backs the verdict's
           why AFTER the court and table back the two-axis thesis — the
           evidence unfolds in the order the verdict argues (ADR-0018). The
@@ -167,14 +188,15 @@ function HeroReady({
           of shot is worth (the diet cut largely restates the zone story and
           stays table-only). */}
       <section className="creation-section" aria-labelledby="creation-caption">
-        <header className="creation-caption">
+        <header className="section-caption">
+          <p className="section-kicker">02 · THE HOW</p>
           <h2 id="creation-caption">SHOT CREATION</h2>
-          <p className="creation-caption-desc">
+          <p className="section-caption-desc">
             why his conversion lands where it does — points per shot by creation context, vs
             league average
           </p>
         </header>
-        <div className="creation-layout">
+        <div className="section-layout">
           <CreationValueChart metrics={creationMetrics} />
           <CreationTable metrics={creationMetrics} />
         </div>

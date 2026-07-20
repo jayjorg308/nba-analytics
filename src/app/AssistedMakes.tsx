@@ -127,17 +127,23 @@ export function AssistedMakes({
   const hasCoverageGaps = rows.some(({ row }) => row.unknownMakes > 0)
   return (
     <section className="assisted-section" aria-labelledby="assisted-caption">
-      <header className="creation-caption">
+      <header className="section-caption">
+        {/* The full third beat (ADR-0042 amendment): the visual rank
+            graduated with the shared act opener; the argument rank — no
+            third headline axis, no verdict citation — is unchanged. THE
+            CREDIT is ADR-0049's own vocabulary: the scorer's ledger,
+            never authorship (THE WHO would promise what credit can't). */}
+        <p className="section-kicker">03 · THE CREDIT</p>
         <h2 id="assisted-caption">ASSISTED MAKES</h2>
-        <p className="creation-caption-desc">
+        <p className="section-caption-desc">
           {hasCoverageGaps
             ? 'scorer-credit assist share, with unknown makes kept visible as a bounded range'
             : 'scorer-credit assist share by shooting area'}
         </p>
       </header>
-      <div className="assisted-layout">
+      <div className="section-layout assisted-layout">
         <AssistedSharePlot rows={rows} showBounds={hasCoverageGaps} />
-        <div className="creation-table-body">
+        <div className="table-panel">
           <div className="zone-scroll">
             <table className="zone-table" aria-label="Assisted makes by shooting area">
               <thead>
