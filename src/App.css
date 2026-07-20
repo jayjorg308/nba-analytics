@@ -1433,6 +1433,8 @@
     transform: translate(-50%, -50%);
 }
 
-.assisted-section .zone-table {
-    font-size: 12px;
-}
+/* No font-size override on the assisted table: one table voice on every act
+   (measured 2026-07: even the 8-column coverage-gaps variant with worst-case
+   digits fits its 1.28fr column at every desktop width — 645px nowrap vs
+   658px available above 1140px, 570px label-wrapped min-content vs 584px at
+   the 1025px worst; phones scroll via .zone-scroll as everywhere). */
