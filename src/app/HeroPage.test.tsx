@@ -117,6 +117,14 @@ describe('HeroPage over the golden fixture', () => {
     // the first act opens in the shared section recipe (ADR-0051) and the
     // table names itself — the h2 stopped being the table's caption
     screen.getByRole('heading', { name: 'ZONE BY ZONE' })
+
+    // the act kickers name the argument's beats in reading order (ADR-0051
+    // amendment; 03 is the full third beat per the ADR-0042 amendment) —
+    // structural copy, identical for every hero
+    const kickers = [...document.querySelectorAll('.section-kicker')].map(
+      (el) => el.textContent,
+    )
+    expect(kickers).toEqual(['01 · THE WHERE', '02 · THE WHY', '03 · THE WHO'])
     const zoneTable = screen.getByRole('table', {
       name: /Zone by zone shot diet and shot making/,
     })

@@ -445,13 +445,26 @@
     margin: 0;
 }
 
-/* Every act opens the same way (ADR-0051): the caps title over a gray
-   one-line description — the headline cards' recipe at section scale. The
-   description stays OUTSIDE the h2 so the heading's accessible name is the
+/* Every act opens the same way (ADR-0051): a numbered kicker over the caps
+   title over a gray one-line description — the headline cards' recipe at
+   section scale, with the story beat named above it. The kicker and the
+   description stay OUTSIDE the h2 so the heading's accessible name is the
    title alone — inside it, ZONE BY ZONE's name would contain "shot making"
    and collide with the SHOT MAKING card in role queries. */
 .section-caption {
     margin-bottom: 20px;
+}
+
+/* The hero banner kicker's type metrics in the caption's color system; caps
+   are typeset in the content, never text-transform (the title recipe's
+   rule). 4px binds it to the title per the 4/16 scale. */
+.section-kicker {
+    margin: 0 0 4px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: normal;
+    color: var(--text);
 }
 
 .section-caption-desc {
