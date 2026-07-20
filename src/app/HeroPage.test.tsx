@@ -124,7 +124,7 @@ describe('HeroPage over the golden fixture', () => {
     const kickers = [...document.querySelectorAll('.section-kicker')].map(
       (el) => el.textContent,
     )
-    expect(kickers).toEqual(['01 · THE WHERE', '02 · THE HOW', '03 · THE WHO'])
+    expect(kickers).toEqual(['01 · THE WHERE', '02 · THE HOW', '03 · THE CREDIT'])
     const zoneTable = screen.getByRole('table', {
       name: /Zone by zone shot diet and shot making/,
     })

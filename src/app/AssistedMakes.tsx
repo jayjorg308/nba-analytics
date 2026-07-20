@@ -130,8 +130,10 @@ export function AssistedMakes({
       <header className="section-caption">
         {/* The full third beat (ADR-0042 amendment): the visual rank
             graduated with the shared act opener; the argument rank — no
-            third headline axis, no verdict citation — is unchanged. */}
-        <p className="section-kicker">03 · THE WHO</p>
+            third headline axis, no verdict citation — is unchanged. THE
+            CREDIT is ADR-0049's own vocabulary: the scorer's ledger,
+            never authorship (THE WHO would promise what credit can't). */}
+        <p className="section-kicker">03 · THE CREDIT</p>
         <h2 id="assisted-caption">ASSISTED MAKES</h2>
         <p className="section-caption-desc">
           {hasCoverageGaps
