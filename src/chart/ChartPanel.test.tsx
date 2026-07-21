@@ -140,6 +140,41 @@ describe('ChartPanel view toggle', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
+  it('dismisses on an outside press WITHOUT stealing focus back (the Term contract)', () => {
+    const { container } = renderPanel()
+    const raFill = [...container.querySelectorAll('.zone-fill')].at(-1)!
+    fireEvent.click(raFill)
+    const dialog = screen.getByRole('dialog', { name: 'Restricted Area details' })
+    // a press inside the card is not outside
+    fireEvent.pointerDown(dialog)
+    expect(screen.queryByRole('dialog')).not.toBeNull()
+    fireEvent.pointerDown(document.body)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    // the reader pressed elsewhere on purpose — focus stays where they put it
+    expect(document.activeElement).not.toBe(raFill)
+  })
+
+  it('pressing the open zone keeps its card; pressing another zone switches cards', () => {
+    const { container } = renderPanel()
+    const fills = [...container.querySelectorAll('.zone-fill')]
+    const raFill = fills.at(-1)! // RA topmost
+    fireEvent.click(raFill)
+    screen.getByRole('dialog', { name: 'Restricted Area details' })
+    // the open zone is excluded from the outside-press close, so a real tap
+    // on it (pointerdown, then click) re-selects instead of blinking the card
+    fireEvent.pointerDown(raFill)
+    fireEvent.click(raFill)
+    screen.getByRole('dialog', { name: 'Restricted Area details' })
+    // a tap on a different zone: its pointerdown is an outside press (card
+    // dismissed), then its click opens that zone's own card
+    const otherFill = fills[0]!
+    const otherZone = otherFill.getAttribute('aria-label')!
+    fireEvent.pointerDown(otherFill)
+    fireEvent.click(otherFill)
+    expect(screen.queryByRole('dialog', { name: 'Restricted Area details' })).toBeNull()
+    screen.getByRole('dialog', { name: `${otherZone} details` })
+  })
+
   it('switching views dismisses the zone card and clears shot hover', () => {
     const { container } = renderPanel()
     const layers = () => [...container.querySelectorAll('.chart-legend-layer')]
