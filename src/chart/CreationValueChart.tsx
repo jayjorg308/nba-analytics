@@ -156,15 +156,21 @@ export function CreationValueChart({ metrics }: { metrics: CreationMetrics }) {
     .flatMap((r) => [r.pps, r.leaguePps])
     .filter((v): v is number => v !== null)
 
-  // One shared PPS axis, padded and rounded to tenths. A dumbbell encodes
-  // positions, not lengths, so the axis needn't start at zero — the ticks
-  // keep it honest.
-  const lo = Math.floor((Math.min(...values) - 0.05) * 10) / 10
-  const hi = Math.ceil((Math.max(...values) + 0.05) * 10) / 10
+  // One shared PPS axis, padded and rounded outward to the TICK step — not
+  // to tenths, so the axis always ends on a labeled gridline and a wide
+  // stacked container never shows an unclaimed band past the last tick. A
+  // dumbbell encodes positions, not lengths, so the axis needn't start at
+  // zero — the ticks keep it honest. Integer step counts sidestep float
+  // drift in both the bounds and the tick walk.
+  const TICK = 0.2
+  const loSteps = Math.floor((Math.min(...values) - 0.05) / TICK + 1e-9)
+  const hiSteps = Math.ceil((Math.max(...values) + 0.05) / TICK - 1e-9)
+  const lo = loSteps * TICK
+  const hi = hiSteps * TICK
   const x = (v: number) => PLOT_X0 + ((v - lo) / (hi - lo)) * (plotX1 - PLOT_X0)
   const ticks: number[] = []
-  for (let t = Math.ceil(lo / 0.2) * 0.2; t <= hi + 1e-9; t += 0.2) {
-    ticks.push(Math.round(t * 10) / 10)
+  for (let s = loSteps; s <= hiSteps; s++) {
+    ticks.push(Math.round(s * TICK * 10) / 10)
   }
 
   const { positioned, height } = layout(gs)

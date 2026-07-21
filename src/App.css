@@ -50,24 +50,32 @@
 
     @media (max-width: 1024px) {
         margin: 0 -20px 22px;
-        aspect-ratio: 3 / 4;
     }
 
     /* Portrait handhelds: the poster is the landing screen — it owns exactly
      the first viewport and the argument starts one scroll below. svh (the
      smallest viewport) means the banner fits even with the browser's URL
-     bar showing on load; landscape keeps the 3/4 poster, where a
-     full-height crop would leave no room for the title. */
+     bar showing on load. */
     @media (max-width: 1024px) and (orientation: portrait) {
         aspect-ratio: auto;
         height: 100svh;
+    }
+
+    /* Landscape handhelds keep the WIDE layout (right photo panel, solid
+     title column) — the 3/4 poster here meant 1.75 viewports of pure photo
+     on an iPad-landscape and 2.8 on a phone before any title. The svh cap
+     covers short landscape phones, where even the wide aspect outruns the
+     viewport; object-fit absorbs the crop. */
+    @media (max-width: 1024px) and (orientation: landscape) {
+        max-height: 100svh;
     }
 }
 
 /* Wide layout: the photo is a right-anchored panel (72% width) so its crop
    can sit lower and show more of the player; its left edge fades into the
-   banner ground, giving the title a solid column. Narrow layout reverts to
-   the full-bleed cover the mobile crop was designed around. */
+   banner ground, giving the title a solid column. The portrait poster
+   reverts to the full-bleed cover the mobile crop was designed around;
+   landscape handhelds stay on the wide layout with the banner above. */
 .hero-banner-photo {
     position: absolute;
     inset: 0 0 0 auto;
@@ -82,7 +90,7 @@
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 32%);
     mask-image: linear-gradient(90deg, transparent 0, #000 32%);
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1024px) and (orientation: portrait) {
         inset: 0;
         width: 100%;
         object-position: var(--hero-pos);
@@ -105,14 +113,15 @@
     opacity: 0.16;
     pointer-events: none;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1024px) and (orientation: portrait) {
         display: none;
     }
 }
 
-/* Wide: text block centered in the solid left column; a mild left scrim
-   keeps the title legible where its long line reaches into the fade zone.
-   Narrow: bottom-anchored poster text over the photo, as before. The cue is
+/* Wide (and landscape handhelds): text block centered in the solid left
+   column; a mild left scrim keeps the title legible where its long line
+   reaches into the fade zone.
+   Portrait poster: bottom-anchored text over the photo, as before. The cue is
    the overlay's last flex child, after the flexed text block, so it pins to
    the banner's bottom edge in both layouts. */
 .hero-banner-overlay {
@@ -135,7 +144,7 @@
         rgba(0, 0, 0, 0) 62%
     );
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1024px) and (orientation: portrait) {
         padding: 24px 20px 22px;
         /* The bottom grade is a true title zone (poster practice): near-black
        under the type so white ink never meets a white jersey, whatever the
@@ -167,7 +176,7 @@
     align-items: flex-start;
     justify-content: center;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1024px) and (orientation: portrait) {
         justify-content: flex-end;
     }
 }
@@ -588,6 +597,15 @@
 .chart-panel {
     display: grid;
     row-gap: 10px;
+
+    /* Stacked layouts hand the panel the full page width — at tablet that
+       was a 711px-wide, ~670px-tall court filling a viewport before the
+       table appeared (and the zone card inherited the same canvas). Cap the
+       whole panel, not just the SVG, so the controls row, court, and hint
+       keep sharing one right edge; phones under ~600px are unaffected. */
+    @media (max-width: 1024px) {
+        max-width: 600px;
+    }
 }
 
 /* Toggle + legend share a row above the court: the legend is the key to the
@@ -821,14 +839,21 @@
 
 .zone-detail {
     position: absolute;
-    inset: 0;
+    /* Top-anchored over the court, sized by its CONTENT, never the court:
+       inset: 0 stretched the card to the whole wrapper, and the stacked
+       layouts' tall courts left a huge dead band under ~240px of facts
+       (tablet worst case: a 711×672 card, two-thirds empty). Width still
+       spans the wrapper; still out of flow, so opening/closing never moves
+       the page (the ADR-0026 companion invariant). */
+    inset: 0 0 auto 0;
+    max-height: 100%; /* short landscape phones: content scrolls, card doesn't grow */
     z-index: 20;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: var(--shadow);
     padding: 20px 24px;
-    overflow-y: auto; /* short landscape phones: content scrolls, card doesn't grow */
+    overflow-y: auto;
     font-size: 15px;
     line-height: normal; /* dense UI text opts out of the 18px/145% root rhythm */
     animation: zone-detail-in 200ms ease; /* duration/easing precedent: .hero-tile img */
@@ -1150,6 +1175,30 @@
    tbody th media rule below). */
 .zone-scroll {
     overflow-x: auto;
+    /* Scroll cue: columns used to clip mid-digit at a phone's right edge
+       with nothing signaling more table. A soft haze marks a clipped edge;
+       the bg-colored covers scroll WITH the content (attachment: local) and
+       slide over the haze at rest — so a table that fits shows nothing, and
+       a fully-scrolled edge goes quiet. Pure CSS, no measurement. Layers
+       paint UNDER the cells' text and borders. */
+    background:
+        linear-gradient(90deg, var(--bg) 40%, transparent) left center /
+            48px 100% no-repeat,
+        linear-gradient(270deg, var(--bg) 40%, transparent) right center /
+            48px 100% no-repeat,
+        radial-gradient(
+                farthest-side at 0 50%,
+                rgba(243, 244, 246, 0.14),
+                transparent
+            )
+            left center / 14px 100% no-repeat,
+        radial-gradient(
+                farthest-side at 100% 50%,
+                rgba(243, 244, 246, 0.14),
+                transparent
+            )
+            right center / 14px 100% no-repeat;
+    background-attachment: local, local, scroll, scroll;
 }
 
 .zone-table {
@@ -1399,7 +1448,12 @@
 
 .assist-plot {
     min-width: 0;
-    padding-top: 8px;
+    /* 14px right inset: the 0–100% track used to end AT the content edge,
+       so a 100%-share dot (translated -50%) painted past the page margin —
+       the creation chart above reserves axis padding for exactly this, and
+       the two acts' visuals should share a right edge. The axis labels sit
+       in the same grid column, so they shift with the tracks. */
+    padding: 8px 14px 0 0;
 }
 
 .assist-axis,
@@ -1485,6 +1539,49 @@
     border-radius: 50%;
     background: var(--text-h);
     transform: translate(-50%, -50%);
+}
+
+/* Phones: the side-by-side row gave its fixed label column ~46% of a 390px
+   viewport and squeezed the whole 0–100% axis into ~170px against the right
+   edge. Stack instead — label above its own full-width track — so the axis
+   takes the width and the shared alignment holds by construction. The label
+   goes left-aligned inline with its FGM denominator; child rows keep their
+   hierarchy as a left indent instead of a right one. */
+@media (max-width: 640px) {
+    .assist-axis,
+    .assist-plot-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px 0;
+    }
+
+    .assist-axis::before {
+        content: none; /* no label column left to hold open */
+    }
+
+    .assist-axis-scale {
+        grid-column: 1;
+    }
+
+    .assist-plot-row {
+        min-height: 0;
+        margin-bottom: 18px;
+    }
+
+    .assist-plot-row:last-child {
+        margin-bottom: 0; /* the section-layout gap already follows */
+    }
+
+    .assist-plot-label {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 8px;
+        text-align: left;
+    }
+
+    .assist-plot-row-child .assist-plot-label {
+        padding-right: 0;
+        padding-left: 14px;
+    }
 }
 
 /* No font-size override on the assisted table: one table voice on every act

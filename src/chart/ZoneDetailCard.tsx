@@ -45,10 +45,11 @@ function MakingScaleMini({ bin }: { bin: MakingBin | null }) {
 }
 
 /**
- * The zone detail card: a click-opened overlay covering the chart wrapper
+ * The zone detail card: a click-opened overlay over the top of the court
  * (ADR-0027) — the same descriptive/evaluative facts the old hover tooltip
  * carried, plus the diet share and the making-scale position. Absolutely
- * positioned inside .chart-wrapper, so opening it never shifts page
+ * positioned inside .chart-wrapper and sized by its content (the stylesheet
+ * anchors it to the wrapper's top), so opening it never shifts page
  * geometry (ADR-0026).
  *
  * Every number is a re-presented ZoneMetricsRow field through src/format.ts
