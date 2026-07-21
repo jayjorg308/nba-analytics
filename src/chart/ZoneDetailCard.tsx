@@ -130,7 +130,7 @@ export function ZoneDetailCard({ row, onClose }: ZoneDetailCardProps) {
         </div>
       </dl>
       {row.smallSampleMaking && (
-        <p className="zone-detail-note">† Under 50 attempts — treat as uncertain.</p>
+        <p className="zone-detail-note">† Under 50 attempts: treat as uncertain.</p>
       )}
       <MakingScaleMini bin={makingDeltaBin(row.makingDelta)} />
     </div>

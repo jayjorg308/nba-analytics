@@ -1,5 +1,6 @@
 import type { ShotMetrics } from '../domain/aggregate'
 import { formatPps2, formatSignedGap } from '../format'
+import { Term } from './Term'
 
 /**
  * The paired headline blocks: the two-axis answer (v1 thesis) with equal
@@ -35,7 +36,11 @@ export function HeadlineBanner({
                 <h2>
                     SHOT SELECTION
                     <span className="comparison-class">
-                        expected points per shot: his shot diet vs the
+                        {/* The two load-bearing terms are dictionary entries
+                            (ADR-0052) — this subtitle is where a reader first
+                            meets them. */}
+                        <Term id="expected-pps">expected points per shot</Term>:
+                        his <Term id="shot-diet">shot diet</Term> vs the
                         league&apos;s
                     </span>
                 </h2>
@@ -83,6 +88,9 @@ export function HeadlineBanner({
                 <h2>
                     SHOT MAKING
                     <span className="comparison-class">
+                        {/* "expected points per shot" is already the term in
+                            the selection card beside this one (ADR-0052:
+                            prose defines a term once, at first mention). */}
                         actual vs expected points per shot, on the same diet
                     </span>
                 </h2>

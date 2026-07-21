@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import type { BandMetricsRow, ShotMetrics, ZoneMetricsRow } from '../domain/aggregate'
 import { LONG_TWO_BAND, ZONE_POINT_VALUE, type EvalZone } from '../domain/constants'
 import { formatPercent1, formatPps2, formatSignedPp1, withSmallSampleMark } from '../format'
+import { Term } from './Term'
 
 // Table-only display names: the three-point children sit under the
 // "3 Pointers" parent row, so repeating "3" in every child label is
@@ -101,13 +102,24 @@ export function ZoneTable({
             unit of shot quality (ADR-0001) and Making Δ already encodes
             FG%-vs-league; raw FG% lives on the court's zone detail card. */}
         <thead>
+          {/* The stat-abbreviation headers are dictionary terms (ADR-0052):
+              a tap opens the definition. The wrapped button's text is the
+              header's text exactly, so the column reads unchanged. */}
           <tr>
             <th scope="col">Zone</th>
-            <th scope="col">FGA</th>
-            <th scope="col">Share</th>
+            <th scope="col">
+              <Term id="fga">FGA</Term>
+            </th>
+            <th scope="col">
+              <Term id="attempt-share">Share</Term>
+            </th>
             <th scope="col">Lg share</th>
-            <th scope="col">Making Δ</th>
-            <th scope="col">PPS (lg)</th>
+            <th scope="col">
+              <Term id="making-delta">Making Δ</Term>
+            </th>
+            <th scope="col">
+              <Term id="pps">PPS (lg)</Term>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -145,22 +157,22 @@ export function ZoneTable({
         {cornerSplit.visible && (
           <p>
             Corner 3s: Left {cornerSplit.left.attempts} FGA / Right {cornerSplit.right.attempts}{' '}
-            FGA — both clear the volume bar
+            FGA; both clear the volume bar
             {(cornerSplit.left.smallSampleMaking || cornerSplit.right.smallSampleMaking) &&
-              '; per-corner making is small-sample†'}
+              ', though per-corner making is small-sample†'}
             .
           </p>
         )}
         {backcourt.attempts > 0 && (
           <p>
             Backcourt heaves: {backcourt.attempts} attempt{backcourt.attempts === 1 ? '' : 's'} (
-            {backcourt.makes} made) — excluded from evaluation, reported here.
+            {backcourt.makes} made), excluded from evaluation and reported here.
           </p>
         )}
         {zoneConflictsDropped > 0 && (
           <p>
             {zoneConflictsDropped} shot{zoneConflictsDropped === 1 ? '' : 's'} dropped at derive:
-            the NBA&apos;s own scoring (2PT/3PT) and zone assignment disagree — dropped and
+            the NBA&apos;s own scoring (2PT/3PT) and zone assignment disagree; dropped and
             counted, never guessed.
           </p>
         )}
@@ -171,7 +183,7 @@ export function ZoneTable({
         )}
         {anyFlagged && (
           <p>
-            † Making delta on fewer than 50 attempts — treat as uncertain (flagged, never
+            † Making delta on fewer than 50 attempts: treat as uncertain (flagged, never
             suppressed).
           </p>
         )}

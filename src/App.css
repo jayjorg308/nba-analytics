@@ -1589,3 +1589,93 @@
    digits fits its 1.28fr column at every desktop width — 645px nowrap vs
    658px available above 1140px, 570px label-wrapped min-content vs 584px at
    the 1025px worst; phones scroll via .zone-scroll as everywhere). */
+
+/* --- Dictionary popovers (ADR-0052) ---------------------------------------- */
+
+/* The term trigger: the wrapped copy in its sentence's own type — `font:
+   inherit` alone drops letter-spacing (not part of the font shorthand), and
+   the caps section descriptions track at 4px. The dotted underline is the
+   whole resting affordance; hover brightening is affordance only, never the
+   opener (ADR-0027). */
+.term {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    text-align: inherit;
+    /* Chrome's UA button stylesheet forces text-transform: none, which broke
+       the uppercase table headers the moment they became terms — a term must
+       typeset exactly like the copy around it. */
+    text-transform: inherit;
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+
+    @media (hover: hover) {
+        &:hover {
+            color: var(--text-h);
+            text-decoration-color: currentColor;
+        }
+    }
+}
+
+/* The definition card: the zone detail card's surface at popover scale.
+   Fixed-position and portaled to body, so .zone-scroll containers never
+   clip it; JS clamps it inside the viewport and flips it above the trigger
+   when the space below runs out. */
+.term-popover {
+    position: fixed;
+    z-index: 40; /* above the zone detail card's 20 — terms open from anywhere */
+    box-sizing: border-box; /* the width IS the on-screen width — the JS viewport clamp measures it */
+    width: min(340px, calc(100vw - 24px));
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px 16px;
+    line-height: normal; /* dense UI text opts out of the root rhythm */
+}
+
+.term-popover-word {
+    margin: 0;
+    /* clear the 44px close target overlapping the card's top-right corner */
+    padding-right: 32px;
+    font-family: var(--heading);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-h);
+}
+
+.term-popover-def {
+    margin: 6px 0 0; /* 4/16 rhythm: the definition binds to its headword */
+    font-size: 14px;
+    line-height: 1.45; /* multi-line body, not a one-line label — real leading */
+    color: var(--text);
+}
+
+.term-popover-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 44px; /* touch target */
+    min-height: 44px;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--text);
+    font: 20px/1 var(--sans);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--text-h);
+    }
+}

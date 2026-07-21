@@ -167,7 +167,14 @@ describe('HeroPage over the golden fixture', () => {
     // in the section-title recipe, framed as the WHY behind the conversion
     // verdict, comparison class stated plainly
     screen.getByRole('heading', { name: 'SHOT CREATION' })
-    screen.getByText(/points per shot by creation context, vs\s+league average/)
+    // whole-sentence check via textContent: the dictionary term inside the
+    // sentence (ADR-0052) splits the text nodes getByText matches on
+    const captionDescs = [...document.querySelectorAll('.section-caption-desc')].map((el) =>
+      el.textContent!.replace(/\s+/g, ' ').trim(),
+    )
+    expect(captionDescs).toContain(
+      'why his conversion lands where it does: points per shot by creation context, vs league average',
+    )
 
     // the value chart: a row per charted context (rim + jumper parent, the
     // 2 real jumper children, 3 clock bands, 3 defender bands — the Other
@@ -205,9 +212,11 @@ describe('HeroPage over the golden fixture', () => {
     expect(screen.queryByText('Less than 10 ft')).toBeNull()
     screen.getByText(/tracking doesn't classify creation/)
 
-    // the three-arrival bridge annotates the Catch and shoot row (the
-    // band-note pattern): which KIND of three the verdict is about
+    // the three-arrival bridge annotates BOTH jumper-kind rows (the
+    // band-note pattern): which KIND of three the verdict is about, with the
+    // split verifiable from both ends
     screen.getByText('3 of his 4 threes')
+    screen.getByText('1 of his 4 threes')
 
     // the golden's coverage story: 1 unattributed shot-clock attempt and 2
     // unattributed defender attempts are reported (never guessed into a
@@ -254,7 +263,7 @@ describe('HeroPage over the golden fixture', () => {
     const hit = document.querySelector('.shot-dot .dot-hit')!
     fireEvent.pointerEnter(hit, { pointerType: 'mouse' })
     screen.getByText(/Oct 31, 2025 · @ PHX · Q2 · 7:52/)
-    screen.getByText(/Mid-Range — 17 ft/)
+    screen.getByText(/Mid-Range · 17 ft/)
     expect(document.querySelector('.shot-tooltip-result')!.textContent).toBe('Missed')
     expect(document.querySelector('.shot-tooltip-assist')).toBeNull()
 
@@ -265,6 +274,35 @@ describe('HeroPage over the golden fixture', () => {
     const firstMade = document.querySelectorAll('.shot-dot .dot-hit')[7]!
     fireEvent.pointerEnter(firstMade, { pointerType: 'mouse' })
     expect(document.querySelector('.shot-tooltip-assist')!.textContent).toBe('Assisted')
+  })
+
+  it('defines jargon in place: dictionary terms open a popover (ADR-0052)', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(hero.thesis)
+
+    // prose defines a term ONCE, at its first reading-order mention (the
+    // headline subtitle) — the zone act's description leaves it plain
+    const trigger = screen.getByRole('button', { name: 'shot diet' })
+    fireEvent.click(trigger)
+    const dialog = screen.getByRole('dialog', { name: 'Shot diet definition' })
+    expect(dialog.textContent).toContain('The raw material of shot selection')
+    fireEvent.keyDown(dialog, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).toBeNull()
+
+    // the tables' stat headers are terms too, without changing the header text
+    const zoneTable = screen.getByRole('table', {
+      name: /Zone by zone shot diet and shot making/,
+    })
+    const headers = [...zoneTable.querySelectorAll('thead th')].map((th) => th.textContent)
+    expect(headers).toEqual(['Zone', 'FGA', 'Share', 'Lg share', 'Making Δ', 'PPS (lg)'])
+    fireEvent.click(screen.getAllByRole('button', { name: 'Making Δ' })[0]!)
+    screen.getByRole('dialog', { name: 'Making Δ definition' })
+    fireEvent.click(screen.getByRole('button', { name: 'Close definition' }))
+
+    // the creation contexts a general reader won't know are terms in the table
+    fireEvent.click(screen.getByRole('button', { name: 'Catch and shoot' }))
+    screen.getByRole('dialog', { name: 'Catch and shoot definition' })
   })
 
   it('opens the zone detail card from the default view and closes on Escape (ADR-0027)', async () => {

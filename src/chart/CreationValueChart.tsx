@@ -184,7 +184,7 @@ export function CreationValueChart({ metrics }: { metrics: CreationMetrics }) {
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Creation value: points per shot by creation context over ${metrics.seasonFga} attempts, his conversion vs league average — full numbers in the shot creation table`}
+        aria-label={`Creation value: points per shot by creation context over ${metrics.seasonFga} attempts, his conversion vs league average; full numbers in the shot creation table`}
       >
         {ticks.map((t) => (
           <g key={t}>

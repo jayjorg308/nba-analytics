@@ -107,6 +107,15 @@ export interface DefenderBandRow extends CreationCells {
  * makes/attempts, the ADR-0016 combined-threes pattern) states the value of
  * his jump shooting as one line.
  */
+/** One jumper kind's slice of the threes: its 3PA over all 3PA. Shares are
+ * null when the respective side attempted no threes. */
+export interface ThreeArrival {
+  attempts: number
+  totalThrees: number
+  share: number | null
+  leagueShare: number | null
+}
+
 export interface GeneralFamilyMetrics {
   /** 'Less than 10 ft' — rim & short; tracking classifies no creation here. */
   inside: GeneralContextRow
@@ -114,16 +123,13 @@ export interface GeneralFamilyMetrics {
   jumpers: CreationRollupRow
   /** The jumper children, in JUMPER_CONTEXTS order. */
   jumperContexts: GeneralContextRow[]
-  /** How the THREES arrive: catch-and-shoot 3PA over all 3PA — the bridge
-   * between the creation story and the zone table's three-point verdict
-   * ("cold from three" means missing which KIND of three?). Shares null
-   * when the respective side attempted no threes. */
-  catchAndShootThrees: {
-    attempts: number
-    totalThrees: number
-    share: number | null
-    leagueShare: number | null
-  }
+  /** How the THREES arrive — the bridge between the creation story and the
+   * zone table's three-point verdict ("cold from three" means missing which
+   * KIND of three?). Both real jumper kinds carry their slice so the split
+   * is verifiable, not one-sided; the tiny Other residual's threes stay in
+   * totalThrees without a line of their own. */
+  catchAndShootThrees: ThreeArrival
+  pullUpThrees: ThreeArrival
 }
 
 export interface CreationMetrics {
@@ -215,14 +221,18 @@ export function aggregateCreationMetrics(payload: CreationPayload): CreationMetr
 
   // The three-arrival bridge: counts of 3PA, summed within each side of the
   // family (self-consistent by construction — no cross-payload join).
-  const csThrees = entryByContext(payload.general.player, 'Catch and Shoot', 'general.player').fg3a
   const totalThrees = payload.general.player.reduce((t, e) => t + e.fg3a, 0)
-  const leagueCsThrees = entryByContext(
-    payload.general.league,
-    'Catch and Shoot',
-    'general.league',
-  ).fg3a
   const leagueTotalThrees = payload.general.league.reduce((t, e) => t + e.fg3a, 0)
+  const threeArrival = (context: 'Catch and Shoot' | 'Pull Ups'): ThreeArrival => {
+    const attempts = entryByContext(payload.general.player, context, 'general.player').fg3a
+    const leagueAttempts = entryByContext(payload.general.league, context, 'general.league').fg3a
+    return {
+      attempts,
+      totalThrees,
+      share: totalThrees > 0 ? attempts / totalThrees : null,
+      leagueShare: leagueTotalThrees > 0 ? leagueAttempts / leagueTotalThrees : null,
+    }
+  }
 
   const general: GeneralFamilyMetrics = {
     inside: generalRow(INSIDE_CONTEXT),
@@ -236,12 +246,8 @@ export function aggregateCreationMetrics(payload: CreationPayload): CreationMetr
       leagueFga,
     ),
     jumperContexts: JUMPER_CONTEXTS.map(generalRow),
-    catchAndShootThrees: {
-      attempts: csThrees,
-      totalThrees,
-      share: totalThrees > 0 ? csThrees / totalThrees : null,
-      leagueShare: leagueTotalThrees > 0 ? leagueCsThrees / leagueTotalThrees : null,
-    },
+    catchAndShootThrees: threeArrival('Catch and Shoot'),
+    pullUpThrees: threeArrival('Pull Ups'),
   }
 
   const shotClock: ClockBandRow[] = CLOCK_BAND_ROLLUP.map(({ band, seconds, contexts }) => ({

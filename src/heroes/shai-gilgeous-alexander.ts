@@ -21,7 +21,7 @@ export const shaiGilgeousAlexander: HeroConfig = {
   // −0.053 PPS, making +0.156, actual 1.194; pull-up share 57.2% vs 25.2%
   // with 1.123 PPS vs 0.920 league.
   verdict:
-    'Not by league-average shot values — and that is the point. He takes mid-range shots ' +
+    'Not by league-average shot values, and that is the point. He takes mid-range shots ' +
     'at nearly triple the league share and far fewer threes, a diet that costs value. ' +
     'Then MVP-level shot making overwhelms the cost: his conversion adds far more than ' +
     'his selection gives away. The creation evidence explains the bet: more than half of ' +

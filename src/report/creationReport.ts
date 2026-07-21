@@ -87,11 +87,19 @@ export function renderCreationReport(payload: CreationPayload): string {
   }
   // The three-arrival bridge, with the league comparison the page's row
   // annotation omits — verdict-authoring material for the why-sentence.
+  // Both real jumper kinds, like the table: the split is verifiable.
   const cs3 = m.general.catchAndShootThrees
   if (cs3.share !== null) {
     lines.push(
       `  catch-and-shoot carries ${cs3.attempts} of his ${cs3.totalThrees} threes ` +
         `(${formatPercent1(cs3.share)}; lg ${formatPercent1(cs3.leagueShare)})`,
+    )
+  }
+  const pu3 = m.general.pullUpThrees
+  if (pu3.share !== null) {
+    lines.push(
+      `  pull-ups carry ${pu3.attempts} of his ${pu3.totalThrees} threes ` +
+        `(${formatPercent1(pu3.share)}; lg ${formatPercent1(pu3.leagueShare)})`,
     )
   }
 

@@ -34,8 +34,8 @@ export const keyonteGeorge: HeroConfig = {
   // claims against the deployed creation payload — authored from
   // hero:report's creation section, like the rest is from its decomposition.
   verdict:
-    'No — his shot selection costs him: he gets to the rim about half as often as the league, ' +
-    'trading it for paint floaters and mid-range. Making is not the problem — he converts at or ' +
+    'No. His shot selection costs him: he gets to the rim about half as often as the league, ' +
+    'trading it for paint floaters and mid-range. Making is not the problem, as he converts at or ' +
     'above league expectation in every zone on the floor. ' +
     'The diet is how he creates: far more of his shots are pull-up jumpers than is typical, ' +
     'while the catch-and-shoot looks he does take convert well above league value.',

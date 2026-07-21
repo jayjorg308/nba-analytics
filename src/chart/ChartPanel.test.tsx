@@ -112,7 +112,7 @@ describe('ChartPanel view toggle', () => {
       )} pp`,
     ])
     expect(rows[3]).toContain('−17.1† pp')
-    screen.getByText('† Under 50 attempts — treat as uncertain.')
+    screen.getByText('† Under 50 attempts: treat as uncertain.')
 
     // The mini scale: seven fixed-bin swatches with the marker on RA's bin
     // (−17.1 pp -> cold-2, the second swatch).
