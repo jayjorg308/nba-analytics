@@ -14,16 +14,18 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseCreationPayload } from '../src/domain/creationPayload'
+import { parseFreethrowPayload } from '../src/domain/freethrowPayload'
 import { parseDerivedPayload } from '../src/domain/payload'
 import { parseShotContextPayload } from '../src/domain/shotContextPayload'
 import { renderCreationReport } from '../src/report/creationReport'
+import { renderFreethrowReport } from '../src/report/freethrowReport'
 import { renderHeroReport } from '../src/report/heroReport'
 import { renderShotContextReport } from '../src/report/shotContextReport'
 
 const USAGE = [
   'usage:',
   '  npm run hero:report -- <player-slug> <season> [--deployed]',
-  '  npm run hero:report -- --file <path/to/payload.json> [--creation-file <path>] [--context-file <path>]',
+  '  npm run hero:report -- --file <path/to/payload.json> [--creation-file <path>] [--context-file <path>] [--freethrow-file <path>]',
 ].join('\n')
 
 function fail(message: string): never {
@@ -131,6 +133,35 @@ function resolveContextPayloadPath(): { path: string | null; note?: string } {
   return { path: join(sourceDir, candidates[candidates.length - 1]!) }
 }
 
+function resolveFreethrowPayloadPath(): { path: string | null; note?: string } {
+  const freethrowFlag = args.indexOf('--freethrow-file')
+  if (freethrowFlag !== -1) {
+    const file = args[freethrowFlag + 1]
+    if (!file) fail(USAGE)
+    return { path: file }
+  }
+  if (args.indexOf('--file') !== -1) {
+    return { path: null, note: 'no --freethrow-file given alongside --file' }
+  }
+  const [slug, season] = args.filter((a) => !a.startsWith('--'))
+  if (args.includes('--deployed')) {
+    return { path: join('public', 'data', slug!, `${season}.freethrow.json`) }
+  }
+  const sourceDir = join('data', 'derived', slug!, season!, 'freethrow')
+  let candidates: string[]
+  try {
+    candidates = readdirSync(sourceDir)
+      .filter((f) => f.endsWith('.json'))
+      .sort()
+  } catch {
+    candidates = []
+  }
+  if (candidates.length === 0) {
+    return { path: null, note: `no derived free-throw payloads under ${sourceDir}` }
+  }
+  return { path: join(sourceDir, candidates[candidates.length - 1]!) }
+}
+
 const payloadPath = resolvePayloadPath()
 
 let raw: string
@@ -220,6 +251,44 @@ if (context.path === null) {
   } catch (e) {
     fail(
       `shot-context payload contract violation in ${context.path}:\n${e instanceof Error ? e.message : String(e)}`,
+    )
+  }
+}
+
+const freethrow = resolveFreethrowPayloadPath()
+if (freethrow.path === null) {
+  console.log('')
+  console.log(
+    `!! free-throw section skipped: ${freethrow.note} — run ingestion/derive_freethrow.py ` +
+      '(the free-throw payload is required per hero, ADR-0053)',
+  )
+} else {
+  let freethrowRaw: string
+  try {
+    freethrowRaw = readFileSync(freethrow.path, 'utf-8')
+  } catch (e) {
+    fail(
+      `cannot read ${freethrow.path}: ${e instanceof Error ? e.message : String(e)}\n` +
+        'run ingestion/derive_freethrow.py (the free-throw payload is required per hero, ADR-0053)',
+    )
+  }
+  try {
+    const freethrowPayload = parseFreethrowPayload(JSON.parse(freethrowRaw))
+    // The ADR-0053 identity, cross-checked at read time (the creation
+    // pattern): a report must never narrate contradictory payloads.
+    if (freethrowPayload._meta.seasonFga !== seasonFgaTarget) {
+      fail(
+        `payloads contradict: free-throw seasonFga ${freethrowPayload._meta.seasonFga} != ` +
+          `shot payload pre-drop total ${seasonFgaTarget} — re-derive and re-sync together`,
+      )
+    }
+    console.log('')
+    console.log(`free-throw payload: ${freethrow.path}`)
+    console.log('')
+    console.log(renderFreethrowReport(freethrowPayload))
+  } catch (e) {
+    fail(
+      `free-throw payload contract violation in ${freethrow.path}:\n${e instanceof Error ? e.message : String(e)}`,
     )
   }
 }
