@@ -8,7 +8,14 @@ export interface ZoneDetailCardProps {
   /** The clicked zone's row from metrics.zones — passed in whole, keyed by
    * zone name upstream (ADR-0012); this card only formats it (ADR-0011). */
   row: ZoneMetricsRow
+  /** Close button / Escape — the owner returns focus to the zone. */
   onClose: () => void
+  /** Outside press — dismiss WITHOUT returning focus (the Term contract). */
+  onOutsidePress: () => void
+  /** The zone <g> that opened the card. Presses on it are not "outside":
+   * its click re-selects the same zone, and racing that with a dismissal
+   * would blink the card closed and open again. */
+  trigger: SVGGElement | null
 }
 
 /** The mini making scale: the legend's seven swatches with a marker on the
@@ -60,13 +67,30 @@ function MakingScaleMini({ bin }: { bin: MakingBin | null }) {
  * dialog is announced); the owner returns focus to the zone on close. Not a
  * focus trap and not aria-modal — the card is a local disclosure over the
  * court, and Tab past the close button exits to the page naturally.
+ *
+ * Dismissed by its close button, Escape, or an outside press — the Term
+ * popover's contract, so every click-opened card on the page closes the
+ * same way. Close/Escape return focus to the zone (the owner's job); an
+ * outside press leaves focus where the reader put it. A press on another
+ * zone dismisses this card on pointerdown, then that zone's click opens
+ * its own — how card switching already worked, now in two steps.
  */
-export function ZoneDetailCard({ row, onClose }: ZoneDetailCardProps) {
+export function ZoneDetailCard({ row, onClose, onOutsidePress, trigger }: ZoneDetailCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     cardRef.current?.focus()
   }, [])
+
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node
+      if (cardRef.current?.contains(target) || trigger?.contains(target)) return
+      onOutsidePress()
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [onOutsidePress, trigger])
 
   return (
     <div

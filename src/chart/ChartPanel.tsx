@@ -273,7 +273,14 @@ export function ChartPanel({
         {/* Out of flow inside the wrapper: opening/closing the card never
             moves the page (ADR-0026's companion invariant). */}
         {view === 'zones' && selectedRow && (
-          <ZoneDetailCard row={selectedRow} onClose={closeDetail} />
+          <ZoneDetailCard
+            row={selectedRow}
+            onClose={closeDetail}
+            // outside press: dismiss without the focus return — the reader
+            // pressed elsewhere on purpose (the Term contract)
+            onOutsidePress={() => setSelected(null)}
+            trigger={selected?.trigger ?? null}
+          />
         )}
       </div>
       {/* One interaction cue per view, a caption under the court. Both cues
