@@ -41,8 +41,29 @@ describe('ChartPanel view toggle', () => {
     screen.getByText('Shot making vs league average (percentage points)')
     expect(container.querySelectorAll('.zones-legend-swatch')).toHaveLength(7)
     const panelChildren = [...container.querySelector('.chart-panel')!.children]
-    expect(panelChildren.map((c) => c.className)).toEqual(['chart-controls', 'chart-wrapper'])
+    expect(panelChildren.map((c) => c.className)).toEqual([
+      'chart-controls',
+      'chart-wrapper',
+      'chart-hint-slot',
+    ])
     expect(panelChildren[0]!.querySelector('.zones-legend')).not.toBeNull()
+  })
+
+  it('shows one interaction cue per view, both mounted so the toggle never shifts layout', () => {
+    const { container } = renderPanel()
+    const hints = () => [...container.querySelectorAll('.chart-hint')]
+    // Zones (default): the click-a-zone cue is the visible layer. Layer DOM
+    // order is fixed: [zones, shots], like the legend slot.
+    expect(hints()[0]!.className).not.toContain('hint-inactive')
+    expect(hints()[0]!.textContent).toContain('any zone for its full numbers')
+    expect(hints()[1]!.className).toContain('hint-inactive')
+    fireEvent.click(screen.getByLabelText('Shots'))
+    expect(hints()[0]!.className).toContain('hint-inactive')
+    expect(hints()[1]!.className).not.toContain('hint-inactive')
+    expect(hints()[1]!.textContent).toBe('Hover over any shot for its date, distance, and result')
+    // A pointer affordance, not data — hidden from AT (the zone fills are
+    // real buttons and the table carries every number).
+    expect(container.querySelector('.chart-hint-slot')!.getAttribute('aria-hidden')).toBe('true')
   })
 
   it('switches to Shots: dots replace fills and the shots legend becomes the visible layer', () => {

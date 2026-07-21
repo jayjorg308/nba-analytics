@@ -1093,6 +1093,47 @@
     pointer-events: none;
 }
 
+/* One interaction cue per view, a caption under the court. Both cues stay
+   mounted, stacked in one cell (the legend-slot recipe), the inactive one
+   hidden but still sized — toggling views never changes the panel's height.
+   Cue, not data: the table-notes voice (13px gray), one size quieter than
+   the 14px skip note above it. */
+.chart-hint-slot {
+    display: grid;
+}
+
+.chart-hint {
+    grid-area: 1 / 1;
+    font-size: 13px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.hint-inactive {
+    visibility: hidden;
+}
+
+/* The verb matches the device: hover-less screens tap. */
+.hint-verb-tap {
+    display: none;
+}
+
+@media (hover: none) {
+    .hint-verb-click {
+        display: none;
+    }
+
+    .hint-verb-tap {
+        display: inline;
+    }
+
+    /* The hover cue describes a mouse-only affordance (ADR-0027): touch
+       never gets tooltips, so it never gets the cue either. */
+    .chart-hint-hover {
+        display: none;
+    }
+}
+
 /* --- Zone table ------------------------------------------------------------ */
 
 /* The data-twin column of every act (zone, creation, assisted). min-width: 0
