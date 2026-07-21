@@ -1,10 +1,10 @@
-# nba-analytics
+# NBA Good Shots
 
 An interactive NBA shot-quality essay that answers focused questions about one player: **is he taking good shots, how does he create them, and what does his foul-drawing add that the shot chart cannot see?**
 
 Most shot charts lead with a scatter of makes and misses and leave the interpretation to the reader. nba-analytics leads with a guarded, plain-language verdict and then shows its work in four acts over one reconciled season of scoring: the where (a two-axis PPS decomposition, a zone-shaded court, per-zone details), the how (league-relative creation contexts), the credit (official assisted-make evidence), and the line (free throws at trip grain, priced against the floor). The page is structured as question → verdict → proof, not as a general-purpose stats dashboard.
 
-**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** [Cody Williams — 2025-26](https://www.nbagoodshots.com/) · [Keyonte George — 2025-26](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander — 2025-26](https://www.nbagoodshots.com/shai-gilgeous-alexander)
+**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** [Cody Williams (2025-26)](https://www.nbagoodshots.com/) · [Keyonte George (2025-26)](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander (2025-26)](https://www.nbagoodshots.com/shai-gilgeous-alexander)
 
 The current root presentation remains temporarily focused on Cody Williams while his page is polished. The player-agnostic application registers complete Cody, Keyonte, and Shai hero pages at shareable URLs; only the multi-player directory is intentionally dormant.
 
