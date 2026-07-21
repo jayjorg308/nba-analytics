@@ -1,15 +1,19 @@
 import { useEffect, useMemo, type CSSProperties } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
 import { CreationValueChart } from '../chart/CreationValueChart'
+import { LineVsFloorChart, type FloorReference } from '../chart/LineVsFloorChart'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
+import { aggregateFreethrowMetrics } from '../domain/aggregateFreethrow'
 import { aggregateShotContextMetrics } from '../domain/aggregateShotContext'
 import type { CreationPayload } from '../domain/creationPayload'
+import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
 import type { HeroConfig } from '../heroes/types'
 import {
   creationPayloadUrl,
+  freethrowPayloadUrl,
   heroImageUrl,
   payloadUrl,
   shotContextPayloadUrl,
@@ -17,17 +21,24 @@ import {
 } from '../heroes/urls'
 import { AssistedMakes } from './AssistedMakes'
 import { CreationTable } from './CreationTable'
+import { FreethrowSeasonLine, FreethrowTable } from './FreethrowTable'
 import { HeadlineBanner } from './HeadlineBanner'
 import { Term } from './Term'
-import { useCreationPayload, usePayload, useShotContextPayload } from './usePayload'
+import {
+  useCreationPayload,
+  useFreethrowPayload,
+  usePayload,
+  useShotContextPayload,
+} from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
 export function HeroPage({ hero }: { hero: HeroConfig }) {
   const state = usePayload(payloadUrl(hero))
-  // The sibling creation payload (ADR-0030): required per hero — one class
-  // of hero page. Case 3 is required too, so the page waits for all three.
+  // The sibling payloads (ADRs 0030/0032/0053): all required per hero — one
+  // class of hero page, so the page waits for all four.
   const creationState = useCreationPayload(creationPayloadUrl(hero))
   const contextState = useShotContextPayload(shotContextPayloadUrl(hero))
+  const freethrowState = useFreethrowPayload(freethrowPayloadUrl(hero))
 
   useEffect(() => {
     document.title = `${hero.playerName} · ${hero.season} · shot selection`
@@ -44,10 +55,14 @@ export function HeroPage({ hero }: { hero: HeroConfig }) {
   if (contextState.status === 'error') {
     return <PageError message={contextState.message} />
   }
+  if (freethrowState.status === 'error') {
+    return <PageError message={freethrowState.message} />
+  }
   if (
     state.status === 'loading' ||
     creationState.status === 'loading' ||
-    contextState.status === 'loading'
+    contextState.status === 'loading' ||
+    freethrowState.status === 'loading'
   ) {
     return (
       <main className="hero-page">
@@ -61,6 +76,7 @@ export function HeroPage({ hero }: { hero: HeroConfig }) {
       payload={state.payload}
       creation={creationState.payload}
       context={contextState.payload}
+      freethrow={freethrowState.payload}
     />
   )
 }
@@ -78,13 +94,15 @@ function HeroReady({
   payload,
   creation,
   context,
+  freethrow,
 }: {
   hero: HeroConfig
   payload: DerivedPayload
   creation: CreationPayload
   context: ShotContextPayload
+  freethrow: FreethrowPayload
 }) {
-  // The single production call site for all three aggregations. Cross-sibling
+  // The single production call site for all four aggregations. Cross-sibling
   // identity/provenance failures happen here, after each Zod boundary; keep
   // them inside the same plain page-error contract as load failures.
   const computed = useMemo(() => {
@@ -94,6 +112,7 @@ function HeroReady({
         metrics: aggregateShotMetrics(payload.shots, payload.zoneBaseline),
         creationMetrics: aggregateCreationMetrics(creation),
         contextMetrics: aggregateShotContextMetrics(payload, context),
+        freethrowMetrics: aggregateFreethrowMetrics(freethrow),
       }
     } catch (error) {
       return {
@@ -101,10 +120,19 @@ function HeroReady({
         message: `Payloads contradict: ${error instanceof Error ? error.message : String(error)}`,
       }
     }
-  }, [payload, creation, context])
+  }, [payload, creation, context, freethrow])
   if (computed.status === 'error') return <PageError message={computed.message} />
-  const { metrics, creationMetrics, contextMetrics } = computed
+  const { metrics, creationMetrics, contextMetrics, freethrowMetrics } = computed
   const logoUrl = teamLogoUrl(hero)
+  // The line-vs-floor chart's reference ticks (ADR-0056): the league's PPS
+  // from the floor's canonical bands — rim, three, mid — read off the shot
+  // aggregation. A mapping over existing outputs, not a computation
+  // (ADR-0011); the chart formats both aggregations' values side by side.
+  const floorReferences: FloorReference[] = metrics.zones
+    .filter((zone) =>
+      ['Restricted Area', 'Above the Break 3', 'Mid-Range'].includes(zone.zone),
+    )
+    .map((zone) => ({ label: zone.zone, pps: zone.leaguePps }))
 
   return (
     <main className="hero-page">
@@ -208,6 +236,33 @@ function HeroReady({
           metrics={contextMetrics}
           showMidRangeBands={metrics.midRangeSplit.visible}
         />
+      </section>
+      {/* The fourth act (ADR-0056): the scoring the shot chart cannot see.
+          Trips are a different universe from the shots (most have no shot),
+          so the line gets its own act rather than a berth inside SHOT
+          CREATION — ADR-0042's own logic. The kicker names the cut and the
+          place; the chart prices a trip against the floor; generation is a
+          two-number story and lives in the description and the table. */}
+      <section className="freethrow-section" aria-labelledby="freethrow-caption">
+        <header className="section-caption">
+          <p className="section-kicker">04 · THE LINE</p>
+          <h2 id="freethrow-caption">FREE THROWS</h2>
+          <p className="section-caption-desc">
+            the points his fouls created: what a <Term id="trip">trip</Term> to the line is
+            worth, priced against the&nbsp;floor
+          </p>
+        </header>
+        <div className="section-layout">
+          {/* Visual left, data twin right, both from the top edge (the
+              register every act holds). The season line is the visual
+              column's stat coda — the generation story under the value
+              story, never a preamble that pushes the table down. */}
+          <div className="freethrow-visual">
+            <LineVsFloorChart metrics={freethrowMetrics} floorReferences={floorReferences} />
+            <FreethrowSeasonLine metrics={freethrowMetrics} />
+          </div>
+          <FreethrowTable metrics={freethrowMetrics} />
+        </div>
       </section>
       {/* The quiet way back to the directory (ADR-0022) — after the argument,
           never above it; cross-hero navigation is links between pages, not a

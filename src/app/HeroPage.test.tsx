@@ -22,6 +22,11 @@ const contextGoldenJson = JSON.parse(readFileSync(contextGoldenPath, 'utf-8')) a
   string,
   unknown
 >
+const freethrowGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/freethrow.golden.json')
+const freethrowGoldenJson = JSON.parse(readFileSync(freethrowGoldenPath, 'utf-8')) as Record<
+  string,
+  unknown
+>
 
 interface StubResponse {
   ok: boolean
@@ -29,11 +34,12 @@ interface StubResponse {
   json?: unknown
 }
 
-/** Routes by URL: the page now fetches both payloads (ADR-0030). */
+/** Routes by URL: the page fetches all four payloads (ADRs 0030/0032/0053). */
 function stubFetch(
   shot: StubResponse,
   creation: StubResponse = { ok: true, json: creationGoldenJson },
   context: StubResponse = { ok: true, json: contextGoldenJson },
+  freethrow: StubResponse = { ok: true, json: freethrowGoldenJson },
 ) {
   vi.stubGlobal(
     'fetch',
@@ -43,7 +49,9 @@ function stubFetch(
         ? creation
         : value.endsWith('.context.json')
           ? context
-          : shot
+          : value.endsWith('.freethrow.json')
+            ? freethrow
+            : shot
       return {
         ok: r.ok,
         status: r.status ?? 200,
@@ -124,7 +132,12 @@ describe('HeroPage over the golden fixture', () => {
     const kickers = [...document.querySelectorAll('.section-kicker')].map(
       (el) => el.textContent,
     )
-    expect(kickers).toEqual(['01 · THE WHERE', '02 · THE HOW', '03 · THE CREDIT'])
+    expect(kickers).toEqual([
+      '01 · THE WHERE',
+      '02 · THE HOW',
+      '03 · THE CREDIT',
+      '04 · THE LINE',
+    ])
     const zoneTable = screen.getByRole('table', {
       name: /Zone by zone shot diet and shot making/,
     })
@@ -180,9 +193,11 @@ describe('HeroPage over the golden fixture', () => {
     // 2 real jumper children, 3 clock bands, 3 defender bands — the Other
     // residual is table-only, ADR-0031 amendment); every golden context sits
     // under the dot floor, so each row draws its league dot and no player
-    // dot — the table carries the numbers, and the notes disclose both
-    expect(document.querySelectorAll('.creation-dot-league')).toHaveLength(10)
-    expect(document.querySelectorAll('.creation-dot-player')).toHaveLength(0)
+    // dot — the table carries the numbers, and the notes disclose both.
+    // Scoped to the creation section: THE LINE act reuses the shared
+    // dumbbell classes for its own dots (ADR-0056).
+    expect(document.querySelectorAll('.creation-section .creation-dot-league')).toHaveLength(10)
+    expect(document.querySelectorAll('.creation-section .creation-dot-player')).toHaveLength(0)
     screen.getByText(/draw no PPS dot in the chart/)
     screen.getByText(/the jumper parent includes its attempts/)
 
@@ -379,5 +394,65 @@ describe('HeroPage failure states', () => {
     )
     render(<HeroPage hero={hero} />)
     await screen.findByText(/Payloads contradict: shot-context sibling player\/season identity/i)
+  })
+
+  it('surfaces a missing free-throw payload — required per hero (ADR-0053)', async () => {
+    stubFetch(
+      { ok: true, json: goldenJson },
+      { ok: true, json: creationGoldenJson },
+      { ok: true, json: contextGoldenJson },
+      { ok: false, status: 404 },
+    )
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/HTTP 404 loading free throw data/)
+  })
+
+  it('surfaces free-throw contract violations from the Zod boundary', async () => {
+    const bad = structuredClone(freethrowGoldenJson)
+    ;(bad._meta as { seasonFta: number }).seasonFta = 7 // breaks the sum identity
+    stubFetch(
+      { ok: true, json: goldenJson },
+      { ok: true, json: creationGoldenJson },
+      { ok: true, json: contextGoldenJson },
+      { ok: true, json: bad },
+    )
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(/Payload contract violation/)
+  })
+})
+
+describe('THE LINE act (ADR-0056)', () => {
+  it('renders the fourth act: kicker, season line, chart, and table twin', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={hero} />)
+    await screen.findByText(hero.thesis)
+
+    screen.getByText('04 · THE LINE')
+    screen.getByRole('heading', { name: 'FREE THROWS' })
+    // The season line, formatted from the aggregation (4/6 FT over 15 FGA,
+    // 21 points; league 14/18 over 45 and 61 — the golden's numbers).
+    const season = screen.getByLabelText('Season free-throw line, vs league average')
+    expect(season.textContent).toContain('40.0% (lg 40.0%)') // FTA rate
+    expect(season.textContent).toContain('19.0% (lg 23.0%)') // FT share
+    expect(season.textContent).toContain('66.7%† (lg 77.8%)') // conversion, flagged
+    // The chart prices trips against the floor: image semantics, league
+    // zone references on the same axis. Both golden trip classes sit under
+    // the 15-FTA dot floor, so each row draws its league dot only.
+    screen.getByRole('img', { name: /The line vs the floor/ })
+    expect(document.querySelectorAll('.freethrow-section .creation-dot-league')).toHaveLength(2)
+    expect(document.querySelectorAll('.freethrow-section .creation-dot-player')).toHaveLength(0)
+    expect(document.querySelectorAll('.freethrow-section .floor-ref-label')).toHaveLength(3)
+    // The table twin: tier group rows and the golden's three trips.
+    const table = screen.getByRole('table', { name: 'Free-throw trips by class' })
+    expect(table.textContent).toContain('Attempt-equivalent')
+    expect(table.textContent).toContain('Shooting foul (2 FT)')
+    expect(table.textContent).toContain('And-1')
+    expect(table.textContent).toContain('Bonus')
+    // Zero-trip classes are omitted until data arrives (ADR-0043 pattern)…
+    expect(table.textContent).not.toContain('Flagrant')
+    // …and the charted class he never drew is disclosed, not hidden.
+    screen.getByText(/He drew no three-shot shooting fouls this season/)
+    // Technicals: counted and reported, never a trip.
+    screen.getByText(/1 technical free throw \(0 made\)/)
   })
 })

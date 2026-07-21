@@ -20,6 +20,11 @@ export function shotContextPayloadUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}data/${hero.slug}/${hero.season}.context.json`
 }
 
+/** Free-throw trips at trip grain (ADR-0053) — the fourth required sibling. */
+export function freethrowPayloadUrl(hero: HeroConfig): string {
+  return `${import.meta.env.BASE_URL}data/${hero.slug}/${hero.season}.freethrow.json`
+}
+
 export function heroImageUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}${hero.hero.imagePath}`
 }

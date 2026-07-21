@@ -14,7 +14,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
-| v2.6 — the line (free throws at trip grain) | 📋 designed 2026-07-21 (ADRs 0053–0056 + CONTEXT.md terms; research spike done) — not built |
+| v2.6 — the line (free throws at trip grain) | 🔨 steps 1–4 built 2026-07-21 (ADRs 0053–0056; contract, league pull, metrics + report, THE LINE act + four-payload sync); step 5 (copy, lexicon graduation, deployed guards) remains |
 | v3 — living seasons and heroes at scale | not started |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
@@ -312,22 +312,36 @@ exists for non-and-one drawn fouls — the denied attempt's point class (2 FT vs
    golden pair #3 + the oracle battery (taxonomy totality, per-game box-score
    equality, and-one exact linkage — ADR-0053). Free-throw vocabulary enters
    the lexicon's unshipped list in this same PR.
+   _Done 2026-07-21: every oracle exact on all three heroes' full corpora;
+   one classification refinement — a made shot plus a flagrant is a flagrant
+   trip (kind outranks the and-one heuristic; same add-on tier)._
 2. **League totals pull** — `pull_league_totals.py` → append-only
    `data/raw/_league/<season>/totals/<date>.json`; one artifact serves the
    Gate 5 oracle and the league baseline (ADR-0054).
-3. **Metrics** — pure `aggregateFreeThrowMetrics` (fourth single-call-site
+   _Done 2026-07-21: 582 player rows; Gate 5 exact for all three heroes
+   (84/119 · 337/378 · 540/614); real payloads derived and strict-parsed._
+3. **Metrics** — pure `aggregateFreethrowMetrics` (fourth single-call-site
    function; consumes the free-throw payload alone) + the `hero:report` LINE
    section. Report before UI; the verdict sentence is authored from it
    (ADR-0055 semantics: endpoint parity, both-cuts guard discipline, shared
    †/floor constants on FTA).
+   _Done 2026-07-21. Authoring anchors: Cody generates below league (.234 vs
+   .264) and converts below league (.706 vs .783, 3-of-10 on and-ones);
+   Keyonte and Shai beat every league trip price they play for._
 4. **The act** — `04 · THE LINE` after THE CREDIT: line-vs-floor dumbbell
-   chart (expected points per trip vs league, zone-baseline PPS as reference
+   chart (points per trip vs league, zone-baseline PPS as reference
    ticks) + tier-grouped table twin (ADR-0056). The ADR-0051 kicker amendment
    ("shots" → "scoring") lands in this PR, appended to ADR-0051.
+   _Done 2026-07-21 — with the `hero:sync` 3→4 extension and the three
+   deployed `.freethrow.json` payloads pulled forward from step 5 (the page
+   requires the payload; main stays green), and an ADR-0056 amendment from
+   the polish pass: the season line renders as the visual column's stat
+   coda, preserving the acts' shared top register (ADR-0026)._
 5. **Copy and guards** — per-hero verdict decisions (a line-sentence is legal,
-   never mandatory), lexicon graduation, `hero:sync` 3→4 files with
-   partial-sync failure, deployed-pair guards extended to the fourth payload.
-   Full repository gate before calling it done.
+   never mandatory), lexicon graduation, and deployed-pair guards extended to
+   the fourth payload (every registered hero has a deployed free-throw payload
+   that strict-parses, matches its siblings' identities, and matches the
+   latest derived copy). Full repository gate before calling it done.
 
 ## v3 — Living seasons and heroes at scale
 

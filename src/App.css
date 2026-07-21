@@ -576,7 +576,8 @@
    evidence that precedes them. */
 .zone-section,
 .creation-section,
-.assisted-section {
+.assisted-section,
+.freethrow-section {
     margin-top: 48px;
 }
 
@@ -1589,6 +1590,72 @@
    digits fits its 1.28fr column at every desktop width — 645px nowrap vs
    658px available above 1140px, 570px label-wrapped min-content vs 584px at
    the 1025px worst; phones scroll via .zone-scroll as everywhere). */
+
+/* --- The line (free throws — ADR-0053/0056) -------------------------------- */
+
+/* The floor's reference ticks: league zone PPS marked on the trip axis —
+   dashed so they read as context, quieter than the dumbbells they price
+   against but louder than the gridlines. */
+.floor-ref-line {
+    stroke: var(--text);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.45;
+}
+
+.floor-ref-label {
+    font: 400 10px var(--mono);
+    fill: var(--text);
+
+    @media (max-width: 480px) {
+        font-size: 13px;
+    }
+}
+
+/* The visual column: the line-vs-floor chart over the season stat coda.
+   Both grid cells start at the top edge, so the act keeps the register every
+   other act holds (chart top = table top, the ADR-0026 invariant) — the
+   season line lives BELOW the chart, never above the table. */
+.freethrow-visual {
+    min-width: 0;
+}
+
+/* The season line: the act's two-number payoff (generation, share,
+   conversion) as three league-compared rows — the stat coda that gives the
+   generation story real weight under the value chart. Dense-UI line-height
+   opt-in, per the section-title recipe's companion rule. */
+.freethrow-season {
+    margin: 20px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 12px;
+    line-height: normal;
+}
+
+.freethrow-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+}
+
+.freethrow-metric dt {
+    font-size: 14px;
+    color: var(--text);
+}
+
+.freethrow-metric dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--text-h);
+}
+
+.freethrow-metric .lg {
+    font-size: 13px;
+    color: var(--text);
+}
 
 /* --- Dictionary popovers (ADR-0052) ---------------------------------------- */
 
