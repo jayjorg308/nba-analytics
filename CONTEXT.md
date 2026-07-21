@@ -67,7 +67,7 @@ The league-average shot diet. Shot selection is always framed as "vs league aver
 The click-opened definition card behind jargon terms in structural copy (`Term` + the `src/app/glossary.ts` registry, ADR-0052): the term renders as a dotted-underline button in its sentence's own type; click/tap opens a viewport-clamped fixed card — ADR-0027's one-interaction-model, hover affordance only. Definitions re-present this glossary's Language entries in general-reader words — structural product copy, never per-hero claims or numbers, so they carry no verdict-guard obligations. **Prose wraps a term once, at its first reading-order mention** — repeat mentions stay plain (define, don't hand-hold); table column headers are the exception, staying uniformly wrapped per table because a table is a reference surface a reader lands in cold. Wrapped surfaces: headline subtitles, act descriptions, table column headers, creation row labels; the authored verdict stays unwrapped.
 
 **Section title recipe**:
-The one header treatment for the page's data sections: a caps title (typeset in the content, never `text-transform`) with 4px tracking, over a gray one-line description bound 4px below — the two headline cards and all three act headers (ZONE BY ZONE, SHOT CREATION, ASSISTED MAKES) use it, via one shared CSS rule (`.section-caption`, beside `.headline-banner h2` in `src/App.css`). Every act opens with this header full-width above a shared split layout — visual left, data twin right — under a numbered act kicker naming its cut of the same shots — `01 · THE WHERE` / `02 · THE HOW` / `03 · THE CREDIT` (place, manner, credit) — structural copy that never changes on a hero swap (ADR-0051). Internal rhythm is a 4/16 scale: 4px binds a thing to its caption (title→subtitle, value→label), 16px separates blocks. Companion rule: dense UI text (cards, table cells, captions, notes) opts into `line-height: normal`, because `:root`'s `18px/145%` computes to a fixed ~26px line-height that inherits into everything — the single most common cause of "loose"-looking UI text here.
+The one header treatment for the page's data sections: a caps title (typeset in the content, never `text-transform`) with 4px tracking, over a gray one-line description bound 4px below — the two headline cards and all four act headers (ZONE BY ZONE, SHOT CREATION, ASSISTED MAKES, FREE THROWS) use it, via one shared CSS rule (`.section-caption`, beside `.headline-banner h2` in `src/App.css`). Every act opens with this header full-width above a shared split layout — visual left, data twin right — under a numbered act kicker naming its cut of the same reconciled season of scoring — `01 · THE WHERE` / `02 · THE HOW` / `03 · THE CREDIT` (cuts of the shots: place, manner, credit) / `04 · THE LINE` (the scoring the shot record excludes) — structural copy that never changes on a hero swap (ADR-0051, as amended). Internal rhythm is a 4/16 scale: 4px binds a thing to its caption (title→subtitle, value→label), 16px separates blocks. Companion rule: dense UI text (cards, table cells, captions, notes) opts into `line-height: normal`, because `:root`'s `18px/145%` computes to a fixed ~26px line-height that inherits into everything — the single most common cause of "loose"-looking UI text here.
 
 **Punctuation style**:
 Product copy never uses em dashes — no rendered sentence (component copy, glossary definitions, authored hero copy) may contain "—" as prose punctuation; restructure with a colon, semicolon, comma, parentheses, or a new sentence instead. The rationale is voice: em-dash-laden prose reads as machine-written. The "—" **no-data placeholder** in data cells and court labels (`EM_DASH` in `src/format.ts`, the assisted-bounds dash) is a glyph, not prose, and stays. Internal docs and code comments are outside the rule.
@@ -178,6 +178,51 @@ The Assisted Makes section's bounded-share dot plot: each zone's classified assi
 **Assisted-makes presentation**:
 The Assisted Makes product surface suppresses the Unknown / Coverage / Bounds table group when every displayed row has complete classification, and restores the whole group when any unknown make exists. Attempt-empty refinement rows are omitted until data makes them informative. The underlying coverage metrics and worst-case bounds remain part of the domain and authoring contracts in both states (ADR-0043).
 
+**Trip** (a.k.a. **trip to the line**):
+The free throws awarded to a player from a single non-technical foul, shot as one visit to the line — the unit of free-throw analysis, reconstructed from play-by-play events. A trip carries its free-throw makes and attempts and a trip class recording how it arose. Technical free throws are never trips.
+
+**Technical free throw**:
+A free throw awarded for a technical foul, shot by a designated shooter rather than earned by the shooter's own play. Excluded from trips and from all free-throw evaluation; counted and reported whenever nonzero (the backcourt pattern). Real points, never evidence about shot selection or foul generation.
+
+**Trip class**:
+The classification of how a trip arose — shooting foul (two or three free throws), bonus, and-one, flagrant, away-from-play, transition take, clear path — assigned from the causing foul event, never guessed. Every trip carries exactly one class, the classes partition non-technical free throws, and each class belongs to one of two tiers: attempt-equivalent or add-on.
+
+**Attempt-equivalent trip**:
+A trip that ends the possession in place of a field-goal attempt: the shooting-foul trips and the bonus trip. The tier a future scoring-attempt model would add to the attempt denominator alongside FGA.
+
+**Add-on trip**:
+A trip whose points land on top of a scoring attempt or possession that already stands: the and-one trip (its made shot is a counted attempt) plus the flagrant, away-from-play, transition-take, and clear-path trips (the fouled team keeps the ball). Add-on free throws raise points scored without adding an attempt.
+
+**Shooting-foul trip**:
+A trip awarded for a foul on an unmade shot: a field-goal attempt the scorer never recorded, replaced by two or three free throws. The free-throw count is the only surviving record of the denied attempt's point class (two free throws for a two-point attempt, three for a three); no zone or coordinates exist for it.
+
+**Bonus trip**:
+A trip awarded for a non-shooting foul while the fouling team is in the penalty. Attempt-equivalent on possession semantics (the possession ends at the line) even though it is drawn away from the act of shooting; whether it speaks for shot selection is a copy decision the taxonomy deliberately leaves open.
+
+**And-one trip**:
+The single free throw attached to a made, counted field-goal attempt ("and-1" acceptable in data labels). The one trip class with a shot identity: its made shot exists in the shot payload, so and-one trips inherit that shot's zone.
+
+**Free throw payload**:
+The fourth typed contract: per-trip rows (trip class, free-throw makes and attempts, the and-one's shot identity) plus the technical free-throw count and the league free-throw baseline, metric-free, with its own schema version and golden. Deployed beside its three siblings and required for every registered hero.
+
+**FTA rate**:
+Free-throw attempts per field-goal attempt — the foul-generation headline, hero vs league on identical semantics: all free throws (technicals included, because league totals cannot exclude them) over pre-drop season FGA. Coarser than the trip taxonomy but exactly comparable; a generation claim must also survive the hero's own without-technicals cut.
+
+**Free-throw conversion**:
+Hero FT% against league FT% — the making axis's analog at the line, on endpoint-parity semantics: technicals included in numerator and denominator on both sides, because league totals cannot exclude them. Carries the shared small-sample flag on free-throw attempts; per-class conversion (an and-one's single free throw) flags early and often. A conversion claim must also survive the hero's own without-technicals cut.
+
+**Scoring attempt**:
+_Future vocabulary, reserved:_ a field-goal attempt or an attempt-equivalent trip — the denominator of the eventual widened decomposition that prices free-throw generation into shot selection. Recorded now so copy never improvises a synonym; no product surface may use it until that model ships, and its league comparison requires an exact league trip count (league-wide play-by-play), never an estimator.
+
+**FT points share**:
+The share of a player's (or the league's) points scored at the line, technicals included on both sides. Exact from box-score arithmetic; the plainest statement of how much scoring the shot chart cannot see.
+
+**Expected points per trip**:
+A trip's value at a stated conversion: two (or three) free throws times free-throw percentage. At league conversion a two-shot trip prices at more points than any zone on the floor — the number that lets copy weigh a drawn foul against a taken shot in the product's one value unit.
+
+**Free-throw section** (a.k.a. **THE LINE**):
+The hero page's fourth act (04 · THE LINE): the points his fouls created, on attempts the shot chart never counted. Its visual column carries the **line-vs-floor chart** — the creation act's dumbbell grammar on the points-per-attempt axis: points per trip for the two-shot and three-shot trip classes, his conversion vs the league's, with the league zone-baseline PPS drawn as labeled reference ticks so a trip's value reads against the floor's — over the **season line** (FTA rate, FT points share, free-throw conversion, each vs league) as a border-separated stat coda, so chart and table share the acts' common top register. The dot floor and the small-sample flag count free-throw attempts, at the shared constants. The table twin is the tier-grouped trip taxonomy, whose per-class statements stay hero-descriptive; classes the hero never drew are omitted until data arrives, with a charted class at zero disclosed in a note. No fifth headline card; a hero's verdict may add a guarded line-sentence, never must.
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 
@@ -213,7 +258,7 @@ An established elite player whose known-good outcome tests whether the same engi
 The single season v1 renders for the hero. Chosen as the hero's highest-minutes completed season, to maximize the chance of clearing the volume gate. For the launch hero this is **2025-26** (1631 MIN vs 1060; 509 attempts vs 257; all 6 evaluation zones clear the volume bar).
 
 **Hero eligibility**:
-A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, and play-by-play. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044).
+A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, play-by-play, and free throw. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044).
 
 **Baseline gate** (Gate 1):
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
@@ -226,3 +271,6 @@ NBA tracking data exists for the season (2013-14 onward), so the creation payloa
 
 **Play-by-play gate** (Gate 4):
 A valid canonical Case 3 artifact exists for every game containing a hero shot. Whole-game absence makes the season ineligible; individual event ambiguities remain explicit unknowns handled by assist coverage and bounds.
+
+**Free-throw gate** (Gate 5):
+The hero-season's reconstructed free-throw record reconciles exactly with its oracles: per game against the box score, and season-total against the league season-totals source. The season-total equality is the completeness proof that no free throw occurred in a game outside the play-by-play corpus; a failure names the missing game or the drifted grammar and is never tolerated as approximate coverage.

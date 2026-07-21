@@ -45,6 +45,28 @@ describe('the ADR-0029 tripwire', () => {
     expect(invalidAssistInterpretationsIn('His pull-ups are self-created difficulty')).toEqual([])
   })
 
+  it('free-throw vocabulary is unshipped until THE LINE ships (v2.6)', () => {
+    // ADR-0053/0056: no claim can license these yet — the list empties only
+    // when the copy PR graduates them to a backed free-throw lexicon.
+    expect(unshippedTermsIn('he lives at the line, drawing fouls constantly')).toEqual([
+      'the line',
+      'foul',
+    ])
+    expect(unshippedTermsIn('his free throws and and-one trips to the line')).toEqual([
+      'free throw',
+      'the line',
+      'and-one',
+      'trips to',
+    ])
+  })
+
+  it('phrase forms keep near-miss words legal', () => {
+    // 'triple' is live in Shai's verdict and 'baseline' is ordinary analysis
+    // language; the unshipped terms are phrases so neither ever matches.
+    expect(unshippedTermsIn('mid-range at nearly triple the league share')).toEqual([])
+    expect(unshippedTermsIn('converts above the baseline everywhere')).toEqual([])
+  })
+
   it('defender vocabulary graduated to backed-required in v2.1', () => {
     // 'contested'/'wide open' moved OUT of the unshipped list when the
     // defender family shipped — now they demand a creation claim like the

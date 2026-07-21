@@ -63,6 +63,31 @@ export const GLOSSARY = {
     definition:
       "The percentage of a player's shots taken from a row: his shot diet, one line at a time. 'Lg share' is the same figure for the league, the comparison class every number is judged against.",
   },
+  trip: {
+    term: 'Trip',
+    definition:
+      'One visit to the free-throw line: the free throws awarded from a single foul, counted as one unit. A two-shot trip at league conversion is worth more points than a shot from anywhere on the floor. Technical free throws are not trips.',
+  },
+  'fta-rate': {
+    term: 'FTA rate',
+    definition:
+      'Free-throw attempts per field-goal attempt: how often a player earns free throws relative to how often he shoots. The measure of foul generation, compared against the league on identical terms.',
+  },
+  'ft-points-share': {
+    term: 'FT share of points',
+    definition:
+      "The share of a player's points scored at the free-throw line: the plainest statement of how much of his scoring the shot chart cannot see.",
+  },
+  'ft-conversion': {
+    term: 'FT conversion',
+    definition:
+      "The player's free-throw percentage against the league's: whether he cashes the trips he earns. The making axis's counterpart at the line, where every attempt is worth exactly one point.",
+  },
+  'pts-per-trip': {
+    term: 'Points per trip',
+    definition:
+      "Points scored per visit to the line: free throws made divided by trips. '(lg)' beside a figure is what a league-average shooter would expect from the same trip, meaning the free throws awarded times the league's free-throw percentage.",
+  },
 } as const satisfies Record<string, GlossaryEntry>
 
 export type TermId = keyof typeof GLOSSARY

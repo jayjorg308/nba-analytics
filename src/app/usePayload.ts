@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { CreationPayload } from '../domain/creationPayload'
 import { parseCreationPayload } from '../domain/creationPayload'
+import type { FreethrowPayload } from '../domain/freethrowPayload'
+import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import { parseDerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
@@ -77,4 +79,9 @@ export function useCreationPayload(url: string): PayloadState<CreationPayload> {
 
 export function useShotContextPayload(url: string): PayloadState<ShotContextPayload> {
   return useParsedPayload(url, parseShotContextPayload, 'shot context data')
+}
+
+/** The fourth required sibling (ADR-0053): free-throw trips at trip grain. */
+export function useFreethrowPayload(url: string): PayloadState<FreethrowPayload> {
+  return useParsedPayload(url, parseFreethrowPayload, 'free throw data')
 }

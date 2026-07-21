@@ -81,6 +81,24 @@ export function formatCreationContext(context: string): string {
  * summed 10-ft-and-out rollup over catch-and-shoot / pull-ups / other. */
 export const JUMPERS_LABEL = 'Jumpers (10 ft and out)'
 
+// Product display labels for the trip-class literals (ADR-0053): the payload
+// keeps the camelCase classes; the page and report speak the product's words
+// ("and-1" is the sanctioned data-label form — CONTEXT.md, And-one trip).
+const TRIP_CLASS_LABEL: Record<string, string> = {
+  shootingFoul2: 'Shooting foul (2 FT)',
+  shootingFoul3: 'Shooting foul (3 FT)',
+  bonus: 'Bonus',
+  andOne: 'And-1',
+  flagrant: 'Flagrant',
+  awayFromPlay: 'Away from play',
+  transitionTake: 'Transition take',
+  clearPath: 'Clear path',
+}
+
+export function formatTripClass(tripClass: string): string {
+  return TRIP_CLASS_LABEL[tripClass] ?? tripClass
+}
+
 /** ("Early", "24-15") -> "Early (24-15s)" — the product clock grain's label. */
 export function formatClockBand(band: string, seconds: string): string {
   return `${band} (${seconds}s)`

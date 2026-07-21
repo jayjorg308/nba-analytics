@@ -2,11 +2,11 @@
 // can fetch them (the app reads persisted JSON, never the API — stats.nba.com
 // blocks cloud IPs). public/data/ is committed; /data/ is not (ADR-0010).
 //
-// Each target syncs all three required contracts: shot, creation, and
-// shot-context (ADRs 0030/0032). A target with any missing derived sibling
-// fails rather than shipping a partial argument. Derived sibling payloads
-// live in dedicated subdirectories, keeping the root shot-payload glob blind
-// to them by construction.
+// Each target syncs all four required contracts: shot, creation,
+// shot-context, and free throw (ADRs 0030/0032/0053). A target with any
+// missing derived sibling fails rather than shipping a partial argument.
+// Derived sibling payloads live in dedicated subdirectories, keeping the
+// root shot-payload glob blind to them by construction.
 //
 // Runs under tsx so it reads the hero registry directly — the single source
 // of hero truth (ADR-0022); no slug/season duplicated in package.json.
@@ -56,6 +56,7 @@ function resolveOne(slug: string, season: string): SyncFile[] | null {
     latestSource(derivedDir, 'ingestion/derive_payload.py'),
     latestSource(join(derivedDir, 'creation'), 'ingestion/derive_creation.py'),
     latestSource(join(derivedDir, 'shot-context'), 'ingestion/derive_shot_context.py'),
+    latestSource(join(derivedDir, 'freethrow'), 'ingestion/derive_freethrow.py'),
   ]
   if (sources.some((source) => source === null)) return null
   return [
@@ -67,6 +68,10 @@ function resolveOne(slug: string, season: string): SyncFile[] | null {
     {
       source: sources[2]!,
       dest: join('public', 'data', slug, `${season}.context.json`),
+    },
+    {
+      source: sources[3]!,
+      dest: join('public', 'data', slug, `${season}.freethrow.json`),
     },
   ]
 }

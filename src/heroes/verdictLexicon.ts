@@ -17,9 +17,23 @@ import type { CreationMetrics } from '../domain/aggregateCreation'
 import type { ShotContextMetrics } from '../domain/aggregateShotContext'
 
 /** Vocabulary with no shipped data behind it — forbidden in any verdict
- * until its family ships (then it MOVES to CREATION_LEXICON, never just
- * gets deleted). The defender-distance terms moved out in v2.1. */
-export const UNSHIPPED_CREATION_TERMS = [] as const
+ * regardless of claims, until its family ships (then it MOVES to a backed
+ * lexicon, never just gets deleted). The defender-distance terms moved out
+ * in v2.1 and 'assisted' in v2.5; v2.6's free-throw terms refill the list
+ * until THE LINE act ships (ADR-0053/0056). Phrase forms are deliberate:
+ * bare 'trip' would match 'triple' (live in Shai's verdict) and bare 'line'
+ * would match 'baseline', so the trip terms carry their preposition and the
+ * line term its article ('the lineup' is the known residual near-miss). */
+export const UNSHIPPED_TERMS = [
+  'free throw',
+  'free-throw',
+  'the line',
+  'foul',
+  'and-one',
+  'and-1',
+  'trip to',
+  'trips to',
+] as const
 
 /** Case 3 vocabulary is licensed independently from Case 2 creation buckets:
  * a catch-and-shoot claim cannot back an assisted-make sentence. Substring
@@ -79,7 +93,7 @@ function termsIn(verdict: string, terms: readonly string[]): string[] {
 
 /** Unshipped vocabulary found in the verdict — must always be empty. */
 export function unshippedTermsIn(verdict: string): string[] {
-  return termsIn(verdict, UNSHIPPED_CREATION_TERMS)
+  return termsIn(verdict, UNSHIPPED_TERMS)
 }
 
 /** Shipped creation vocabulary that lacks backing — empty when the verdict
