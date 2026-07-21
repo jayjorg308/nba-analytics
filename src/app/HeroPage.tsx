@@ -18,6 +18,7 @@ import {
 import { AssistedMakes } from './AssistedMakes'
 import { CreationTable } from './CreationTable'
 import { HeadlineBanner } from './HeadlineBanner'
+import { Term } from './Term'
 import { useCreationPayload, usePayload, useShotContextPayload } from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
@@ -167,8 +168,11 @@ function HeroReady({
           <h2 id="zone-caption">ZONE BY ZONE</h2>
           <p className="section-caption-desc">
             {/* nbsp: the unit phrase wraps as one — never a stranded "points)"
-                as the whole second line */}
-            shot diet and shot making, vs league average (making Δ in FG percentage&nbsp;points)
+                as the whole second line. The jargon-bearing words are dictionary
+                terms (ADR-0052), each wrapped at its FIRST prose mention only —
+                "shot diet" was already defined in the headline subtitle above. */}
+            shot diet and <Term id="shot-making">shot making</Term>, vs league average (
+            <Term id="making-delta">making Δ</Term> in FG percentage&nbsp;points)
           </p>
         </header>
         <div className="section-layout">
@@ -192,8 +196,8 @@ function HeroReady({
           <p className="section-kicker">02 · THE HOW</p>
           <h2 id="creation-caption">SHOT CREATION</h2>
           <p className="section-caption-desc">
-            why his conversion lands where it does — points per shot by creation context, vs
-            league average
+            why his conversion lands where it does: <Term id="pps">points per shot</Term> by
+            creation context, vs league average
           </p>
         </header>
         <div className="section-layout">

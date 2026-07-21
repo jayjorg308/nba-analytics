@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { CreationMetrics } from '../domain/aggregateCreation'
 import { SMALL_SAMPLE_MAKING_ATTEMPTS, ZONE_INCLUSION_MIN_ATTEMPTS } from '../domain/constants'
 import {
@@ -9,6 +10,22 @@ import {
   JUMPERS_LABEL,
   withSmallSampleMark,
 } from '../format'
+import type { TermId } from './glossary'
+import { Term } from './Term'
+
+// The jumper-child contexts a reader may not know are dictionary terms
+// (ADR-0052), keyed by the NBA literal the data carries (ADR-0030) — the
+// rendered label stays formatCreationContext's product word.
+const CONTEXT_TERM: Partial<Record<string, TermId>> = {
+  'Catch and Shoot': 'catch-and-shoot',
+  'Pull Ups': 'pull-up',
+}
+
+function contextLabel(context: string): ReactNode {
+  const label = formatCreationContext(context)
+  const termId = CONTEXT_TERM[context]
+  return termId ? <Term id={termId}>{label}</Term> : label
+}
 
 interface CreationCells {
   attempts: number
@@ -31,7 +48,7 @@ function CreationRow({
   child = false,
   note,
 }: {
-  label: string
+  label: ReactNode
   row: CreationCells
   child?: boolean
   /** Small gray annotation under the label — the zone table's band-note
@@ -68,7 +85,20 @@ function CreationRow({
  * (ADR-0001).
  */
 export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
-  const { inside, jumpers, jumperContexts, catchAndShootThrees } = metrics.general
+  const { inside, jumpers, jumperContexts, catchAndShootThrees, pullUpThrees } = metrics.general
+  // The three-arrival bridge (read beside the PPS gap): which KIND of three
+  // the zone table's verdict is about. Both real jumper kinds carry their
+  // slice, so the split is verifiable, not one-sided.
+  const threeArrivalNote = (context: string): string | undefined => {
+    const arrival =
+      context === 'Catch and Shoot'
+        ? catchAndShootThrees
+        : context === 'Pull Ups'
+          ? pullUpThrees
+          : undefined
+    if (!arrival || arrival.share === null) return undefined
+    return `${arrival.attempts} of his ${arrival.totalThrees} threes`
+  }
   const allRows = [
     inside,
     jumpers,
@@ -93,11 +123,19 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
       <div className="zone-scroll">
         <table className="zone-table" aria-label="Shot creation by context, vs league average">
           <thead>
+            {/* Dictionary terms on the stat headers, as in the zone table
+                (ADR-0052). */}
             <tr>
               <th scope="col">Context</th>
-              <th scope="col">FGA</th>
-              <th scope="col">PPS (lg)</th>
-              <th scope="col">Share</th>
+              <th scope="col">
+                <Term id="fga">FGA</Term>
+              </th>
+              <th scope="col">
+                <Term id="pps">PPS (lg)</Term>
+              </th>
+              <th scope="col">
+                <Term id="attempt-share">Share</Term>
+              </th>
               <th scope="col">Lg share</th>
             </tr>
           </thead>
@@ -119,16 +157,10 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
             {jumperContexts.map((row) => (
               <CreationRow
                 key={row.context}
-                label={formatCreationContext(row.context)}
+                label={contextLabel(row.context)}
                 row={row}
                 child
-                // The three-arrival bridge (read beside the PPS gap): which
-                // KIND of three the zone table's verdict is about.
-                note={
-                  row.context === 'Catch and Shoot' && catchAndShootThrees.share !== null
-                    ? `${catchAndShootThrees.attempts} of his ${catchAndShootThrees.totalThrees} threes`
-                    : undefined
-                }
+                note={threeArrivalNote(row.context)}
               />
             ))}
           </tbody>
@@ -164,40 +196,40 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
       </div>
       <div className="table-notes">
         <p>
-          Inside 10 ft the NBA&apos;s tracking doesn&apos;t classify creation — the
+          Inside 10 ft the NBA&apos;s tracking doesn&apos;t classify creation; the
           catch-vs-dribble split covers jumpers from 10 ft and out.
         </p>
         <p>
-          The tiny Other residual — jumpers fitting neither catch-and-shoot nor
-          pull-up — appears only here; the jumper parent includes its attempts.
+          The tiny Other residual (jumpers fitting neither catch-and-shoot nor
+          pull-up) appears only here; the jumper parent includes its attempts.
         </p>
         <p>
           Shot clock and defender rows roll the NBA&apos;s finer ranges up to three bands
-          each — makes and attempts summed, never rates averaged.
+          each: makes and attempts summed, never rates averaged.
         </p>
         {metrics.shotClockUnattributed > 0 && (
           <p>
             {metrics.shotClockUnattributed} attempt
-            {metrics.shotClockUnattributed === 1 ? '' : 's'} without shot-clock tracking —
+            {metrics.shotClockUnattributed === 1 ? '' : 's'} without shot-clock tracking,
             counted here, never guessed into a band.
           </p>
         )}
         {metrics.defenderUnattributed > 0 && (
           <p>
             {metrics.defenderUnattributed} attempt
-            {metrics.defenderUnattributed === 1 ? '' : 's'} without defender tracking —
+            {metrics.defenderUnattributed === 1 ? '' : 's'} without defender tracking,
             counted here, never guessed into a band.
           </p>
         )}
         {anyUnplaced && (
           <p>
             Contexts under {ZONE_INCLUSION_MIN_ATTEMPTS} attempts draw no PPS dot in the
-            chart — too thin to place a value on; their numbers stay here.
+            chart: too thin to place a value on; their numbers stay here.
           </p>
         )}
         {anyFlagged && (
           <p>
-            † PPS on fewer than {SMALL_SAMPLE_MAKING_ATTEMPTS} attempts — treat as uncertain
+            † PPS on fewer than {SMALL_SAMPLE_MAKING_ATTEMPTS} attempts: treat as uncertain
             (flagged, never suppressed).
           </p>
         )}

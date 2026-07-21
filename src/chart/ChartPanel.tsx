@@ -100,7 +100,7 @@ function ShotTooltipContent({ shot, assistStatus }: { shot: EnrichedShot; assist
         {formatPeriod(shot.period)} · {formatClock(shot.minutesRemaining, shot.secondsRemaining)}
       </div>
       <div>
-        {shot.zoneBasic} — {shot.distanceFt} ft
+        {shot.zoneBasic} · {shot.distanceFt} ft
       </div>
       <div className="shot-tooltip-result">{shot.made ? 'Made' : 'Missed'}</div>
       {shot.made && assistLabel && <div className="shot-tooltip-assist">{assistLabel}</div>}

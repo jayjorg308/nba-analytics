@@ -42,8 +42,9 @@ describe('renderCreationReport', () => {
     expect(report).toContain(jumpers.pps!.toFixed(3)) // 1.143 — the parent rollup
   })
 
-  it('prints the three-arrival bridge with the league comparison', () => {
+  it('prints the three-arrival bridge with the league comparison, both jumper kinds', () => {
     expect(report).toContain('catch-and-shoot carries 3 of his 4 threes (75.0%; lg 66.7%)')
+    expect(report).toContain('pull-ups carry 1 of his 4 threes (25.0%; lg 33.3%)')
   })
 
   it('carries the honesty furniture: † flags and the unattributed counters', () => {

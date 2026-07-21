@@ -17,15 +17,15 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
     <main className="index-page">
       {unknownPath !== undefined && (
         <p className="page-status">
-          No player lives at “/{unknownPath}” — the directory is below.
+          No player lives at “/{unknownPath}”. The directory is below.
         </p>
       )}
       <header className="index-header">
         <p className="index-kicker">Shot selection · vs league average</p>
         <h1 className="index-title">One player at a time</h1>
         <p className="index-deck">
-          Each page asks one question of one player’s season — is he taking
-          good shots? — and argues the answer: verdict first, evidence after.
+          Each page asks one question of one player’s season (is he taking
+          good shots?) and argues the answer: verdict first, evidence after.
         </p>
       </header>
       <ul className="hero-index">

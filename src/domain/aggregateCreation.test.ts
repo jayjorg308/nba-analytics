@@ -66,7 +66,7 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(m.general.inside.attempts + j.attempts).toBe(m.seasonFga)
   })
 
-  it('bridges the three-point story: catch-and-shoot 3PA over all 3PA, both sides', () => {
+  it('bridges the three-point story: each jumper kind\'s 3PA over all 3PA, both sides', () => {
     const cs3 = m.general.catchAndShootThrees
     // golden 3PA by context: C&S 3, Pull Ups 1, inside 0, Other 0
     expect(cs3.attempts).toBe(3)
@@ -74,6 +74,12 @@ describe('aggregateCreationMetrics over the creation golden', () => {
     expect(cs3.share).toBeCloseTo(3 / 4, 10)
     // league: C&S 60, Pull Ups 30 → 60 of 90
     expect(cs3.leagueShare).toBeCloseTo(60 / 90, 10)
+    // the pull-up slice, so the arrival split is verifiable from both ends
+    const pu3 = m.general.pullUpThrees
+    expect(pu3.attempts).toBe(1)
+    expect(pu3.totalThrees).toBe(4)
+    expect(pu3.share).toBeCloseTo(1 / 4, 10)
+    expect(pu3.leagueShare).toBeCloseTo(30 / 90, 10)
   })
 
   it('a zero-attempt context keeps its share and makes no PPS claim', () => {
