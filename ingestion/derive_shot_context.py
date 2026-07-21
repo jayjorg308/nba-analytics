@@ -73,13 +73,13 @@ def _clock_parts(clock: str) -> tuple[int, int] | None:
     return int(match.group("minutes")), int(match.group("seconds"))
 
 
-def parse_game(play_by_play_snapshot: dict, box_score_snapshot: dict) -> ParsedGame:
-    """Parse one game and reconcile every explicit assist to the box score.
+def validate_game_pair(
+    play_by_play_snapshot: dict, box_score_snapshot: dict
+) -> tuple[dict, dict, str]:
+    """Validate a raw source pair's identity; return (pbp_game, box_game, game_id).
 
-    The returned index preserves duplicate action numbers as multiple values;
-    the shot join classifies those as source ambiguity rather than picking one
-    (ADR-0036). Marker-free makes become unassisted only after the full-game
-    parsed assist totals reconcile exactly (ADR-0041/0046).
+    Shared with the free-throw derive (ADR-0053) — the Gate 4 corpus has one
+    identity discipline, not one per consumer.
     """
     pbp = _response(play_by_play_snapshot, "play-by-play")
     box = _response(box_score_snapshot, "box-score")
@@ -106,6 +106,20 @@ def parse_game(play_by_play_snapshot: dict, box_score_snapshot: dict) -> ParsedG
     box_date = str(box_meta.get("pull_date", ""))
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", pbp_date) or pbp_date != box_date:
         fail("play-by-play and box-score pull dates disagree")
+    return pbp_game, box_game, game_id
+
+
+def parse_game(play_by_play_snapshot: dict, box_score_snapshot: dict) -> ParsedGame:
+    """Parse one game and reconcile every explicit assist to the box score.
+
+    The returned index preserves duplicate action numbers as multiple values;
+    the shot join classifies those as source ambiguity rather than picking one
+    (ADR-0036). Marker-free makes become unassisted only after the full-game
+    parsed assist totals reconcile exactly (ADR-0041/0046).
+    """
+    pbp_game, box_game, game_id = validate_game_pair(
+        play_by_play_snapshot, box_score_snapshot
+    )
 
     official_assists: dict[int, int] = {}
     for side in ("homeTeam", "awayTeam"):

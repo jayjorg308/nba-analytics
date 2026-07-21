@@ -3,7 +3,7 @@
     "game_id": "0022500025",
     "pull_date": "2026-07-16",
     "source": "NBA Stats BoxScoreTraditionalV3",
-    "fixture_note": "Hand-trimmed validation pair for playbyplay.truncated.json"
+    "fixture_note": "Hand-trimmed validation pair for playbyplay.truncated.json; player rows carry the hero's official free-throw line (the ADR-0053 per-game oracle)"
   },
   "response": {
     "meta": { "version": 1, "code": 200 },
@@ -12,12 +12,24 @@
       "homeTeam": {
         "teamId": 1610612756,
         "teamTricode": "PHX",
-        "statistics": { "assists": 1 }
+        "statistics": { "assists": 1 },
+        "players": [
+          {
+            "personId": 1626164,
+            "statistics": { "freeThrowsMade": 0, "freeThrowsAttempted": 0 }
+          }
+        ]
       },
       "awayTeam": {
         "teamId": 1610612762,
         "teamTricode": "UTA",
-        "statistics": { "assists": 1 }
+        "statistics": { "assists": 1 },
+        "players": [
+          {
+            "personId": 1642262,
+            "statistics": { "freeThrowsMade": 4, "freeThrowsAttempted": 6 }
+          }
+        ]
       }
     }
   }

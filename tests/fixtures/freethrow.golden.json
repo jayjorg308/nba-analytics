@@ -1,0 +1,72 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "player": "Cody Williams",
+    "playerId": 1642262,
+    "season": "2025-26",
+    "sourceShotPayload": "tests/fixtures/derived.golden.json",
+    "sourceLeagueTotals": "tests/fixtures/league-totals.truncated.json",
+    "leagueTotalsPullDate": "2026-07-21",
+    "seasonFga": 15,
+    "seasonPoints": 21,
+    "seasonFtm": 4,
+    "seasonFta": 6,
+    "technicalFtm": 0,
+    "technicalFta": 1,
+    "totalTrips": 3,
+    "tripClassCounts": {
+      "shootingFoul2": 1,
+      "shootingFoul3": 0,
+      "bonus": 1,
+      "andOne": 1,
+      "flagrant": 0,
+      "awayFromPlay": 0,
+      "transitionTake": 0,
+      "clearPath": 0
+    },
+    "gamesExpected": 6,
+    "gamesLoaded": 1,
+    "sourceGames": [
+      {
+        "gameId": "0022500025",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      }
+    ]
+  },
+  "trips": [
+    {
+      "gameId": "0022500025",
+      "period": 2,
+      "clock": "PT05M10.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500025",
+      "period": 3,
+      "clock": "PT03M48.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 480
+    },
+    {
+      "gameId": "0022500025",
+      "period": 4,
+      "clock": "PT02M40.00S",
+      "tripClass": "bonus",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    }
+  ],
+  "leagueBaseline": {
+    "ftm": 14,
+    "fta": 18,
+    "fga": 45,
+    "points": 61
+  }
+}
