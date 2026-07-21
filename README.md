@@ -95,8 +95,8 @@ Deep hero URLs are served through the rewrite in `vercel.json`, which sends any 
 
 The intended multi-hero shape is one deployment containing:
 
-- `/` — eventually, a directory of hero poster tiles;
-- `/<player-slug>` — one complete question, verdict, and evidence page per player.
+- `/` - eventually, a directory of hero poster tiles;
+- `/<player-slug>` - one complete question, verdict, and evidence page per player.
 
 During the temporary directory-less period, `/` and unknown paths resolve to Cody Williams. Keyonte George and Shai Gilgeous-Alexander remain live at their direct URLs, and the registry-driven directory stays committed for reactivation.
 
@@ -125,7 +125,7 @@ The clean-clone-safe suite includes cross-language golden contracts for all four
 
 v1 through v2.5 are shipped: the selection/making argument, verdict-first presentation, interactive court, registry-based hero architecture, league-relative Case 2 creation contexts, and per-shot Case 3 assisted-make analysis are in place for Cody Williams, Keyonte George, and Shai Gilgeous-Alexander. Estimated per-shot clock was independently gated and deliberately omitted from v2.5 because the completed-season Stats V3 source could not support the required reconstruction audit.
 
-**v2.6 — the line (free throws at trip grain)** is the current phase, and its build steps are complete: the fourth typed contract derived from the existing play-by-play corpus, the league season-totals pull with an exact season-total reconciliation gate (Gate 5), the pure free-throw metrics function with its `hero:report` LINE section, and the `04 · THE LINE` act with the four-payload sync, all landed 2026-07-21 for all three heroes. The close-out step remains: per-hero verdict decisions (a guarded line-sentence is legal, never mandatory), graduating free-throw vocabulary from the verdict lexicon's unshipped list, and extending the deployed-payload guards to the fourth contract.
+**v2.6 · the line (free throws at trip grain)** is the current phase, and its build steps are complete: the fourth typed contract derived from the existing play-by-play corpus, the league season-totals pull with an exact season-total reconciliation gate (Gate 5), the pure free-throw metrics function with its `hero:report` LINE section, and the `04 · THE LINE` act with the four-payload sync, all landed 2026-07-21 for all three heroes. The close-out step remains: per-hero verdict decisions (a guarded line-sentence is legal, never mandatory), graduating free-throw vocabulary from the verdict lexicon's unshipped list, and extending the deployed-payload guards to the fourth contract.
 
 After that, **v3: living seasons and heroes at scale**:
 
