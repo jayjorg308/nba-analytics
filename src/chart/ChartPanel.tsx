@@ -276,6 +276,21 @@ export function ChartPanel({
           <ZoneDetailCard row={selectedRow} onClose={closeDetail} />
         )}
       </div>
+      {/* One interaction cue per view, a caption under the court. Both cues
+          stay mounted, stacked in one cell (the legend-slot recipe), so the
+          toggle never changes the panel's height. aria-hidden: the zone
+          fills are real buttons (aria-haspopup) and the hover cue is
+          mouse-only (ADR-0027) — AT and touch users get every number in
+          the table. */}
+      <div className="chart-hint-slot" aria-hidden="true">
+        <p className={`chart-hint${view === 'zones' ? '' : ' hint-inactive'}`}>
+          <span className="hint-verb-click">Click</span>
+          <span className="hint-verb-tap">Tap</span> any zone for its full numbers
+        </p>
+        <p className={`chart-hint chart-hint-hover${view === 'shots' ? '' : ' hint-inactive'}`}>
+          Hover over any shot for its date, distance, and result
+        </p>
+      </div>
     </div>
   )
 }
