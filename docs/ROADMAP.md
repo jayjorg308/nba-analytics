@@ -14,6 +14,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
+| v2.6 — the line (free throws at trip grain) | 📋 designed 2026-07-21 (ADRs 0053–0056 + CONTEXT.md terms; research spike done) — not built |
 | v3 — living seasons and heroes at scale | not started |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
@@ -282,6 +283,52 @@ shift, and every visible number comes from the pure aggregation plus
 - Estimated shot-clock remaining is approximate even if its band
   reconciliation passes, and is absent everywhere if any hero fails the gate.
 
+## v2.6 — The line (free throws at trip grain)
+
+_The thesis made whole: scoring the shot chart cannot see. FT points are 14.3% /
+26.4% / 25.5% of the three heroes' scoring (league 15.9%), and non-and-one
+shooting fouls hide +8.8% / +15.2% / +16.1% more attempts than the shot payload
+records — the current model literally cannot explain the MVP positive control.
+Designed 2026-07-21 (grilling + domain-modeling session; ADRs 0053–0056, new
+CONTEXT.md terms: trip, trip class, attempt-equivalent/add-on tiers,
+shooting-foul/bonus/and-one trips, free throw payload, FTA rate, free-throw
+conversion, FT points share, expected points per trip, free-throw section,
+Gate 5, and the reserved future term "scoring attempt"). The likely eventual
+destination — the scoring-attempt model that prices foul generation into the
+headline decomposition ("Option B") — is deliberately unversioned: the trip
+grain, the tiers, and the and-one shot identity keep it an aggregation +
+presentation decision, never a schema bump._
+
+**The spike is done.** The 2026-07-21 research session reconstructed every hero
+free-throw trip from the committed Case 3 corpus (zero new game pulls needed):
+all 1,111 hero FT events classified with zero unresolved, per-game FTM/FTA
+exact against every box score, season totals exact against the league endpoint
+(84/119, 337/378, 540/614). Dead end confirmed and recorded: the stats API
+rejects the FTA/POSS_END_FT shot-chart context measures, so no zone source
+exists for non-and-one drawn fouls — the denied attempt's point class (2 FT vs
+3 FT) is the only recoverable value signal.
+
+1. **Contract** — `derive_freethrow.py` over the existing corpus + Zod schema +
+   golden pair #3 + the oracle battery (taxonomy totality, per-game box-score
+   equality, and-one exact linkage — ADR-0053). Free-throw vocabulary enters
+   the lexicon's unshipped list in this same PR.
+2. **League totals pull** — `pull_league_totals.py` → append-only
+   `data/raw/_league/<season>/totals/<date>.json`; one artifact serves the
+   Gate 5 oracle and the league baseline (ADR-0054).
+3. **Metrics** — pure `aggregateFreeThrowMetrics` (fourth single-call-site
+   function; consumes the free-throw payload alone) + the `hero:report` LINE
+   section. Report before UI; the verdict sentence is authored from it
+   (ADR-0055 semantics: endpoint parity, both-cuts guard discipline, shared
+   †/floor constants on FTA).
+4. **The act** — `04 · THE LINE` after THE CREDIT: line-vs-floor dumbbell
+   chart (expected points per trip vs league, zone-baseline PPS as reference
+   ticks) + tier-grouped table twin (ADR-0056). The ADR-0051 kicker amendment
+   ("shots" → "scoring") lands in this PR, appended to ADR-0051.
+5. **Copy and guards** — per-hero verdict decisions (a line-sentence is legal,
+   never mandatory), lexicon graduation, `hero:sync` 3→4 files with
+   partial-sync failure, deployed-pair guards extended to the fourth payload.
+   Full repository gate before calling it done.
+
 ## v3 — Living seasons and heroes at scale
 
 1. **In-progress season machinery** — what the append-only raw layer was
@@ -314,3 +361,14 @@ shift, and every visible number comes from the pure aggregation plus
 - **No rate averaging.** Rollups sum makes and attempts, always (ADR-0004).
 - **No loosened guards.** Palette, verdict claims, golden, drift: when a
   guard fails, fix the thing it guards — never the assertion (ADR-0014/0017).
+- **No trip estimator.** The 0.44 coefficient and every successor are
+  permanently forbidden; hero-side trips are exact, and where exact league
+  data does not exist the product goes descriptive, never approximate
+  (ADR-0053/0055).
+- **No league-comparative trip-taxonomy claims** without a league-wide
+  play-by-play corpus (ADR-0038's stance extended to trips; ADR-0055).
+- **Technicals are never trips** and never evaluation — counted and reported,
+  the backcourt pattern (ADR-0053).
+- **Never guess a zone for a shooting-foul trip.** The denied attempt's point
+  class is knowable (2 FT vs 3 FT); its location is not (ADR-0012/0019 ethos,
+  ADR-0053).

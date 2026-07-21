@@ -178,6 +178,51 @@ The Assisted Makes section's bounded-share dot plot: each zone's classified assi
 **Assisted-makes presentation**:
 The Assisted Makes product surface suppresses the Unknown / Coverage / Bounds table group when every displayed row has complete classification, and restores the whole group when any unknown make exists. Attempt-empty refinement rows are omitted until data makes them informative. The underlying coverage metrics and worst-case bounds remain part of the domain and authoring contracts in both states (ADR-0043).
 
+**Trip** (a.k.a. **trip to the line**):
+The free throws awarded to a player from a single non-technical foul, shot as one visit to the line — the unit of free-throw analysis, reconstructed from play-by-play events. A trip carries its free-throw makes and attempts and a trip class recording how it arose. Technical free throws are never trips.
+
+**Technical free throw**:
+A free throw awarded for a technical foul, shot by a designated shooter rather than earned by the shooter's own play. Excluded from trips and from all free-throw evaluation; counted and reported whenever nonzero (the backcourt pattern). Real points, never evidence about shot selection or foul generation.
+
+**Trip class**:
+The classification of how a trip arose — shooting foul (two or three free throws), bonus, and-one, flagrant, away-from-play, transition take, clear path — assigned from the causing foul event, never guessed. Every trip carries exactly one class, the classes partition non-technical free throws, and each class belongs to one of two tiers: attempt-equivalent or add-on.
+
+**Attempt-equivalent trip**:
+A trip that ends the possession in place of a field-goal attempt: the shooting-foul trips and the bonus trip. The tier a future scoring-attempt model would add to the attempt denominator alongside FGA.
+
+**Add-on trip**:
+A trip whose points land on top of a scoring attempt or possession that already stands: the and-one trip (its made shot is a counted attempt) plus the flagrant, away-from-play, transition-take, and clear-path trips (the fouled team keeps the ball). Add-on free throws raise points scored without adding an attempt.
+
+**Shooting-foul trip**:
+A trip awarded for a foul on an unmade shot: a field-goal attempt the scorer never recorded, replaced by two or three free throws. The free-throw count is the only surviving record of the denied attempt's point class (two free throws for a two-point attempt, three for a three); no zone or coordinates exist for it.
+
+**Bonus trip**:
+A trip awarded for a non-shooting foul while the fouling team is in the penalty. Attempt-equivalent on possession semantics (the possession ends at the line) even though it is drawn away from the act of shooting; whether it speaks for shot selection is a copy decision the taxonomy deliberately leaves open.
+
+**And-one trip**:
+The single free throw attached to a made, counted field-goal attempt ("and-1" acceptable in data labels). The one trip class with a shot identity: its made shot exists in the shot payload, so and-one trips inherit that shot's zone.
+
+**Free throw payload**:
+The fourth typed contract: per-trip rows (trip class, free-throw makes and attempts, the and-one's shot identity) plus the technical free-throw count and the league free-throw baseline, metric-free, with its own schema version and golden. Deployed beside its three siblings and required for every registered hero.
+
+**FTA rate**:
+Free-throw attempts per field-goal attempt — the foul-generation headline, hero vs league on identical semantics: all free throws (technicals included, because league totals cannot exclude them) over pre-drop season FGA. Coarser than the trip taxonomy but exactly comparable; a generation claim must also survive the hero's own without-technicals cut.
+
+**Free-throw conversion**:
+Hero FT% against league FT% — the making axis's analog at the line, on endpoint-parity semantics: technicals included in numerator and denominator on both sides, because league totals cannot exclude them. Carries the shared small-sample flag on free-throw attempts; per-class conversion (an and-one's single free throw) flags early and often. A conversion claim must also survive the hero's own without-technicals cut.
+
+**Scoring attempt**:
+_Future vocabulary, reserved:_ a field-goal attempt or an attempt-equivalent trip — the denominator of the eventual widened decomposition that prices free-throw generation into shot selection. Recorded now so copy never improvises a synonym; no product surface may use it until that model ships, and its league comparison requires an exact league trip count (league-wide play-by-play), never an estimator.
+
+**FT points share**:
+The share of a player's (or the league's) points scored at the line, technicals included on both sides. Exact from box-score arithmetic; the plainest statement of how much scoring the shot chart cannot see.
+
+**Expected points per trip**:
+A trip's value at a stated conversion: two (or three) free throws times free-throw percentage. At league conversion a two-shot trip prices at more points than any zone on the floor — the number that lets copy weigh a drawn foul against a taken shot in the product's one value unit.
+
+**Free-throw section** (a.k.a. **THE LINE**):
+The hero page's fourth act (04 · THE LINE): the points his fouls created, on attempts the shot chart never counted. Its visual is the **line-vs-floor chart** — the creation act's dumbbell grammar on the points-per-attempt axis: expected points per trip for the two-shot and three-shot trip classes, his conversion vs the league's, with the league zone-baseline PPS drawn as labeled reference ticks so a trip's value reads against the floor's. The dot floor and the small-sample flag count free-throw attempts, at the shared constants. The table twin leads with the season line (FTA rate, FT points share, free-throw conversion, each vs league) over the tier-grouped trip taxonomy, whose per-class statements stay hero-descriptive. No fifth headline card; a hero's verdict may add a guarded line-sentence, never must.
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 
@@ -213,7 +258,7 @@ An established elite player whose known-good outcome tests whether the same engi
 The single season v1 renders for the hero. Chosen as the hero's highest-minutes completed season, to maximize the chance of clearing the volume gate. For the launch hero this is **2025-26** (1631 MIN vs 1060; 509 attempts vs 257; all 6 evaluation zones clear the volume bar).
 
 **Hero eligibility**:
-A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, and play-by-play. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044).
+A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, play-by-play, and free throw. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044).
 
 **Baseline gate** (Gate 1):
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
@@ -226,3 +271,6 @@ NBA tracking data exists for the season (2013-14 onward), so the creation payloa
 
 **Play-by-play gate** (Gate 4):
 A valid canonical Case 3 artifact exists for every game containing a hero shot. Whole-game absence makes the season ineligible; individual event ambiguities remain explicit unknowns handled by assist coverage and bounds.
+
+**Free-throw gate** (Gate 5):
+The hero-season's reconstructed free-throw record reconciles exactly with its oracles: per game against the box score, and season-total against the league season-totals source. The season-total equality is the completeness proof that no free throw occurred in a game outside the play-by-play corpus; a failure names the missing game or the drifted grammar and is never tolerated as approximate coverage.
