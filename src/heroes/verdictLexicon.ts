@@ -21,11 +21,13 @@ import type { ShotContextMetrics } from '../domain/aggregateShotContext'
  * regardless of claims, until its family ships (then it MOVES to a backed
  * lexicon, never just gets deleted). The defender-distance terms moved out
  * in v2.1, 'assisted' in v2.5, and the v2.6 free-throw terms graduated to
- * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056). The empty
- * list is NOT dead code (ADR-0029): it is the mechanism that keeps future
- * vocabulary from outrunning its data, and its emptiness is the recorded
- * signal that every measured family has shipped. */
-export const UNSHIPPED_TERMS = [] as const
+ * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056) — every
+ * MEASURED family has now shipped. What remains is reserved future
+ * vocabulary: CONTEXT.md's 'scoring attempt' may appear on no product
+ * surface until the widened decomposition that prices trips into the
+ * attempt denominator actually ships (the ADR-0053 destination), so the
+ * tripwire holds it regardless of claims. */
+export const UNSHIPPED_TERMS = ['scoring attempt'] as const
 
 /** Free-throw vocabulary (v2.6, THE LINE — ADR-0053/0056): legal only when
  * the hero's guard declares at least one free-throw claim asserted against

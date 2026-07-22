@@ -69,10 +69,18 @@ describe('the ADR-0029 tripwire', () => {
     expect(unbackedAssistTerms('trips to the line', 1)).toEqual([])
   })
 
-  it('the unshipped list is empty — every measured family has shipped (ADR-0029)', () => {
-    // The list stays as the mechanism, not dead code: future vocabulary with
-    // no shipped signal goes here first, exactly as the free-throw terms did.
+  it('the unshipped list guards the reserved scoring-attempt term (ADR-0029)', () => {
+    // Every MEASURED family has shipped; what remains unshipped is
+    // CONTEXT.md's reserved future vocabulary, forbidden regardless of
+    // claims until the scoring-attempt model ships. Future vocabulary with
+    // no shipped signal enters this list first, as the free-throw terms did.
     expect(unshippedTermsIn('free throws, fouls, trips to the line, and-one, the line')).toEqual([])
+    expect(unshippedTermsIn('a scoring attempt is the widened denominator')).toEqual([
+      'scoring attempt',
+    ])
+    expect(unshippedTermsIn('his scoring attempts outnumber his shots')).toEqual([
+      'scoring attempt',
+    ])
   })
 
   it('phrase forms keep near-miss words legal', () => {

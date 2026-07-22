@@ -349,8 +349,8 @@ exists for non-and-one drawn fouls — the denied attempt's point class (2 FT vs
    quarter of MVP scoring at the line) — each backed by FreethrowClaim
    assertions holding on both technical cuts (ADR-0055). The free-throw
    vocabulary graduated from the unshipped list to FREETHROW_LEXICON
-   (ADR-0029's mechanism, third use; the unshipped list is now empty and
-   deliberately retained), and `freethrowPayload.real.test.ts` guards the
+   (ADR-0029's mechanism, third use; the unshipped list now holds only the
+   reserved 'scoring attempt' term), and `freethrowPayload.real.test.ts` guards the
    deployed pair: strict-parse, pre-drop seasonFga identity, and-one
    made-shot linkage, Gate 5 corpus completeness, tier-partition coherence,
    derived-copy equality. Full gate green: pytest 70, vitest 291, lint,
