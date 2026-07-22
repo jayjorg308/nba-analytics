@@ -390,6 +390,14 @@ untouched._
    the `LeagueAverages` frame's behavior under `DateTo` is established. If an
    endpoint fails, the frontier rule does not bend — that source's pull
    design changes (ADR-0058).
+   _Done 2026-07-21, same day: every oracle exact at two frontiers
+   (2026-01-15 and 2025-11-05, Cody 2025-26 — n=135 and n=8), `DateTo`
+   inclusive of the frontier date's games, `LeagueAverages` respects
+   `DateTo` (true as-of baselines), Gate 5's completeness proof works at
+   frontier grain. One characteristic recorded: the league tracking
+   dashboard undercounts official FGA (~0.37% season-final, present in the
+   shipped v2.1 artifacts) — cross-source coherence checks compare like
+   universes only. Closures in ADR-0058._
 2. **Phase 1 — Ace Bailey, fourth hero**: play-by-play/box pairs for his 72
    games (Gates 4/5), all four payloads, ADR-0008 grain refinements re-run
    against his real counts, banner + verdict + colocated guard + registry
