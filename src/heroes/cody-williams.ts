@@ -32,14 +32,19 @@ export const codyWilliams: HeroConfig = {
   // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
   // when the data moves, rewrite this; the committed guard
   // (./cody-williams.guard.test.ts) fails if any directional claim stops
-  // matching the deployed payloads. The final sentence is the v2 WHY
+  // matching the deployed payloads. The fourth sentence is the v2 WHY
   // (ADR-0029): creation vocabulary, licensed by the guard's creation-kind
-  // claims against the deployed creation payload — authored from
-  // hero:report's creation section, like the rest is from its decomposition.
+  // claims against the deployed creation payload. The closing sentence is
+  // the v2.6 LINE sentence (ADR-0056): free-throw vocabulary, licensed by
+  // the guard's free-throw claims, holding on both technical cuts
+  // (ADR-0055) — authored from hero:report's LINE section, like the rest
+  // is from its decomposition.
   verdict:
     'Yes, he lives at the rim and rarely fires from three, and that trade nets out to an ' +
     'essentially league-average shot diet. The problem is shot making. ' +
     'He converts below what his shot diet should yield, and the gap comes almost entirely from three. ' +
     'The misses are not self-created difficulty: almost all of his threes arrive off the catch, ' +
-    'and it is exactly those catch-and-shoot looks he converts far below league value.',
+    'and it is exactly those catch-and-shoot looks he converts far below league value. ' +
+    'The line does not bail him out: he draws fouls less often than the league and converts ' +
+    'below the league rate when he gets there.',
 }

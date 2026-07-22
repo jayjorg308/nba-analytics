@@ -20,6 +20,10 @@
 //    above league value"                                    -> why 2 (creation)
 //   ("the diet is how he creates" is the rhetorical frame of why 1: the
 //    selection cost and the pull-up-heavy creation are the same fact.)
+//   "he draws fouls far more often than the league"         -> line 1 (free throw)
+//   "converts well above the league rate once there"        -> line 2 (free throw)
+//   ("the line softens the no" is the rhetorical frame of line 1 + line 2:
+//    real scoring the shot chart cannot see, on both technical cuts.)
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -27,14 +31,17 @@ import { describe, expect, it } from 'vitest'
 import { makingDeltaBin } from '../chart/makingScale'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
+import { aggregateFreethrowMetrics } from '../domain/aggregateFreethrow'
 import { parseCreationPayload } from '../domain/creationPayload'
+import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { keyonteGeorge as hero } from './keyonte-george'
-import type { CreationClaim } from './verdictLexicon'
+import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
 import {
   invalidAssistInterpretationsIn,
   unbackedAssistTerms,
   unbackedCreationTerms,
+  unbackedFreethrowTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
 
@@ -54,6 +61,13 @@ const creationPath = path.resolve(
   hero.slug,
   `${hero.season}.creation.json`,
 )
+const freethrowPath = path.resolve(
+  process.cwd(),
+  'public',
+  'data',
+  hero.slug,
+  `${hero.season}.freethrow.json`,
+)
 
 // Verdict semantics — thresholds the prose is held to:
 // "costs him": selection at least 0.05 PPS below the league diet — too large
@@ -72,6 +86,14 @@ const FAR_MORE_SHARE_PP = 0.1
 // "well above league value": a PPS gap of at least 0.10 — twice the
 // materiality bar (George: 1.273 vs 1.100).
 const WELL_ABOVE_PPS = 0.1
+// "draws fouls far more often": FTA rate at least 0.10 over the league's —
+// ten extra free throws per hundred shots, well past any rounding story
+// (actual: 0.429 / 0.418 without technicals, vs league 0.264).
+const FAR_MORE_FTA_RATE = 0.1
+// "converts well above the league rate": FT% at least 5 points over league —
+// the gap between an average and a very good free-throw shooter (actual:
+// 0.892 / 0.894 without technicals, vs league 0.783).
+const WELL_ABOVE_FT_PCT = 0.05
 
 // The creation-kind claims (ADR-0029): declaring these — asserted against
 // aggregateCreationMetrics over the DEPLOYED creation payload — is what
@@ -98,7 +120,38 @@ const creationClaims: CreationClaim[] = [
   },
 ]
 
-describe.skipIf(!existsSync(payloadPath) || !existsSync(creationPath))(
+// The line-sentence's free-throw claims (ADR-0055/0056): every assertion on
+// a league-baselined metric holds on BOTH technical cuts — a claim that
+// flips on eight technical free throws was never sturdy enough to author.
+// Season FTA (378) clears the † bar, so both sentences state unhedged.
+const freethrowClaims: FreethrowClaim[] = [
+  {
+    name: 'line 1: draws fouls far more often than the league, on both cuts',
+    assert: (f) => {
+      const rate = f.seasonLine.ftaRate
+      expect(rate.value).not.toBeNull()
+      expect(rate.withoutTechnicals).not.toBeNull()
+      expect(rate.value! - rate.league).toBeGreaterThanOrEqual(FAR_MORE_FTA_RATE)
+      expect(rate.withoutTechnicals! - rate.league).toBeGreaterThanOrEqual(FAR_MORE_FTA_RATE)
+    },
+  },
+  {
+    name: 'line 2: converts well above the league rate, on both cuts, sample-safe',
+    assert: (f) => {
+      const conv = f.seasonLine.conversion
+      expect(conv.value).not.toBeNull()
+      expect(conv.withoutTechnicals).not.toBeNull()
+      // stated unhedged in the verdict, so it must clear the † bar
+      expect(f.seasonLine.smallSampleConversion).toBe(false)
+      expect(conv.value! - conv.league).toBeGreaterThanOrEqual(WELL_ABOVE_FT_PCT)
+      expect(conv.withoutTechnicals! - conv.league).toBeGreaterThanOrEqual(WELL_ABOVE_FT_PCT)
+    },
+  },
+]
+
+describe.skipIf(
+  !existsSync(payloadPath) || !existsSync(creationPath) || !existsSync(freethrowPath),
+)(
   'verdict guard: Keyonte George (ADR-0017/0029)',
   () => {
   const payload = parseDerivedPayload(JSON.parse(readFileSync(payloadPath, 'utf-8')))
@@ -106,6 +159,9 @@ describe.skipIf(!existsSync(payloadPath) || !existsSync(creationPath))(
   const zone = (z: string) => m.zones.find((r) => r.zone === z)!
   const creation = aggregateCreationMetrics(
     parseCreationPayload(JSON.parse(readFileSync(creationPath, 'utf-8'))),
+  )
+  const freethrow = aggregateFreethrowMetrics(
+    parseFreethrowPayload(JSON.parse(readFileSync(freethrowPath, 'utf-8'))),
   )
 
   it('claim 1: selection is materially below the league diet', () => {
@@ -139,11 +195,19 @@ describe.skipIf(!existsSync(payloadPath) || !existsSync(creationPath))(
     it(claim.name, () => claim.assert(creation))
   }
 
-  it('creation vocabulary is bucket-backed; unshipped vocabulary absent (ADR-0029)', () => {
-    // Case 2 vocabulary requires a creation claim. Case 3 assist vocabulary
-    // is independently gated; Keyonte's current verdict chooses not to use it.
+  // The line-sentence's free-throw claims (ADR-0055/0056), run against the
+  // deployed free-throw payload's metrics.
+  for (const claim of freethrowClaims) {
+    it(claim.name, () => claim.assert(freethrow))
+  }
+
+  it('creation and line vocabulary are claim-backed; unshipped vocabulary absent (ADR-0029)', () => {
+    // Case 2 vocabulary requires a creation claim, free-throw vocabulary a
+    // free-throw claim. Case 3 assist vocabulary is independently gated;
+    // Keyonte's current verdict chooses not to use it.
     expect(unshippedTermsIn(hero.verdict)).toEqual([])
     expect(unbackedCreationTerms(hero.verdict, creationClaims.length)).toEqual([])
+    expect(unbackedFreethrowTerms(hero.verdict, freethrowClaims.length)).toEqual([])
     expect(unbackedAssistTerms(hero.verdict, 0)).toEqual([])
     expect(invalidAssistInterpretationsIn(hero.verdict)).toEqual([])
   })

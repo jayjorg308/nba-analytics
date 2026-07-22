@@ -94,10 +94,13 @@ The single pure function that computes v1's player-side metrics (diet-weighted P
 "Is this player taking good shots?" — answered completely by the two-axis model (shot selection + shot making). This is the whole of v1's claim; the tool states this question and no more.
 
 **Verdict**:
-The few-sentence answer to the thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by committed claim guards (ADR-0017). Its creation why-sentence may use shipped vocabulary only when a matching claim is declared; Case 3 assist language becomes available in v2.5 but remains optional per hero.
+The few-sentence answer to the thesis, stated directly under the title — the answer before the evidence. Authored per hero (hero copy is configuration, like the hero itself), never computed, and kept honest by committed claim guards (ADR-0017). Its creation why-sentence may use shipped vocabulary only when a matching claim is declared; Case 3 assist language became available in v2.5 and free-throw line language in v2.6, each optional per hero and each requiring its own declared claim kind.
 
 **Assist claim**:
 An optional authored verdict assertion about assisted makes, backed by shot-context metrics and required to remain true across the full worst-case assist-share bounds. Shipping assist analysis licenses the vocabulary; it does not force every hero's verdict to use it.
+
+**Free-throw claim**:
+An optional authored verdict assertion about the hero's line (a line-sentence's backing), asserted against the free-throw aggregation's output and required to hold on both the with-technicals and without-technicals cuts against the league value (ADR-0055's both-cuts discipline). Shipping THE LINE licenses the vocabulary; it does not force every hero's verdict to use it.
 
 **Hero banner**:
 The page's poster-scale opening: a black-and-white action image of the hero player carrying the thesis question as the page's `h1` (kicker · question · "↓ the verdict" cue pinned to the banner's bottom edge as the scroll affordance), leading directly into the verdict — ADR-0018's question-first order at poster volume. Its content (image, per-layout focal points, kicker, optional `teamLogoPath` team-mark watermark for the wide layout's dark left column) is authored per hero in the hero's config module (`src/heroes/<slug>.ts`), like the verdict; its treatment (grayscale filter, wide panel / narrow full-bleed layouts, the display face, the portrait full-viewport landing screen with its graded title zone and glyph halo) is product (ADR-0021, ADR-0020, ADR-0025). The committed image is always a web-sized derivative, never a full-resolution source. Team marks use a normalized 1024×1024 transparent canvas with a centered visible mark occupying 58–62% of the longest side; `ingestion/test_team_logo_assets.py` enforces that asset interface so one CSS slot styles every team without per-hero scale overrides.
@@ -212,7 +215,7 @@ Free-throw attempts per field-goal attempt — the foul-generation headline, her
 Hero FT% against league FT% — the making axis's analog at the line, on endpoint-parity semantics: technicals included in numerator and denominator on both sides, because league totals cannot exclude them. Carries the shared small-sample flag on free-throw attempts; per-class conversion (an and-one's single free throw) flags early and often. A conversion claim must also survive the hero's own without-technicals cut.
 
 **Scoring attempt**:
-_Future vocabulary, reserved:_ a field-goal attempt or an attempt-equivalent trip — the denominator of the eventual widened decomposition that prices free-throw generation into shot selection. Recorded now so copy never improvises a synonym; no product surface may use it until that model ships, and its league comparison requires an exact league trip count (league-wide play-by-play), never an estimator.
+_Future vocabulary, reserved:_ a field-goal attempt or an attempt-equivalent trip — the denominator of the eventual widened decomposition that prices free-throw generation into shot selection. Recorded now so copy never improvises a synonym; no product surface may use it until that model ships, and its league comparison requires an exact league trip count (league-wide play-by-play), never an estimator. In verdicts the reservation is enforced: the term sits in the lexicon's unshipped list (ADR-0029's tripwire), forbidden regardless of claims.
 
 **FT points share**:
 The share of a player's (or the league's) points scored at the line, technicals included on both sides. Exact from box-score arithmetic; the plainest statement of how much scoring the shot chart cannot see.
