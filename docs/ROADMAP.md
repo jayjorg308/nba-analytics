@@ -5,7 +5,7 @@ dependency and value-per-effort, not by calendar. Each phase repeats the v1
 recipe — a data spine with a golden fixture, a pure metrics function, honesty
 flags, authored-and-guarded copy — on a new axis._
 
-## Status — updated 2026-07-16
+## Status — updated 2026-07-21
 
 | Phase | State |
 | --- | --- |
@@ -15,7 +15,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
-| v3 — living seasons and heroes at scale | not started |
+| v3 — living seasons | 📐 designed 2026-07-21 (grilling session; ADRs 0057–0059); build not started |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
 > Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
@@ -356,22 +356,81 @@ exists for non-and-one drawn fouls — the denied attempt's point class (2 FT vs
    derived-copy equality. Full gate green: pytest 70, vitest 291, lint,
    build._
 
-## v3 — Living seasons and heroes at scale
+## v3 — Living seasons
 
-1. **In-progress season machinery** — what the append-only raw layer was
-   built for and v1 deliberately deferred: multiple snapshots per season,
-   re-pull cadence, data freshness surfaced in the UI. The 2026-27 season is
-   the forcing function.
-2. **A rookie hero** (Ace Bailey's raw data is already pulled) — the first
-   time the ADR-0003 eligibility gates fire for real on a live, thin sample.
-3. **Hero scaffolding** — a generator that drafts heroConfig + a guard
-   skeleton from `hero:report` output. Earn it after the third manual swap.
-4. **Season-over-season** — same hero, two seasons, the growth story.
-   Payloads are already per-season; this is mostly presentation.
-5. **Archetype-adjusted selection** — deferred from v1 (CONTEXT.md, Selection
+_Designed 2026-07-21 (grilling + domain-modeling session; ADRs 0057–0059,
+new CONTEXT.md terms: reconciled frontier, frontier-anchored pull, pull
+session, season loop, data commit, live flip, claim headroom, living season).
+The definition of done: the living-season machinery proven end-to-end by
+**replaying a completed season through the real loop** — so that when 2026-27
+opens, activation is a config change, not a build. The forcing constraint the
+whole design answers: pulls are local-only while the deployed data is a
+committed git artifact, so daily freshness means a scheduled local
+pull → derive → gate → commit → push chain (ADR-0057), publishing only at the
+reconciled frontier (ADR-0058), flipping a live season onto a page only when
+its gates pass (ADR-0059)._
+
+_The decisions, locked: scheduled automation with auto-push data commits on
+green and loud halts on red; the frontier rule (lag defers, contradiction
+halts, no tolerances ever); Ace Bailey registers now on his completed 2025-26
+(892 shots, every zone ≥56 attempts — a routine fourth add, not a thin-sample
+case) and his page goes live for 2026-27; the 2026 rookie (Peterson) is the
+mid-season stretch, born live at first gate-pass; guards never loosen for live
+data (halt-and-rewrite mornings + claim headroom); frontier metadata in all
+four payloads' `_meta` with four-way equality; the hero directory returns with
+the Ace add. Cody, Keyonte, and Shai keep their completed 2025-26 arguments
+untouched._
+
+1. **Phase 0 — endpoint spike** (local, everything downstream depends on it):
+   prove `DateTo` semantics exact on every cumulative source against
+   completed 2025-26. Oracles: a `DateTo` shot pull equals the date-filtered
+   rows of the full snapshot; a `DateTo` tracking pull's General family
+   reconciles against the date-filtered shot count; league totals under
+   `DateTo` reconcile against play-by-play-reconstructed frontier totals;
+   the `LeagueAverages` frame's behavior under `DateTo` is established. If an
+   endpoint fails, the frontier rule does not bend — that source's pull
+   design changes (ADR-0058).
+2. **Phase 1 — Ace Bailey, fourth hero**: play-by-play/box pairs for his 72
+   games (Gates 4/5), all four payloads, ADR-0008 grain refinements re-run
+   against his real counts, banner + verdict + colocated guard + registry
+   entry — the standing add recipe. The hero directory restore ships in this
+   PR (the `TEMPORARY(single-hero)` grep): with a fourth argument live, the
+   single-hero root stops being a simplification and starts hiding product.
+3. **Phase 2 — frontier contract**: the coordinated four-schema `_meta` bump
+   (`dataThrough`, `gamesIncluded`), goldens regenerated together; four-way
+   frontier equality joins the derive-time and deployed-pair reconciliation
+   batteries; the UI freshness line ("Through Jan 14 · 34 games", structural
+   copy); the `hero:report` claim-headroom section (ADR-0059).
+4. **Phase 3 — the season loop**: one `season:update` command orchestrating
+   pull session → frontier computation → derives → sync → full gate → data
+   commit (ADR-0057); defer/halt semantics per ADR-0058; dark mode for
+   pre-flip seasons; the Task Scheduler wrapper and halt notification.
+5. **Phase 4 — the replay proof** (v3's exit): drive the real loop against
+   completed 2025-26 over a calendar of simulated frontier dates (Cody as
+   primary replay hero — his corpus is fully committed). Oracles: every
+   replay day exactly reconciled at its frontier; the gate-pass day fires the
+   flip signal in the report; and the terminal identity — the final replay
+   frame equals the committed completed-season payloads exactly.
+
+**Activation (October 2026, post-v3):** designate Ace's 2026-27 as living,
+enable the schedule, run dark until gate-pass, ship his flip PR. **Stretch:**
+Peterson's raw pulls begin when his season does; his page is born live the
+day the gates first pass on real thin data — the "spin up cheaply" demo
+CONTEXT.md always promised, now with the gates firing for real.
+
+## Beyond v3 — deferred, in order
+
+1. **Hero scaffolding** — a generator that drafts heroConfig + a guard
+   skeleton from `hero:report` output. Three manual swaps have earned it;
+   it waits only because v3's critical path doesn't need it.
+2. **Season-over-season** — same hero, two seasons, the growth story.
+   Payloads are already per-season; this is mostly presentation, and the
+   live flip machinery (ADR-0059) hands it the season-swap seam for free.
+3. **Archetype-adjusted selection** — deferred from v1 (CONTEXT.md, Selection
    benchmark). The first item that changes the comparison class, so it
-   supersedes ADR-0002 deliberately or not at all. Hardest item here; last on
-   purpose.
+   supersedes ADR-0002 deliberately or not at all. Hardest; last on purpose.
+   Also the first item with any claim to a derive-side analytical index (see
+   the not-to-do list's database line).
 
 ---
 
@@ -399,3 +458,20 @@ exists for non-and-one drawn fouls — the denied attempt's point class (2 FT vs
 - **Never guess a zone for a shooting-foul trip.** The denied attempt's point
   class is knowable (2 FT vs 3 FT); its location is not (ADR-0012/0019 ethos,
   ADR-0053).
+- **No database in the product architecture.** The storage story is files:
+  append-only verbatim raw blobs, regenerable derived JSON, committed
+  deployed payloads fetched by a static app (ADR-0006/0010). No layer has
+  the query, concurrency, or scale pressure a database solves — a live
+  season adds ~250MB of local gitignored raw per year and four small
+  committed files a day. If a league-scale corpus (archetype baselines, a
+  league-wide play-by-play pull) ever needs real queries, the answer is a
+  disposable derive-side index (DuckDB/SQLite over the raw layer) as a
+  Python implementation detail — never the contracts, the deployment story,
+  or the frontend seam.
+- **No frontier tolerances.** "Within one game" is still a tolerance
+  (ADR-0058): a living season publishes exactly reconciled through its
+  frontier or not at all; lag defers, contradiction halts.
+- **The automated commit class is data-only.** The season loop never commits
+  code, copy, config, or guard changes (ADR-0057); a red morning is fixed by
+  a human rewriting the guarded thing, never by the loop or by loosening the
+  guard.

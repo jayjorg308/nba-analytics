@@ -85,7 +85,7 @@ A raw shot row whose `SHOT_TYPE` (the scorer's point value — what the shot was
 A shot's game context from the hero's perspective: the opponent (team abbreviation) and whether the game was home or away. Resolved per shot at the derive step (ADR-0028) — the UI only formats it (ADR-0011), per abbreviation style: "vs OKC" at home, "@ PHX" away. Descriptive context only; evaluation (selection/making) never reads it.
 
 **Deployed payload**:
-The committed copy of the derived payload the app actually fetches: `public/data/<player-slug>/<season>.json`, refreshed only by an explicit `npm run hero:sync` (ADR-0010). The third layer of the storage story — raw (append-only, gitignored) → derived (recomputed, gitignored) → deployed (committed). The app reads persisted JSON only; it never calls the NBA API (unofficial endpoint; blocks cloud IPs).
+The committed copy of the derived payload the app actually fetches: `public/data/<player-slug>/<season>.json`, refreshed by an explicit `npm run hero:sync` (ADR-0010) or, for a living season on a green day, by the season loop's data commit (ADR-0057). The third layer of the storage story — raw (append-only, gitignored) → derived (recomputed, gitignored) → deployed (committed). The app reads persisted JSON only; it never calls the NBA API (unofficial endpoint; blocks cloud IPs).
 
 **Aggregation function**:
 The single pure function that computes v1's player-side metrics (diet-weighted PPS, making deltas, suppression) over an array of enriched shots. v1 calls it once with all shots — the all-pass case of the filtered subsets v2 will pass. **Resolved (ADR-0009):** its language is TypeScript (`src/domain/aggregate.ts`), closing the call ADR-0007 deferred; as a pure, tested unit it ports back as a contained rewrite, not an architecture change. Its contents are fully specified by the ADR-0008 zone set.
@@ -245,10 +245,31 @@ The source's natural response grain: a season for `shotchartdetail`, and one gam
 A single dated raw pull for a (player, season). A completed season has exactly one; an in-progress season accrues several.
 
 **Season state**:
-Whether a season is **completed** (immutable — pulled once, one snapshot; the whole of v1's storage behavior) or **in-progress** (mutable — re-pulled on demand, each pull a new dated snapshot, never overwriting).
+Whether a season is **completed** (immutable — pulled once, one snapshot; the whole of v1's storage behavior) or **in-progress** (mutable — re-pulled on demand, each pull a new dated snapshot, never overwriting). An in-progress season a hero is designated live for is a **living season**: pulled daily by the season loop and published only at its reconciled frontier (ADR-0057/0058).
 
 **Append-only raw layer**:
 The raw storage layer is append-only from day one: new snapshots are added, never overwritten. Derived data recomputes from the latest snapshot for a (player, season). v1 does *not* build snapshot-selection, re-pull scheduling, or diff/merge logic — with one completed-season snapshot, "latest" is trivial. The key carries pull-date so the later live-season demo needs no storage refactor; the machinery that consumes multiple snapshots is deferred until that demo needs it.
+
+**Reconciled frontier** (a.k.a. **data-through**):
+The latest game date at which every source for a hero-season is exactly coherent — the point all five gates and every cross-payload identity are asserted through, and the only point a living season may publish at (ADR-0058). Recorded in every payload's `_meta` (`dataThrough`, `gamesIncluded`); the four sibling payloads must agree on it exactly. A source lagging beyond the frontier defers that game to the next pull session; a contradiction at or inside it halts the publish for a human.
+
+**Frontier-anchored pull**:
+A living-season pull of a cumulative source (shots, tracking, league totals) issued with the reconciled frontier as its date ceiling, so the stored artifact matches the publish unit exactly — the cumulative endpoints have no per-game grain, so the frontier is enforced at pull time, never by slicing after the fact (ADR-0058). The artifact records its date range, per the raw-artifact rule.
+
+**Pull session**:
+One dated local run of the season loop's acquisitions: play-by-play/box pairs first (their availability fixes the reconciled frontier), then frontier-anchored pulls of the cumulative sources. Append-only; a same-day retry appends a timestamped snapshot, never overwrites.
+
+**Season loop**:
+The scheduled daily pipeline that keeps a living season fresh: pull session → the four derives → `hero:sync` → the full repository gate, and on green a data commit pushed for deployment (ADR-0057). Runs on a dev machine (pulls are local-only); any failure halts the publish loudly and notifies. For a pre-flip season it runs dark: pull, derive, report, publish nothing.
+
+**Data commit**:
+The one automated commit class (ADR-0057): deployed payloads plus their freshness metadata, landed by the season loop on a green day, with the day's report (new games, headline deltas, gate results) in the commit message. Never code, copy, or configuration — everything else still travels by PR.
+
+**Live flip** (a.k.a. **the flip**):
+The human copy event that makes a living season the season a hero page renders: triggered the first day all five eligibility gates pass on the live data (Gate 2 read mechanically: every evaluation zone at or above the inclusion bar), shipped as an authored verdict + guard claim mapping + season swap in a reviewed PR (ADR-0059). A hero with no prior argument is born live at the flip; a shipped completed-season argument is only ever replaced by its own flip PR.
+
+**Claim headroom**:
+The distance between a guarded verdict claim's metric and its guard threshold, reported per claim by `hero:report`. The authoring aid for living-season verdicts (write claims with deliberate margin, since the payload moves daily) — an authoring input only, never a guard input; guards stay exact (ADR-0059).
 
 **Hero player**:
 The single player a given hero page is focused on (one deployment now serves a directory of hero pages — ADR-0022). The engine is player-agnostic; the hero player is a configuration/parameter, not a hardcoded assumption. Launch hero: **Cody Williams** (2024 Utah pick, has completed NBA seasons). Peterson (2026 #2 pick, no NBA shots until 2026-27) is the later "spin up cheaply" demo, not the launch subject.
@@ -261,7 +282,7 @@ An established elite player whose known-good outcome tests whether the same engi
 The single season v1 renders for the hero. Chosen as the hero's highest-minutes completed season, to maximize the chance of clearing the volume gate. For the launch hero this is **2025-26** (1631 MIN vs 1060; 509 attempts vs 257; all 6 evaluation zones clear the volume bar).
 
 **Hero eligibility**:
-A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, play-by-play, and free throw. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044).
+A player is eligible to be a hero only if they have ≥1 completed season passing the eligibility gates: baseline, volume, tracking, play-by-play, and free throw. Rookies/incoming players are ineligible until they do (see ADR-0003 and ADR-0044). On a living season the same five gates are evaluated daily through the reconciled frontier, and the first day they all pass triggers the live flip (ADR-0059) — a rookie's page is born that day, not on opening night.
 
 **Baseline gate** (Gate 1):
 The `LeagueAverages` frame is populated for the season. Binary; fails for a season too recent/partial for the league table to be filled.
