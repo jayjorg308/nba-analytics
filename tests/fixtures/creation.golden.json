@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
@@ -9,6 +9,7 @@
     "sourceSnapshot": "tests/fixtures/tracking.truncated.json",
     "leagueSourceSnapshot": "tests/fixtures/tracking.league.truncated.json",
     "seasonFga": 15,
+    "trackingShortfall": 0,
     "shotClockUnattributed": 1,
     "defenderUnattributed": 2,
     "leagueFga": 250,

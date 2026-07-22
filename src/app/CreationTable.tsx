@@ -207,6 +207,14 @@ export function CreationTable({ metrics }: { metrics: CreationMetrics }) {
           Shot clock and defender rows roll the NBA&apos;s finer ranges up to three bands
           each: makes and attempts summed, never rates averaged.
         </p>
+        {metrics.trackingShortfall > 0 && (
+          <p>
+            {metrics.trackingShortfall} of his {metrics.seasonFga} attempts fall in
+            documented NBA tracking outages and appear in no row here; shares are
+            stated over all {metrics.seasonFga}, so each group sums short by that
+            margin.
+          </p>
+        )}
         {metrics.shotClockUnattributed > 0 && (
           <p>
             {metrics.shotClockUnattributed} attempt

@@ -404,6 +404,18 @@ untouched._
    entry — the standing add recipe. The hero directory restore ships in this
    PR (the `TEMPORARY(single-hero)` grep): with a fourth argument live, the
    single-hero root stops being a simplification and starts hiding product.
+   _Done 2026-07-21. The shared corpus covered 71 of his 72 games (one new
+   pull, via the new explicit `--game-ids` path — the ADR-0054 remedy made
+   real); all five gates pass; both ADR-0008 refinements ship on his counts
+   (long twos 127, corners 56/56). The add surfaced the first hero-side
+   tracking gap (8 attempts, two characterized outage games) and forced the
+   ADR-0030 exact-or-reported amendment + creation schema v3
+   (`trackingShortfall`, pinned per hero by the real-data guard). His
+   verdict is the third quadrant: selection is the problem (mid-range at
+   double the league share, long twos at nearly triple), making essentially
+   league; guarded why- and line-sentences ship with it. Directory restored;
+   full gate green (pytest 72, vitest 315, lint, build); browser-verified
+   at mobile and desktop._
 3. **Phase 2 — frontier contract**: the coordinated four-schema `_meta` bump
    (`dataThrough`, `gamesIncluded`), goldens regenerated together; four-way
    frontier equality joins the derive-time and deployed-pair reconciliation

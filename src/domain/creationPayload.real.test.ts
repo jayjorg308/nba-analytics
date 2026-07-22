@@ -16,6 +16,16 @@ import { parseDerivedPayload } from './payload'
 
 const publicData = path.resolve(process.cwd(), 'public/data')
 
+// Every hero's expected tracking shortfall, pinned (ADR-0030 as amended):
+// a shortfall CHANGING between pulls is as loud as one appearing. The only
+// nonzero entry is Ace Bailey's — two characterized outage games
+// (2025-12-07 partial, 2026-03-05 league-wide meltdown; 3 + 5 attempts).
+// A new hero-season starts at 0 and earns an entry here only from a
+// characterized outage, never from "the derive said so".
+const EXPECTED_TRACKING_SHORTFALL: Record<string, number> = {
+  'ace-bailey/2025-26': 8,
+}
+
 // Every deployed creation payload, whether or not its hero is registered
 // (an unregistered hero's committed payloads stay guarded — the
 // TEMPORARY(single-hero) stance).
@@ -58,11 +68,17 @@ describe('deployed creation payloads', () => {
 
         expect(creation._meta.player).toBe(shot._meta.player)
         expect(creation._meta.season).toBe(shot._meta.season)
-        // The ADR-0030 identity at deployed grain: General partitions the
-        // pre-drop season exactly (schema already pins Σ general.player.fga
-        // to seasonFga; this ties seasonFga to the sibling's truth).
+        // The ADR-0030 identity at deployed grain: General plus the
+        // reported shortfall covers the pre-drop season exactly (the schema
+        // pins Σ general.player.fga to seasonFga − trackingShortfall; this
+        // ties seasonFga to the sibling's truth).
         expect(creation._meta.seasonFga).toBe(
           shot._meta.totalShots + shot._meta.zoneConflictsDropped,
+        )
+        // The shortfall is pinned per hero-season — 0 unless a characterized
+        // outage earned an entry in the map above.
+        expect(creation._meta.trackingShortfall).toBe(
+          EXPECTED_TRACKING_SHORTFALL[`${slug}/${season}`] ?? 0,
         )
       })
 

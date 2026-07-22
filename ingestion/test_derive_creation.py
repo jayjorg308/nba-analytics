@@ -82,24 +82,45 @@ def test_duplicated_context_row_fails():
         derive_fixtures(player=player)
 
 
-# --- The General identity (ADR-0030): exact, hard-fail ---------------------------
+# --- The General identity (ADR-0030 as amended): exact-or-reported ---------------
 
-def test_general_identity_mismatch_fails():
-    with pytest.raises(SystemExit, match="payloads contradict"):
-        derive_fixtures(season_fga=16)
+def test_tracking_shortfall_zero_when_exact():
+    payload = derive_fixtures()
+    assert payload["_meta"]["trackingShortfall"] == 0
+
+
+def test_tracking_shortfall_counted_never_guessed():
+    # Official pre-drop total 16 vs tracking Overall 15: an NBA-side outage.
+    # The derive persists the measured shortfall (ADR-0019 exclude-and-report,
+    # ADR-0030 as amended) — it no longer vetoes the payload.
+    payload = derive_fixtures(season_fga=16)
+    assert payload["_meta"]["trackingShortfall"] == 1
+    assert payload["_meta"]["seasonFga"] == 16
+    # Family coverage is measured against the TRACKING Overall (15), not the
+    # official total — the clock gap stays 1 (15 - 14), unchanged by the
+    # shortfall.
+    assert payload["_meta"]["shotClockUnattributed"] == 1
+
+
+def test_general_over_attribution_fails():
+    # Tracking exceeding the official record is contradiction, not outage —
+    # the hard fail survives the amendment.
+    with pytest.raises(SystemExit, match="EXCEEDING the shot payload"):
+        derive_fixtures(season_fga=14)
 
 
 def test_shot_clock_overrun_fails():
-    # Σ clock bands exceeding the season total means the snapshots disagree —
-    # never persist, never truncate. Inflate one band (keeping the row
-    # internally sane) so Σ clock = 16 while General still reconciles at 15.
+    # Σ clock bands exceeding the tracking Overall means the snapshot
+    # disagrees with itself — never persist, never truncate. Inflate one band
+    # (keeping the row internally sane) so Σ clock = 16 while General still
+    # sums to 15.
     player = load_fixture("tracking.truncated.json")
     rs = player["response"]["resultSets"][1]
     h = rs["headers"]
     row = rs["rowSet"][2]  # '15-7 Average': FGA 5 -> 7
     row[h.index("FGA")], row[h.index("FG2A")] = 7, 5
     row[h.index("FG_PCT")] = 0.286  # 2/7
-    with pytest.raises(SystemExit, match="exceeding the season total"):
+    with pytest.raises(SystemExit, match="exceeding the tracking Overall"):
         derive_fixtures(player=player)
 
 

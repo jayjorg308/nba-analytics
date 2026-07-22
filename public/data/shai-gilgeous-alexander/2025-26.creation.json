@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Shai Gilgeous-Alexander",
     "playerId": 1628983,
     "season": "2025-26",
@@ -9,6 +9,7 @@
     "sourceSnapshot": "data/raw/shai-gilgeous-alexander/2025-26/tracking/2026-07-16.json",
     "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-16.json",
     "seasonFga": 1321,
+    "trackingShortfall": 0,
     "shotClockUnattributed": 0,
     "defenderUnattributed": 0,
     "leagueFga": 218352,

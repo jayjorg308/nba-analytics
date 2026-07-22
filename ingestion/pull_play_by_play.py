@@ -93,15 +93,27 @@ def main() -> None:
         action="store_true",
         help="add a new dated snapshot even when a completed-game snapshot exists",
     )
+    ap.add_argument(
+        "--game-ids",
+        nargs="*",
+        default=None,
+        help="explicit game IDs to pull, bypassing payload discovery — the "
+             "ADR-0054 remedy path (a named missing game) and the pre-deploy "
+             "hero-add path (games for a hero with no deployed payload yet)",
+    )
     args = ap.parse_args()
 
     pull_date = date.today().isoformat()
     out_root = Path(args.out)
-    ids = game_ids(Path(args.public_data), args.player_slugs, args.season)
-    print(
-        f"{len(ids)} unique games for {len(args.player_slugs)} hero payloads "
-        f"({', '.join(args.player_slugs)})"
-    )
+    if args.game_ids:
+        ids = sorted(args.game_ids)
+        print(f"{len(ids)} explicit game(s): {', '.join(ids)}")
+    else:
+        ids = game_ids(Path(args.public_data), args.player_slugs, args.season)
+        print(
+            f"{len(ids)} unique games for {len(args.player_slugs)} hero payloads "
+            f"({', '.join(args.player_slugs)})"
+        )
 
     pulled = skipped = 0
     for index, game_id in enumerate(ids, start=1):
