@@ -29,14 +29,18 @@ export const keyonteGeorge: HeroConfig = {
   // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
   // when the data moves, rewrite this; the committed guard
   // (./keyonte-george.guard.test.ts) fails if any directional claim stops
-  // matching the deployed payloads. The final sentence is the v2 WHY
+  // matching the deployed payloads. The fourth sentence is the v2 WHY
   // (ADR-0029): creation vocabulary, licensed by the guard's creation-kind
-  // claims against the deployed creation payload — authored from
-  // hero:report's creation section, like the rest is from its decomposition.
+  // claims against the deployed creation payload. The closing sentence is
+  // the v2.6 LINE sentence (ADR-0056): free-throw vocabulary, licensed by
+  // the guard's free-throw claims, holding on both technical cuts
+  // (ADR-0055) — authored from hero:report's LINE section.
   verdict:
     'No. His shot selection costs him: he gets to the rim about half as often as the league, ' +
     'trading it for paint floaters and mid-range. Making is not the problem, as he converts at or ' +
     'above league expectation in every zone on the floor. ' +
     'The diet is how he creates: far more of his shots are pull-up jumpers than is typical, ' +
-    'while the catch-and-shoot looks he does take convert well above league value.',
+    'while the catch-and-shoot looks he does take convert well above league value. ' +
+    'The line softens the no: he draws fouls far more often than the league and converts ' +
+    'well above the league rate once there.',
 }

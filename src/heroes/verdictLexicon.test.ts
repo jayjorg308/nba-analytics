@@ -8,6 +8,7 @@ import {
   invalidAssistInterpretationsIn,
   unbackedAssistTerms,
   unbackedCreationTerms,
+  unbackedFreethrowTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
 
@@ -45,26 +46,45 @@ describe('the ADR-0029 tripwire', () => {
     expect(invalidAssistInterpretationsIn('His pull-ups are self-created difficulty')).toEqual([])
   })
 
-  it('free-throw vocabulary is unshipped until THE LINE ships (v2.6)', () => {
-    // ADR-0053/0056: no claim can license these yet — the list empties only
-    // when the copy PR graduates them to a backed free-throw lexicon.
-    expect(unshippedTermsIn('he lives at the line, drawing fouls constantly')).toEqual([
+  it('free-throw vocabulary graduated when THE LINE shipped, and demands its own claim (v2.6)', () => {
+    // ADR-0053/0056: the copy PR moved the terms from the unshipped list to
+    // the backed FREETHROW_LEXICON — nothing free-throw-shaped is unshipped
+    // anymore, but every use requires a declared free-throw claim.
+    expect(unshippedTermsIn('he lives at the line, drawing fouls constantly')).toEqual([])
+    expect(unbackedFreethrowTerms('he lives at the line, drawing fouls constantly', 0)).toEqual([
       'the line',
       'foul',
     ])
-    expect(unshippedTermsIn('his free throws and and-one trips to the line')).toEqual([
+    expect(unbackedFreethrowTerms('he lives at the line, drawing fouls constantly', 1)).toEqual([])
+    expect(unbackedFreethrowTerms('his free throws and and-one trips to the line', 0)).toEqual([
       'free throw',
       'the line',
       'and-one',
       'trips to',
     ])
+    // A Case 2 creation claim or a Case 3 assist claim cannot license line
+    // language — different measurement, different claim kind (ADR-0042's
+    // boundary): the count passed here is FREE-THROW claims only.
+    expect(unbackedCreationTerms('trips to the line', 1)).toEqual([])
+    expect(unbackedAssistTerms('trips to the line', 1)).toEqual([])
+  })
+
+  it('the unshipped list is empty — every measured family has shipped (ADR-0029)', () => {
+    // The list stays as the mechanism, not dead code: future vocabulary with
+    // no shipped signal goes here first, exactly as the free-throw terms did.
+    expect(unshippedTermsIn('free throws, fouls, trips to the line, and-one, the line')).toEqual([])
   })
 
   it('phrase forms keep near-miss words legal', () => {
     // 'triple' is live in Shai's verdict and 'baseline' is ordinary analysis
-    // language; the unshipped terms are phrases so neither ever matches.
-    expect(unshippedTermsIn('mid-range at nearly triple the league share')).toEqual([])
-    expect(unshippedTermsIn('converts above the baseline everywhere')).toEqual([])
+    // language; the free-throw terms are phrases so neither ever matches.
+    expect(unbackedFreethrowTerms('mid-range at nearly triple the league share', 0)).toEqual([])
+    expect(unbackedFreethrowTerms('converts above the baseline everywhere', 0)).toEqual([])
+    // 'the lineup' is the documented residual near-miss: it DOES contain
+    // 'the line', so an unclaimed verdict must phrase around the word.
+    expect(unbackedFreethrowTerms('the lineup around him spaces the floor', 0)).toEqual([
+      'the line',
+    ])
   })
 
   it('defender vocabulary graduated to backed-required in v2.1', () => {

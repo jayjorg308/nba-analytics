@@ -14,7 +14,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.0 — creation at the bucket grain | ✅ built 2026-07-15 (ADRs 0029–0031 + amendments): contract, metrics, the SHOT CREATION second act, why-sentences + the tripwire flip |
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
-| v2.6 — the line (free throws at trip grain) | 🔨 steps 1–4 built 2026-07-21 (ADRs 0053–0056; contract, league pull, metrics + report, THE LINE act + four-payload sync); step 5 (copy, lexicon graduation, deployed guards) remains |
+| v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
 | v3 — living seasons and heroes at scale | not started |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
@@ -342,6 +342,19 @@ exists for non-and-one drawn fouls — the denied attempt's point class (2 FT vs
    the fourth payload (every registered hero has a deployed free-throw payload
    that strict-parses, matches its siblings' identities, and matches the
    latest derived copy). Full repository gate before calling it done.
+   _Done 2026-07-21. All three heroes elected a line-sentence — Cody's
+   extends the diagnosis (below-league generation AND conversion, "the line
+   does not bail him out"), Keyonte's is the counterweight to his No ("the
+   line softens the no"), Shai's completes the positive control (roughly a
+   quarter of MVP scoring at the line) — each backed by FreethrowClaim
+   assertions holding on both technical cuts (ADR-0055). The free-throw
+   vocabulary graduated from the unshipped list to FREETHROW_LEXICON
+   (ADR-0029's mechanism, third use; the unshipped list is now empty and
+   deliberately retained), and `freethrowPayload.real.test.ts` guards the
+   deployed pair: strict-parse, pre-drop seasonFga identity, and-one
+   made-shot linkage, Gate 5 corpus completeness, tier-partition coherence,
+   derived-copy equality. Full gate green: pytest 70, vitest 291, lint,
+   build._
 
 ## v3 — Living seasons and heroes at scale
 

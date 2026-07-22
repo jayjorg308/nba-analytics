@@ -14,17 +14,29 @@
 // and nothing stops tooling from importing the lexicon.
 
 import type { CreationMetrics } from '../domain/aggregateCreation'
+import type { FreethrowMetrics } from '../domain/aggregateFreethrow'
 import type { ShotContextMetrics } from '../domain/aggregateShotContext'
 
 /** Vocabulary with no shipped data behind it — forbidden in any verdict
  * regardless of claims, until its family ships (then it MOVES to a backed
  * lexicon, never just gets deleted). The defender-distance terms moved out
- * in v2.1 and 'assisted' in v2.5; v2.6's free-throw terms refill the list
- * until THE LINE act ships (ADR-0053/0056). Phrase forms are deliberate:
- * bare 'trip' would match 'triple' (live in Shai's verdict) and bare 'line'
- * would match 'baseline', so the trip terms carry their preposition and the
- * line term its article ('the lineup' is the known residual near-miss). */
-export const UNSHIPPED_TERMS = [
+ * in v2.1, 'assisted' in v2.5, and the v2.6 free-throw terms graduated to
+ * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056). The empty
+ * list is NOT dead code (ADR-0029): it is the mechanism that keeps future
+ * vocabulary from outrunning its data, and its emptiness is the recorded
+ * signal that every measured family has shipped. */
+export const UNSHIPPED_TERMS = [] as const
+
+/** Free-throw vocabulary (v2.6, THE LINE — ADR-0053/0056): legal only when
+ * the hero's guard declares at least one free-throw claim asserted against
+ * aggregateFreethrowMetrics output. ADR-0055's discipline rides on the claim
+ * side: a generation/conversion assertion must hold on the hero's
+ * with-technicals AND without-technicals cuts (BothCutsMetric carries both).
+ * Phrase forms are deliberate: bare 'trip' would match 'triple' (live in
+ * Shai's verdict) and bare 'line' would match 'baseline', so the trip terms
+ * carry their preposition and the line term its article ('the lineup' is the
+ * known residual near-miss). */
+export const FREETHROW_LEXICON = [
   'free throw',
   'free-throw',
   'the line',
@@ -86,6 +98,16 @@ export interface AssistClaim {
   assert: (context: ShotContextMetrics) => void
 }
 
+/** A free-throw claim (ADR-0055/0056): named after the verdict words it
+ * backs, asserted against the free-throw aggregation's output. A claim on a
+ * league-baselined metric must hold on both hero cuts (value AND
+ * withoutTechnicals) — a claim that flips on a handful of technical free
+ * throws was never sturdy enough to author. */
+export interface FreethrowClaim {
+  name: string
+  assert: (freethrow: FreethrowMetrics) => void
+}
+
 function termsIn(verdict: string, terms: readonly string[]): string[] {
   const v = verdict.toLowerCase()
   return terms.filter((t) => v.includes(t))
@@ -106,6 +128,15 @@ export function unbackedCreationTerms(verdict: string, creationClaimCount: numbe
 export function unbackedAssistTerms(verdict: string, assistClaimCount: number): string[] {
   const found = termsIn(verdict, ASSIST_LEXICON)
   return assistClaimCount > 0 ? [] : found
+}
+
+/** Free-throw vocabulary that lacks backing — empty when the verdict uses no
+ * free-throw vocabulary, or when >=1 free-throw claim is declared. A creation
+ * or assist claim cannot license line language: different measurement,
+ * different claim kind (the ADR-0042 boundary, applied to the lexicon). */
+export function unbackedFreethrowTerms(verdict: string, freethrowClaimCount: number): string[] {
+  const found = termsIn(verdict, FREETHROW_LEXICON)
+  return freethrowClaimCount > 0 ? [] : found
 }
 
 /** The scorer-credit boundary (ADR-0049): when assist vocabulary is used,
