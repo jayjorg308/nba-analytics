@@ -15,7 +15,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.1 — creation: defender distance (fast-follow) | ✅ built 2026-07-16 — third family (schema v2), Tight/Open/Wide-open product grain, 'contested' vocabulary graduated to backed |
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
-| v3 — living seasons | 📐 designed 2026-07-21 (grilling session; ADRs 0057–0059); build not started |
+| v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
 > Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
@@ -462,12 +462,29 @@ untouched._
    replay day exactly reconciled at its frontier; the gate-pass day fires the
    flip signal in the report; and the terminal identity — the final replay
    frame equals the committed completed-season payloads exactly.
+   _Done 2026-07-23 — every oracle exact. `ingestion/season_replay.py`
+   (committed; rerun before each activation) drove seven real sessions
+   (2025-12-07 → the 2026-04-12 finale). Frontier exact and nothing
+   deferred on all seven days; the gate story traced from committed truth:
+   all six zones failing at ten games, only Mid-Range failing from February
+   through 2026-03-11, first GATES PASS on exactly 2026-03-13 (Cody's 48th
+   game — a data-determined flip day, and a live reminder that flip timing
+   varies sharply by hero); terminal frame byte-equal to all four committed
+   payloads modulo provenance (pull dates and source paths only). The
+   machinery that will run 2026-27 reproduced the committed season from
+   nothing but the endpoints and the loop's own code path. v3's definition
+   of done is met: activation in October is a config change._
 
-**Activation (October 2026, post-v3):** designate Ace's 2026-27 as living,
-enable the schedule, run dark until gate-pass, ship his flip PR. **Stretch:**
-Peterson's raw pulls begin when his season does; his page is born live the
-day the gates first pass on real thin data — the "spin up cheaply" demo
-CONTEXT.md always promised, now with the gates firing for real.
+**Activation (October 2026, post-v3):** everything is pre-positioned —
+`season.config.json` already carries Ace's 2026-27 in dark mode and the
+loop already no-ops cleanly on the unstarted season. The checklist: rerun
+the replay proof (`python ingestion/season_replay.py`), register
+`scripts/season-update.ps1` with Task Scheduler (command in its header),
+watch the dark reports, and ship Ace's flip PR the day the loop says
+GATES PASS. **Stretch:** Peterson's raw pulls begin when his season does;
+his page is born live the day the gates first pass on real thin data — the
+"spin up cheaply" demo CONTEXT.md always promised, now with the gates
+firing for real.
 
 ## Beyond v3 — deferred, in order
 

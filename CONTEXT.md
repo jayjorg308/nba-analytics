@@ -274,6 +274,9 @@ The one automated commit class (ADR-0057): deployed payloads plus their freshnes
 **Live flip** (a.k.a. **the flip**):
 The human copy event that makes a living season the season a hero page renders: triggered the first day all five eligibility gates pass on the live data (Gate 2 read mechanically: every evaluation zone at or above the inclusion bar — the loop's "GATES PASS" report line is the starting gun), shipped as one reviewed PR carrying the authored verdict + guard claim mapping + season swap + the season's dark→live mode flip in `season.config.json` (ADR-0059). A hero with no prior argument is born live at the flip; a shipped completed-season argument is only ever replaced by its own flip PR.
 
+**Replay proof**:
+The season loop's pre-activation ritual (`ingestion/season_replay.py`): drive the real loop over a calendar of historical frontier dates against a completed season and hold it to oracles computed from the committed payloads — per-day frontier exactness and gate truth, the flip signal firing on exactly the boundary day, and the terminal frame reproducing the committed deployment byte-equal modulo the six provenance fields (pull dates and source paths; ADR-0058, closure). Real data through real endpoints; the calendar is the only fiction. First run 2026-07-23 (Cody 2025-26, every oracle exact — v3's exit); rerun before each season's activation.
+
 **Claim headroom**:
 The distance between a verdict-grade quantity and the house threshold bars (the neutral/material/strong PPS vocabulary, diet-share ratios, both-cuts free-throw gaps), reported by `hero:report`'s closing CLAIM HEADROOM section. The authoring aid for living-season verdicts (write claims with deliberate margin, since the payload moves daily) — an authoring input only, never a guard input; each hero's guard still declares its own thresholds with its own rationale, and guards stay exact (ADR-0059).
 
