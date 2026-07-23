@@ -4,9 +4,9 @@ An interactive NBA shot-quality essay that answers focused questions about one p
 
 Most shot charts lead with a scatter of makes and misses and leave the interpretation to the reader. nba-analytics leads with a guarded, plain-language verdict and then shows its work in four acts over one reconciled season of scoring: the where (a two-axis PPS decomposition, a zone-shaded court, per-zone details), the how (league-relative creation contexts), the credit (official assisted-make evidence), and the line (free throws at trip grain, priced against the floor). The page is structured as question → verdict → proof, not as a general-purpose stats dashboard.
 
-**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** [Cody Williams (2025-26)](https://www.nbagoodshots.com/) · [Keyonte George (2025-26)](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander (2025-26)](https://www.nbagoodshots.com/shai-gilgeous-alexander)
+**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** the [hero directory](https://www.nbagoodshots.com/) at the root, with complete arguments for [Cody Williams](https://www.nbagoodshots.com/cody-williams) · [Keyonte George](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander](https://www.nbagoodshots.com/shai-gilgeous-alexander) · [Ace Bailey](https://www.nbagoodshots.com/ace-bailey) (all 2025-26)
 
-The current root presentation remains temporarily focused on Cody Williams while his page is polished. The player-agnostic application registers complete Cody, Keyonte, and Shai hero pages at shareable URLs; only the multi-player directory is intentionally dormant.
+Every page's byline states its season's reconciled frontier ("through Apr 12, 2026 · 72 games"), one form for completed and living seasons, so the verdict always reads as a statement about the season through a stated date.
 
 ## What the model measures
 
@@ -66,7 +66,8 @@ python ingestion/pull_league_totals.py --season 2025-26
 python ingestion/derive_payload.py --player "Name" --season 2025-26
 python ingestion/derive_creation.py --player "Name" --season 2025-26
 
-# Uses the registered hero's deployed shot payload to enumerate its games.
+# Uses the registered hero's deployed shot payload to enumerate its games;
+# for a hero with no deployed payload yet, pass --game-ids explicitly.
 python ingestion/pull_play_by_play.py --player-slugs <player-slug> --season 2025-26
 python ingestion/derive_shot_context.py \
   --shot-payload-file data/derived/<player-slug>/2025-26/<pull-date>.json
@@ -77,7 +78,13 @@ npm run hero:report -- <player-slug> 2025-26
 npm run hero:sync -- <player-slug> 2025-26
 ```
 
-`hero:report` prints the computed selection, making, creation-context, assisted-make, and free-throw (LINE) story before hero copy is written or changed. `hero:sync` is the explicit, reviewable step that requires and copies all four latest derived contracts to `public/data/<player-slug>/`: the shot payload, `.creation.json`, `.context.json`, and `.freethrow.json`; a partial sync fails. With no arguments it syncs every registered hero. The browser fetches and Zod-validates those committed files; it never contacts the NBA API.
+`hero:report` prints the computed selection, making, creation-context, assisted-make, and free-throw (LINE) story, closing with a claim-headroom section that states every verdict-grade gap against the house threshold bars, before hero copy is written or changed. `hero:sync` is the explicit, reviewable step that requires and copies all four latest derived contracts to `public/data/<player-slug>/`: the shot payload, `.creation.json`, `.context.json`, and `.freethrow.json`; a partial sync fails. With no arguments it syncs every registered hero. The browser fetches and Zod-validates those committed files; it never contacts the NBA API.
+
+### Living seasons
+
+`season.config.json` designates live hero-seasons and carries the tracking-shortfall registry (characterized NBA tracking outages, pinned per game). The season loop (`npm run season:update`, scheduled daily through `scripts/season-update.ps1`) publishes only at the **reconciled frontier**: the latest game date at which every source is exactly coherent. Play-by-play availability fixes the candidate; the cumulative sources are pulled with that date as their ceiling; a tracking gap the pin registry does not explain retreats the frontier (upstream lag defers, it never fails), while a contradiction halts for a human. On green days the loop lands a data-only commit whose message carries the session report; any red morning, including a verdict guard broken by the night's games, halts the publish until a human rewrites copy and claim mapping together. A pre-flip season runs dark: derive and report daily, publish nothing, until all five eligibility gates pass and the flip ships as an authored, reviewed PR.
+
+`python ingestion/season_replay.py` is the pre-activation proof: it drives the real loop over a calendar of historical frontier dates against a completed season and requires per-day frontier exactness, the flip signal on exactly the boundary day, and a terminal frame that reproduces the committed payloads byte-for-byte modulo provenance fields. Its first run (2026-07-23, Cody Williams 2025-26) passed every oracle.
 
 New team marks should be normalized before being assigned to a hero:
 
@@ -93,12 +100,12 @@ The project is a static React/Vite application deployed from the repository to V
 
 Deep hero URLs are served through the rewrite in `vercel.json`, which sends any path to `index.html`; the app then resolves the player slug from the URL against `src/heroes/registry.ts`. Navigation uses ordinary links and full page loads, so each hero remains a self-contained, shareable argument rather than view state in a player switcher. Vercel Analytics is included in the app.
 
-The intended multi-hero shape is one deployment containing:
+The multi-hero shape is one deployment containing:
 
-- `/` - eventually, a directory of hero poster tiles;
+- `/` - the directory of hero poster tiles, read straight off the registry;
 - `/<player-slug>` - one complete question, verdict, and evidence page per player.
 
-During the temporary directory-less period, `/` and unknown paths resolve to Cody Williams. Keyonte George and Shai Gilgeous-Alexander remain live at their direct URLs, and the registry-driven directory stays committed for reactivation.
+Unknown paths render the directory with a quiet note. Cross-hero navigation is the tiles plus each hero page's "All players" footer link, both plain anchors; there is deliberately no player switcher.
 
 ## Running locally
 
@@ -119,28 +126,22 @@ npm run build
 python -m pytest ingestion -q
 ```
 
-The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, deployed-payload and per-hero verdict guards, display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
+The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-hero verdict guards, display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
 
 ## Roadmap
 
-v1 through v2.5 are shipped: the selection/making argument, verdict-first presentation, interactive court, registry-based hero architecture, league-relative Case 2 creation contexts, and per-shot Case 3 assisted-make analysis are in place for Cody Williams, Keyonte George, and Shai Gilgeous-Alexander. Estimated per-shot clock was independently gated and deliberately omitted from v2.5 because the completed-season Stats V3 source could not support the required reconstruction audit.
+v1 through v2.6 are shipped: the selection/making argument, verdict-first presentation, interactive court, registry-based hero architecture, league-relative Case 2 creation contexts, per-shot Case 3 assisted-make analysis, and THE LINE (free throws at trip grain, with guarded per-hero line-sentences) are in place. Estimated per-shot clock was independently gated and deliberately omitted from v2.5.
 
-**v2.6 · the line (free throws at trip grain)** is the current phase, and its build steps are complete: the fourth typed contract derived from the existing play-by-play corpus, the league season-totals pull with an exact season-total reconciliation gate (Gate 5), the pure free-throw metrics function with its `hero:report` LINE section, and the `04 · THE LINE` act with the four-payload sync, all landed 2026-07-21 for all three heroes. The close-out step remains: per-hero verdict decisions (a guarded line-sentence is legal, never mandatory), graduating free-throw vocabulary from the verdict lexicon's unshipped list, and extending the deployed-payload guards to the fourth contract.
+**v3: living seasons** is built and its machinery is proven (2026-07-23). It added Ace Bailey as the fourth hero (whose season surfaced the first characterized hero-side tracking outages, now handled exact-or-reported with per-game pins), the reconciled-frontier contract in all four payloads' metadata, the restored hero directory, the season loop with automated data-only commits gated on the full test suite, and the replay proof: the production loop driven over seven historical frontier dates against a completed season, reproducing the committed deployment byte-for-byte modulo provenance and firing the flip signal on exactly the right day. Activation for 2026-27 is a configuration change; until opening night the loop runs dark against the unstarted season.
 
-After that, **v3: living seasons and heroes at scale**:
+Beyond v3, in priority order: **season-over-season stories** (deliberately before Ace's live flip, so his rookie-season argument survives being replaced by the living one), **hero scaffolding** generated from `hero:report` output, and eventually **archetype-adjusted selection** benchmarks.
 
-- in-progress season snapshots, refresh cadence, and visible data freshness;
-- a rookie hero that exercises eligibility gates on a live thin sample;
-- hero scaffolding generated from `hero:report` output;
-- season-over-season stories;
-- eventually, archetype-adjusted selection benchmarks.
-
-See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details and the standing constraints.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
 ## Technology and project docs
 
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 56 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 59 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
