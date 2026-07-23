@@ -6,7 +6,7 @@ fixtures are not. There are four independent golden contracts — the shot,
 creation, shot-context, and free-throw payloads version on different clocks
 (ADR-0030/0032/0053), so each has its own fixtures and schema version.
 
-## Shot payload (ADR-0007; schema v3)
+## Shot payload (ADR-0007; schema v4 — frontier metadata added by ADR-0058)
 
 - **`snapshot.truncated.json`** — a hand-trimmed copy of the real raw snapshot
   `data/raw/cody-williams/2025-26/2026-07-09.json`:
@@ -24,7 +24,7 @@ creation, shot-context, and free-throw payloads version on different clocks
 - **`derived.golden.json`** — the derive step's output over the truncated
   snapshot. **Never edit by hand**; regenerate via `npm run golden:regen`.
 
-## Creation payload (ADR-0030; schema v2 — Closest Defender added in v2.1)
+## Creation payload (ADR-0030; schema v4 — Closest Defender in v2.1, trackingShortfall in v3, frontier metadata in v4)
 
 - **`tracking.truncated.json`** — a hand-built player tracking snapshot
   (playerdashptshots shape, real headers). Deliberate traps locked in:
@@ -51,7 +51,7 @@ creation, shot-context, and free-throw payloads version on different clocks
   tracking fixtures. **Never edit by hand**; regenerate via
   `npm run golden:regen`.
 
-## Shot-context payload (ADR-0032; schema v1)
+## Shot-context payload (ADR-0032; schema v2 — frontier metadata added by ADR-0058)
 
 - **`playbyplay.truncated.json`** — a hand-trimmed NBA Stats PlayByPlayV3 response
   containing an explicitly assisted make, an unassisted make, and a miss —
@@ -65,7 +65,7 @@ creation, shot-context, and free-throw payloads version on different clocks
   they are never silently dropped or classified. **Never edit by hand**;
   regenerate via `npm run golden:regen`.
 
-## Free-throw payload (ADR-0053; schema v1)
+## Free-throw payload (ADR-0053; schema v2 — frontier metadata added by ADR-0058)
 
 - Reuses the shot-context game pair above. The play-by-play fixture carries
   one scenario per golden trip class: a **missed technical** (counted, never a

@@ -1,0 +1,39 @@
+{
+  "_readme": [
+    "The season loop's operational config (ADR-0057/0058/0059) and the",
+    "tracking-shortfall pin registry (ADR-0030 as amended). Changes travel",
+    "by PR — the loop's automated data commits never touch this file.",
+    "",
+    "liveSeasons: the hero-seasons the season loop runs for. mode 'dark' =",
+    "pull/derive/report daily, publish nothing (pre-flip, ADR-0059); mode",
+    "'live' = sync + full gate + data commit on green (ADR-0057). The live",
+    "flip PR moves a season dark->live alongside the authored verdict.",
+    "",
+    "trackingShortfalls: characterized outage games per hero-season, keyed",
+    "'<slug>/<season>' -> { gameId: missing attempts }. Absent = 0. An",
+    "entry is earned ONLY by a characterized outage (the ADR-0030",
+    "amendment's investigation bar), never by 'the derive said so'.",
+    "Per-GAME because the season loop's coherence check runs at a mid-season",
+    "frontier: only pinned games at or before the frontier explain a gap.",
+    "The deployed-pair guard (creationPayload.real.test.ts) asserts the",
+    "season total (the sum); the loop retreats the frontier on any gap the",
+    "pins do not explain (lag defers) and halts on over-attribution.",
+    "ace-bailey/2025-26: 0022500363 = 2025-12-07 single-game partial outage",
+    "(3); 0022500900 = 2026-03-05 league-wide meltdown night (5)."
+  ],
+  "liveSeasons": [
+    {
+      "slug": "ace-bailey",
+      "player": "Ace Bailey",
+      "playerId": 1642846,
+      "season": "2026-27",
+      "mode": "dark"
+    }
+  ],
+  "trackingShortfalls": {
+    "ace-bailey/2025-26": {
+      "0022500363": 3,
+      "0022500900": 5
+    }
+  }
+}

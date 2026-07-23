@@ -6,12 +6,11 @@
 // banner photo), a synced payload (`npm run hero:sync`), and an entry below.
 // The index tile falls out of the registry for free.
 
+// Ace Bailey is v3 Phase 1's fourth hero — the selection-problem quadrant,
+// and the designated live hero for 2026-27 (ADR-0059: his page flips to the
+// living season the day its gates pass).
+import { aceBailey } from './ace-bailey'
 import { codyWilliams } from './cody-williams'
-// Keyonte George is REGISTERED deliberately (confirmed 2026-07-16): his page
-// is live at /keyonte-george with the full two-act argument and guards, and
-// argless hero:sync covers him. Only the hero INDEX stays hidden for now —
-// the root serves Cody directly; the TEMPORARY(single-hero) markers for that
-// live in src/App.tsx and src/app/HeroPage.tsx (ROADMAP status note).
 import { keyonteGeorge } from './keyonte-george'
 // Shai is v2.5's positive control: a max-volume MVP profile held to the same
 // contracts and guards as the two young-player arguments.
@@ -23,6 +22,7 @@ export const HEROES: readonly HeroConfig[] = [
   codyWilliams,
   keyonteGeorge,
   shaiGilgeousAlexander,
+  aceBailey,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {

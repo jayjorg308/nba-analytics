@@ -28,6 +28,10 @@ describe('deployed shot-context payloads', () => {
         )
         expect(context._meta.gamesLoaded).toBe(context._meta.gamesExpected)
         expect(context._meta.eventMatchCounts.missingGame).toBe(0)
+        // Four-way frontier equality (ADR-0058): a one-sided hero:sync now
+        // fails visibly as a frontier mismatch.
+        expect(context._meta.dataThrough).toBe(shots._meta.dataThrough)
+        expect(context._meta.gamesIncluded).toBe(shots._meta.gamesIncluded)
         expect(context._meta.sourceGames).toHaveLength(context._meta.gamesExpected)
         expect(new Set(context._meta.sourceGames.map((game) => game.gameId))).toEqual(
           new Set(shots.shots.map((shot) => shot.gameId)),

@@ -16,6 +16,26 @@ import { parseDerivedPayload } from './payload'
 
 const publicData = path.resolve(process.cwd(), 'public/data')
 
+// Every hero's expected tracking shortfall, pinned (ADR-0030 as amended):
+// a shortfall CHANGING between pulls is as loud as one appearing. The
+// registry lives in season.config.json — one source of truth shared with
+// the season loop's coherence check (ingestion/season_update.py), which is
+// how the loop tells a characterized outage (advance past it) from
+// tracking lag (retreat the frontier). A new hero-season starts at 0 and
+// earns an entry only from a characterized outage, never from "the derive
+// said so".
+// The registry is per-GAME (the loop reconciles at mid-season frontiers);
+// the deployed completed-season expectation is the sum.
+const EXPECTED_TRACKING_SHORTFALL: Record<string, number> = Object.fromEntries(
+  Object.entries(
+    (
+      JSON.parse(
+        readFileSync(path.resolve(process.cwd(), 'season.config.json'), 'utf-8'),
+      ) as { trackingShortfalls: Record<string, Record<string, number>> }
+    ).trackingShortfalls,
+  ).map(([key, games]) => [key, Object.values(games).reduce((t, n) => t + n, 0)]),
+)
+
 // Every deployed creation payload, whether or not its hero is registered
 // (an unregistered hero's committed payloads stay guarded — the
 // TEMPORARY(single-hero) stance).
@@ -58,12 +78,22 @@ describe('deployed creation payloads', () => {
 
         expect(creation._meta.player).toBe(shot._meta.player)
         expect(creation._meta.season).toBe(shot._meta.season)
-        // The ADR-0030 identity at deployed grain: General partitions the
-        // pre-drop season exactly (schema already pins Σ general.player.fga
-        // to seasonFga; this ties seasonFga to the sibling's truth).
+        // The ADR-0030 identity at deployed grain: General plus the
+        // reported shortfall covers the pre-drop season exactly (the schema
+        // pins Σ general.player.fga to seasonFga − trackingShortfall; this
+        // ties seasonFga to the sibling's truth).
         expect(creation._meta.seasonFga).toBe(
           shot._meta.totalShots + shot._meta.zoneConflictsDropped,
         )
+        // The shortfall is pinned per hero-season — 0 unless a characterized
+        // outage earned an entry in the map above.
+        expect(creation._meta.trackingShortfall).toBe(
+          EXPECTED_TRACKING_SHORTFALL[`${slug}/${season}`] ?? 0,
+        )
+        // Four-way frontier equality (ADR-0058): a one-sided hero:sync now
+        // fails visibly as a frontier mismatch.
+        expect(creation._meta.dataThrough).toBe(shot._meta.dataThrough)
+        expect(creation._meta.gamesIncluded).toBe(shot._meta.gamesIncluded)
       })
 
       it('aggregates without flags on the product grains (the rollups earn their keep)', () => {

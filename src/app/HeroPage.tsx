@@ -10,11 +10,13 @@ import type { CreationPayload } from '../domain/creationPayload'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
+import { formatDataThrough } from '../format'
 import type { HeroConfig } from '../heroes/types'
 import {
   creationPayloadUrl,
   freethrowPayloadUrl,
   heroImageUrl,
+  indexUrl,
   payloadUrl,
   shotContextPayloadUrl,
   teamLogoUrl,
@@ -175,8 +177,14 @@ function HeroReady({
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
             kept honest by the colocated verdict guard. */}
         <p className="hero-verdict">{hero.verdict}</p>
+        {/* The byline carries the reconciled frontier (ADR-0058/0059):
+            structural copy, one form for completed and living seasons, so
+            the verdict always reads as a statement about the season through
+            the stated date. */}
         <p className="hero-byline">
-          {payload._meta.player} · {payload._meta.season} · vs league average
+          {payload._meta.player} · {payload._meta.season} ·{' '}
+          {formatDataThrough(payload._meta.dataThrough, payload._meta.gamesIncluded)} · vs
+          league average
         </p>
       </header>
       <HeadlineBanner selection={metrics.selection} making={metrics.making} />
@@ -266,14 +274,10 @@ function HeroReady({
       </section>
       {/* The quiet way back to the directory (ADR-0022) — after the argument,
           never above it; cross-hero navigation is links between pages, not a
-          switcher on this one.
-          TEMPORARY(single-hero): hidden with the index (2026-07-12) — a
-          directory link with the directory hidden would just loop back to
-          this page. Restore with the index (re-import indexUrl from
-          ../heroes/urls):
-          <footer className="hero-footer">
-            <a href={indexUrl()}>← All players</a>
-          </footer> */}
+          switcher on this one. */}
+      <footer className="hero-footer">
+        <a href={indexUrl()}>← All players</a>
+      </footer>
     </main>
   )
 }

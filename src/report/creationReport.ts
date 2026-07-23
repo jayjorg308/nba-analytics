@@ -74,6 +74,13 @@ export function renderCreationReport(payload: CreationPayload): string {
     `  pulled ${meta.pullDate} · schema v${meta.schemaVersion} · source ${meta.sourceSnapshot}`,
     `  league baseline ${meta.leagueSourceSnapshot} (${m.leagueFga} FGA)`,
   )
+  if (m.trackingShortfall > 0) {
+    lines.push(
+      `  TRACKING SHORTFALL: ${m.trackingShortfall} of ${m.seasonFga} attempts fall in ` +
+        `documented NBA tracking outages and appear in no context (ADR-0030 as amended); ` +
+        `each family's shares sum short by that margin`,
+    )
+  }
 
   // The General family at its two-tier product grain: the NBA classifies
   // creation only for jumpers outside 10 ft — the rim bucket and the summed

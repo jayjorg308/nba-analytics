@@ -1,14 +1,17 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 4,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
     "seasonType": "Regular Season",
     "pullDate": "2026-07-16",
+    "dataThrough": "2026-04-12",
+    "gamesIncluded": 62,
     "sourceSnapshot": "data/raw/cody-williams/2025-26/tracking/2026-07-16.json",
     "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-16.json",
     "seasonFga": 509,
+    "trackingShortfall": 0,
     "shotClockUnattributed": 0,
     "defenderUnattributed": 0,
     "leagueFga": 218352,

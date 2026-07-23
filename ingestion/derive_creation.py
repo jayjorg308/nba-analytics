@@ -13,14 +13,18 @@ WHAT THIS DOES:
   by the pure aggregation function, never persisted. Counts only, with the
   2PT/3PT split that makes true creation PPS computable (ADR-0001).
 
-THE RECONCILIATION (ADR-0030, the ADR-0004 pattern cross-payload):
-  The General family must partition the season EXACTLY:
-      Σ context FGA == shot payload totalShots + zoneConflictsDropped
-  (the PRE-drop season total — the dashboards know nothing of our ADR-0019
-  drops). A mismatch fails the derive loudly; a creation payload that
-  contradicts its sibling is never persisted. Shot Clock is held to COVERAGE:
-  the shortfall is counted into _meta.shotClockUnattributed and reported in
-  the UI whenever nonzero — never guessed into a band.
+THE RECONCILIATION (ADR-0030 as amended 2026-07-21 — exact-or-reported):
+  The General family sums to the TRACKING OVERALL, and the gap between that
+  and the official pre-drop season total (shot payload totalShots +
+  zoneConflictsDropped) is the TRACKING SHORTFALL:
+      Σ context FGA + _meta.trackingShortfall == pre-drop season FGA
+  A shortfall is an NBA-side tracking outage — measured, persisted, reported
+  in the UI whenever nonzero, never guessed into a context (ADR-0019). A
+  NEGATIVE shortfall (tracking exceeding the official record) is
+  contradiction, not outage, and fails the derive loudly. Shot Clock and
+  Closest Defender are held to COVERAGE within the tracking universe: their
+  shortfalls are counted against the tracking Overall (a family disagreeing
+  with its own source is corruption, and the negative-gap fail catches it).
 
 SPARSE ROWS (spike trap #1): the dashboards omit zero-attempt contexts
   (Cody Williams 2025-26 has no 'Other' row). The payload always carries
@@ -56,7 +60,11 @@ import pandas as pd
 # (src/domain/creationPayload.ts) so a mismatch fails loudly at the load
 # boundary. v1: General + Shot Clock families (ADR-0030).
 # v2: Closest Defender family (the ADR-0030 fast-follow, ROADMAP v2.1).
-SCHEMA_VERSION = 2
+# v3: trackingShortfall — the General identity is exact-or-reported
+#     (ADR-0030 as amended; Ace Bailey's two outage games, v3 Phase 1).
+# v4: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+#     the sibling shot payload (ADR-0058; v3 Phase 2).
+SCHEMA_VERSION = 4
 
 # --- Context families (see CONTEXT.md and ADR-0030) ----------------------------
 # NBA row literals, verbatim, in deterministic payload order.
@@ -282,8 +290,11 @@ def league_coverage_family(snapshot: dict, section: str, contexts: list[str],
     return entries, unattributed
 
 
-def season_fga_target(shot_payload_path: Path, player: str, season: str) -> int:
-    """The shot payload's PRE-drop season FGA: totalShots + zoneConflictsDropped.
+def sibling_meta(shot_payload_path: Path, player: str, season: str) -> dict:
+    """The sibling shot payload's reconciliation anchors: the PRE-drop season
+    FGA (totalShots + zoneConflictsDropped) and the reconciled frontier
+    (dataThrough/gamesIncluded — ADR-0058), copied so four-way frontier
+    equality holds by construction.
 
     Cross-checks player/season so the identity can never be 'confirmed'
     against the wrong sibling."""
@@ -291,7 +302,14 @@ def season_fga_target(shot_payload_path: Path, player: str, season: str) -> int:
     if meta["player"] != player or meta["season"] != season:
         fail(f"shot payload {shot_payload_path} is {meta['player']} {meta['season']}, "
              f"not {player} {season} — wrong sibling")
-    return int(meta["totalShots"]) + int(meta["zoneConflictsDropped"])
+    if "dataThrough" not in meta or "gamesIncluded" not in meta:
+        fail(f"shot payload {shot_payload_path} predates the frontier contract "
+             f"(no dataThrough/gamesIncluded) — re-run derive_payload.py first")
+    return {
+        "seasonFga": int(meta["totalShots"]) + int(meta["zoneConflictsDropped"]),
+        "dataThrough": str(meta["dataThrough"]),
+        "gamesIncluded": int(meta["gamesIncluded"]),
+    }
 
 
 def locate_shot_payload(slug: str, season: str) -> Path:
@@ -325,9 +343,10 @@ def check_meta(meta: dict, keys: list[str], label: str) -> None:
         fail(f"{label} snapshot _meta missing keys: {missing}")
 
 
-def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
+def derive(player_snapshot: dict, league_snapshot: dict, sibling: dict,
            source: str, league_source: str) -> dict:
     """Pure derive over validated inputs — the unit the golden locks."""
+    season_fga = int(sibling["seasonFga"])
     meta = player_snapshot.get("_meta")
     response = player_snapshot.get("response")
     if not isinstance(meta, dict) or not isinstance(response, dict):
@@ -342,21 +361,28 @@ def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
     for key, rs_name, context_col, contexts in FAMILIES:
         families[key] = player_family(response, rs_name, context_col, contexts)
 
-    # The ADR-0030 hard identity: General partitions the season exactly.
+    # The ADR-0030 identity, as amended: General sums to the tracking
+    # Overall; the gap to the official pre-drop total is the tracking
+    # shortfall — measured and persisted, never guessed into a context.
+    # Over-attribution (tracking exceeding the official record) is
+    # contradiction, not outage, and still fails hard.
     general_fga = sum(e["fga"] for e in families["general"])
-    if general_fga != season_fga:
-        fail(f"General family sums to {general_fga} FGA but the shot payload's "
-             f"pre-drop season total is {season_fga} — payloads contradict; "
-             f"re-pull both sources together, never force one to fit the other")
+    tracking_shortfall = season_fga - general_fga
+    if tracking_shortfall < 0:
+        fail(f"General family sums to {general_fga} FGA, EXCEEDING the shot "
+             f"payload's pre-drop season total {season_fga} — tracking cannot "
+             f"outcount the official record; payloads contradict; re-pull "
+             f"both sources together, never force one to fit the other")
 
-    # Coverage families (Shot Clock, Closest Defender): count the shortfall,
-    # never guess it into a context.
+    # Coverage families (Shot Clock, Closest Defender): count the shortfall
+    # against the TRACKING Overall (general_fga) — a family disagreeing with
+    # its own source's total is corruption, not coverage.
     def player_unattributed(key: str, label: str) -> int:
         total = sum(e["fga"] for e in families[key])
-        gap = season_fga - total
+        gap = general_fga - total
         if gap < 0:
-            fail(f"{label} family sums to {total}, exceeding the season "
-                 f"total {season_fga} — snapshots inconsistent")
+            fail(f"{label} family sums to {total}, exceeding the tracking "
+                 f"Overall {general_fga} — snapshots inconsistent")
         return gap
 
     clock_unattributed = player_unattributed("shotClock", "Shot Clock")
@@ -377,9 +403,12 @@ def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
             "season": meta["season"],
             "seasonType": meta["season_type"],
             "pullDate": meta["pull_date"],
+            "dataThrough": sibling["dataThrough"],
+            "gamesIncluded": sibling["gamesIncluded"],
             "sourceSnapshot": source,
             "leagueSourceSnapshot": league_source,
             "seasonFga": season_fga,
+            "trackingShortfall": tracking_shortfall,
             "shotClockUnattributed": clock_unattributed,
             "defenderUnattributed": defender_unattributed,
             "leagueFga": overall["FGA"],
@@ -452,10 +481,10 @@ def main() -> None:
                              str(meta.get("season", args.season))))
     if not shot_payload_path.exists():
         fail(f"shot payload not found: {shot_payload_path}")
-    season_fga = season_fga_target(
+    sibling = sibling_meta(
         shot_payload_path, str(meta.get("player")), str(meta.get("season")))
 
-    payload = derive(player_snapshot, league_snapshot, season_fga,
+    payload = derive(player_snapshot, league_snapshot, sibling,
                      repo_relative(snapshot_path), repo_relative(league_path))
 
     if args.out_file:
@@ -472,7 +501,11 @@ def main() -> None:
 
     m = payload["_meta"]
     print(f"derived creation payload -> {out_path}")
-    print(f"  {m['player']} {m['season']}  General Σ == {m['seasonFga']} (exact)  "
+    shortfall = m["trackingShortfall"]
+    general_note = ("exact" if shortfall == 0
+                    else f"tracking shortfall {shortfall} — documented outage, reported")
+    print(f"  {m['player']} {m['season']}  General Σ + {shortfall} == "
+          f"{m['seasonFga']} ({general_note})  "
           f"unattributed: clock {m['shotClockUnattributed']} · "
           f"defender {m['defenderUnattributed']}")
     print(f"  league FGA {m['leagueFga']}  league unattributed: clock "

@@ -137,6 +137,13 @@ export interface CreationMetrics {
   comparisonClass: 'league-average'
   /** The pre-drop season FGA every share is stated over. */
   seasonFga: number
+  /** The measured cross-universe gap (seasonFga minus the tracking
+   * Overall): attempts NBA tracking never captured, appearing in no
+   * context of any family — reported whenever nonzero, never guessed
+   * (ADR-0030 as amended). Shares keep the official seasonFga
+   * denominator, so a gapped hero's shares visibly sum short by exactly
+   * this margin. */
+  trackingShortfall: number
   /** Attempts the Shot Clock family does not cover — reported whenever
    * nonzero, never guessed into a band (ADR-0019 pattern). */
   shotClockUnattributed: number
@@ -277,6 +284,7 @@ export function aggregateCreationMetrics(payload: CreationPayload): CreationMetr
   return {
     comparisonClass: 'league-average',
     seasonFga,
+    trackingShortfall: payload._meta.trackingShortfall,
     shotClockUnattributed,
     defenderUnattributed: payload._meta.defenderUnattributed,
     leagueFga,

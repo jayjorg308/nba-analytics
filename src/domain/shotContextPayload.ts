@@ -4,7 +4,9 @@
 
 import { z } from 'zod'
 
-export const SHOT_CONTEXT_SCHEMA_VERSION = 1
+// v2: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+//     the sibling shot payload at derive (ADR-0058; v3 Phase 2).
+export const SHOT_CONTEXT_SCHEMA_VERSION = 2
 
 export const ASSIST_STATUSES = [
   'assisted',
@@ -78,6 +80,12 @@ export const shotContextPayloadSchema = z
       player: z.string().min(1),
       playerId: z.number().int().positive(),
       season: z.string().regex(/^\d{4}-\d{2}$/),
+      /** The reconciled frontier (ADR-0058), copied from the sibling shot
+       * payload; gamesIncluded must agree with this contract's own
+       * gamesExpected (both count the sibling's distinct games — verified
+       * below). */
+      dataThrough: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      gamesIncluded: z.number().int().min(1),
       sourceShotPayload: z.string().min(1),
       totalShots: z.number().int().min(0),
       gamesExpected: z.number().int().min(0),
@@ -100,6 +108,12 @@ export const shotContextPayloadSchema = z
     }
     if (payload._meta.gamesLoaded > payload._meta.gamesExpected) {
       ctx.addIssue({ code: 'custom', message: 'gamesLoaded exceeds gamesExpected' })
+    }
+    if (payload._meta.gamesIncluded !== payload._meta.gamesExpected) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'gamesIncluded (frontier) disagrees with gamesExpected (corpus)',
+      })
     }
     const keys = payload.shots.map((row) => `${row.gameId}:${row.gameEventId}`)
     if (new Set(keys).size !== keys.length) {

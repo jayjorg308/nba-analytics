@@ -6,7 +6,9 @@
 
 import { z } from 'zod'
 
-export const FREETHROW_SCHEMA_VERSION = 1
+// v2: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+//     the sibling shot payload at derive (ADR-0058; v3 Phase 2).
+export const FREETHROW_SCHEMA_VERSION = 2
 
 export const TRIP_CLASSES = [
   'shootingFoul2',
@@ -77,6 +79,12 @@ export const freethrowPayloadSchema = z
       player: z.string().min(1),
       playerId: z.number().int().positive(),
       season: z.string().regex(/^\d{4}-\d{2}$/),
+      /** The reconciled frontier (ADR-0058), copied from the sibling shot
+       * payload at derive. Deliberately NOT tied to this contract's trip
+       * games: trips exist only in games with hero free throws, a subset of
+       * the frontier's games. */
+      dataThrough: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      gamesIncluded: z.number().int().min(1),
       sourceShotPayload: z.string().min(1),
       sourceLeagueTotals: z.string().min(1),
       leagueTotalsPullDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

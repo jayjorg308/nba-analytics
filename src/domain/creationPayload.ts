@@ -15,7 +15,13 @@ import { z } from 'zod'
 // Must match SCHEMA_VERSION in ingestion/derive_creation.py; bump both on any
 // breaking payload change. v1: General + Shot Clock families (ADR-0030).
 // v2: Closest Defender family (the ADR-0030 fast-follow, ROADMAP v2.1).
-export const CREATION_SCHEMA_VERSION = 2
+// v3: trackingShortfall — the General identity is exact-or-reported
+//     (ADR-0030 as amended; hero-side tracking outages are measured and
+//     reported, never vetoing and never guessed).
+// v4: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+//     the sibling shot payload at derive (ADR-0058; v3 Phase 2). Four-way
+//     equality is guarded at the deployed-pair tests.
+export const CREATION_SCHEMA_VERSION = 4
 
 // NBA row literals, verbatim (the spike catalogued them — ADR-0030 closures).
 // The payload always carries every context of a shipped family exactly once:
@@ -97,12 +103,25 @@ export const creationPayloadSchema = z
       season: z.string().regex(/^\d{4}-\d{2}$/),
       seasonType: z.string().min(1),
       pullDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      /** The reconciled frontier (ADR-0058), copied from the sibling shot
+       * payload at derive; the deployed-pair guards assert four-way
+       * equality across the sibling contracts. */
+      dataThrough: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      gamesIncluded: z.number().int().min(1),
       sourceSnapshot: z.string().min(1),
       leagueSourceSnapshot: z.string().min(1),
       /** The shot payload's pre-drop season FGA (totalShots +
-       * zoneConflictsDropped) that the derive reconciled against — the
-       * General family sums to exactly this (ADR-0030 hard identity). */
+       * zoneConflictsDropped) that the derive reconciled against. The
+       * General family sums to exactly this MINUS the tracking shortfall
+       * (ADR-0030 as amended: exact-or-reported). */
       seasonFga: count,
+      /** The measured cross-universe gap: seasonFga minus the tracking
+       * Overall — NBA-side tracking outages, counted and reported in the
+       * UI whenever nonzero, never guessed into a context. Non-negative by
+       * construction here: tracking exceeding the official record is
+       * contradiction and hard-fails the derive (and this load boundary,
+       * via the identities below). */
+      trackingShortfall: count,
       /** Attempts the Shot Clock family does not cover (tracking gaps) —
        * counted and reported in the UI whenever nonzero, never guessed
        * into a band (ADR-0019 pattern; zero in launch data). */
@@ -145,17 +164,21 @@ export const creationPayloadSchema = z
     // seasonFga really equals the sibling shot payload's pre-drop total —
     // lives in the reconciliation guards, which can see both files).
     const sum = (entries: { fga: number }[]) => entries.reduce((t, e) => t + e.fga, 0)
+    // The player-side anchor is the tracking Overall (seasonFga minus the
+    // reported shortfall); the family unattributed counters are internal to
+    // the tracking universe (ADR-0030 as amended).
+    const trackingOverall = p._meta.seasonFga - p._meta.trackingShortfall
     const identities: [string, number, number][] = [
-      ['general.player', sum(p.general.player), p._meta.seasonFga],
+      ['general.player', sum(p.general.player), trackingOverall],
       [
         'shotClock.player',
         sum(p.shotClock.player),
-        p._meta.seasonFga - p._meta.shotClockUnattributed,
+        trackingOverall - p._meta.shotClockUnattributed,
       ],
       [
         'closestDefender.player',
         sum(p.closestDefender.player),
-        p._meta.seasonFga - p._meta.defenderUnattributed,
+        trackingOverall - p._meta.defenderUnattributed,
       ],
       ['general.league', sum(p.general.league), p._meta.leagueFga],
       [

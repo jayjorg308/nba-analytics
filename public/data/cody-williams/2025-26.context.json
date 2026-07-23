@@ -1,10 +1,12 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
-    "sourceShotPayload": "public/data/cody-williams/2025-26.json",
+    "dataThrough": "2026-04-12",
+    "gamesIncluded": 62,
+    "sourceShotPayload": "data/derived/cody-williams/2025-26/2026-07-09.json",
     "totalShots": 509,
     "gamesExpected": 62,
     "gamesLoaded": 62,

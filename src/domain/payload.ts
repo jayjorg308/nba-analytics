@@ -20,7 +20,11 @@ import {
 // Must match SCHEMA_VERSION in ingestion/derive_payload.py; bump both on any
 // breaking payload change. v2: _meta.zoneConflictsDropped (ADR-0019).
 // v3: per-shot opponent/home (matchup context, derived in Python — ADR-0028).
-export const SCHEMA_VERSION = 3
+// v4: _meta.dataThrough/gamesIncluded — the reconciled frontier as contract
+//     metadata (ADR-0058; v3 Phase 2). This payload computes them from its
+//     own rows (verified below); the three siblings copy them, and four-way
+//     equality is guarded at derive and at the deployed-pair tests.
+export const SCHEMA_VERSION = 4
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
 
@@ -71,6 +75,13 @@ export const derivedPayloadSchema = z
       season: z.string().regex(/^\d{4}-\d{2}$/),
       seasonType: z.string().min(1),
       pullDate: z.string().regex(isoDate),
+      /** The reconciled frontier (ADR-0058): the latest game date this
+       * payload's data runs through. Equals the max of shots[].gameDate —
+       * verified below, so the frontier can never overstate the rows. */
+      dataThrough: z.string().regex(isoDate),
+      /** Games included through the frontier (distinct gameIds — verified
+       * below). */
+      gamesIncluded: z.number().int().min(1),
       sourceSnapshot: z.string().min(1),
       totalShots: z.number().int().min(0),
       /** Rows dropped at derive because the NBA's SHOT_TYPE contradicted the
@@ -86,6 +97,25 @@ export const derivedPayloadSchema = z
         code: 'custom',
         message: `_meta.totalShots (${p._meta.totalShots}) != shots.length (${p.shots.length})`,
       })
+    }
+    // The frontier is the rows' own truth (ADR-0058): a stated dataThrough
+    // or gamesIncluded that disagrees with the shots is a stale or forged
+    // frontier, never accepted at the load boundary.
+    if (p.shots.length > 0) {
+      const maxDate = p.shots.reduce((m, s) => (s.gameDate > m ? s.gameDate : m), '')
+      if (p._meta.dataThrough !== maxDate) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `_meta.dataThrough (${p._meta.dataThrough}) != max shot gameDate (${maxDate})`,
+        })
+      }
+      const games = new Set(p.shots.map((s) => s.gameId)).size
+      if (p._meta.gamesIncluded !== games) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `_meta.gamesIncluded (${p._meta.gamesIncluded}) != distinct game count (${games})`,
+        })
+      }
     }
     // The aggregation needs a populated baseline for every evaluation zone.
     for (const zone of EVAL_ZONES) {

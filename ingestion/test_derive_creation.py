@@ -24,10 +24,13 @@ def load_fixture(name: str) -> dict:
 
 
 def derive_fixtures(player=None, league=None, season_fga=15) -> dict:
+    # The sibling anchors (frontier values match the shot golden's — the
+    # fixtures reconcile by construction).
+    sibling = {"seasonFga": season_fga, "dataThrough": "2026-03-04", "gamesIncluded": 6}
     return dc.derive(
         player if player is not None else load_fixture("tracking.truncated.json"),
         league if league is not None else load_fixture("tracking.league.truncated.json"),
-        season_fga,
+        sibling,
         "tests/fixtures/tracking.truncated.json",
         "tests/fixtures/tracking.league.truncated.json",
     )
@@ -82,24 +85,45 @@ def test_duplicated_context_row_fails():
         derive_fixtures(player=player)
 
 
-# --- The General identity (ADR-0030): exact, hard-fail ---------------------------
+# --- The General identity (ADR-0030 as amended): exact-or-reported ---------------
 
-def test_general_identity_mismatch_fails():
-    with pytest.raises(SystemExit, match="payloads contradict"):
-        derive_fixtures(season_fga=16)
+def test_tracking_shortfall_zero_when_exact():
+    payload = derive_fixtures()
+    assert payload["_meta"]["trackingShortfall"] == 0
+
+
+def test_tracking_shortfall_counted_never_guessed():
+    # Official pre-drop total 16 vs tracking Overall 15: an NBA-side outage.
+    # The derive persists the measured shortfall (ADR-0019 exclude-and-report,
+    # ADR-0030 as amended) — it no longer vetoes the payload.
+    payload = derive_fixtures(season_fga=16)
+    assert payload["_meta"]["trackingShortfall"] == 1
+    assert payload["_meta"]["seasonFga"] == 16
+    # Family coverage is measured against the TRACKING Overall (15), not the
+    # official total — the clock gap stays 1 (15 - 14), unchanged by the
+    # shortfall.
+    assert payload["_meta"]["shotClockUnattributed"] == 1
+
+
+def test_general_over_attribution_fails():
+    # Tracking exceeding the official record is contradiction, not outage —
+    # the hard fail survives the amendment.
+    with pytest.raises(SystemExit, match="EXCEEDING the shot payload"):
+        derive_fixtures(season_fga=14)
 
 
 def test_shot_clock_overrun_fails():
-    # Σ clock bands exceeding the season total means the snapshots disagree —
-    # never persist, never truncate. Inflate one band (keeping the row
-    # internally sane) so Σ clock = 16 while General still reconciles at 15.
+    # Σ clock bands exceeding the tracking Overall means the snapshot
+    # disagrees with itself — never persist, never truncate. Inflate one band
+    # (keeping the row internally sane) so Σ clock = 16 while General still
+    # sums to 15.
     player = load_fixture("tracking.truncated.json")
     rs = player["response"]["resultSets"][1]
     h = rs["headers"]
     row = rs["rowSet"][2]  # '15-7 Average': FGA 5 -> 7
     row[h.index("FGA")], row[h.index("FG2A")] = 7, 5
     row[h.index("FG_PCT")] = 0.286  # 2/7
-    with pytest.raises(SystemExit, match="exceeding the season total"):
+    with pytest.raises(SystemExit, match="exceeding the tracking Overall"):
         derive_fixtures(player=player)
 
 
@@ -221,21 +245,36 @@ def test_season_mismatch_between_snapshots_fails():
 
 # --- The sibling lookup: the identity is never confirmed against the wrong file --
 
-def test_season_fga_target_reads_pre_drop_total(tmp_path):
+def test_sibling_meta_reads_pre_drop_total_and_frontier(tmp_path):
+    shot_payload = {"_meta": {"player": "Test Player", "season": "2025-26",
+                              "totalShots": 880, "zoneConflictsDropped": 1,
+                              "dataThrough": "2026-04-12", "gamesIncluded": 68}}
+    p = tmp_path / "shot.json"
+    p.write_text(json.dumps(shot_payload), encoding="utf-8")
+    sibling = dc.sibling_meta(p, "Test Player", "2025-26")
+    assert sibling == {"seasonFga": 881, "dataThrough": "2026-04-12",
+                       "gamesIncluded": 68}
+
+
+def test_sibling_meta_rejects_wrong_sibling(tmp_path):
+    shot_payload = {"_meta": {"player": "Someone Else", "season": "2025-26",
+                              "totalShots": 100, "zoneConflictsDropped": 0,
+                              "dataThrough": "2026-04-12", "gamesIncluded": 60}}
+    p = tmp_path / "shot.json"
+    p.write_text(json.dumps(shot_payload), encoding="utf-8")
+    with pytest.raises(SystemExit, match="wrong sibling"):
+        dc.sibling_meta(p, "Test Player", "2025-26")
+
+
+def test_sibling_meta_rejects_pre_frontier_sibling(tmp_path):
+    # A shot payload without frontier fields is a stale sibling (pre-v4) —
+    # the derive demands a re-run, never invents a frontier (ADR-0058).
     shot_payload = {"_meta": {"player": "Test Player", "season": "2025-26",
                               "totalShots": 880, "zoneConflictsDropped": 1}}
     p = tmp_path / "shot.json"
     p.write_text(json.dumps(shot_payload), encoding="utf-8")
-    assert dc.season_fga_target(p, "Test Player", "2025-26") == 881
-
-
-def test_season_fga_target_rejects_wrong_sibling(tmp_path):
-    shot_payload = {"_meta": {"player": "Someone Else", "season": "2025-26",
-                              "totalShots": 100, "zoneConflictsDropped": 0}}
-    p = tmp_path / "shot.json"
-    p.write_text(json.dumps(shot_payload), encoding="utf-8")
-    with pytest.raises(SystemExit, match="wrong sibling"):
-        dc.season_fga_target(p, "Test Player", "2025-26")
+    with pytest.raises(SystemExit, match="predates the frontier contract"):
+        dc.sibling_meta(p, "Test Player", "2025-26")
 
 
 # --- Determinism ------------------------------------------------------------------
