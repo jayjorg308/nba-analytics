@@ -436,6 +436,26 @@ untouched._
    pull session → frontier computation → derives → sync → full gate → data
    commit (ADR-0057); defer/halt semantics per ADR-0058; dark mode for
    pre-flip seasons; the Task Scheduler wrapper and halt notification.
+   _Done 2026-07-23. `season.config.json` (committed, PR-only) carries the
+   live seasons and the tracking-shortfall pin registry — now per GAME,
+   because a mid-season frontier is only explained by pins at or before it;
+   the deployed-pair guard reads the same file (one source of truth), and
+   the coherence rule is: gap == pins → ok, gap > pins → retreat (lag
+   defers), gap < pins → halt (contradiction — pinned outage attempts
+   cannot come back). `ingestion/live_pulls.py` (frontier-anchored pulls,
+   `T`-stamped append-only snapshots that sort after plain dates),
+   `ingestion/season_update.py` (the orchestrator; pure decision helpers
+   under pytest, including the interior-hole and doubleheader frontier
+   cases), a no-change early exit (byte-identical discovery + deployed at
+   candidate → one API call and done), `--as-of` as the Phase 4 replay
+   hook, and `scripts/season-update.ps1` (Task Scheduler + halt toast).
+   Proven on real data the day it was built: the unstarted 2026-27 season
+   no-ops clean in dark mode; a pseudo-live session on completed Ace
+   2025-26 settled its frontier through the pinned-shortfall path
+   (884 + 8 == 892), ran all four derives and the full gate green, and
+   stopped at `--no-commit` with `wouldCommit: true`; the rerun exited
+   no-change before any anchored pull. Gate green: pytest 88, vitest 315,
+   lint, build._
 5. **Phase 4 — the replay proof** (v3's exit): drive the real loop against
    completed 2025-26 over a calendar of simulated frontier dates (Cody as
    primary replay hero — his corpus is fully committed). Oracles: every

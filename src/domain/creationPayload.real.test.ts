@@ -17,14 +17,24 @@ import { parseDerivedPayload } from './payload'
 const publicData = path.resolve(process.cwd(), 'public/data')
 
 // Every hero's expected tracking shortfall, pinned (ADR-0030 as amended):
-// a shortfall CHANGING between pulls is as loud as one appearing. The only
-// nonzero entry is Ace Bailey's — two characterized outage games
-// (2025-12-07 partial, 2026-03-05 league-wide meltdown; 3 + 5 attempts).
-// A new hero-season starts at 0 and earns an entry here only from a
-// characterized outage, never from "the derive said so".
-const EXPECTED_TRACKING_SHORTFALL: Record<string, number> = {
-  'ace-bailey/2025-26': 8,
-}
+// a shortfall CHANGING between pulls is as loud as one appearing. The
+// registry lives in season.config.json — one source of truth shared with
+// the season loop's coherence check (ingestion/season_update.py), which is
+// how the loop tells a characterized outage (advance past it) from
+// tracking lag (retreat the frontier). A new hero-season starts at 0 and
+// earns an entry only from a characterized outage, never from "the derive
+// said so".
+// The registry is per-GAME (the loop reconciles at mid-season frontiers);
+// the deployed completed-season expectation is the sum.
+const EXPECTED_TRACKING_SHORTFALL: Record<string, number> = Object.fromEntries(
+  Object.entries(
+    (
+      JSON.parse(
+        readFileSync(path.resolve(process.cwd(), 'season.config.json'), 'utf-8'),
+      ) as { trackingShortfalls: Record<string, Record<string, number>> }
+    ).trackingShortfalls,
+  ).map(([key, games]) => [key, Object.values(games).reduce((t, n) => t + n, 0)]),
+)
 
 // Every deployed creation payload, whether or not its hero is registered
 // (an unregistered hero's committed payloads stay guarded — the
