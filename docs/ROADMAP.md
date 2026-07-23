@@ -486,14 +486,24 @@ his page is born live the day the gates first pass on real thin data — the
 "spin up cheaply" demo CONTEXT.md always promised, now with the gates
 firing for real.
 
-## Beyond v3 — deferred, in order
+## Beyond v3 — in priority order (reordered 2026-07-23, at v3 close)
 
-1. **Hero scaffolding** — a generator that drafts heroConfig + a guard
-   skeleton from `hero:report` output. Three manual swaps have earned it;
-   it waits only because v3's critical path doesn't need it.
-2. **Season-over-season** — same hero, two seasons, the growth story.
-   Payloads are already per-season; this is mostly presentation, and the
-   live flip machinery (ADR-0059) hands it the season-swap seam for free.
+1. **Season-over-season** — same hero, two seasons, the growth story.
+   Promoted to first for a sequencing consequence hiding in ADR-0059: the
+   live flip *replaces* a hero's completed argument, so when Ace Bailey's
+   page flips to living 2026-27 (projected late November at his volumes),
+   his rookie-season argument disappears unless this feature exists first.
+   Built before the flip, the flip preserves it instead — and Ace becomes
+   the feature's natural first subject (the growth story out of "the diet
+   is the problem"). Payloads are already per-season, so the build is
+   mostly presentation plus a registry/routing decision; the real design
+   questions (one page or two per hero; how a growth story argues
+   verdict-first) warrant a grilling session before code. The summer
+   window before opening night is the time.
+2. **Hero scaffolding** — a generator that drafts heroConfig + a guard
+   skeleton from `hero:report` output. Four manual adds have earned it,
+   and it makes the mid-season Peterson born-live add (the ADR-0059
+   stretch) nearly free at the moment it is most valuable.
 3. **Archetype-adjusted selection** — deferred from v1 (CONTEXT.md, Selection
    benchmark). The first item that changes the comparison class, so it
    supersedes ADR-0002 deliberately or not at all. Hardest; last on purpose.
