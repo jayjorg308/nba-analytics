@@ -10,6 +10,7 @@ import type { CreationPayload } from '../domain/creationPayload'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
+import { formatDataThrough } from '../format'
 import type { HeroConfig } from '../heroes/types'
 import {
   creationPayloadUrl,
@@ -176,8 +177,14 @@ function HeroReady({
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
             kept honest by the colocated verdict guard. */}
         <p className="hero-verdict">{hero.verdict}</p>
+        {/* The byline carries the reconciled frontier (ADR-0058/0059):
+            structural copy, one form for completed and living seasons, so
+            the verdict always reads as a statement about the season through
+            the stated date. */}
         <p className="hero-byline">
-          {payload._meta.player} · {payload._meta.season} · vs league average
+          {payload._meta.player} · {payload._meta.season} ·{' '}
+          {formatDataThrough(payload._meta.dataThrough, payload._meta.gamesIncluded)} · vs
+          league average
         </p>
       </header>
       <HeadlineBanner selection={metrics.selection} making={metrics.making} />

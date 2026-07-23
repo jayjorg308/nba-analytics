@@ -80,6 +80,10 @@ describe('deployed creation payloads', () => {
         expect(creation._meta.trackingShortfall).toBe(
           EXPECTED_TRACKING_SHORTFALL[`${slug}/${season}`] ?? 0,
         )
+        // Four-way frontier equality (ADR-0058): a one-sided hero:sync now
+        // fails visibly as a frontier mismatch.
+        expect(creation._meta.dataThrough).toBe(shot._meta.dataThrough)
+        expect(creation._meta.gamesIncluded).toBe(shot._meta.gamesIncluded)
       })
 
       it('aggregates without flags on the product grains (the rollups earn their keep)', () => {

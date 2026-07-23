@@ -69,6 +69,10 @@ describe('deployed free-throw payloads', () => {
         // expected game loaded — a shortfall means the season could hide
         // free throws the corpus never saw.
         expect(freethrow._meta.gamesLoaded).toBe(freethrow._meta.gamesExpected)
+        // Four-way frontier equality (ADR-0058): a one-sided hero:sync now
+        // fails visibly as a frontier mismatch.
+        expect(freethrow._meta.dataThrough).toBe(shot._meta.dataThrough)
+        expect(freethrow._meta.gamesIncluded).toBe(shot._meta.gamesIncluded)
       })
 
       it('links every and-one trip to a made shot in the sibling payload (ADR-0053)', () => {

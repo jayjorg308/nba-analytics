@@ -421,6 +421,17 @@ untouched._
    frontier equality joins the derive-time and deployed-pair reconciliation
    batteries; the UI freshness line ("Through Jan 14 · 34 games", structural
    copy); the `hero:report` claim-headroom section (ADR-0059).
+   _Done 2026-07-21. Shot v4 computes the frontier from its own rows (Zod
+   verifies rows vs meta); creation v4 / context v2 / freethrow v2 copy it
+   from the sibling at derive (a pre-frontier sibling hard-fails with a
+   re-derive instruction); equality asserted at derive, at the load
+   boundary (context ties gamesIncluded to gamesExpected), and at the
+   deployed-pair guards. All four heroes re-derived + re-synced (Cody
+   through 2026-04-12 · 62 games; Ace 72). The byline now carries the
+   frontier on every page (one form, completed and living); hero:report
+   prints it plus the closing CLAIM HEADROOM section (two-axis gaps, diet
+   share ratios, creation PPS gaps, FT gaps on both cuts, each against the
+   house bars). Gate green: pytest 73, vitest 315, lint, build._
 4. **Phase 3 — the season loop**: one `season:update` command orchestrating
    pull session → frontier computation → derives → sync → full gate → data
    commit (ADR-0057); defer/halt semantics per ADR-0058; dark mode for

@@ -62,7 +62,9 @@ import pandas as pd
 # v2: Closest Defender family (the ADR-0030 fast-follow, ROADMAP v2.1).
 # v3: trackingShortfall — the General identity is exact-or-reported
 #     (ADR-0030 as amended; Ace Bailey's two outage games, v3 Phase 1).
-SCHEMA_VERSION = 3
+# v4: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+#     the sibling shot payload (ADR-0058; v3 Phase 2).
+SCHEMA_VERSION = 4
 
 # --- Context families (see CONTEXT.md and ADR-0030) ----------------------------
 # NBA row literals, verbatim, in deterministic payload order.
@@ -288,8 +290,11 @@ def league_coverage_family(snapshot: dict, section: str, contexts: list[str],
     return entries, unattributed
 
 
-def season_fga_target(shot_payload_path: Path, player: str, season: str) -> int:
-    """The shot payload's PRE-drop season FGA: totalShots + zoneConflictsDropped.
+def sibling_meta(shot_payload_path: Path, player: str, season: str) -> dict:
+    """The sibling shot payload's reconciliation anchors: the PRE-drop season
+    FGA (totalShots + zoneConflictsDropped) and the reconciled frontier
+    (dataThrough/gamesIncluded — ADR-0058), copied so four-way frontier
+    equality holds by construction.
 
     Cross-checks player/season so the identity can never be 'confirmed'
     against the wrong sibling."""
@@ -297,7 +302,14 @@ def season_fga_target(shot_payload_path: Path, player: str, season: str) -> int:
     if meta["player"] != player or meta["season"] != season:
         fail(f"shot payload {shot_payload_path} is {meta['player']} {meta['season']}, "
              f"not {player} {season} — wrong sibling")
-    return int(meta["totalShots"]) + int(meta["zoneConflictsDropped"])
+    if "dataThrough" not in meta or "gamesIncluded" not in meta:
+        fail(f"shot payload {shot_payload_path} predates the frontier contract "
+             f"(no dataThrough/gamesIncluded) — re-run derive_payload.py first")
+    return {
+        "seasonFga": int(meta["totalShots"]) + int(meta["zoneConflictsDropped"]),
+        "dataThrough": str(meta["dataThrough"]),
+        "gamesIncluded": int(meta["gamesIncluded"]),
+    }
 
 
 def locate_shot_payload(slug: str, season: str) -> Path:
@@ -331,9 +343,10 @@ def check_meta(meta: dict, keys: list[str], label: str) -> None:
         fail(f"{label} snapshot _meta missing keys: {missing}")
 
 
-def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
+def derive(player_snapshot: dict, league_snapshot: dict, sibling: dict,
            source: str, league_source: str) -> dict:
     """Pure derive over validated inputs — the unit the golden locks."""
+    season_fga = int(sibling["seasonFga"])
     meta = player_snapshot.get("_meta")
     response = player_snapshot.get("response")
     if not isinstance(meta, dict) or not isinstance(response, dict):
@@ -390,6 +403,8 @@ def derive(player_snapshot: dict, league_snapshot: dict, season_fga: int,
             "season": meta["season"],
             "seasonType": meta["season_type"],
             "pullDate": meta["pull_date"],
+            "dataThrough": sibling["dataThrough"],
+            "gamesIncluded": sibling["gamesIncluded"],
             "sourceSnapshot": source,
             "leagueSourceSnapshot": league_source,
             "seasonFga": season_fga,
@@ -466,10 +481,10 @@ def main() -> None:
                              str(meta.get("season", args.season))))
     if not shot_payload_path.exists():
         fail(f"shot payload not found: {shot_payload_path}")
-    season_fga = season_fga_target(
+    sibling = sibling_meta(
         shot_payload_path, str(meta.get("player")), str(meta.get("season")))
 
-    payload = derive(player_snapshot, league_snapshot, season_fga,
+    payload = derive(player_snapshot, league_snapshot, sibling,
                      repo_relative(snapshot_path), repo_relative(league_path))
 
     if args.out_file:

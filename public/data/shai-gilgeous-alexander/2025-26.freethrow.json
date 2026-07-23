@@ -1,10 +1,12 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Shai Gilgeous-Alexander",
     "playerId": 1628983,
     "season": "2025-26",
-    "sourceShotPayload": "public/data/shai-gilgeous-alexander/2025-26.json",
+    "dataThrough": "2026-04-08",
+    "gamesIncluded": 68,
+    "sourceShotPayload": "data/derived/shai-gilgeous-alexander/2025-26/2026-07-16.json",
     "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-21.json",
     "leagueTotalsPullDate": "2026-07-21",
     "seasonFga": 1321,

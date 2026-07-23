@@ -1,11 +1,13 @@
 {
   "_meta": {
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "player": "Ace Bailey",
     "playerId": 1642846,
     "season": "2025-26",
     "seasonType": "Regular Season",
     "pullDate": "2026-07-09",
+    "dataThrough": "2026-04-12",
+    "gamesIncluded": 72,
     "sourceSnapshot": "data/raw/ace-bailey/2025-26/2026-07-09.json",
     "totalShots": 892,
     "zoneConflictsDropped": 0

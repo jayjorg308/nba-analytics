@@ -1,10 +1,12 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Keyonte George",
     "playerId": 1641718,
     "season": "2025-26",
-    "sourceShotPayload": "public/data/keyonte-george/2025-26.json",
+    "dataThrough": "2026-03-11",
+    "gamesIncluded": 54,
+    "sourceShotPayload": "data/derived/keyonte-george/2025-26/2026-07-09.json",
     "totalShots": 880,
     "gamesExpected": 54,
     "gamesLoaded": 54,

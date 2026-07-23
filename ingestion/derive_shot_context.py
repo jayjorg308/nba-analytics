@@ -27,7 +27,9 @@ FailureReason = Literal[
     "missingGame", "missingEvent", "duplicateEvent", "identityContradiction"
 ]
 
-SCHEMA_VERSION = 1
+# v2: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+#     the sibling shot payload (ADR-0058; v3 Phase 2).
+SCHEMA_VERSION = 2
 PBP_SOURCE = "NBA Stats PlayByPlayV3"
 BOX_SOURCE = "NBA Stats BoxScoreTraditionalV3"
 
@@ -230,6 +232,9 @@ def derive(
     player_id = int(meta.get("playerId", 0))
     if player_id <= 0:
         fail("shot payload has invalid playerId")
+    if "dataThrough" not in meta or "gamesIncluded" not in meta:
+        fail("shot payload predates the frontier contract (no dataThrough/"
+             "gamesIncluded) — re-run derive_payload.py first")
 
     parsed_games: dict[str, ParsedGame] = {}
     for game_id, (pbp, box) in sorted(game_snapshots.items()):
@@ -289,6 +294,10 @@ def derive(
             "player": str(meta.get("player", "")),
             "playerId": player_id,
             "season": str(meta.get("season", "")),
+            # The reconciled frontier, copied from the sibling shot payload
+            # (ADR-0058) — four-way equality by construction.
+            "dataThrough": str(meta["dataThrough"]),
+            "gamesIncluded": int(meta["gamesIncluded"]),
             "sourceShotPayload": source_shot_payload,
             "totalShots": len(shots),
             "gamesExpected": len(expected_games),

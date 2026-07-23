@@ -24,10 +24,13 @@ def load_fixture(name: str) -> dict:
 
 
 def derive_fixtures(player=None, league=None, season_fga=15) -> dict:
+    # The sibling anchors (frontier values match the shot golden's — the
+    # fixtures reconcile by construction).
+    sibling = {"seasonFga": season_fga, "dataThrough": "2026-03-04", "gamesIncluded": 6}
     return dc.derive(
         player if player is not None else load_fixture("tracking.truncated.json"),
         league if league is not None else load_fixture("tracking.league.truncated.json"),
-        season_fga,
+        sibling,
         "tests/fixtures/tracking.truncated.json",
         "tests/fixtures/tracking.league.truncated.json",
     )
@@ -242,21 +245,36 @@ def test_season_mismatch_between_snapshots_fails():
 
 # --- The sibling lookup: the identity is never confirmed against the wrong file --
 
-def test_season_fga_target_reads_pre_drop_total(tmp_path):
+def test_sibling_meta_reads_pre_drop_total_and_frontier(tmp_path):
+    shot_payload = {"_meta": {"player": "Test Player", "season": "2025-26",
+                              "totalShots": 880, "zoneConflictsDropped": 1,
+                              "dataThrough": "2026-04-12", "gamesIncluded": 68}}
+    p = tmp_path / "shot.json"
+    p.write_text(json.dumps(shot_payload), encoding="utf-8")
+    sibling = dc.sibling_meta(p, "Test Player", "2025-26")
+    assert sibling == {"seasonFga": 881, "dataThrough": "2026-04-12",
+                       "gamesIncluded": 68}
+
+
+def test_sibling_meta_rejects_wrong_sibling(tmp_path):
+    shot_payload = {"_meta": {"player": "Someone Else", "season": "2025-26",
+                              "totalShots": 100, "zoneConflictsDropped": 0,
+                              "dataThrough": "2026-04-12", "gamesIncluded": 60}}
+    p = tmp_path / "shot.json"
+    p.write_text(json.dumps(shot_payload), encoding="utf-8")
+    with pytest.raises(SystemExit, match="wrong sibling"):
+        dc.sibling_meta(p, "Test Player", "2025-26")
+
+
+def test_sibling_meta_rejects_pre_frontier_sibling(tmp_path):
+    # A shot payload without frontier fields is a stale sibling (pre-v4) —
+    # the derive demands a re-run, never invents a frontier (ADR-0058).
     shot_payload = {"_meta": {"player": "Test Player", "season": "2025-26",
                               "totalShots": 880, "zoneConflictsDropped": 1}}
     p = tmp_path / "shot.json"
     p.write_text(json.dumps(shot_payload), encoding="utf-8")
-    assert dc.season_fga_target(p, "Test Player", "2025-26") == 881
-
-
-def test_season_fga_target_rejects_wrong_sibling(tmp_path):
-    shot_payload = {"_meta": {"player": "Someone Else", "season": "2025-26",
-                              "totalShots": 100, "zoneConflictsDropped": 0}}
-    p = tmp_path / "shot.json"
-    p.write_text(json.dumps(shot_payload), encoding="utf-8")
-    with pytest.raises(SystemExit, match="wrong sibling"):
-        dc.season_fga_target(p, "Test Player", "2025-26")
+    with pytest.raises(SystemExit, match="predates the frontier contract"):
+        dc.sibling_meta(p, "Test Player", "2025-26")
 
 
 # --- Determinism ------------------------------------------------------------------

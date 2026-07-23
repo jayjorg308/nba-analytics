@@ -18,7 +18,10 @@ import { z } from 'zod'
 // v3: trackingShortfall — the General identity is exact-or-reported
 //     (ADR-0030 as amended; hero-side tracking outages are measured and
 //     reported, never vetoing and never guessed).
-export const CREATION_SCHEMA_VERSION = 3
+// v4: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
+//     the sibling shot payload at derive (ADR-0058; v3 Phase 2). Four-way
+//     equality is guarded at the deployed-pair tests.
+export const CREATION_SCHEMA_VERSION = 4
 
 // NBA row literals, verbatim (the spike catalogued them — ADR-0030 closures).
 // The payload always carries every context of a shipped family exactly once:
@@ -100,6 +103,11 @@ export const creationPayloadSchema = z
       season: z.string().regex(/^\d{4}-\d{2}$/),
       seasonType: z.string().min(1),
       pullDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      /** The reconciled frontier (ADR-0058), copied from the sibling shot
+       * payload at derive; the deployed-pair guards assert four-way
+       * equality across the sibling contracts. */
+      dataThrough: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      gamesIncluded: z.number().int().min(1),
       sourceSnapshot: z.string().min(1),
       leagueSourceSnapshot: z.string().min(1),
       /** The shot payload's pre-drop season FGA (totalShots +

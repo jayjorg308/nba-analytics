@@ -39,7 +39,11 @@ import pandas as pd
 # (src/domain/payload.ts) so a mismatch fails loudly at the load boundary.
 # v2: _meta.zoneConflictsDropped (ADR-0019).
 # v3: per-shot opponent/home (matchup context, derived here — ADR-0028).
-SCHEMA_VERSION = 3
+# v4: _meta.dataThrough/gamesIncluded — the reconciled frontier as contract
+#     metadata (ADR-0058; v3 Phase 2). The shot payload computes them from
+#     its own rows; the three sibling derives copy them from this payload,
+#     so four-way frontier equality holds by construction.
+SCHEMA_VERSION = 4
 
 # --- Zone taxonomy (v1 evaluation grain = SHOT_ZONE_BASIC; see CONTEXT.md) -----
 BASIC_ZONES = [
@@ -366,6 +370,14 @@ def build_payload(
     baseline: list[dict],
     zone_conflicts_dropped: int,
 ) -> dict:
+    # The reconciled frontier (ADR-0058), computed from the rows themselves:
+    # the latest game date the payload's data runs through, and the games it
+    # includes. A payload with no shots has no frontier to state — and no
+    # consumer that could render it — so it never persists.
+    if not shots:
+        fail("no shot rows — a payload cannot state a frontier (ADR-0058)")
+    data_through = max(s["gameDate"] for s in shots)
+    games_included = len({s["gameId"] for s in shots})
     return {
         "_meta": {
             "schemaVersion": SCHEMA_VERSION,
@@ -374,6 +386,8 @@ def build_payload(
             "season": meta["season"],
             "seasonType": meta["season_type"],
             "pullDate": meta["pull_date"],
+            "dataThrough": data_through,
+            "gamesIncluded": games_included,
             "sourceSnapshot": source,
             # Post-drop count: totalShots is what the payload carries.
             "totalShots": len(shots),

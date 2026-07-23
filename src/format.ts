@@ -130,3 +130,12 @@ export function formatGameDate(isoDate: string): string {
   const [year, month, day] = isoDate.split('-')
   return `${MONTHS[Number(month) - 1]} ${Number(day)}, ${year}`
 }
+
+/** The freshness line (ADR-0058/0059): the reconciled frontier as structural
+ * copy — "through Apr 12, 2026 · 72 games". One form for completed and
+ * living seasons; the payload's frontier is the only input. */
+export function formatDataThrough(isoDate: string, gamesIncluded: number): string {
+  return `through ${formatGameDate(isoDate)} · ${gamesIncluded} game${
+    gamesIncluded === 1 ? '' : 's'
+  }`
+}

@@ -95,7 +95,8 @@ export function renderHeroReport(payload: DerivedPayload): string {
 
   lines.push(
     `${meta.player} · ${meta.season} · ${meta.seasonType}`,
-    `pulled ${meta.pullDate} · schema v${meta.schemaVersion} · source ${meta.sourceSnapshot}`,
+    `pulled ${meta.pullDate} · through ${meta.dataThrough} (${meta.gamesIncluded} games) · ` +
+      `schema v${meta.schemaVersion} · source ${meta.sourceSnapshot}`,
     // The honesty counters, all on one line: backcourt is excluded from
     // evaluation but always reported (ADR-0008), and zone-point conflicts are
     // dropped-and-counted, never guessed into a zone (ADR-0019).

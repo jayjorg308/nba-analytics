@@ -19,6 +19,7 @@ import { parseDerivedPayload } from '../src/domain/payload'
 import { parseShotContextPayload } from '../src/domain/shotContextPayload'
 import { renderCreationReport } from '../src/report/creationReport'
 import { renderFreethrowReport } from '../src/report/freethrowReport'
+import { renderClaimHeadroom } from '../src/report/headroomReport'
 import { renderHeroReport } from '../src/report/heroReport'
 import { renderShotContextReport } from '../src/report/shotContextReport'
 
@@ -188,6 +189,11 @@ console.log(`payload: ${payloadPath}`)
 console.log('')
 console.log(report)
 
+// Captured for the closing CLAIM HEADROOM section (ADR-0059) — rendered
+// last, over whichever siblings the report resolved.
+let loadedCreation: ReturnType<typeof parseCreationPayload> | null = null
+let loadedFreethrow: ReturnType<typeof parseFreethrowPayload> | null = null
+
 const creation = resolveCreationPayloadPath()
 if (creation.path === null) {
   console.log('')
@@ -219,6 +225,7 @@ if (creation.path === null) {
     console.log(`creation payload: ${creation.path}`)
     console.log('')
     console.log(renderCreationReport(creationPayload))
+    loadedCreation = creationPayload
   } catch (e) {
     fail(
       `creation payload contract violation in ${creation.path}:\n${e instanceof Error ? e.message : String(e)}`,
@@ -286,9 +293,15 @@ if (freethrow.path === null) {
     console.log(`free-throw payload: ${freethrow.path}`)
     console.log('')
     console.log(renderFreethrowReport(freethrowPayload))
+    loadedFreethrow = freethrowPayload
   } catch (e) {
     fail(
       `free-throw payload contract violation in ${freethrow.path}:\n${e instanceof Error ? e.message : String(e)}`,
     )
   }
 }
+
+// The closing authoring aid (ADR-0059): every verdict-grade gap with its
+// distance from the house bars — live verdicts are written from this.
+console.log('')
+console.log(renderClaimHeadroom(shotPayload, loadedCreation, loadedFreethrow))
