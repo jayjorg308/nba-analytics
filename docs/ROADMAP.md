@@ -482,7 +482,15 @@ loop already no-ops cleanly on the unstarted season. The checklist: rerun
 the replay proof (`python ingestion/season_replay.py`), register
 `scripts/season-update.ps1` with Task Scheduler (command in its header),
 watch the dark reports, and ship Ace's flip PR the day the loop says
-GATES PASS. **Stretch:** Peterson's raw pulls begin when his season does;
+GATES PASS. The flip PR's recipe grew with season-over-season (ADR-0059
+as amended, ADRs 0060/0061): append the 2026-27 season entry to his hero
+module, move `canonicalSeason`, author the live verdict plus the first
+growth-sentence from that morning's `hero:report` (GROWTH section +
+claim headroom), declare the growth claims and graduate the growth
+vocabulary from the unshipped lexicon, and flip dark→live in
+`season.config.json` — his 2025-26 argument stays frozen at its
+permalink, and the SEASON OVER SEASON coda lights up that day.
+**Stretch:** Peterson's raw pulls begin when his season does;
 his page is born live the day the gates first pass on real thin data — the
 "spin up cheaply" demo CONTEXT.md always promised, now with the gates
 firing for real.
