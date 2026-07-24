@@ -11,11 +11,12 @@ import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { formatDataThrough } from '../format'
-import type { HeroConfig } from '../heroes/types'
+import type { HeroConfig, HeroSeasonConfig } from '../heroes/types'
 import {
   creationPayloadUrl,
   freethrowPayloadUrl,
   heroImageUrl,
+  heroPageUrl,
   indexUrl,
   payloadUrl,
   shotContextPayloadUrl,
@@ -34,17 +35,25 @@ import {
 } from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
-export function HeroPage({ hero }: { hero: HeroConfig }) {
-  const state = usePayload(payloadUrl(hero))
+export function HeroPage({
+  hero,
+  seasonConfig,
+}: {
+  hero: HeroConfig
+  seasonConfig: HeroSeasonConfig
+}) {
+  // The page renders one season argument (ADR-0060) — the canonical season
+  // behind /<slug>, or a specific one behind its /<slug>/<season> permalink.
+  const state = usePayload(payloadUrl(hero, seasonConfig.season))
   // The sibling payloads (ADRs 0030/0032/0053): all required per hero — one
   // class of hero page, so the page waits for all four.
-  const creationState = useCreationPayload(creationPayloadUrl(hero))
-  const contextState = useShotContextPayload(shotContextPayloadUrl(hero))
-  const freethrowState = useFreethrowPayload(freethrowPayloadUrl(hero))
+  const creationState = useCreationPayload(creationPayloadUrl(hero, seasonConfig.season))
+  const contextState = useShotContextPayload(shotContextPayloadUrl(hero, seasonConfig.season))
+  const freethrowState = useFreethrowPayload(freethrowPayloadUrl(hero, seasonConfig.season))
 
   useEffect(() => {
-    document.title = `${hero.playerName} · ${hero.season} · shot selection`
-  }, [hero])
+    document.title = `${hero.playerName} · ${seasonConfig.season} · shot selection`
+  }, [hero, seasonConfig])
 
   // Contract violations and load failures are shown plainly, never styled
   // away — any payload's failure fails the page (one class of hero page).
@@ -75,6 +84,7 @@ export function HeroPage({ hero }: { hero: HeroConfig }) {
   return (
     <HeroReady
       hero={hero}
+      seasonConfig={seasonConfig}
       payload={state.payload}
       creation={creationState.payload}
       context={contextState.payload}
@@ -93,12 +103,14 @@ function PageError({ message }: { message: string }) {
 
 function HeroReady({
   hero,
+  seasonConfig,
   payload,
   creation,
   context,
   freethrow,
 }: {
   hero: HeroConfig
+  seasonConfig: HeroSeasonConfig
   payload: DerivedPayload
   creation: CreationPayload
   context: ShotContextPayload
@@ -165,7 +177,7 @@ function HeroReady({
               pinned to the banner's bottom edge in both layouts — it is a
               scroll affordance, not part of the title. */}
           <div className="hero-banner-text">
-            <p className="hero-kicker">{hero.hero.kicker}</p>
+            <p className="hero-kicker">{seasonConfig.kicker}</p>
             <h1 className="hero-title">{hero.thesis}</h1>
           </div>
           <p className="hero-cue" aria-hidden="true">
@@ -176,7 +188,7 @@ function HeroReady({
       <header className="hero-header">
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
             kept honest by the colocated verdict guard. */}
-        <p className="hero-verdict">{hero.verdict}</p>
+        <p className="hero-verdict">{seasonConfig.verdict}</p>
         {/* The byline carries the reconciled frontier (ADR-0058/0059):
             structural copy, one form for completed and living seasons, so
             the verdict always reads as a statement about the season through
@@ -186,6 +198,15 @@ function HeroReady({
           {formatDataThrough(payload._meta.dataThrough, payload._meta.gamesIncluded)} · vs
           league average
         </p>
+        {seasonConfig.season !== hero.canonicalSeason && (
+          // The structural forward link (ADR-0060): a prior season argument
+          // points at the hero's current one. The season labels above carry
+          // the temporal frame — this is navigation, never a hedge on the
+          // frozen verdict.
+          <p className="hero-forward">
+            <a href={heroPageUrl(hero)}>His {hero.canonicalSeason} season →</a>
+          </p>
+        )}
       </header>
       <HeadlineBanner selection={metrics.selection} making={metrics.making} />
       {/* The first act: the two-axis evidence, opened by the same full-width

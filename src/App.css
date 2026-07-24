@@ -242,6 +242,25 @@
     margin-bottom: 28px;
 }
 
+/* The structural forward link on a prior season argument (ADR-0060):
+   reference-material gray bound to the byline above it (the 4px rule),
+   never a hedge on the frozen verdict. Dormant until a hero has a second
+   season argument. */
+.hero-forward {
+    margin: -24px 0 28px;
+    font-size: 14px;
+}
+
+.hero-forward a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.hero-forward a:hover,
+.hero-forward a:focus-visible {
+    color: var(--text-h);
+}
+
 .page-status {
     padding: 64px 0;
 }

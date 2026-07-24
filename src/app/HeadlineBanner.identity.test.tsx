@@ -21,10 +21,13 @@ afterEach(cleanup)
 // under jsdom, import.meta.url is not a file URL — resolve from the repo root
 const sources = [
   { name: 'golden fixture', file: path.resolve(process.cwd(), 'tests/fixtures/derived.golden.json') },
-  ...HEROES.map((h) => ({
-    name: `deployed payload: ${h.playerName}`,
-    file: path.resolve(process.cwd(), 'public', 'data', h.slug, `${h.season}.json`),
-  })),
+  // hero × seasons (ADR-0060): every season argument's deployed payload
+  ...HEROES.flatMap((h) =>
+    h.seasons.map((s) => ({
+      name: `deployed payload: ${h.playerName} ${s.season}`,
+      file: path.resolve(process.cwd(), 'public', 'data', h.slug, `${s.season}.json`),
+    })),
+  ),
 ].filter((s) => existsSync(s.file)) // deployed copies may be absent on clean clones
 
 /** The six .stat-value strings, parsed back to integer cents — the exact

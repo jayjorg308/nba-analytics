@@ -12,7 +12,9 @@
 // of hero truth (ADR-0022); no slug/season duplicated in package.json.
 //
 // Usage:
-//   npm run hero:sync                      sync every registered hero
+//   npm run hero:sync                      sync every registered hero-season
+//                                          (a hero is a directory of season
+//                                          arguments — ADR-0060)
 //   npm run hero:sync -- <slug> <season>   sync one (player, season) — useful
 //                                          before the hero is registered
 
@@ -83,7 +85,9 @@ if ((slug === undefined) !== (season === undefined)) {
 }
 
 const targets: readonly { slug: string; season: string }[] =
-  slug !== undefined && season !== undefined ? [{ slug, season }] : HEROES
+  slug !== undefined && season !== undefined
+    ? [{ slug, season }]
+    : HEROES.flatMap((h) => h.seasons.map((s) => ({ slug: h.slug, season: s.season })))
 
 // Resolve every required sibling for every target before copying anything.
 // A missing context can therefore never leave a one-sided deployment update.

@@ -4,7 +4,12 @@ import path from 'node:path'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { codyWilliams as hero } from '../heroes/cody-williams'
+import { canonicalSeasonOf, type HeroConfig } from '../heroes/types'
 import { HeroPage } from './HeroPage'
+
+// The season argument under test: the canonical one (ADR-0060) — the page
+// /cody-williams renders.
+const seasonConfig = canonicalSeasonOf(hero)
 
 // under jsdom, import.meta.url is not a file URL — resolve from the vitest
 // root (the repo root) instead
@@ -69,14 +74,14 @@ afterEach(() => {
 describe('HeroPage over the golden fixture', () => {
   it('renders loading, then the full evaluated page', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
 
     screen.getByText('Loading shot data…')
     await screen.findByText(hero.thesis) // the H1: the v1 question
 
     // the verdict leads: the authored answer renders directly under the
     // title (ADR-0017; its truthfulness is the verdict guard's job)
-    screen.getByText(hero.verdict)
+    screen.getByText(seasonConfig.verdict)
 
     // drift guard: the DEPLOYED payload and the hero's config module must
     // describe the same hero. Deliberately NOT checked against the golden —
@@ -87,7 +92,7 @@ describe('HeroPage over the golden fixture', () => {
       'public',
       'data',
       hero.slug,
-      `${hero.season}.json`,
+      `${seasonConfig.season}.json`,
     )
     const deployedMeta = (
       JSON.parse(readFileSync(deployedPath, 'utf-8')) as {
@@ -95,7 +100,7 @@ describe('HeroPage over the golden fixture', () => {
       }
     )._meta
     expect(deployedMeta.player).toBe(hero.playerName)
-    expect(deployedMeta.season).toBe(hero.season)
+    expect(deployedMeta.season).toBe(seasonConfig.season)
 
     // headline: league diet from the verbatim league frame (1.09124 -> "1.09"),
     // with the comparison class stated beside the numbers (ADR-0002).
@@ -254,7 +259,7 @@ describe('HeroPage over the golden fixture', () => {
     // gates the MIX view only; the making axis is flagged, never suppressed
     // (ADR-0008), so the Zones view shades all six regions
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
 
     const fills = document.querySelectorAll('.zone-fill')
@@ -269,7 +274,7 @@ describe('HeroPage over the golden fixture', () => {
 
   it('shows a descriptive shot tooltip on mouse hover and removes it on leave', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
 
     fireEvent.click(screen.getByLabelText('Shots')) // dots live in the secondary view
@@ -293,7 +298,7 @@ describe('HeroPage over the golden fixture', () => {
 
   it('defines jargon in place: dictionary terms open a popover (ADR-0052)', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
 
     // prose defines a term ONCE, at its first reading-order mention (the
@@ -322,7 +327,7 @@ describe('HeroPage over the golden fixture', () => {
 
   it('opens the zone detail card from the default view and closes on Escape (ADR-0027)', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
 
     // RA is the topmost fill (painter order); clicking opens its card
@@ -339,7 +344,7 @@ describe('zone-point conflicts (ADR-0019)', () => {
     const withConflict = structuredClone(goldenJson)
     ;(withConflict._meta as { zoneConflictsDropped: number }).zoneConflictsDropped = 1
     stubFetch({ ok: true, json: withConflict })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
     screen.getByText(/1 shot dropped at derive/)
   })
@@ -348,7 +353,7 @@ describe('zone-point conflicts (ADR-0019)', () => {
 describe('HeroPage failure states', () => {
   it('surfaces HTTP failures', async () => {
     stubFetch({ ok: false, status: 404 })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/HTTP 404 loading shot data/)
   })
 
@@ -356,13 +361,13 @@ describe('HeroPage failure states', () => {
     const bad = structuredClone(goldenJson)
     bad.surprise = true // strict schema: unknown key = contract violation
     stubFetch({ ok: true, json: bad })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/Payload contract violation/)
   })
 
   it('surfaces a missing creation payload — required per hero, no lesser page (ADR-0030)', async () => {
     stubFetch({ ok: true, json: goldenJson }, { ok: false, status: 404 })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/HTTP 404 loading creation data/)
   })
 
@@ -370,7 +375,7 @@ describe('HeroPage failure states', () => {
     const bad = structuredClone(creationGoldenJson)
     ;(bad._meta as { seasonFga: number }).seasonFga = 16 // breaks the partition identity
     stubFetch({ ok: true, json: goldenJson }, { ok: true, json: bad })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/Payload contract violation/)
   })
 
@@ -380,7 +385,7 @@ describe('HeroPage failure states', () => {
       { ok: true, json: creationGoldenJson },
       { ok: false, status: 404 },
     )
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/HTTP 404 loading shot context data/)
   })
 
@@ -392,7 +397,7 @@ describe('HeroPage failure states', () => {
       { ok: true, json: creationGoldenJson },
       { ok: true, json: badContext },
     )
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/Payloads contradict: shot-context sibling player\/season identity/i)
   })
 
@@ -403,7 +408,7 @@ describe('HeroPage failure states', () => {
       { ok: true, json: contextGoldenJson },
       { ok: false, status: 404 },
     )
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/HTTP 404 loading free throw data/)
   })
 
@@ -416,15 +421,52 @@ describe('HeroPage failure states', () => {
       { ok: true, json: contextGoldenJson },
       { ok: true, json: bad },
     )
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(/Payload contract violation/)
+  })
+})
+
+describe('season arguments (ADR-0060)', () => {
+  // A two-season fixture hero: the golden-backed copy behind both seasons,
+  // canonical on the later one — the shape Ace's flip PR will create. The
+  // config is fixture COPY; the payloads behind both seasons' fetches stay
+  // the real goldens.
+  const priorSeason = {
+    ...seasonConfig,
+    season: '2024-25',
+    kicker: 'Cody Williams · fixture prior season · 2024-25',
+  }
+  const twoSeasonHero: HeroConfig = {
+    ...hero,
+    seasons: [priorSeason, seasonConfig],
+  }
+
+  it('a prior season argument carries the structural forward link', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={twoSeasonHero} seasonConfig={priorSeason} />)
+    await screen.findByText(hero.thesis)
+
+    // Season-owned copy renders from the season argument (ADR-0060) …
+    screen.getByText(priorSeason.kicker)
+    expect(document.title).toBe(`${hero.playerName} · 2024-25 · shot selection`)
+    // … and the frozen page points forward at the canonical alias — quiet
+    // navigation under the byline, never a hedge on the verdict.
+    const forward = screen.getByRole('link', { name: `His ${hero.canonicalSeason} season →` })
+    expect(forward.getAttribute('href')).toBe(`/${hero.slug}`)
+  })
+
+  it('the canonical season renders without a forward link', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={twoSeasonHero} seasonConfig={seasonConfig} />)
+    await screen.findByText(hero.thesis)
+    expect(screen.queryByText(/season →/)).toBeNull()
   })
 })
 
 describe('THE LINE act (ADR-0056)', () => {
   it('renders the fourth act: kicker, season line, chart, and table twin', async () => {
     stubFetch({ ok: true, json: goldenJson })
-    render(<HeroPage hero={hero} />)
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
 
     screen.getByText('04 · THE LINE')

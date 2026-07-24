@@ -8,18 +8,23 @@ import { parseShotContextPayload } from './shotContextPayload'
 
 const publicData = path.resolve(process.cwd(), 'public/data')
 
+// hero × seasons (ADR-0060): every registered season argument is guarded.
+const HERO_SEASONS = HEROES.flatMap((hero) =>
+  hero.seasons.map((seasonConfig) => ({ hero, season: seasonConfig.season })),
+)
+
 describe('deployed shot-context payloads', () => {
-  it('exist for every registered hero (required — ADR-0032)', () => {
-    for (const hero of HEROES) {
-      const contextPath = path.join(publicData, hero.slug, `${hero.season}.context.json`)
+  it('exist for every registered hero-season (required — ADR-0032/0060)', () => {
+    for (const { hero, season } of HERO_SEASONS) {
+      const contextPath = path.join(publicData, hero.slug, `${season}.context.json`)
       expect(existsSync(contextPath), `missing ${contextPath}`).toBe(true)
     }
   })
 
-  for (const hero of HEROES) {
-    describe(`${hero.slug} ${hero.season}`, () => {
-      const contextPath = path.join(publicData, hero.slug, `${hero.season}.context.json`)
-      const shotPath = path.join(publicData, hero.slug, `${hero.season}.json`)
+  for (const { hero, season } of HERO_SEASONS) {
+    describe(`${hero.slug} ${season}`, () => {
+      const contextPath = path.join(publicData, hero.slug, `${season}.context.json`)
+      const shotPath = path.join(publicData, hero.slug, `${season}.json`)
 
       it('strict-parses, passes Gate 4, and reconciles the exact sibling key set', () => {
         const shots = parseDerivedPayload(JSON.parse(readFileSync(shotPath, 'utf-8')))
@@ -52,7 +57,7 @@ describe('deployed shot-context payloads', () => {
           process.cwd(),
           'data/derived',
           hero.slug,
-          hero.season,
+          season,
           'shot-context',
         )
         if (!existsSync(derivedDir)) return
