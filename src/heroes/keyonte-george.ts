@@ -14,6 +14,7 @@ export const keyonteGeorge: HeroConfig = {
   thesis: 'Is Keyonte George taking good shots?',
   hero: {
     imagePath: 'img/keyonte-george-hero.webp',
+    headshotPath: 'img/keyonte-george-headshot.png',
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
       'Keyonte George rises for a one-handed finish at the rim between two Oklahoma City Thunder defenders',

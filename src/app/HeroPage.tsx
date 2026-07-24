@@ -38,6 +38,7 @@ import {
   usePayload,
   useShotContextPayload,
 } from './usePayload'
+import { SiteNav } from './SiteNav'
 import { ZoneTable } from './ZoneTable'
 
 export function HeroPage({
@@ -98,6 +99,7 @@ export function HeroPage({
   ) {
     return (
       <main className="hero-page">
+        <SiteNav />
         <p className="page-status">Loading shot data…</p>
       </main>
     )
@@ -122,6 +124,7 @@ export function HeroPage({
 function PageError({ message }: { message: string }) {
   return (
     <main className="hero-page">
+      <SiteNav />
       <p className="page-status page-error">{message}</p>
     </main>
   )
@@ -201,6 +204,10 @@ function HeroReady({
 
   return (
     <main className="hero-page">
+      {/* The site navbar (ADR-0065): the wordmark rides over the poster's
+          top edge — the banner still owns the whole first viewport
+          (ADR-0025); the bar is fixed, never in flow. */}
+      <SiteNav />
       {/* The poster banner carries the h1 — question first (ADR-0018),
           just at hero scale. */}
       <header className="hero-banner">

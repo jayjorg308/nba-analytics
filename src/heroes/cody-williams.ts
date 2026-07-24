@@ -16,6 +16,7 @@ export const codyWilliams: HeroConfig = {
   // the B&W treatment is CSS (filter), so the asset stays color.
   hero: {
     imagePath: 'img/cody-williams-hero.jpg',
+    headshotPath: 'img/cody-williams-headshot.png',
     // The Jazz note mark, ghosted into the wide banner's dark left column
     // by the stylesheet (grayscale + low opacity) — the asset stays color.
     teamLogoPath: 'img/utah-logo.png',

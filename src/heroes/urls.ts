@@ -32,6 +32,11 @@ export function heroImageUrl(hero: HeroConfig): string {
   return `${import.meta.env.BASE_URL}${hero.hero.imagePath}`
 }
 
+/** The directory's standard headshot (ADR-0065). */
+export function headshotUrl(hero: HeroConfig): string {
+  return `${import.meta.env.BASE_URL}${hero.hero.headshotPath}`
+}
+
 export function teamLogoUrl(hero: HeroConfig): string | null {
   return hero.hero.teamLogoPath
     ? `${import.meta.env.BASE_URL}${hero.hero.teamLogoPath}`

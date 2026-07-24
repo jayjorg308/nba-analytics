@@ -80,7 +80,7 @@ npm run hero:sync -- <player-slug> 2025-26
 
 `hero:report` prints the computed selection, making, creation-context, assisted-make, and free-throw (LINE) story, closing with a claim-headroom section that states every verdict-grade gap against the house threshold bars, before hero copy is written or changed. `hero:sync` is the explicit, reviewable step that requires and copies all four latest derived contracts to `public/data/<player-slug>/`: the shot payload, `.creation.json`, `.context.json`, and `.freethrow.json`; a partial sync fails. With no arguments it syncs every registered hero. The browser fetches and Zod-validates those committed files; it never contacts the NBA API.
 
-For a brand-new hero, or a new season argument on an existing one, `npm run hero:scaffold -- <player-slug> <season>` generates the mechanical skeleton first: the hero config module (created, or its season list appended), the per-season verdict-guard skeleton, and the registry entry, with the player name read from the derived payload and every authored field left as a `TODO(scaffold)` placeholder. A committed authoring tripwire keeps the test suite red until all placeholders are replaced and the banner asset exists, so a half-finished hero can never merge. The tool drafts structure, never judgment: verdict prose, claim thresholds, and image crops are always written by a person.
+For a brand-new hero, or a new season argument on an existing one, `npm run hero:scaffold -- <player-slug> <season>` generates the mechanical skeleton first: the hero config module (created, or its season list appended), the per-season verdict-guard skeleton, and the registry entry, with the player name read from the derived payload and every authored field left as a `TODO(scaffold)` placeholder. A committed authoring tripwire keeps the test suite red until all placeholders are replaced and both image assets exist (the banner photo and the directory's headshot), so a half-finished hero can never merge. The tool drafts structure, never judgment: verdict prose, claim thresholds, and image crops are always written by a person.
 
 ### Living seasons
 
@@ -104,11 +104,11 @@ Deep hero URLs are served through the rewrite in `vercel.json`, which sends any 
 
 The multi-hero shape is one deployment containing:
 
-- `/` - the directory of hero poster tiles, read straight off the registry;
+- `/` - the directory: a headshot marquee of the first registered hero over a name-only rail of the rest, read straight off the registry;
 - `/<player-slug>` - the canonical alias: the hero's current argument, rendered in place;
 - `/<player-slug>/<season>` - a stable permalink for every argued season. A hero is a directory of season arguments; a live flip moves which season the alias renders and freezes the prior argument verbatim at its permalink.
 
-Unknown paths render the directory with a quiet note. Cross-hero navigation is the tiles plus each hero page's "All players" footer link, both plain anchors; there is deliberately no player switcher.
+Unknown paths render the directory with a quiet note. Cross-hero navigation is the directory's player links, the "Good Shots" wordmark in the site navbar, and each hero page's "All players" footer link, all plain anchors; there is deliberately no player switcher, and the navbar carries no hero list or menu.
 
 ## Running locally
 
@@ -129,7 +129,7 @@ npm run build
 python -m pytest ingestion -q
 ```
 
-The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing banner asset can merge), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
+The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
 
 ## Roadmap
 

@@ -10,6 +10,7 @@ export const shaiGilgeousAlexander: HeroConfig = {
   thesis: 'Is Shai Gilgeous-Alexander taking good shots?',
   hero: {
     imagePath: 'img/sga-hero.jpg',
+    headshotPath: 'img/shai-gilgeous-alexander-headshot.png',
     teamLogoPath: 'img/okc-logo.png',
     imageAlt: 'Stylized action image of Shai Gilgeous-Alexander extending for a layup',
     imagePosition: '50% 50%',
