@@ -242,6 +242,25 @@
     margin-bottom: 28px;
 }
 
+/* The structural forward link on a prior season argument (ADR-0060):
+   reference-material gray bound to the byline above it (the 4px rule),
+   never a hedge on the frozen verdict. Dormant until a hero has a second
+   season argument. */
+.hero-forward {
+    margin: -24px 0 28px;
+    font-size: 14px;
+}
+
+.hero-forward a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.hero-forward a:hover,
+.hero-forward a:focus-visible {
+    color: var(--text-h);
+}
+
 .page-status {
     padding: 64px 0;
 }
@@ -1618,6 +1637,31 @@
    season line lives BELOW the chart, never above the table. */
 .freethrow-visual {
     min-width: 0;
+}
+
+/* --- SEASON OVER SEASON (the growth coda, ADR-0061/0062) -------------------- */
+
+.growth-visual {
+    min-width: 0;
+}
+
+/* The prior-season permalink inside the coda's description: quiet inline
+   navigation in the caption's own gray (the hero-forward register). */
+.section-caption-desc a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.section-caption-desc a:hover,
+.section-caption-desc a:focus-visible {
+    color: var(--text-h);
+}
+
+/* The league line: the diet-gap axis's anchor (0 = his share equals the
+   league's), one stronger gridline — never a new palette (ADR-0062). */
+.growth-zeroline {
+    opacity: 0.55;
 }
 
 /* The season line: the act's two-number payoff (generation, share,

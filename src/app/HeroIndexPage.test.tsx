@@ -2,6 +2,7 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { HEROES } from '../heroes/registry'
+import { canonicalSeasonOf } from '../heroes/types'
 import { HeroIndexPage } from './HeroIndexPage'
 
 afterEach(cleanup)
@@ -24,7 +25,7 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022)', () => {
       // travels with it), thesis as the poster title, kicker beneath.
       screen.getByAltText(hero.hero.imageAlt)
       screen.getByText(hero.thesis)
-      screen.getByText(hero.hero.kicker)
+      screen.getByText(canonicalSeasonOf(hero).kicker)
     }
   })
 

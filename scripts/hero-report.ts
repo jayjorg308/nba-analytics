@@ -13,20 +13,24 @@
 
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { aggregateShotMetrics } from '../src/domain/aggregate'
+import { aggregateGrowthMetrics, type GrowthMetrics } from '../src/domain/aggregateGrowth'
 import { parseCreationPayload } from '../src/domain/creationPayload'
 import { parseFreethrowPayload } from '../src/domain/freethrowPayload'
 import { parseDerivedPayload } from '../src/domain/payload'
 import { parseShotContextPayload } from '../src/domain/shotContextPayload'
+import { heroBySlug } from '../src/heroes/registry'
 import { renderCreationReport } from '../src/report/creationReport'
 import { renderFreethrowReport } from '../src/report/freethrowReport'
 import { renderClaimHeadroom } from '../src/report/headroomReport'
+import { renderGrowthReport } from '../src/report/growthReport'
 import { renderHeroReport } from '../src/report/heroReport'
 import { renderShotContextReport } from '../src/report/shotContextReport'
 
 const USAGE = [
   'usage:',
   '  npm run hero:report -- <player-slug> <season> [--deployed]',
-  '  npm run hero:report -- --file <path/to/payload.json> [--creation-file <path>] [--context-file <path>] [--freethrow-file <path>]',
+  '  npm run hero:report -- --file <path/to/payload.json> [--creation-file <path>] [--context-file <path>] [--freethrow-file <path>] [--prior-file <path>]',
 ].join('\n')
 
 function fail(message: string): never {
@@ -159,6 +163,51 @@ function resolveFreethrowPayloadPath(): { path: string | null; note?: string } {
   }
   if (candidates.length === 0) {
     return { path: null, note: `no derived free-throw payloads under ${sourceDir}` }
+  }
+  return { path: join(sourceDir, candidates[candidates.length - 1]!) }
+}
+
+/** The prior argued season's SHOT payload (ADR-0061) — the growth section's
+ * whole data need. Resolved from the registry in slug/season mode (whatever
+ * season the report is for, so a pre-flip authoring run works before the
+ * canonical pointer moves), or from an explicit --prior-file. Null with no
+ * note is the ordinary single-season case; a note means a prior was
+ * expected and could not be read. */
+function resolvePriorPayloadPath(): { path: string | null; note?: string } {
+  const priorFlag = args.indexOf('--prior-file')
+  if (priorFlag !== -1) {
+    const file = args[priorFlag + 1]
+    if (!file) fail(USAGE)
+    return { path: file }
+  }
+  if (args.indexOf('--file') !== -1) {
+    return { path: null } // growth is opt-in via --prior-file alongside --file
+  }
+  const [slug, season] = args.filter((a) => !a.startsWith('--'))
+  const hero = heroBySlug(slug!)
+  if (!hero) return { path: null } // unregistered: nothing to look up
+  const idx = hero.seasons.findIndex((s) => s.season === season)
+  if (idx <= 0) return { path: null } // no prior argued season in the registry
+  const priorSeason = hero.seasons[idx - 1]!.season
+  if (args.includes('--deployed')) {
+    return { path: join('public', 'data', slug!, `${priorSeason}.json`) }
+  }
+  const sourceDir = join('data', 'derived', slug!, priorSeason)
+  let candidates: string[]
+  try {
+    candidates = readdirSync(sourceDir)
+      .filter((f) => f.endsWith('.json'))
+      .sort()
+  } catch {
+    candidates = []
+  }
+  if (candidates.length === 0) {
+    return {
+      path: null,
+      note:
+        `the registry names ${priorSeason} as the prior argued season but no derived ` +
+        `payloads exist under ${sourceDir} — try --deployed for the committed copy`,
+    }
   }
   return { path: join(sourceDir, candidates[candidates.length - 1]!) }
 }
@@ -301,7 +350,49 @@ if (freethrow.path === null) {
   }
 }
 
+// The GROWTH section (ADR-0061): rendered whenever a prior argued season's
+// shot payload resolves — the flip-day growth-sentence is authored from
+// this, before the canonical pointer has moved.
+let loadedGrowth: GrowthMetrics | null = null
+const prior = resolvePriorPayloadPath()
+if (prior.path === null) {
+  if (prior.note) {
+    console.log('')
+    console.log(`!! growth section skipped: ${prior.note}`)
+  }
+} else {
+  let priorRaw: string
+  try {
+    priorRaw = readFileSync(prior.path, 'utf-8')
+  } catch (e) {
+    fail(`cannot read ${prior.path}: ${e instanceof Error ? e.message : String(e)}`)
+  }
+  try {
+    const priorPayload = parseDerivedPayload(JSON.parse(priorRaw))
+    loadedGrowth = aggregateGrowthMetrics(
+      {
+        season: priorPayload._meta.season,
+        player: priorPayload._meta.player,
+        metrics: aggregateShotMetrics(priorPayload.shots, priorPayload.zoneBaseline),
+      },
+      {
+        season: shotPayload._meta.season,
+        player: shotPayload._meta.player,
+        metrics: aggregateShotMetrics(shotPayload.shots, shotPayload.zoneBaseline),
+      },
+    )
+    console.log('')
+    console.log(`prior season payload: ${prior.path}`)
+    console.log('')
+    console.log(renderGrowthReport(loadedGrowth))
+  } catch (e) {
+    fail(
+      `growth section failed over ${prior.path}:\n${e instanceof Error ? e.message : String(e)}`,
+    )
+  }
+}
+
 // The closing authoring aid (ADR-0059): every verdict-grade gap with its
 // distance from the house bars — live verdicts are written from this.
 console.log('')
-console.log(renderClaimHeadroom(shotPayload, loadedCreation, loadedFreethrow))
+console.log(renderClaimHeadroom(shotPayload, loadedCreation, loadedFreethrow, loadedGrowth))

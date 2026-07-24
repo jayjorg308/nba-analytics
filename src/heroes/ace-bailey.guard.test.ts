@@ -36,6 +36,7 @@ import { parseCreationPayload } from '../domain/creationPayload'
 import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { aceBailey as hero } from './ace-bailey'
+import { seasonArgumentOf } from './types'
 import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
 import {
   invalidAssistInterpretationsIn,
@@ -45,26 +46,31 @@ import {
   unshippedTermsIn,
 } from './verdictLexicon'
 
+// The guarded season argument, selected explicitly (ADR-0060/0061): a flip
+// moving the canonical pointer must never silently repoint these claims at
+// a different season's data.
+const seasonConfig = seasonArgumentOf(hero, '2025-26')
+
 const payloadPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.json`,
+  `${seasonConfig.season}.json`,
 )
 const creationPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.creation.json`,
+  `${seasonConfig.season}.creation.json`,
 )
 const freethrowPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.freethrow.json`,
+  `${seasonConfig.season}.freethrow.json`,
 )
 
 // Verdict semantics — thresholds the prose is held to:
@@ -217,10 +223,10 @@ describe.skipIf(
   }
 
   it('creation and line vocabulary are claim-backed; unshipped vocabulary absent (ADR-0029)', () => {
-    expect(unshippedTermsIn(hero.verdict)).toEqual([])
-    expect(unbackedCreationTerms(hero.verdict, creationClaims.length)).toEqual([])
-    expect(unbackedFreethrowTerms(hero.verdict, freethrowClaims.length)).toEqual([])
-    expect(unbackedAssistTerms(hero.verdict, 0)).toEqual([])
-    expect(invalidAssistInterpretationsIn(hero.verdict)).toEqual([])
+    expect(unshippedTermsIn(seasonConfig.verdict)).toEqual([])
+    expect(unbackedCreationTerms(seasonConfig.verdict, creationClaims.length)).toEqual([])
+    expect(unbackedFreethrowTerms(seasonConfig.verdict, freethrowClaims.length)).toEqual([])
+    expect(unbackedAssistTerms(seasonConfig.verdict, 0)).toEqual([])
+    expect(invalidAssistInterpretationsIn(seasonConfig.verdict)).toEqual([])
   })
 })

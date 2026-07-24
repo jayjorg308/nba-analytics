@@ -10,6 +10,7 @@ import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { parseShotContextPayload } from '../domain/shotContextPayload'
 import { shaiGilgeousAlexander as hero } from './shai-gilgeous-alexander'
+import { seasonArgumentOf } from './types'
 import type { AssistClaim, CreationClaim, FreethrowClaim } from './verdictLexicon'
 import {
   invalidAssistInterpretationsIn,
@@ -19,33 +20,38 @@ import {
   unshippedTermsIn,
 } from './verdictLexicon'
 
+// The guarded season argument, selected explicitly (ADR-0060/0061): a flip
+// moving the canonical pointer must never silently repoint these claims at
+// a different season's data.
+const seasonConfig = seasonArgumentOf(hero, '2025-26')
+
 const payloadPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.json`,
+  `${seasonConfig.season}.json`,
 )
 const creationPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.creation.json`,
+  `${seasonConfig.season}.creation.json`,
 )
 const contextPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.context.json`,
+  `${seasonConfig.season}.context.json`,
 )
 const freethrowPath = path.resolve(
   process.cwd(),
   'public',
   'data',
   hero.slug,
-  `${hero.season}.freethrow.json`,
+  `${seasonConfig.season}.freethrow.json`,
 )
 
 const MATERIAL_SELECTION_COST_PPS = 0.05
@@ -196,11 +202,11 @@ describe.skipIf(
     }
 
     it('licenses only vocabulary backed by declared claims', () => {
-      expect(unshippedTermsIn(hero.verdict)).toEqual([])
-      expect(unbackedCreationTerms(hero.verdict, creationClaims.length)).toEqual([])
-      expect(unbackedAssistTerms(hero.verdict, assistClaims.length)).toEqual([])
-      expect(unbackedFreethrowTerms(hero.verdict, freethrowClaims.length)).toEqual([])
-      expect(invalidAssistInterpretationsIn(hero.verdict)).toEqual([])
+      expect(unshippedTermsIn(seasonConfig.verdict)).toEqual([])
+      expect(unbackedCreationTerms(seasonConfig.verdict, creationClaims.length)).toEqual([])
+      expect(unbackedAssistTerms(seasonConfig.verdict, assistClaims.length)).toEqual([])
+      expect(unbackedFreethrowTerms(seasonConfig.verdict, freethrowClaims.length)).toEqual([])
+      expect(invalidAssistInterpretationsIn(seasonConfig.verdict)).toEqual([])
     })
   },
 )

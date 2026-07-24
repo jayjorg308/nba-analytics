@@ -5,7 +5,7 @@ dependency and value-per-effort, not by calendar. Each phase repeats the v1
 recipe — a data spine with a golden fixture, a pure metrics function, honesty
 flags, authored-and-guarded copy — on a new axis._
 
-## Status — updated 2026-07-21
+## Status — updated 2026-07-23
 
 | Phase | State |
 | --- | --- |
@@ -16,6 +16,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
 | v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
+| Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
 > Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
@@ -481,7 +482,15 @@ loop already no-ops cleanly on the unstarted season. The checklist: rerun
 the replay proof (`python ingestion/season_replay.py`), register
 `scripts/season-update.ps1` with Task Scheduler (command in its header),
 watch the dark reports, and ship Ace's flip PR the day the loop says
-GATES PASS. **Stretch:** Peterson's raw pulls begin when his season does;
+GATES PASS. The flip PR's recipe grew with season-over-season (ADR-0059
+as amended, ADRs 0060/0061): append the 2026-27 season entry to his hero
+module, move `canonicalSeason`, author the live verdict plus the first
+growth-sentence from that morning's `hero:report` (GROWTH section +
+claim headroom), declare the growth claims and graduate the growth
+vocabulary from the unshipped lexicon, and flip dark→live in
+`season.config.json` — his 2025-26 argument stays frozen at its
+permalink, and the SEASON OVER SEASON coda lights up that day.
+**Stretch:** Peterson's raw pulls begin when his season does;
 his page is born live the day the gates first pass on real thin data — the
 "spin up cheaply" demo CONTEXT.md always promised, now with the gates
 firing for real.
@@ -489,17 +498,60 @@ firing for real.
 ## Beyond v3 — in priority order (reordered 2026-07-23, at v3 close)
 
 1. **Season-over-season** — same hero, two seasons, the growth story.
-   Promoted to first for a sequencing consequence hiding in ADR-0059: the
-   live flip *replaces* a hero's completed argument, so when Ace Bailey's
-   page flips to living 2026-27 (projected late November at his volumes),
-   his rookie-season argument disappears unless this feature exists first.
-   Built before the flip, the flip preserves it instead — and Ace becomes
-   the feature's natural first subject (the growth story out of "the diet
-   is the problem"). Payloads are already per-season, so the build is
-   mostly presentation plus a registry/routing decision; the real design
-   questions (one page or two per hero; how a growth story argues
-   verdict-first) warrant a grilling session before code. The summer
-   window before opening night is the time.
+   _Designed 2026-07-23 (grilling + domain-modeling session; ADRs
+   0060–0062, new CONTEXT.md terms: season argument, canonical season,
+   season permalink, growth, growth coda, growth claim, prior argued
+   season). The forcing constraint held: ADR-0059's flip replaced a
+   hero's completed argument, so Ace's rookie-season argument would
+   vanish at his projected late-November flip. The decisions, locked:
+   the hero-season becomes the page unit — every argued season a
+   complete argument at a stable `/<slug>/<season>` permalink, `/<slug>`
+   the canonical alias, the flip a pointer move that preserves the prior
+   argument frozen verbatim (ADR-0060; registry grows ordered seasons[]
+   + canonicalSeason, one index tile per hero). The growth story is the
+   SEASON OVER SEASON coda on the canonical page, outside the numbered
+   acts: growth is movement in the vs-league residuals (each season
+   against its own league), scoped to the two-axis spine + zone grain,
+   rendered iff a prior argued season exists, from flip day, no added
+   maturity bar (ADR-0061). Form: a season-pair dumbbell per zone on the
+   diet-share-gap axis over the spine stat line, full zone-grain table
+   twin (ADR-0062). A new growth claim kind consumes both seasons'
+   payloads and asserts the movement itself; growth vocabulary stages
+   through the unshipped lexicon and graduates at the first authored
+   growth-sentence. Ships dark — fixture-proven until Ace's flip, the v3
+   pre-positioning pattern._
+
+   The build, two PRs in the summer window:
+   1. **Per-season pages** — registry seasons[]/canonicalSeason, nested
+      routing + permalinks, per-season URL derivation and titles,
+      sync/deployed-guards iterating hero × seasons, the prior-page
+      forward link (dormant until a second season argument exists).
+      Visible immediately; every existing hero is the one-element case.
+      _Done 2026-07-23. Guards select their season argument explicitly
+      (`seasonArgumentOf`), so a flip can never silently repoint frozen
+      claims; a registry coherence test locks the seasons[] invariants
+      (unique, ordered, canonical present). Gate green (pytest 88,
+      vitest 328); permalink, alias, and unknown-season fallback
+      browser-verified._
+   2. **Growth machinery** — the pure growth aggregation, the SEASON
+      OVER SEASON coda (dumbbell + stat line + table twin), the growth
+      claim kind + unshipped lexicon entry, `hero:report` GROWTH +
+      claim-headroom rows, fixture-driven component and guard tests.
+      _Done 2026-07-23. aggregateGrowthMetrics is the fifth pure
+      aggregation, with loud identity gates (same player, chronological
+      seasons); the coda fetches only the prior shot payload (five
+      payloads on a canonical two-season page); the dumbbell dot classes
+      carry their documented second meaning (emphasis = current season);
+      movement figures subtract as displayed (formatSignedGap,
+      ADR-0023). Growth vocabulary staged in the unshipped lexicon;
+      GrowthClaim defined for the flip PR's graduation. Proven dark:
+      aggregation unit tests, the five-payload coda render + the
+      contradiction path over fixtures, and a golden-fixture
+      `hero:report --prior-file` smoke run. Gate green: pytest 88,
+      vitest 337, lint, build._
+
+   Ace's flip PR (November) authors the first growth-sentence and
+   graduates the vocabulary — deliberately out of this feature's scope.
 2. **Hero scaffolding** — a generator that drafts heroConfig + a guard
    skeleton from `hero:report` output. Four manual adds have earned it,
    and it makes the mid-season Peterson born-live add (the ADR-0059

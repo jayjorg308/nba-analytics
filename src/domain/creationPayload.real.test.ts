@@ -53,12 +53,14 @@ function deployedCreationPairs(): { slug: string; season: string }[] {
 }
 
 describe('deployed creation payloads', () => {
-  it('exist for every registered hero (required — ADR-0030)', () => {
+  it('exist for every registered hero-season (required — ADR-0030/0060)', () => {
     for (const hero of HEROES) {
-      const p = path.join(publicData, hero.slug, `${hero.season}.creation.json`)
-      // A registered hero without a synced creation payload is a broken
-      // deploy, not a lesser page: run derive_creation + hero:sync.
-      expect(existsSync(p), `missing ${p}`).toBe(true)
+      for (const seasonConfig of hero.seasons) {
+        const p = path.join(publicData, hero.slug, `${seasonConfig.season}.creation.json`)
+        // A registered season argument without a synced creation payload is
+        // a broken deploy, not a lesser page: run derive_creation + hero:sync.
+        expect(existsSync(p), `missing ${p}`).toBe(true)
+      }
     }
   })
 

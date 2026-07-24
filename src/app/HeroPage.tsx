@@ -1,50 +1,76 @@
 import { useEffect, useMemo, type CSSProperties } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
 import { CreationValueChart } from '../chart/CreationValueChart'
+import { GrowthDietChart } from '../chart/GrowthDietChart'
 import { LineVsFloorChart, type FloorReference } from '../chart/LineVsFloorChart'
 import { aggregateShotMetrics } from '../domain/aggregate'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import { aggregateFreethrowMetrics } from '../domain/aggregateFreethrow'
+import { aggregateGrowthMetrics, type GrowthMetrics } from '../domain/aggregateGrowth'
 import { aggregateShotContextMetrics } from '../domain/aggregateShotContext'
 import type { CreationPayload } from '../domain/creationPayload'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { formatDataThrough } from '../format'
-import type { HeroConfig } from '../heroes/types'
+import type { HeroConfig, HeroSeasonConfig } from '../heroes/types'
 import {
   creationPayloadUrl,
   freethrowPayloadUrl,
   heroImageUrl,
+  heroPageUrl,
   indexUrl,
   payloadUrl,
+  seasonPageUrl,
   shotContextPayloadUrl,
   teamLogoUrl,
 } from '../heroes/urls'
 import { AssistedMakes } from './AssistedMakes'
 import { CreationTable } from './CreationTable'
 import { FreethrowSeasonLine, FreethrowTable } from './FreethrowTable'
+import { GrowthSpineLine, GrowthTable } from './GrowthTable'
 import { HeadlineBanner } from './HeadlineBanner'
 import { Term } from './Term'
 import {
   useCreationPayload,
   useFreethrowPayload,
+  useOptionalShotPayload,
   usePayload,
   useShotContextPayload,
 } from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
-export function HeroPage({ hero }: { hero: HeroConfig }) {
-  const state = usePayload(payloadUrl(hero))
+export function HeroPage({
+  hero,
+  seasonConfig,
+}: {
+  hero: HeroConfig
+  seasonConfig: HeroSeasonConfig
+}) {
+  // The page renders one season argument (ADR-0060) — the canonical season
+  // behind /<slug>, or a specific one behind its /<slug>/<season> permalink.
+  const state = usePayload(payloadUrl(hero, seasonConfig.season))
   // The sibling payloads (ADRs 0030/0032/0053): all required per hero — one
   // class of hero page, so the page waits for all four.
-  const creationState = useCreationPayload(creationPayloadUrl(hero))
-  const contextState = useShotContextPayload(shotContextPayloadUrl(hero))
-  const freethrowState = useFreethrowPayload(freethrowPayloadUrl(hero))
+  const creationState = useCreationPayload(creationPayloadUrl(hero, seasonConfig.season))
+  const contextState = useShotContextPayload(shotContextPayloadUrl(hero, seasonConfig.season))
+  const freethrowState = useFreethrowPayload(freethrowPayloadUrl(hero, seasonConfig.season))
+  // The growth coda's existence gate (ADR-0061): the rendered season is the
+  // canonical one AND a prior argued season exists. Only the prior SHOT
+  // payload is fetched — the coda's scope (two-axis + zones) needs nothing
+  // else; the prior season's full four still deploy for its own page.
+  const canonicalIdx = hero.seasons.findIndex((s) => s.season === hero.canonicalSeason)
+  const priorSeasonConfig =
+    seasonConfig.season === hero.canonicalSeason && canonicalIdx > 0
+      ? hero.seasons[canonicalIdx - 1]!
+      : null
+  const priorState = useOptionalShotPayload(
+    priorSeasonConfig === null ? null : payloadUrl(hero, priorSeasonConfig.season),
+  )
 
   useEffect(() => {
-    document.title = `${hero.playerName} · ${hero.season} · shot selection`
-  }, [hero])
+    document.title = `${hero.playerName} · ${seasonConfig.season} · shot selection`
+  }, [hero, seasonConfig])
 
   // Contract violations and load failures are shown plainly, never styled
   // away — any payload's failure fails the page (one class of hero page).
@@ -60,11 +86,15 @@ export function HeroPage({ hero }: { hero: HeroConfig }) {
   if (freethrowState.status === 'error') {
     return <PageError message={freethrowState.message} />
   }
+  if (priorState.status === 'error') {
+    return <PageError message={priorState.message} />
+  }
   if (
     state.status === 'loading' ||
     creationState.status === 'loading' ||
     contextState.status === 'loading' ||
-    freethrowState.status === 'loading'
+    freethrowState.status === 'loading' ||
+    priorState.status === 'loading'
   ) {
     return (
       <main className="hero-page">
@@ -75,10 +105,16 @@ export function HeroPage({ hero }: { hero: HeroConfig }) {
   return (
     <HeroReady
       hero={hero}
+      seasonConfig={seasonConfig}
       payload={state.payload}
       creation={creationState.payload}
       context={contextState.payload}
       freethrow={freethrowState.payload}
+      prior={
+        priorSeasonConfig !== null && priorState.status === 'ready'
+          ? { seasonConfig: priorSeasonConfig, payload: priorState.payload }
+          : null
+      }
     />
   )
 }
@@ -93,28 +129,55 @@ function PageError({ message }: { message: string }) {
 
 function HeroReady({
   hero,
+  seasonConfig,
   payload,
   creation,
   context,
   freethrow,
+  prior,
 }: {
   hero: HeroConfig
+  seasonConfig: HeroSeasonConfig
   payload: DerivedPayload
   creation: CreationPayload
   context: ShotContextPayload
   freethrow: FreethrowPayload
+  /** The prior argued season behind the growth coda (ADR-0061); null when
+   * the rendered season is not canonical or has no prior argument. */
+  prior: { seasonConfig: HeroSeasonConfig; payload: DerivedPayload } | null
 }) {
-  // The single production call site for all four aggregations. Cross-sibling
+  // The single production call site for all five aggregations. Cross-sibling
   // identity/provenance failures happen here, after each Zod boundary; keep
   // them inside the same plain page-error contract as load failures.
   const computed = useMemo(() => {
     try {
+      const metrics = aggregateShotMetrics(payload.shots, payload.zoneBaseline)
+      let growthMetrics: GrowthMetrics | null = null
+      if (prior !== null) {
+        // Read-time drift check (the hero:report pattern): the fetched file
+        // must be the season the registry names.
+        if (prior.payload._meta.season !== prior.seasonConfig.season) {
+          throw new Error(
+            `prior season payload is ${prior.payload._meta.season}, ` +
+              `expected ${prior.seasonConfig.season}`,
+          )
+        }
+        growthMetrics = aggregateGrowthMetrics(
+          {
+            season: prior.seasonConfig.season,
+            player: prior.payload._meta.player,
+            metrics: aggregateShotMetrics(prior.payload.shots, prior.payload.zoneBaseline),
+          },
+          { season: seasonConfig.season, player: payload._meta.player, metrics },
+        )
+      }
       return {
         status: 'ready' as const,
-        metrics: aggregateShotMetrics(payload.shots, payload.zoneBaseline),
+        metrics,
         creationMetrics: aggregateCreationMetrics(creation),
         contextMetrics: aggregateShotContextMetrics(payload, context),
         freethrowMetrics: aggregateFreethrowMetrics(freethrow),
+        growthMetrics,
       }
     } catch (error) {
       return {
@@ -122,9 +185,9 @@ function HeroReady({
         message: `Payloads contradict: ${error instanceof Error ? error.message : String(error)}`,
       }
     }
-  }, [payload, creation, context, freethrow])
+  }, [payload, creation, context, freethrow, prior, seasonConfig])
   if (computed.status === 'error') return <PageError message={computed.message} />
-  const { metrics, creationMetrics, contextMetrics, freethrowMetrics } = computed
+  const { metrics, creationMetrics, contextMetrics, freethrowMetrics, growthMetrics } = computed
   const logoUrl = teamLogoUrl(hero)
   // The line-vs-floor chart's reference ticks (ADR-0056): the league's PPS
   // from the floor's canonical bands — rim, three, mid — read off the shot
@@ -165,7 +228,7 @@ function HeroReady({
               pinned to the banner's bottom edge in both layouts — it is a
               scroll affordance, not part of the title. */}
           <div className="hero-banner-text">
-            <p className="hero-kicker">{hero.hero.kicker}</p>
+            <p className="hero-kicker">{seasonConfig.kicker}</p>
             <h1 className="hero-title">{hero.thesis}</h1>
           </div>
           <p className="hero-cue" aria-hidden="true">
@@ -176,7 +239,7 @@ function HeroReady({
       <header className="hero-header">
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
             kept honest by the colocated verdict guard. */}
-        <p className="hero-verdict">{hero.verdict}</p>
+        <p className="hero-verdict">{seasonConfig.verdict}</p>
         {/* The byline carries the reconciled frontier (ADR-0058/0059):
             structural copy, one form for completed and living seasons, so
             the verdict always reads as a statement about the season through
@@ -186,6 +249,15 @@ function HeroReady({
           {formatDataThrough(payload._meta.dataThrough, payload._meta.gamesIncluded)} · vs
           league average
         </p>
+        {seasonConfig.season !== hero.canonicalSeason && (
+          // The structural forward link (ADR-0060): a prior season argument
+          // points at the hero's current one. The season labels above carry
+          // the temporal frame — this is navigation, never a hedge on the
+          // frozen verdict.
+          <p className="hero-forward">
+            <a href={heroPageUrl(hero)}>His {hero.canonicalSeason} season →</a>
+          </p>
+        )}
       </header>
       <HeadlineBanner selection={metrics.selection} making={metrics.making} />
       {/* The first act: the two-axis evidence, opened by the same full-width
@@ -272,6 +344,37 @@ function HeroReady({
           <FreethrowTable metrics={freethrowMetrics} />
         </div>
       </section>
+      {/* The growth coda (ADR-0061/0062): the page's one cross-season
+          surface, deliberately OUTSIDE the numbered acts — the act kickers
+          name cuts of ONE reconciled season (ADR-0051), so the coda opens
+          with the shared header recipe minus the act number. Present iff the
+          rendered season is canonical with a prior argued season; structural
+          copy only — authored growth language lives in the verdict, backed
+          by growth claims. */}
+      {growthMetrics !== null && (
+        <section className="growth-section" aria-labelledby="growth-caption">
+          <header className="section-caption">
+            <h2 id="growth-caption">SEASON OVER SEASON</h2>
+            <p className="section-caption-desc">
+              his {growthMetrics.currentSeason} against his{' '}
+              <a href={seasonPageUrl(hero, growthMetrics.priorSeason)}>
+                {growthMetrics.priorSeason}
+              </a>
+              , each season measured against its own league
+            </p>
+          </header>
+          <div className="section-layout">
+            {/* Visual left, data twin right (ADR-0051): the diet dumbbell —
+                the stable axis — over the two-axis spine movement as the
+                stat coda (THE LINE's register, ADR-0056/0062). */}
+            <div className="growth-visual">
+              <GrowthDietChart metrics={growthMetrics} />
+              <GrowthSpineLine metrics={growthMetrics} />
+            </div>
+            <GrowthTable metrics={growthMetrics} />
+          </div>
+        </section>
+      )}
       {/* The quiet way back to the directory (ADR-0022) — after the argument,
           never above it; cross-hero navigation is links between pages, not a
           switcher on this one. */}

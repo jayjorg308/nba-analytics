@@ -1,12 +1,15 @@
 import { useEffect, type CSSProperties } from 'react'
 import { HEROES } from '../heroes/registry'
+import { canonicalSeasonOf } from '../heroes/types'
 import { heroImageUrl, heroPageUrl } from '../heroes/urls'
 
 // The hero index (ADR-0022): a directory of arguments, deliberately not a
 // switcher (ADR-0018). Each tile is a hero's banner at directory scale —
 // same photo, same poster type carrying the thesis — linking to the complete
 // argument at its own URL. Tiles read straight off the registry: registering
-// a hero is all it takes to appear here.
+// a hero is all it takes to appear here. One tile per hero, at the hero's
+// canonical season (ADR-0060) — prior seasons are reached from the hero
+// page, never tiled.
 
 export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
   useEffect(() => {
@@ -40,7 +43,7 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
                 style={{ '--hero-pos': hero.hero.imagePosition } as CSSProperties}
               />
               <span className="hero-tile-overlay">
-                <span className="hero-tile-kicker">{hero.hero.kicker}</span>
+                <span className="hero-tile-kicker">{canonicalSeasonOf(hero).kicker}</span>
                 <span className="hero-tile-title">{hero.thesis}</span>
                 <span className="hero-tile-cue" aria-hidden="true">
                   → The verdict

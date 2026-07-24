@@ -10,7 +10,6 @@ import type { HeroConfig } from './types'
 export const keyonteGeorge: HeroConfig = {
   slug: 'keyonte-george',
   playerName: 'Keyonte George',
-  season: '2025-26',
   // The v1 question, stated verbatim and nothing more (ADR-0005).
   thesis: 'Is Keyonte George taking good shots?',
   hero: {
@@ -24,23 +23,30 @@ export const keyonteGeorge: HeroConfig = {
     // ball-to-knees flight in view.
     imagePosition: '55% 25%',
     imagePositionWide: '52% 20%',
-    kicker: 'Keyonte George · Utah Jazz · Nº 3 · 2025-26',
   },
-  // The verdict (ADR-0017): the answer before the evidence. AUTHORED COPY —
-  // when the data moves, rewrite this; the committed guard
-  // (./keyonte-george.guard.test.ts) fails if any directional claim stops
-  // matching the deployed payloads. The fourth sentence is the v2 WHY
-  // (ADR-0029): creation vocabulary, licensed by the guard's creation-kind
-  // claims against the deployed creation payload. The closing sentence is
-  // the v2.6 LINE sentence (ADR-0056): free-throw vocabulary, licensed by
-  // the guard's free-throw claims, holding on both technical cuts
-  // (ADR-0055) — authored from hero:report's LINE section.
-  verdict:
-    'No. His shot selection costs him: he gets to the rim about half as often as the league, ' +
-    'trading it for paint floaters and mid-range. Making is not the problem, as he converts at or ' +
-    'above league expectation in every zone on the floor. ' +
-    'The diet is how he creates: far more of his shots are pull-up jumpers than is typical, ' +
-    'while the catch-and-shoot looks he does take convert well above league value. ' +
-    'The line softens the no: he draws fouls far more often than the league and converts ' +
-    'well above the league rate once there.',
+  canonicalSeason: '2025-26',
+  seasons: [
+    {
+      season: '2025-26',
+      kicker: 'Keyonte George · Utah Jazz · Nº 3 · 2025-26',
+      // The verdict (ADR-0017): the answer before the evidence. AUTHORED
+      // COPY — when the data moves, rewrite this; the committed guard
+      // (./keyonte-george.guard.test.ts) fails if any directional claim
+      // stops matching the deployed payloads. The fourth sentence is the v2
+      // WHY (ADR-0029): creation vocabulary, licensed by the guard's
+      // creation-kind claims against the deployed creation payload. The
+      // closing sentence is the v2.6 LINE sentence (ADR-0056): free-throw
+      // vocabulary, licensed by the guard's free-throw claims, holding on
+      // both technical cuts (ADR-0055) — authored from hero:report's LINE
+      // section.
+      verdict:
+        'No. His shot selection costs him: he gets to the rim about half as often as the league, ' +
+        'trading it for paint floaters and mid-range. Making is not the problem, as he converts at or ' +
+        'above league expectation in every zone on the floor. ' +
+        'The diet is how he creates: far more of his shots are pull-up jumpers than is typical, ' +
+        'while the catch-and-shoot looks he does take convert well above league value. ' +
+        'The line softens the no: he draws fouls far more often than the league and converts ' +
+        'well above the league rate once there.',
+    },
+  ],
 }

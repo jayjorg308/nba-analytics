@@ -33,12 +33,15 @@ function deployedFreethrowPairs(): { slug: string; season: string }[] {
 }
 
 describe('deployed free-throw payloads', () => {
-  it('exist for every registered hero (required — ADR-0053)', () => {
+  it('exist for every registered hero-season (required — ADR-0053/0060)', () => {
     for (const hero of HEROES) {
-      const p = path.join(publicData, hero.slug, `${hero.season}.freethrow.json`)
-      // A registered hero without a synced free-throw payload is a broken
-      // deploy, not a lesser page: run derive_freethrow + hero:sync.
-      expect(existsSync(p), `missing ${p}`).toBe(true)
+      for (const seasonConfig of hero.seasons) {
+        const p = path.join(publicData, hero.slug, `${seasonConfig.season}.freethrow.json`)
+        // A registered season argument without a synced free-throw payload
+        // is a broken deploy, not a lesser page: run derive_freethrow +
+        // hero:sync.
+        expect(existsSync(p), `missing ${p}`).toBe(true)
+      }
     }
   })
 

@@ -48,6 +48,13 @@ export function formatSignedPp1(x: number | null): string {
   return `${x < 0 ? MINUS : '+'}${abs}`
 }
 
+/** A signed PPS residual shown without its anchors, 2 dp: -0.038 -> "−0.04"
+ * (the growth spine's per-season anchors — ADR-0061). */
+export function formatSignedPps2(x: number | null): string {
+  if (x === null) return EM_DASH
+  return `${x < 0 ? MINUS : '+'}${Math.abs(x).toFixed(2)}`
+}
+
 /** Appends the small-sample marker (ADR-0008: flagged, never suppressed). */
 export function withSmallSampleMark(s: string, flagged: boolean): string {
   return flagged ? `${s}†` : s

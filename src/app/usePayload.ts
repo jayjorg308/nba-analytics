@@ -13,21 +13,29 @@ export type PayloadState<T> =
   | { status: 'error'; message: string }
   | { status: 'ready'; payload: T }
 
+/** A payload the page may not need this render (the prior season's shot
+ * payload behind the growth coda, ADR-0061): hooks must run unconditionally,
+ * so absence is a state, never a skipped call. */
+export type OptionalPayloadState<T> = PayloadState<T> | { status: 'absent' }
+
 /**
  * Fetch a persisted payload and pass it through its Zod load boundary
  * (ADR-0007/0030). A payload that fails the contract is a real error and is
  * surfaced, never swallowed. The app only ever reads persisted JSON — never
- * the NBA API.
+ * the NBA API. A null url resolves to the absent state without a request.
  */
-function useParsedPayload<T>(
-  url: string,
+function useOptionalParsedPayload<T>(
+  url: string | null,
   parse: (json: unknown) => T,
   /** How error copy names this payload ("shot data", "creation data"). */
   noun: string,
-): PayloadState<T> {
-  const [state, setState] = useState<PayloadState<T>>({ status: 'loading' })
+): OptionalPayloadState<T> {
+  const [state, setState] = useState<OptionalPayloadState<T>>(
+    url === null ? { status: 'absent' } : { status: 'loading' },
+  )
 
   useEffect(() => {
+    if (url === null) return
     const controller = new AbortController()
     // No loading reset here: initial state already is loading, and if the url
     // ever changes mid-life the previous content stays until the new payload
@@ -35,7 +43,7 @@ function useParsedPayload<T>(
 
     async function load() {
       try {
-        const res = await fetch(url, { signal: controller.signal })
+        const res = await fetch(url!, { signal: controller.signal })
         if (!res.ok) {
           setState({ status: 'error', message: `HTTP ${res.status} loading ${noun}` })
           return
@@ -67,8 +75,26 @@ function useParsedPayload<T>(
   return state
 }
 
+function useParsedPayload<T>(
+  url: string,
+  parse: (json: unknown) => T,
+  noun: string,
+): PayloadState<T> {
+  // A non-null url can never resolve to the absent state.
+  return useOptionalParsedPayload(url, parse, noun) as PayloadState<T>
+}
+
 export function usePayload(url: string): PayloadState<DerivedPayload> {
   return useParsedPayload(url, parseDerivedPayload, 'shot data')
+}
+
+/** The prior season's shot payload (ADR-0061): fetched only when the
+ * rendered season is canonical with a prior argued season — the coda's
+ * whole data need beyond the page's own four payloads. */
+export function useOptionalShotPayload(
+  url: string | null,
+): OptionalPayloadState<DerivedPayload> {
+  return useOptionalParsedPayload(url, parseDerivedPayload, 'prior season shot data')
 }
 
 /** The sibling creation payload (ADR-0030) — one class of hero page: the
