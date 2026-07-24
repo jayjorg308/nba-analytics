@@ -26,6 +26,7 @@ export function sentinelProblems(hero: HeroConfig, seasonArgument: HeroSeasonCon
     ['thesis', hero.thesis],
     ['hero.imageAlt', hero.hero.imageAlt],
     ['hero.imagePath', hero.hero.imagePath],
+    ['hero.headshotPath', hero.hero.headshotPath],
     ['hero.teamLogoPath', hero.hero.teamLogoPath],
     ['hero.imagePosition', hero.hero.imagePosition],
     ['hero.imagePositionWide', hero.hero.imagePositionWide],
@@ -48,6 +49,7 @@ export function assetProblems(
   const problems: string[] = []
   const referenced: [field: string, publicRelative: string | undefined][] = [
     ['hero.imagePath', banner.imagePath],
+    ['hero.headshotPath', banner.headshotPath],
     ['hero.teamLogoPath', banner.teamLogoPath],
   ]
   for (const [field, publicRelative] of referenced) {

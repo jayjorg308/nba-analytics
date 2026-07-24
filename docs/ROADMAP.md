@@ -19,14 +19,19 @@ flags, authored-and-guarded copy — on a new axis._
 | Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip |
 | Hero scaffolding | ✅ built 2026-07-23 (ADR-0063): `hero:scaffold` emits the season-argument skeleton; the authoring tripwire holds the suite red until authored |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
+| Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
+| Launch (August 2026) | 🔜 open — three items, all first-impression rather than engine work: the social card (no `og:`/`twitter:` meta; per-hero vs product-wide is a real decision), whether the directory should explain itself to a cold visitor, and the marquee's heading outline. See [Launch (August 2026)](#launch-august-2026--open-items). |
 
-> **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
-> Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
-> registered, and argless `hero:sync` covers all three — while
-> the hero index stays hidden: the root serves Cody directly, unknown paths
-> fall back to him, and the "All players" footer link stays commented. The
-> restore, when the Cody page is deemed done, is a grep for
-> `TEMPORARY(single-hero)` in `src/App.tsx` + `src/app/HeroPage.tsx`.
+> **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
+> record the opposite — a deliberately hidden index, the root serving Cody
+> directly, and a `TEMPORARY(single-hero)` grep as the restore path. Ace
+> Bailey's add shipped that restore, and the markers are gone from
+> `src/App.tsx` and `src/app/HeroPage.tsx` (the phrase survives only in two
+> real-data test comments, naming the historical stance behind guarding
+> unregistered heroes' deployed payloads). The root now renders the
+> directory, unknown paths fall back to it with a note, and the four
+> registered heroes are covered by argless `hero:sync`. Redesigned
+> 2026-07-24 into the headshot marquee (ADR-0065).
 >
 > _The max-FGA stress test is now a shipped v2.5 commitment: Shai's 2025-26
 > MVP season is the positive control. His action banner, guarded copy, and all
@@ -620,6 +625,71 @@ firing for real.
    big, a pure spot-up shooter) and then only as a secondary toggle, never
    replacing the authored league-benchmark number. The league-scale role corpus
    and derive-side index stay unbuilt until that case exists._
+
+---
+
+## Launch (August 2026) — open items
+
+_Opened 2026-07-24, at the close of the directory redesign (ADR-0065). Every
+phase above is shipped and the "Beyond v3" forward list is closed, so this is
+the only near-term work besides October's activation. Scope is deliberately
+narrow: what a first-time visitor meets, and what a shared link looks like
+before anyone has clicked it. The plan is one or two heroes at launch (Cody
+Williams certainly, as the reason the tool exists), so these are judged at a
+small roster, the same lens the marquee layout was chosen under._
+
+1. **The social card** — the biggest gap, and the one the product's own
+   first sentence names: CONTEXT.md calls this "an interactive, shareable
+   web tool", and today a shared link is a bare URL. `index.html` carries
+   the title and description (set 2026-07-24) but **zero `og:` / `twitter:`
+   meta**, so Slack, iMessage, X, and LinkedIn unfurl nothing. The
+   deliberate hold: a card needs an image, and the image is branding work in
+   flight (the favicon lands with it).
+
+   Questions worth settling rather than defaulting: is the card image one
+   product-wide mark (simple, brand-forward, identical for every share) or
+   **per hero** (the hero's own poster or headshot with his name, so
+   sharing a player's argument previews that player)? Per-hero is the far
+   stronger share, and the assets already exist per hero — but a static
+   host serves one `index.html` for every route, so per-hero cards need
+   either build-time HTML generation per hero page or a prerender/meta
+   step at the edge. That is a real architectural decision (today the app
+   resolves the hero from the URL at runtime; see ADR-0022), so it wants a
+   deliberate answer, not an improvised one. A single product-wide card is
+   the honest MVP and does not block a per-hero upgrade later.
+
+2. **The directory no longer explains itself** — a consequence of the
+   marquee redesign worth taking a second look at, not a defect. The old
+   index opened with a visible title and a deck ("Each page asks one
+   question of one player's season (is he taking good shots?) and argues
+   the answer: verdict first, evidence after"). The marquee dropped both:
+   above the fold a cold visitor now meets a face, a name, and "Is he
+   taking good shots? → The verdict", with the only remaining explanation
+   in the footer line. For a returning reader that restraint is the point
+   (it reads as a poster, not a pitch); for the launch audience, who have
+   never seen the tool and arrive from a link, it may under-explain what
+   the site *is*.
+
+   The tension to resolve deliberately: prominence follows differentiation
+   (ADR-0018), and what differentiates this tool is the argued verdict, not
+   a tagline. So if explanatory copy returns it should earn its place
+   rather than reinstate a generic deck. Options, roughly in increasing
+   footprint: leave it (the thesis question is arguably self-explanatory);
+   promote the footer line above the rail; give the marquee a single
+   subordinate line under the cue; or restore a short deck under the
+   wordmark. Worth watching real first-time reactions at launch before
+   spending page weight on it.
+
+3. **The featured player's name is not a heading** — small, cheap, and
+   purely structural. The index outline runs `h1` (the visually hidden site
+   name, ADR-0065) → `h2` "More verdicts", so heading navigation skips the
+   marquee entirely, even though the featured hero is the page's most
+   important item. Nothing is broken: the name is inside the link, so link
+   navigation reaches him with his meta line. Promoting that name to an
+   `h2` (or the rail items to `h3`s beneath it) tidies the outline with no
+   visual change; the only care needed is that `.index-marquee-text` is a
+   `<span>` today and would have to become a flow container to hold a
+   heading legally.
 
 ---
 

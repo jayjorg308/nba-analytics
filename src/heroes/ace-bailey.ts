@@ -21,6 +21,7 @@ export const aceBailey: HeroConfig = {
   thesis: 'Is Ace Bailey taking good shots?',
   hero: {
     imagePath: 'img/ace-bailey-hero.jpg',
+    headshotPath: 'img/ace-bailey-headshot.png',
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
       'Ace Bailey hangs in the air for a one-handed dunk in Utah’s purple mountain jersey, the ball at the rim',

@@ -39,13 +39,13 @@ describe('emitted hero module', () => {
     expect(seasonArgumentOf(hero, '2026-27').season).toBe('2026-27')
   })
 
-  it('is exactly what the authoring tripwire rejects: five sentinels and the missing banner', async () => {
+  it('is exactly what the authoring tripwire rejects: five sentinels and the missing assets', async () => {
     const mod = await importEmitted('tripwire.ts', emitHeroModule(id))
     const hero = mod[heroExportName(id.slug)]!
     const problems = authoringProblems(hero, hero.seasons[0]!)
     // Sentinels: imageAlt, both focal points, kicker, verdict — plus the
-    // conventional banner path, which cannot exist yet.
-    expect(problems).toHaveLength(6)
+    // conventional banner and headshot paths, which cannot exist yet.
+    expect(problems).toHaveLength(7)
     for (const field of [
       'hero.imageAlt',
       'hero.imagePosition',
@@ -56,6 +56,7 @@ describe('emitted hero module', () => {
       expect(problems.some((p) => p.includes(field) && p.includes(SCAFFOLD_SENTINEL))).toBe(true)
     }
     expect(problems.some((p) => p.includes('public/img/test-hero-hero.jpg'))).toBe(true)
+    expect(problems.some((p) => p.includes('public/img/test-hero-headshot.png'))).toBe(true)
   })
 })
 

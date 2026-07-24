@@ -1,14 +1,22 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#16171d" />
-    <title>nba-analytics</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#16171d" />
+        <!-- The static title and description are what non-JS readers see:
+         crawlers, link unfurlers, and the tab during load. The app refines
+         the title per page on mount (the hero page names its player and
+         season); this is the product's name, never the repo's (CONTEXT.md). -->
+        <title>Good Shots · one player at a time</title>
+        <meta
+            name="description"
+            content="One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after."
+        />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>

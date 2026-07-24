@@ -33,6 +33,7 @@ describe('emitHeroModule', () => {
     expect(source).toContain(`playerName: 'Test Hero',`)
     expect(source).toContain(`thesis: 'Is Test Hero taking good shots?',`)
     expect(source).toContain(`imagePath: 'img/test-hero-hero.jpg',`)
+    expect(source).toContain(`headshotPath: 'img/test-hero-headshot.png',`)
     expect(source).toContain(`canonicalSeason: '2026-27',`)
     expect(source).toContain(`season: '2026-27',`)
   })

@@ -10,6 +10,12 @@ export interface HeroBannerConfig {
    * The committed image is always a web-sized derivative, never a
    * full-resolution source (ADR-0021). */
   imagePath: string
+  /** The hero's standard NBA headshot (transparent-background PNG from
+   * cdn.nba.com/headshots, ~200 KB), committed under public/ at the
+   * conventional img/<slug>-headshot.png. The DIRECTORY'S asset (ADR-0065):
+   * the index shows who is on file (uniform faces, no per-hero art
+   * direction); the action poster above stays the hero page's argument. */
+  headshotPath: string
   imageAlt: string
   /** Optional normalized `*-logo.png` team mark: a 1024px transparent square
    * with its centered mark at a 58–62% max footprint. Rendered as a faint
@@ -53,6 +59,20 @@ export interface HeroConfig {
 /** The canonical season argument — the one `/<slug>` renders. */
 export function canonicalSeasonOf(hero: HeroConfig): HeroSeasonConfig {
   return seasonArgumentOf(hero, hero.canonicalSeason)
+}
+
+/** The directory's meta line (ADR-0065): the canonical kicker's segments
+ * minus the player's name — the marquee and rail already carry the name at
+ * poster scale, so repeating it in the eyebrow reads as noise. Derived from
+ * the authored kicker rather than authored twice; kickers follow the
+ * "Name · Team · Nº N · Season" shape, and the index test holds every
+ * hero's derivation non-empty and name-free so a kicker breaking the shape
+ * fails loudly instead of shipping a broken eyebrow. */
+export function indexMetaOf(hero: HeroConfig): string {
+  return canonicalSeasonOf(hero)
+    .kicker.split(' · ')
+    .filter((part) => part.toLowerCase() !== hero.playerName.toLowerCase())
+    .join(' · ')
 }
 
 /** A specific season argument, selected explicitly by season string. Guards

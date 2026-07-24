@@ -15,6 +15,7 @@ const authored: HeroConfig = {
   thesis: 'Is Test Hero taking good shots?',
   hero: {
     imagePath: 'img/test-hero-hero.jpg',
+    headshotPath: 'img/test-hero-headshot.png',
     imageAlt: 'Test Hero rises for a jumper',
     imagePosition: '50% 30%',
     imagePositionWide: '50% 20%',
@@ -49,10 +50,11 @@ describe('sentinelProblems', () => {
 })
 
 describe('assetProblems', () => {
-  it('reports a referenced banner image missing from public/', () => {
+  it('reports referenced images missing from public/', () => {
     const problems = assetProblems(authored.hero, () => false)
-    expect(problems).toHaveLength(1)
-    expect(problems[0]).toContain('public/img/test-hero-hero.jpg')
+    expect(problems).toHaveLength(2)
+    expect(problems.some((p) => p.includes('public/img/test-hero-hero.jpg'))).toBe(true)
+    expect(problems.some((p) => p.includes('public/img/test-hero-headshot.png'))).toBe(true)
   })
 
   it('passes when every referenced asset exists', () => {
@@ -67,7 +69,11 @@ describe('assetProblems', () => {
   })
 
   it('leaves a sentinel-valued path to the sentinel check', () => {
-    const scaffolded = { ...authored.hero, imagePath: SCAFFOLD_SENTINEL }
+    const scaffolded = {
+      ...authored.hero,
+      imagePath: SCAFFOLD_SENTINEL,
+      headshotPath: SCAFFOLD_SENTINEL,
+    }
     expect(assetProblems(scaffolded, () => false)).toEqual([])
   })
 })
@@ -79,9 +85,10 @@ describe('authoringProblems', () => {
       seasons: [{ ...season, kicker: `Test Hero · ${SCAFFOLD_SENTINEL} · 2025-26` }],
     }
     const problems = authoringProblems(scaffolded, scaffolded.seasons[0]!, () => false)
-    expect(problems).toHaveLength(2)
+    expect(problems).toHaveLength(3)
     expect(problems.some((p) => p.includes('kicker'))).toBe(true)
     expect(problems.some((p) => p.includes('test-hero-hero.jpg'))).toBe(true)
+    expect(problems.some((p) => p.includes('test-hero-headshot.png'))).toBe(true)
   })
 
   // The default-existsSync path, proven against reality: every registered

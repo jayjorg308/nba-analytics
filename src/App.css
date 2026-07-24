@@ -63,11 +63,17 @@
 
     /* Landscape handhelds keep the WIDE layout (right photo panel, solid
      title column) — the 3/4 poster here meant 1.75 viewports of pure photo
-     on an iPad-landscape and 2.8 on a phone before any title. The svh cap
+     on an iPad-landscape and 2.8 on a phone before any title. The svh term
      covers short landscape phones, where even the wide aspect outruns the
-     viewport; object-fit absorbs the crop. */
+     viewport; object-fit absorbs the crop.
+     The height is computed DIRECTLY here, never `aspect-ratio` +
+     `max-height`: when that cap binds, the constraint transfers back through
+     the ratio to the box's WIDTH, so the banner silently stops spanning the
+     shell (a ~13% dead strip at the right edge on a 932x430 phone). A cap on
+     one axis of a ratio-sized box is never only a cap on that axis. */
     @media (max-width: 1024px) and (orientation: landscape) {
-        max-height: 100svh;
+        aspect-ratio: auto;
+        height: min(100svh, calc(100vw * 600 / 1126));
     }
 }
 
@@ -96,6 +102,16 @@
         object-position: var(--hero-pos);
         -webkit-mask-image: none;
         mask-image: none;
+    }
+
+    /* Landscape handhelds keep the wide layout (ADR-0025), but its tuned
+       pair — 60% panel × 72px title cap (ADR-0021) — was set at desktop
+       width. At phone-landscape widths the title's tail reaches into the
+       photo, so the photo fades in later and the overlay's landscape scrim
+       below holds a solid title column. */
+    @media (max-width: 1024px) and (orientation: landscape) {
+        -webkit-mask-image: linear-gradient(90deg, transparent 12%, #000 55%);
+        mask-image: linear-gradient(90deg, transparent 12%, #000 55%);
     }
 }
 
@@ -163,6 +179,17 @@
                 rgba(0, 0, 0, 0.38) 66%,
                 rgba(0, 0, 0, 0.85) 96%
             );
+    }
+
+    /* Landscape handhelds: the desktop scrim's 62% fade-out leaves the
+       title's tail on thin ground at these widths — hold more alpha,
+       longer, paired with the photo's later fade-in above. */
+    @media (max-width: 1024px) and (orientation: landscape) {
+        background: linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.55) 40%,
+            rgba(0, 0, 0, 0) 74%
+        );
     }
 }
 
@@ -286,145 +313,359 @@
     color: var(--text-h);
 }
 
-/* --- Hero index (the directory of arguments, ADR-0022) ---------------------- */
+/* --- Hero index (the directory of arguments, ADR-0022/0065) ----------------- */
+
+/* The directory shows WHO is on file: the first registered hero as a
+   full-width marquee, the rest as a name-only rail — standard NBA headshot
+   cutouts (transparent PNGs) on controlled dark grounds, so ink needs no
+   photo scrim and a new hero needs no art direction. The action poster
+   stays the hero page's asset. */
 
 .index-page {
     text-align: left;
-    padding: 0 32px 64px;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
 
-    @media (max-width: 1024px) {
-        padding: 0 20px 48px;
+.index-page a {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* The registry-miss note, clear of the fixed navbar. */
+.index-miss {
+    padding: 72px 32px 0;
+}
+
+/* Small caps eyebrow (team · number · season) — one line, never wrapped. */
+.index-meta {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+.index-cue {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+/* The product's B&W identity, applied to the headshots like every photo. */
+.index-page img {
+    filter: grayscale(1) contrast(1.08) brightness(0.94);
+}
+
+/* The marquee: the cover story. The figure is a cutout on a radial-glow
+   ground (no photo behind the ink, so the ground itself guarantees it). */
+.index-marquee {
+    position: relative;
+    display: block;
+    min-height: 72svh;
+    overflow: hidden;
+    background: radial-gradient(120% 100% at 72% 55%, #191b23 0%, #0a0a0c 62%);
+}
+
+.index-marquee img {
+    position: absolute;
+    inset: auto 2% 0 auto;
+    width: 58%;
+    height: 92%;
+    object-fit: contain;
+    object-position: bottom right;
+}
+
+.index-marquee-text {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 44%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding: 72px 0 48px 48px;
+    box-sizing: border-box;
+}
+
+.index-marquee-name {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(56px, 8.5vw, 104px);
+    line-height: 0.92;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    max-width: 8ch;
+}
+
+.index-marquee:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+/* The stacked marquee is PORTRAIT-only (the banner's ADR-0025 pattern):
+   landscape handhelds keep the side-by-side form above, where the figure's
+   hard bottom edge hides flush at the marquee's bottom. */
+@media (max-width: 1024px) and (orientation: portrait) {
+    /* The portrait poster, in the hero banner's own recipe (ADR-0025): the
+       figure fills the panel grounded on its bottom edge, and the text sits
+       OVER its lower stretch on a deep title-zone grade. The first attempt
+       lifted the figure above the text instead, which left it hovering
+       mid-panel — a fade mask hid the cut edge but not the float. Nothing
+       hovers if nothing is lifted. */
+    .index-marquee {
+        /* Shorter than the hero banner's full-viewport poster on purpose:
+           this is a directory, so the rail peeks above the fold. */
+        min-height: 68svh;
+        background: radial-gradient(130% 90% at 50% 38%, #191b23 0%, #0a0a0c 68%);
+    }
+
+    /* A landscape source (1040x760) in a portrait panel. `contain` in a box
+       OVERSIZED past the panel's width — not `cover`, which scales to the
+       panel's height and blows the frame up into a face close-up; not plain
+       `contain`, which letterboxes the figure into a third of the panel.
+       The overflow crops the shoulders slightly, so the figure reads
+       head-to-chest at poster scale. Measured margins (~5% per side, 0% at
+       the bottom) put the figure flush on the panel's bottom edge: grounded,
+       so there is no cut edge to hide and no mask. */
+    .index-marquee img {
+        inset: auto -25% 0;
+        width: 150%;
+        height: 82%;
+        object-fit: contain;
+        object-position: bottom center;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+
+    .index-marquee-text {
+        width: auto;
+        inset: auto 0 0 0;
+        justify-content: flex-end;
+        /* Deep top padding so the grade has room to ramp before it reaches
+           the type — the banner's title-zone lesson (a half-measure grade
+           lets a white jersey ghost through white ink). */
+        padding: 96px 20px 28px;
+        text-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.55),
+            0 2px 12px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.5) 45%,
+            rgba(0, 0, 0, 0.9) 100%
+        );
+    }
+
+    .index-marquee-name {
+        font-size: clamp(44px, 13vw, 72px);
     }
 }
 
-.index-header {
-    margin: 44px 0 32px;
-
-    @media (max-width: 1024px) {
-        margin: 28px 0 24px;
-    }
+/* The rail: everyone else on file, faces and names only. */
+.index-rail {
+    padding: 36px 32px 48px;
 }
 
-.index-kicker {
+.index-rail-title {
+    font-family: var(--sans);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text);
-    margin-bottom: 10px;
+    margin: 0 0 16px;
 }
 
-.index-title {
-    margin: 0 0 12px;
-}
-
-.index-deck {
-    max-width: 60ch;
-}
-
-.hero-index {
+.index-rail ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-
-    @media (max-width: 1024px) {
-        gap: 16px;
-    }
+    display: flex;
+    gap: 16px;
 }
 
-/* A tile is the hero banner's narrow poster at directory scale: same B&W
-   filter, same scrim logic, same display face — a registered hero gets a
-   consistent tile with zero index work. White ink is theme-invariant for
-   the same reason as the banner's: the tile is its own dark surface. */
-.hero-tile {
+.index-card {
     position: relative;
     display: block;
-    overflow: hidden;
+    width: 190px;
     aspect-ratio: 3 / 4;
     border-radius: 8px;
-    background: #0a0a0c;
-    text-decoration: none;
-    color: #fff;
+    overflow: hidden;
+    background: linear-gradient(180deg, #15161d 0%, #0a0a0c 100%);
 }
 
-.hero-tile img {
+/* A landscape source (1040x760; measured transparent margins ~5% per side,
+   0% at the bottom) in a portrait card: oversize the box so the card's
+   overflow crops to a tight head-and-shoulders portrait, rather than
+   letterboxing a small figure. The figure grounds on the card's bottom
+   edge, where its waist-up cut is invisible. */
+.index-card img {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: var(--hero-pos);
-    filter: grayscale(1) contrast(1.08) brightness(0.94);
+    inset: auto -30% 0;
+    width: 160%;
+    height: 88%;
+    object-fit: contain;
+    object-position: bottom center;
     transition: transform 200ms ease;
 }
 
-.hero-tile:hover img,
-.hero-tile:focus-visible img {
-    transform: scale(1.03);
+.index-card:hover img,
+.index-card:focus-visible img {
+    transform: scale(1.04);
 }
 
-.hero-tile:focus-visible {
+.index-card:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
-.hero-tile-overlay {
+.index-card-name {
     position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 20px 18px 18px;
-    /* Same title-zone grade and glyph halo as the banner's narrow poster —
-     the tile inherits its readability guarantees, not just its look. */
+    inset: auto 0 0 0;
+    padding: 14px;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 0.96;
+    text-transform: uppercase;
+    text-align: left;
     text-shadow:
         0 1px 2px rgba(0, 0, 0, 0.55),
         0 2px 12px rgba(0, 0, 0, 0.4);
-    background:
-        linear-gradient(
-            100deg,
-            rgba(0, 0, 0, 0.62) 18%,
-            rgba(0, 0, 0, 0.12) 55%
-        ),
-        linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0) 40%,
-            rgba(0, 0, 0, 0.38) 66%,
-            rgba(0, 0, 0, 0.85) 96%
-        );
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.45) 55%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
 }
 
-.hero-tile-kicker {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.88;
-    margin-bottom: 8px;
+.index-footer {
+    margin-top: auto;
+    padding: 40px 32px 48px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--text);
 }
 
-.hero-tile-title {
-    font-family: var(--display);
-    font-weight: 900;
-    font-size: clamp(30px, 3.6vw, 42px);
-    line-height: 0.96;
-    letter-spacing: 0.005em;
-    text-transform: uppercase;
-    max-width: 13ch;
-    text-wrap: balance;
+@media (max-width: 640px) {
+    .index-miss {
+        padding-inline: 20px;
+    }
+
+    .index-rail {
+        padding-inline: 20px;
+    }
+
+    /* Phones: the rail scrolls sideways — cards stay card-sized. */
+    .index-rail ul {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 8px;
+    }
+
+    .index-card {
+        flex: 0 0 160px;
+        scroll-snap-align: start;
+    }
+
+    .index-footer {
+        padding-inline: 20px;
+    }
 }
 
-.hero-tile-cue {
-    font-size: 11px;
-    letter-spacing: 0.24em;
+/* --- Site navbar (ADR-0065) ------------------------------------------------- */
+
+/* Fixed over the page top, shell-width. Over the poster banner it is
+   transparent with halo-guaranteed ink (ADR-0025's recipe — the photo's top
+   edge carries no grade); scrolled, it gains a blurred solid ground. */
+.site-nav {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100%, 1126px);
+    box-sizing: border-box;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    text-align: left;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.55),
+        0 2px 12px rgba(0, 0, 0, 0.4);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition:
+        background 200ms ease,
+        border-color 200ms ease;
+}
+
+/* Over-poster insurance: a soft top scrim under the wordmark, because the
+   surfaces behind it carry no grade at the top edge (the banner photo's
+   ADR-0025 grade is bottom-anchored, and the marquee's portrait figure now
+   reaches the panel's top). The halo covers the glyphs; this covers the
+   band. It fades out as the solid scrolled ground fades in. */
+.site-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.5) 0%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    transition: opacity 200ms ease;
+    pointer-events: none;
+}
+
+.site-nav-scrolled::before {
+    opacity: 0;
+}
+
+.site-nav-scrolled {
+    background: rgba(22, 23, 29, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom-color: var(--border);
+    text-shadow: none;
+}
+
+.site-nav-brand {
+    /* Above the ::before scrim (an absolutely-positioned pseudo-element
+       paints over static in-flow content). */
+    position: relative;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    opacity: 0.75;
-    margin-top: 14px;
+    color: #fff;
+    text-decoration: none;
+}
+
+@media (max-width: 640px) {
+    .site-nav {
+        padding: 10px 16px;
+    }
+}
+
+/* Screen-reader-only: the index page's document-outline h1. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 /* --- Headline blocks ------------------------------------------------------- */
