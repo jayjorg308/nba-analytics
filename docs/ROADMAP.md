@@ -5,7 +5,7 @@ dependency and value-per-effort, not by calendar. Each phase repeats the v1
 recipe — a data spine with a golden fixture, a pure metrics function, honesty
 flags, authored-and-guarded copy — on a new axis._
 
-## Status — updated 2026-07-21
+## Status — updated 2026-07-23
 
 | Phase | State |
 | --- | --- |
@@ -16,6 +16,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
 | v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
+| Season-over-season | 📐 designed 2026-07-23 (ADRs 0060–0062): two-PR build next, before Ace's flip |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
 > Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
@@ -489,17 +490,42 @@ firing for real.
 ## Beyond v3 — in priority order (reordered 2026-07-23, at v3 close)
 
 1. **Season-over-season** — same hero, two seasons, the growth story.
-   Promoted to first for a sequencing consequence hiding in ADR-0059: the
-   live flip *replaces* a hero's completed argument, so when Ace Bailey's
-   page flips to living 2026-27 (projected late November at his volumes),
-   his rookie-season argument disappears unless this feature exists first.
-   Built before the flip, the flip preserves it instead — and Ace becomes
-   the feature's natural first subject (the growth story out of "the diet
-   is the problem"). Payloads are already per-season, so the build is
-   mostly presentation plus a registry/routing decision; the real design
-   questions (one page or two per hero; how a growth story argues
-   verdict-first) warrant a grilling session before code. The summer
-   window before opening night is the time.
+   _Designed 2026-07-23 (grilling + domain-modeling session; ADRs
+   0060–0062, new CONTEXT.md terms: season argument, canonical season,
+   season permalink, growth, growth coda, growth claim, prior argued
+   season). The forcing constraint held: ADR-0059's flip replaced a
+   hero's completed argument, so Ace's rookie-season argument would
+   vanish at his projected late-November flip. The decisions, locked:
+   the hero-season becomes the page unit — every argued season a
+   complete argument at a stable `/<slug>/<season>` permalink, `/<slug>`
+   the canonical alias, the flip a pointer move that preserves the prior
+   argument frozen verbatim (ADR-0060; registry grows ordered seasons[]
+   + canonicalSeason, one index tile per hero). The growth story is the
+   SEASON OVER SEASON coda on the canonical page, outside the numbered
+   acts: growth is movement in the vs-league residuals (each season
+   against its own league), scoped to the two-axis spine + zone grain,
+   rendered iff a prior argued season exists, from flip day, no added
+   maturity bar (ADR-0061). Form: a season-pair dumbbell per zone on the
+   diet-share-gap axis over the spine stat line, full zone-grain table
+   twin (ADR-0062). A new growth claim kind consumes both seasons'
+   payloads and asserts the movement itself; growth vocabulary stages
+   through the unshipped lexicon and graduates at the first authored
+   growth-sentence. Ships dark — fixture-proven until Ace's flip, the v3
+   pre-positioning pattern._
+
+   The build, two PRs in the summer window:
+   1. **Per-season pages** — registry seasons[]/canonicalSeason, nested
+      routing + permalinks, per-season URL derivation and titles,
+      sync/deployed-guards iterating hero × seasons, the prior-page
+      forward link (dormant until a second season argument exists).
+      Visible immediately; every existing hero is the one-element case.
+   2. **Growth machinery** — the pure growth aggregation, the SEASON
+      OVER SEASON coda (dumbbell + stat line + table twin), the growth
+      claim kind + unshipped lexicon entry, `hero:report` GROWTH +
+      claim-headroom rows, fixture-driven component and guard tests.
+
+   Ace's flip PR (November) authors the first growth-sentence and
+   graduates the vocabulary — deliberately out of this feature's scope.
 2. **Hero scaffolding** — a generator that drafts heroConfig + a guard
    skeleton from `hero:report` output. Four manual adds have earned it,
    and it makes the mid-season Peterson born-live add (the ADR-0059
