@@ -1639,6 +1639,31 @@
     min-width: 0;
 }
 
+/* --- SEASON OVER SEASON (the growth coda, ADR-0061/0062) -------------------- */
+
+.growth-visual {
+    min-width: 0;
+}
+
+/* The prior-season permalink inside the coda's description: quiet inline
+   navigation in the caption's own gray (the hero-forward register). */
+.section-caption-desc a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.section-caption-desc a:hover,
+.section-caption-desc a:focus-visible {
+    color: var(--text-h);
+}
+
+/* The league line: the diet-gap axis's anchor (0 = his share equals the
+   league's), one stronger gridline — never a new palette (ADR-0062). */
+.growth-zeroline {
+    opacity: 0.55;
+}
+
 /* The season line: the act's two-number payoff (generation, share,
    conversion) as three league-compared rows — the stat coda that gives the
    generation story real weight under the value chart. Dense-UI line-height

@@ -70,10 +70,10 @@ describe('the ADR-0029 tripwire', () => {
   })
 
   it('the unshipped list guards the reserved scoring-attempt term (ADR-0029)', () => {
-    // Every MEASURED family has shipped; what remains unshipped is
-    // CONTEXT.md's reserved future vocabulary, forbidden regardless of
-    // claims until the scoring-attempt model ships. Future vocabulary with
-    // no shipped signal enters this list first, as the free-throw terms did.
+    // What remains unshipped: CONTEXT.md's reserved future vocabulary,
+    // forbidden regardless of claims until the scoring-attempt model ships,
+    // and the staged ADR-0061 growth terms. Future vocabulary with no
+    // shipped signal enters this list first, as the free-throw terms did.
     expect(unshippedTermsIn('free throws, fouls, trips to the line, and-one, the line')).toEqual([])
     expect(unshippedTermsIn('a scoring attempt is the widened denominator')).toEqual([
       'scoring attempt',
@@ -81,6 +81,26 @@ describe('the ADR-0029 tripwire', () => {
     expect(unshippedTermsIn('his scoring attempts outnumber his shots')).toEqual([
       'scoring attempt',
     ])
+  })
+
+  it('growth vocabulary is staged unshipped until the first growth-sentence ships (ADR-0061)', () => {
+    // The stems catch the family: growth/grew/improved/regressed and every
+    // cross-season season reference are growth claims by nature, and no
+    // hero has a rendered growth coda to back them yet. The flip PR that
+    // authors the first growth-sentence moves these to a backed lexicon
+    // licensed by GrowthClaim declarations — the free-throw path.
+    expect(unshippedTermsIn('his diet improved over his rookie season')).toEqual([
+      'improve',
+      'rookie season',
+    ])
+    expect(unshippedTermsIn('the mid-range share grew; real growth')).toEqual(['grow', 'grew'])
+    expect(unshippedTermsIn('he regressed from last season')).toEqual([
+      'regress',
+      'last season',
+    ])
+    // Near-misses stay legal: 'improvise' does not contain 'improve', and
+    // single-season 'this season' phrasing is ordinary verdict language.
+    expect(unshippedTermsIn('he improvises late in the clock this season')).toEqual([])
   })
 
   it('phrase forms keep near-miss words legal', () => {

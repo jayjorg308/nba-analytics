@@ -426,11 +426,11 @@ describe('HeroPage failure states', () => {
   })
 })
 
-describe('season arguments (ADR-0060)', () => {
+describe('season arguments (ADR-0060) and the growth coda (ADR-0061/0062)', () => {
   // A two-season fixture hero: the golden-backed copy behind both seasons,
   // canonical on the later one — the shape Ace's flip PR will create. The
   // config is fixture COPY; the payloads behind both seasons' fetches stay
-  // the real goldens.
+  // the real goldens (the prior clone differs only in its season label).
   const priorSeason = {
     ...seasonConfig,
     season: '2024-25',
@@ -440,8 +440,31 @@ describe('season arguments (ADR-0060)', () => {
     ...hero,
     seasons: [priorSeason, seasonConfig],
   }
+  const priorGoldenJson = structuredClone(goldenJson)
+  ;(priorGoldenJson._meta as { season: string }).season = '2024-25'
 
-  it('a prior season argument carries the structural forward link', async () => {
+  /** The canonical render of a two-season hero fetches FIVE payloads
+   * (ADR-0061): its own four plus the prior season's shot payload. */
+  function stubFetchTwoSeasons(prior: unknown = priorGoldenJson) {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: unknown) => {
+        const value = String(url)
+        const json = value.endsWith('.creation.json')
+          ? creationGoldenJson
+          : value.endsWith('.context.json')
+            ? contextGoldenJson
+            : value.endsWith('.freethrow.json')
+              ? freethrowGoldenJson
+              : value.endsWith('/2024-25.json')
+                ? prior
+                : goldenJson
+        return { ok: true, status: 200, json: async () => json }
+      }),
+    )
+  }
+
+  it('a prior season argument carries the forward link and no coda (frozen page)', async () => {
     stubFetch({ ok: true, json: goldenJson })
     render(<HeroPage hero={twoSeasonHero} seasonConfig={priorSeason} />)
     await screen.findByText(hero.thesis)
@@ -453,13 +476,47 @@ describe('season arguments (ADR-0060)', () => {
     // navigation under the byline, never a hedge on the verdict.
     const forward = screen.getByRole('link', { name: `His ${hero.canonicalSeason} season →` })
     expect(forward.getAttribute('href')).toBe(`/${hero.slug}`)
+    // The coda belongs to the canonical page alone (ADR-0061).
+    expect(screen.queryByText('SEASON OVER SEASON')).toBeNull()
   })
 
-  it('the canonical season renders without a forward link', async () => {
-    stubFetch({ ok: true, json: goldenJson })
+  it('the canonical season renders the coda: chart, spine, table twin, prior link', async () => {
+    stubFetchTwoSeasons()
     render(<HeroPage hero={twoSeasonHero} seasonConfig={seasonConfig} />)
     await screen.findByText(hero.thesis)
+
+    // No forward link on the canonical page …
     expect(screen.queryByText(/season →/)).toBeNull()
+    // … the coda instead: the shared header recipe WITHOUT an act number —
+    // the acts stay cuts of one season (ADR-0051), so the kicker count
+    // stays four.
+    screen.getByRole('heading', { name: 'SEASON OVER SEASON' })
+    expect(document.querySelectorAll('.section-kicker')).toHaveLength(4)
+    // The description names both seasons and links the prior permalink.
+    const priorLink = screen.getByRole('link', { name: '2024-25' })
+    expect(priorLink.getAttribute('href')).toBe(`/${hero.slug}/2024-25`)
+    // The season-pair diet dumbbell, the spine stat line, and the data twin.
+    screen.getByRole('img', { name: /Season over season shot diet/ })
+    screen.getByLabelText('Two-axis movement, each season vs its own league')
+    screen.getByRole('table', { name: /Season over season by zone/ })
+    // Golden vs golden: the movement figures subtract as displayed to zero
+    // (formatSignedGap over the displayed anchors — ADR-0023).
+    expect(screen.getAllByText(/moved \+0\.00/)).toHaveLength(2)
+  })
+
+  it('a single-season hero renders no coda', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
+    await screen.findByText(hero.thesis)
+    expect(screen.queryByText('SEASON OVER SEASON')).toBeNull()
+  })
+
+  it('a prior payload naming a different player fails the page plainly', async () => {
+    const wrongPlayer = structuredClone(priorGoldenJson)
+    ;(wrongPlayer._meta as { player: string }).player = 'Different Player'
+    stubFetchTwoSeasons(wrongPlayer)
+    render(<HeroPage hero={twoSeasonHero} seasonConfig={seasonConfig} />)
+    await screen.findByText(/Payloads contradict: growth inputs name different players/)
   })
 })
 

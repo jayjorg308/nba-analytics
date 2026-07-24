@@ -16,6 +16,7 @@ import {
   aggregateFreethrowMetrics,
   type FreethrowMetrics,
 } from '../domain/aggregateFreethrow'
+import type { GrowthMetrics } from '../domain/aggregateGrowth'
 import type { CreationPayload } from '../domain/creationPayload'
 import { LONG_TWO_BAND } from '../domain/constants'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
@@ -45,6 +46,9 @@ export function renderClaimHeadroom(
   shot: DerivedPayload,
   creation: CreationPayload | null,
   freethrow: FreethrowPayload | null,
+  /** The growth aggregation over a prior argued season (ADR-0061), when the
+   * report resolved one — growth-sentences are authored with headroom too. */
+  growth: GrowthMetrics | null = null,
 ): string {
   const m: ShotMetrics = aggregateShotMetrics(shot.shots, shot.zoneBaseline)
   const lines: string[] = []
@@ -118,6 +122,29 @@ export function renderClaimHeadroom(
     }
     if (f.seasonLine.smallSampleConversion) {
       lines.push('  † season conversion is under the sample bar — flag any conversion claim')
+    }
+  }
+
+  if (growth) {
+    lines.push(
+      '',
+      `  GROWTH MOVEMENT (ADR-0061) — ${growth.priorSeason} → ${growth.currentSeason}; ` +
+        'spine movement vs the PPS bars, diet-gap movement in share points',
+    )
+    const spine: [string, number | null, number | null][] = [
+      ['selection Δ movement', growth.spine.prior.selectionDelta, growth.spine.current.selectionDelta],
+      ['making Δ movement', growth.spine.prior.makingPpsDelta, growth.spine.current.makingPpsDelta],
+    ]
+    for (const [label, prior, current] of spine) {
+      if (prior === null || current === null) continue
+      lines.push(line(label, current - prior))
+    }
+    for (const z of growth.zones) {
+      if (z.prior.dietGap === null || z.current.dietGap === null) continue
+      const moved = (z.current.dietGap - z.prior.dietGap) * 100
+      lines.push(
+        `  ${`${z.zone} diet gap`.padEnd(42)}${`${sign(moved, 1)} pp`.padStart(11)}`,
+      )
     }
   }
 

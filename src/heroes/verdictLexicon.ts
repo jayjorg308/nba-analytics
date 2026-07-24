@@ -15,19 +15,43 @@
 
 import type { CreationMetrics } from '../domain/aggregateCreation'
 import type { FreethrowMetrics } from '../domain/aggregateFreethrow'
+import type { GrowthMetrics } from '../domain/aggregateGrowth'
 import type { ShotContextMetrics } from '../domain/aggregateShotContext'
+
+/** Growth vocabulary (ADR-0061): staged UNSHIPPED until the first authored
+ * growth-sentence ships (the first flip PR with a prior argued season) —
+ * then these terms MOVE to a backed growth lexicon licensed by GrowthClaim
+ * declarations, the free-throw graduation path (ADR-0053/0056, third use).
+ * Stems on purpose: 'grow' covers growth/grows/growing/grown, 'improve'
+ * covers improved/improvement ('improvise' shares no substring), 'regress'
+ * covers regressed/regression. The season-reference phrases are growth
+ * vocabulary too: a single-season verdict has no business invoking another
+ * season. */
+export const GROWTH_TERMS = [
+  'grow',
+  'grew',
+  'improve',
+  'regress',
+  'last season',
+  'rookie season',
+  'rookie year',
+  'sophomore',
+  'year two',
+  'year-two',
+  'season over season',
+  'season-over-season',
+] as const
 
 /** Vocabulary with no shipped data behind it — forbidden in any verdict
  * regardless of claims, until its family ships (then it MOVES to a backed
  * lexicon, never just gets deleted). The defender-distance terms moved out
  * in v2.1, 'assisted' in v2.5, and the v2.6 free-throw terms graduated to
- * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056) — every
- * MEASURED family has now shipped. What remains is reserved future
- * vocabulary: CONTEXT.md's 'scoring attempt' may appear on no product
- * surface until the widened decomposition that prices trips into the
- * attempt denominator actually ships (the ADR-0053 destination), so the
- * tripwire holds it regardless of claims. */
-export const UNSHIPPED_TERMS = ['scoring attempt'] as const
+ * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056). What
+ * remains: CONTEXT.md's reserved 'scoring attempt' (no product surface may
+ * use it until the widened decomposition ships — the ADR-0053 destination),
+ * and the ADR-0061 growth terms, staged here until the first hero ships a
+ * growth-sentence over a rendered growth coda. */
+export const UNSHIPPED_TERMS = ['scoring attempt', ...GROWTH_TERMS] as const
 
 /** Free-throw vocabulary (v2.6, THE LINE — ADR-0053/0056): legal only when
  * the hero's guard declares at least one free-throw claim asserted against
@@ -108,6 +132,18 @@ export interface AssistClaim {
 export interface FreethrowClaim {
   name: string
   assert: (freethrow: FreethrowMetrics) => void
+}
+
+/** A growth claim (ADR-0061): assertions consume BOTH seasons' deployed
+ * payloads via the growth aggregation and assert the MOVEMENT itself —
+ * never two static per-season facts a reader must subtract (ADR-0023's
+ * lesson: two true anchors can bracket a false movement as displayed).
+ * Canonical verdict only; the prior season's verdict stays frozen verbatim.
+ * Declaring these will license the GROWTH_TERMS vocabulary once it
+ * graduates from the unshipped list at the first authored growth-sentence. */
+export interface GrowthClaim {
+  name: string
+  assert: (growth: GrowthMetrics) => void
 }
 
 function termsIn(verdict: string, terms: readonly string[]): string[] {
