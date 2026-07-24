@@ -31,7 +31,8 @@ export interface HeroSeasonConfig {
   /** The banner eyebrow — season-owned copy (it embeds the season string). */
   kicker: string
   /** The verdict (ADR-0017): AUTHORED COPY, kept honest by the colocated
-   * <slug>.guard.test.ts — when the data moves, rewrite both together. */
+   * <slug>.<season>.guard.test.ts (one guard file per season argument,
+   * ADR-0063) — when the data moves, rewrite both together. */
   verdict: string
 }
 

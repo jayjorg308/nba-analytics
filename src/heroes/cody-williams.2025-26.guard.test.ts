@@ -1,6 +1,7 @@
 // The committed verdict guard (ADR-0017), colocated with the hero copy it
-// keeps honest — the guard file is part of the hero (ADR-0022): a new hero
-// means a new <slug>.guard.test.ts beside its config module. Every
+// keeps honest — the guard file is part of the season argument (ADR-0022/
+// 0060/0063): a new season argument means a new <slug>.<season>.guard.test.ts
+// beside its hero's config module. Every
 // directional claim the verdict makes is asserted here against the DEPLOYED
 // payload's metrics, so a hero:sync that breaks a claim breaks the build.
 // The fix is always to rewrite the copy (and this claim mapping with it) —
@@ -37,6 +38,7 @@ import { ZONE_POINT_VALUE } from '../domain/constants'
 import { parseCreationPayload } from '../domain/creationPayload'
 import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import { parseDerivedPayload } from '../domain/payload'
+import { authoringProblems } from './authoring'
 import { codyWilliams as hero } from './cody-williams'
 import { seasonArgumentOf } from './types'
 import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
@@ -245,3 +247,11 @@ describe.skipIf(
   })
   },
 )
+
+// The authoring tripwire (ADR-0063): deliberately OUTSIDE the payload
+// skipIf — no data needed, so it holds on clean clones and CI alike.
+describe('authoring completeness (ADR-0063)', () => {
+  it('no scaffold sentinel remains and referenced banner assets exist', () => {
+    expect(authoringProblems(hero, seasonConfig)).toEqual([])
+  })
+})

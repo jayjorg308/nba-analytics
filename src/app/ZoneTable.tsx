@@ -28,7 +28,7 @@ function ZoneRow({ row, child = false }: { row: ZoneMetricsRow; child?: boolean 
         {row.zone === 'Restricted Area' && (
           // The long-two note's mirror: a league value-hierarchy fact, not
           // hero copy — asserted against the deployed payload by the table
-          // claim in verdict.guard.test.ts.
+          // claim in cody-williams.2025-26.guard.test.ts.
           <span className="band-note">highest-value shot</span>
         )}
       </th>

@@ -2,7 +2,7 @@
 // selection is the problem while making is roughly league (Cody's inverse;
 // George's cousin with the axes swapped and the line inverted). Everything
 // here is authored hero copy (ADR-0017/0021); the colocated
-// ace-bailey.guard.test.ts holds the verdict's directional claims to the
+// ace-bailey.2025-26.guard.test.ts holds the verdict's directional claims to the
 // deployed payloads. His 2025-26 is also the first hero-season with a
 // nonzero tracking shortfall (8 attempts across two documented outage games
 // — ADR-0030 as amended), reported in the creation act's notes.
@@ -38,7 +38,7 @@ export const aceBailey: HeroConfig = {
       kicker: 'Ace Bailey · Utah Jazz · Nº 19 · 2025-26',
       // The verdict (ADR-0017): the answer before the evidence. AUTHORED
       // COPY — when the data moves, rewrite this; the committed guard
-      // (./ace-bailey.guard.test.ts) fails if any directional claim stops
+      // (./ace-bailey.2025-26.guard.test.ts) fails if any directional claim stops
       // matching the deployed payloads. The third sentence is the v2 WHY
       // (ADR-0029): creation vocabulary, licensed by the guard's
       // creation-kind claims. The closing sentence is the LINE sentence

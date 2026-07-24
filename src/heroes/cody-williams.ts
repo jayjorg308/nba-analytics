@@ -1,6 +1,6 @@
 // Cody Williams — the launch hero. Everything here is authored hero copy
-// (ADR-0017/0021); the colocated cody-williams.guard.test.ts holds the
-// verdict's directional claims to the deployed payload's metrics.
+// (ADR-0017/0021); the colocated cody-williams.2025-26.guard.test.ts holds
+// the verdict's directional claims to the deployed payload's metrics.
 
 import type { HeroConfig } from './types'
 
@@ -36,7 +36,7 @@ export const codyWilliams: HeroConfig = {
       kicker: 'Cody Williams · Utah Jazz · Nº 5 · 2025-26',
       // The verdict (ADR-0017): the answer before the evidence. AUTHORED
       // COPY — when the data moves, rewrite this; the committed guard
-      // (./cody-williams.guard.test.ts) fails if any directional claim
+      // (./cody-williams.2025-26.guard.test.ts) fails if any directional claim
       // stops matching the deployed payloads. The fourth sentence is the v2
       // WHY (ADR-0029): creation vocabulary, licensed by the guard's
       // creation-kind claims against the deployed creation payload. The
