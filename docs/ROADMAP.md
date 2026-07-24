@@ -16,7 +16,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
 | v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
-| Season-over-season | 📐 designed 2026-07-23 (ADRs 0060–0062): two-PR build next, before Ace's flip |
+| Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip |
 
 > **Directory-less by choice (confirmed 2026-07-16):** Cody Williams,
 > Keyonte George, and the Shai Gilgeous-Alexander positive-control profile are
@@ -519,10 +519,28 @@ firing for real.
       sync/deployed-guards iterating hero × seasons, the prior-page
       forward link (dormant until a second season argument exists).
       Visible immediately; every existing hero is the one-element case.
+      _Done 2026-07-23. Guards select their season argument explicitly
+      (`seasonArgumentOf`), so a flip can never silently repoint frozen
+      claims; a registry coherence test locks the seasons[] invariants
+      (unique, ordered, canonical present). Gate green (pytest 88,
+      vitest 328); permalink, alias, and unknown-season fallback
+      browser-verified._
    2. **Growth machinery** — the pure growth aggregation, the SEASON
       OVER SEASON coda (dumbbell + stat line + table twin), the growth
       claim kind + unshipped lexicon entry, `hero:report` GROWTH +
       claim-headroom rows, fixture-driven component and guard tests.
+      _Done 2026-07-23. aggregateGrowthMetrics is the fifth pure
+      aggregation, with loud identity gates (same player, chronological
+      seasons); the coda fetches only the prior shot payload (five
+      payloads on a canonical two-season page); the dumbbell dot classes
+      carry their documented second meaning (emphasis = current season);
+      movement figures subtract as displayed (formatSignedGap,
+      ADR-0023). Growth vocabulary staged in the unshipped lexicon;
+      GrowthClaim defined for the flip PR's graduation. Proven dark:
+      aggregation unit tests, the five-payload coda render + the
+      contradiction path over fixtures, and a golden-fixture
+      `hero:report --prior-file` smoke run. Gate green: pytest 88,
+      vitest 337, lint, build._
 
    Ace's flip PR (November) authors the first growth-sentence and
    graduates the vocabulary — deliberately out of this feature's scope.
