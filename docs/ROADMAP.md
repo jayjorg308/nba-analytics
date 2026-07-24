@@ -556,6 +556,29 @@ firing for real.
    skeleton from `hero:report` output. Four manual adds have earned it,
    and it makes the mid-season Peterson born-live add (the ADR-0059
    stretch) nearly free at the moment it is most valuable.
+   _Designed 2026-07-23 (grilling + domain-modeling session; ADR-0063,
+   new CONTEXT.md terms: season-argument scaffold, authoring tripwire).
+   The decisions, locked: the scaffold unit is the SEASON ARGUMENT
+   (`npm run hero:scaffold -- <slug> <season>` — a new hero module when
+   absent, a seasons[] append when present; flip-PR bookkeeping stays
+   human). Mechanical fields get real values — the player name from the
+   payload's `_meta`, the thesis formula, the conventional banner path,
+   an eager registry entry — and every authored field is a
+   `TODO(scaffold)` sentinel: the tool drafts no verdict prose, no
+   claim thresholds, no crop judgment, ever (ADR-0017's boundary,
+   extended; claim headroom stays an authoring input only). The guard
+   skeleton is structure only and lands as a per-season guard file
+   (`<slug>.<season>.guard.test.ts`; the four existing guards migrate
+   by rename, making ADR-0060's frozen-argument discipline physical).
+   An authoring tripwire — one shared pure helper, adopted by every
+   guard, running outside the payload skipIf — holds the repo red until
+   every sentinel is replaced and every referenced banner asset exists,
+   closing the previously unguarded broken-banner hole. Preconditions
+   hard-fail (all four derived payloads must resolve); nothing existing
+   is ever overwritten, no force flag. Tested as a pure emit core in
+   `src/scaffold/` with structural unit tests plus a temp-dir
+   dynamic-import integration test; deliberately no byte-golden — the
+   repo gate verifies every real scaffold. Build not started._
 3. **Archetype-adjusted selection** — deferred from v1 (CONTEXT.md, Selection
    benchmark). The first item that changes the comparison class, so it
    supersedes ADR-0002 deliberately or not at all. Hardest; last on purpose.

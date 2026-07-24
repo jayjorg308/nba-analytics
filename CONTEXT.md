@@ -117,6 +117,12 @@ The season a hero's `/<slug>` alias renders — the hero's current argument. Rec
 **Season permalink**:
 The stable per-season URL `/<slug>/<season>`, existing from the day its season argument ships and never changing meaning afterward. `/<slug>` is the **canonical alias**: it renders the canonical season in place (never a redirect), and the flip moves which season that is (ADR-0060).
 
+**Season-argument scaffold**:
+The generated starting state of a season argument (`npm run hero:scaffold -- <slug> <season>`, ADR-0063): mechanical fields real (the slug, the player name read from the shot payload's `_meta`, the verbatim thesis, the conventional banner path, the registry entry — a new hero module when absent, a `seasons[]` append when present), every authored field a `TODO(scaffold)` sentinel, and the season's guard file as structure only — empty claim arrays, no thresholds, nothing read from the payloads. Scaffolding removes transcription, never authorship: it drafts no verdict prose, no claim, no crop judgment (ADR-0017's boundary, extended). It hard-fails unless all four derived payloads resolve, never overwrites anything that exists, and leaves flip-PR bookkeeping (the canonical move, `season.config.json`, vocabulary graduation) human.
+
+**Authoring tripwire**:
+The guard test that keeps a scaffold unmergeable until authored (ADR-0063): one shared pure helper asserts that no `TODO(scaffold)` sentinel remains in any authored field and that every referenced banner asset exists on disk. It runs on clean clones (outside the payload `skipIf`) in every hero's guard — so an unauthored season argument, a forgotten photo, or a mistyped image path is a red suite, never a shipped page.
+
 **v2 thesis**:
 "How does he create his shots?" — the second act, shipped: Case 2 creation contexts at the bucket grain, three families (see Context family; ADR-0030 plus the v2.1 defender fast-follow). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
 
