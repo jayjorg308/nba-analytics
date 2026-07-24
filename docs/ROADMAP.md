@@ -607,6 +607,19 @@ firing for real.
    Also the first item with any claim to a derive-side analytical index (see
    the not-to-do list's database line).
 
+   _Explored 2026-07-24 (throwaway prototype; ADR-0064) — resolved "not at all,"
+   for now. Archetype adjustment is a role-normalization: it moves the selection
+   scalar ~0 for a value-neutral diet (Cody +0.007 → +0.011) and materially only
+   for role-mispriced diets — UP for high-usage creators (SGA −0.054 → −0.005),
+   DOWN for rim-runners (Gafford +0.158 → +0.087) — i.e. exactly where it would
+   soften the sharpest current verdicts (SGA's negative selection is the hook of
+   his page; grading it on a curve deletes it). The selection axis stays absolute
+   (ADR-0002 reaffirmed): its role-blindness is what lets making + the line do
+   their work. Revisit only for a genuinely role-mispriced hero (a rim-running
+   big, a pure spot-up shooter) and then only as a secondary toggle, never
+   replacing the authored league-benchmark number. The league-scale role corpus
+   and derive-side index stay unbuilt until that case exists._
+
 ---
 
 ## The standing not-to-do list
