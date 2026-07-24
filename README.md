@@ -80,6 +80,8 @@ npm run hero:sync -- <player-slug> 2025-26
 
 `hero:report` prints the computed selection, making, creation-context, assisted-make, and free-throw (LINE) story, closing with a claim-headroom section that states every verdict-grade gap against the house threshold bars, before hero copy is written or changed. `hero:sync` is the explicit, reviewable step that requires and copies all four latest derived contracts to `public/data/<player-slug>/`: the shot payload, `.creation.json`, `.context.json`, and `.freethrow.json`; a partial sync fails. With no arguments it syncs every registered hero. The browser fetches and Zod-validates those committed files; it never contacts the NBA API.
 
+For a brand-new hero, or a new season argument on an existing one, `npm run hero:scaffold -- <player-slug> <season>` generates the mechanical skeleton first: the hero config module (created, or its season list appended), the per-season verdict-guard skeleton, and the registry entry, with the player name read from the derived payload and every authored field left as a `TODO(scaffold)` placeholder. A committed authoring tripwire keeps the test suite red until all placeholders are replaced and the banner asset exists, so a half-finished hero can never merge. The tool drafts structure, never judgment: verdict prose, claim thresholds, and image crops are always written by a person.
+
 ### Living seasons
 
 `season.config.json` designates live hero-seasons and carries the tracking-shortfall registry (characterized NBA tracking outages, pinned per game). The season loop (`npm run season:update`, scheduled daily through `scripts/season-update.ps1`) publishes only at the **reconciled frontier**: the latest game date at which every source is exactly coherent. Play-by-play availability fixes the candidate; the cumulative sources are pulled with that date as their ceiling; a tracking gap the pin registry does not explain retreats the frontier (upstream lag defers, it never fails), while a contradiction halts for a human. On green days the loop lands a data-only commit whose message carries the session report; any red morning, including a verdict guard broken by the night's games, halts the publish until a human rewrites copy and claim mapping together. A pre-flip season runs dark: derive and report daily, publish nothing, until all five eligibility gates pass and the flip ships as an authored, reviewed PR.
@@ -103,7 +105,8 @@ Deep hero URLs are served through the rewrite in `vercel.json`, which sends any 
 The multi-hero shape is one deployment containing:
 
 - `/` - the directory of hero poster tiles, read straight off the registry;
-- `/<player-slug>` - one complete question, verdict, and evidence page per player.
+- `/<player-slug>` - the canonical alias: the hero's current argument, rendered in place;
+- `/<player-slug>/<season>` - a stable permalink for every argued season. A hero is a directory of season arguments; a live flip moves which season the alias renders and freezes the prior argument verbatim at its permalink.
 
 Unknown paths render the directory with a quiet note. Cross-hero navigation is the tiles plus each hero page's "All players" footer link, both plain anchors; there is deliberately no player switcher.
 
@@ -126,7 +129,7 @@ npm run build
 python -m pytest ingestion -q
 ```
 
-The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-hero verdict guards, display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
+The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing banner asset can merge), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
 
 ## Roadmap
 
@@ -134,7 +137,7 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **v3: living seasons** is built and its machinery is proven (2026-07-23). It added Ace Bailey as the fourth hero (whose season surfaced the first characterized hero-side tracking outages, now handled exact-or-reported with per-game pins), the reconciled-frontier contract in all four payloads' metadata, the restored hero directory, the season loop with automated data-only commits gated on the full test suite, and the replay proof: the production loop driven over seven historical frontier dates against a completed season, reproducing the committed deployment byte-for-byte modulo provenance and firing the flip signal on exactly the right day. Activation for 2026-27 is a configuration change; until opening night the loop runs dark against the unstarted season.
 
-Beyond v3, in priority order: **season-over-season stories** (deliberately before Ace's live flip, so his rookie-season argument survives being replaced by the living one), **hero scaffolding** generated from `hero:report` output, and eventually **archetype-adjusted selection** benchmarks.
+**Season-over-season** is built (2026-07-23): the hero-season is now the page unit, every argued season keeps a stable permalink with the hero URL as its canonical alias, and the SEASON OVER SEASON growth coda — movement in the vs-league residuals, each season measured against its own league — ships dark until Ace's flip lights the first instance. **Hero scaffolding** is built (2026-07-23): a season argument's mechanical skeleton is one command, held unmergeable by the authoring tripwire until a person writes the copy. The remaining roadmap item is **archetype-adjusted selection** benchmarks.
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
@@ -143,5 +146,5 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checkli
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 59 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 63 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.

@@ -36,6 +36,7 @@ import { parseCreationPayload } from '../domain/creationPayload'
 import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import { parseDerivedPayload } from '../domain/payload'
 import { aceBailey as hero } from './ace-bailey'
+import { authoringProblems } from './authoring'
 import { seasonArgumentOf } from './types'
 import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
 import {
@@ -228,5 +229,13 @@ describe.skipIf(
     expect(unbackedFreethrowTerms(seasonConfig.verdict, freethrowClaims.length)).toEqual([])
     expect(unbackedAssistTerms(seasonConfig.verdict, 0)).toEqual([])
     expect(invalidAssistInterpretationsIn(seasonConfig.verdict)).toEqual([])
+  })
+})
+
+// The authoring tripwire (ADR-0063): deliberately OUTSIDE the payload
+// skipIf — no data needed, so it holds on clean clones and CI alike.
+describe('authoring completeness (ADR-0063)', () => {
+  it('no scaffold sentinel remains and referenced banner assets exist', () => {
+    expect(authoringProblems(hero, seasonConfig)).toEqual([])
   })
 })

@@ -27,6 +27,10 @@ venv/
 # Anchored to the repo root: public/data/ (the synced deployment payload) IS committed.
 /data/
 
+# Scaffold integration-test temp dirs (src/scaffold/scaffold.integration.test.ts
+# cleans up after itself; this catches crashed runs)
+/tests/scaffold-tmp-*/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

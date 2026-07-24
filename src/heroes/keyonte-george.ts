@@ -1,7 +1,7 @@
 // Keyonte George — the mirror-image second hero (selection costs him, making
 // bails him out — the opposite quadrant from Cody Williams). Everything here
 // is authored hero copy (ADR-0017/0021); the colocated
-// keyonte-george.guard.test.ts holds the verdict's directional claims to the
+// keyonte-george.2025-26.guard.test.ts holds the verdict's directional claims to the
 // deployed payload's metrics. Verdict carried over from the retired
 // hero/keyonte-george deployment branch, where it was authored and guarded.
 
@@ -31,7 +31,7 @@ export const keyonteGeorge: HeroConfig = {
       kicker: 'Keyonte George · Utah Jazz · Nº 3 · 2025-26',
       // The verdict (ADR-0017): the answer before the evidence. AUTHORED
       // COPY — when the data moves, rewrite this; the committed guard
-      // (./keyonte-george.guard.test.ts) fails if any directional claim
+      // (./keyonte-george.2025-26.guard.test.ts) fails if any directional claim
       // stops matching the deployed payloads. The fourth sentence is the v2
       // WHY (ADR-0029): creation vocabulary, licensed by the guard's
       // creation-kind claims against the deployed creation payload. The
