@@ -148,3 +148,11 @@ Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
 - [docs/adr/](docs/adr/) contains the 64 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
+
+## License
+
+Copyright © 2026 Jayson Jorgensen. All rights reserved.
+
+This repository is public so the method can be read and the arguments checked. It is not open source: no permission is granted to copy, modify, or redistribute the code, the derived payloads, or the authored analysis. If you want to build on it, ask.
+
+Player photographs, headshots, and team marks are the property of their respective owners and appear here for non-commercial illustrative purposes.
