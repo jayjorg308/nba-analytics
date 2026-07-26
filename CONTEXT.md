@@ -2,7 +2,7 @@
 
 An interactive, shareable web tool that analyzes a single NBA player's shot selection. One "hero" player at a time, on a player-agnostic data/computation engine.
 
-_The repository is `nba-analytics`; the **product is Good Shots** (nbagoodshots.com). That is the name the navbar wordmark carries and the only name product copy should use — the repo name is engineering's, not the reader's._
+_The repository is `nba-analytics`; the **product is Good Shots** (nbagoodshots.com). That is the name the navbar wordmark carries and the only name product copy should use — the repo name is engineering's, not the reader's. Every naming surface carries the bare wordmark: the navbar, the browser tab (`<title>` and the directory's `document.title`), and the iOS home-screen label. Taglines live in the meta description and the manifest, never in the tab — a tab is a label, not a sentence. Hero pages are the one exception, replacing the title with their own subject (player · season · "shot selection"), because a reader with several heroes open needs to tell the tabs apart._
 
 _The driving question was originally phrased in two clauses — "is this player taking good shots, **and how are they creating them?**" It was deliberately narrowed: v1 answers only the first clause. "How are they created" needs deferred Case 2/3 data and is promoted to an explicit v2 thesis (see below and ADR-0005). This note exists so the original wide phrasing isn't mistaken for the mandate._
 
