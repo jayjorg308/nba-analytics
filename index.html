@@ -2,14 +2,23 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <!-- iOS ignores the manifest icons and uses this one for the home
+         screen; Android reads android-chrome-* out of the manifest. -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#16171d" />
+        <meta name="apple-mobile-web-app-title" content="Good Shots" />
         <!-- The static title and description are what non-JS readers see:
-         crawlers, link unfurlers, and the tab during load. The app refines
-         the title per page on mount (the hero page names its player and
-         season); this is the product's name, never the repo's (CONTEXT.md). -->
-        <title>Good Shots · one player at a time</title>
+         crawlers, link unfurlers, and the tab during load. The title is the
+         bare wordmark — the tagline lives in the description only, so the tab
+         reads as a name and not a sentence. The app refines the title per page
+         on mount (the hero page names its player and season); this is the
+         product's name, never the repo's (CONTEXT.md). -->
+        <title>Good Shots</title>
         <meta
             name="description"
             content="One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after."

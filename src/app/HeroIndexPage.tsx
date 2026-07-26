@@ -15,7 +15,7 @@ import { SiteNav } from './SiteNav'
 
 export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
   useEffect(() => {
-    document.title = 'Good Shots · one player at a time'
+    document.title = 'Good Shots'
   }, [])
 
   const featured = HEROES[0]!
