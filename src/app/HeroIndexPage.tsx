@@ -3,6 +3,7 @@ import { HEROES } from '../heroes/registry'
 import { indexMetaOf } from '../heroes/types'
 import { headshotUrl, heroPageUrl } from '../heroes/urls'
 import { SiteNav } from './SiteNav'
+import { SocialLinks } from './SocialLinks'
 
 // The hero index (ADR-0022/0065): a directory of arguments, deliberately not
 // a switcher (ADR-0018). The directory shows WHO is on file — the first
@@ -65,8 +66,11 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
           </ul>
         </section>
       )}
+      {/* The sign-off keeps the tagline's voice; the social row is the
+          site's only outward chrome (never the navbar — ADR-0065). */}
       <footer className="index-footer">
         <p>One question per player · verdict first, evidence after</p>
+        <SocialLinks />
       </footer>
     </main>
   )

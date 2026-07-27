@@ -548,11 +548,56 @@
 
 .index-footer {
     margin-top: auto;
-    padding: 40px 32px 48px;
+    padding: 32px 32px 40px;
     border-top: 1px solid var(--border);
     font-size: 12px;
     letter-spacing: 0.06em;
     color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px 32px;
+}
+
+.index-footer p {
+    margin: 0;
+}
+
+/* The social row: quiet ringed icon targets in the footer's own gray,
+   warming to white on hover/focus like every reference link. The ring is
+   what makes a 20px glyph a real 44px target — tap size without shouting. */
+.footer-social {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    transition:
+        color 150ms ease,
+        border-color 150ms ease;
+}
+
+.footer-social a:hover,
+.footer-social a:focus-visible {
+    color: var(--text-h);
+    border-color: var(--text);
+}
+
+.footer-social svg {
+    width: 19px;
+    height: 19px;
+    display: block;
 }
 
 @media (max-width: 640px) {
@@ -576,8 +621,13 @@
         scroll-snap-align: start;
     }
 
+    /* Phones: the footer stacks — tagline as the sign-off line, the social
+       row beneath it on its own comfortable rank. */
     .index-footer {
         padding-inline: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
     }
 }
 
@@ -598,9 +648,6 @@
     align-items: center;
     padding: 12px 24px;
     text-align: left;
-    text-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.55),
-        0 2px 12px rgba(0, 0, 0, 0.4);
     background: transparent;
     border-bottom: 1px solid transparent;
     transition:
@@ -638,24 +685,50 @@
        both forms from the build targets. Guarded by SiteNav.builtCss.test.ts. */
     backdrop-filter: blur(14px);
     border-bottom-color: var(--border);
-    text-shadow: none;
 }
 
 .site-nav-brand {
     /* Above the ::before scrim (an absolutely-positioned pseudo-element
        paints over static in-flow content). */
     position: relative;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #fff;
-    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* The lockup's ink guarantee over the ungraded photo top is a drop-shadow
+   halo — the glyph-hugging equivalent of the retired text wordmark's
+   text-shadow (ADR-0025's recipe; the filter follows the PNG's alpha, never
+   its box). Scrolled, the solid ground takes over the guarantee and the mark
+   settles smaller: the poster state may announce, the reading state only
+   labels — the brand never competes with the marquee name or the banner h1
+   below it. */
+.site-nav-brand img {
+    display: block;
+    height: 30px;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
+        drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4));
+    transition:
+        height 200ms ease,
+        filter 200ms ease;
+}
+
+.site-nav-scrolled .site-nav-brand img {
+    height: 24px;
+    filter: none;
 }
 
 @media (max-width: 640px) {
     .site-nav {
         padding: 10px 16px;
+    }
+
+    .site-nav-brand img {
+        height: 26px;
+    }
+
+    .site-nav-scrolled .site-nav-brand img {
+        height: 22px;
     }
 }
 

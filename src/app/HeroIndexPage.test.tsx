@@ -7,15 +7,29 @@ import { HeroIndexPage } from './HeroIndexPage'
 
 afterEach(cleanup)
 
+// Non-hero links on the index: the navbar wordmark plus the footer's three
+// social links (Instagram, X, contact email).
+const CHROME_LINKS = 4
+
 describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
   it('marquees the first registered hero and rails the rest, all as plain links', () => {
     render(<HeroIndexPage />)
 
-    // Every registered hero links to its own page, plus the navbar wordmark
-    // home link — a directory of complete pages, never a switcher (ADR-0018).
+    // Every registered hero links to its own page, plus the site chrome:
+    // the navbar wordmark home link and the footer's three social links —
+    // a directory of complete pages, never a switcher (ADR-0018).
     const links = screen.getAllByRole('link')
-    expect(links).toHaveLength(HEROES.length + 1)
+    expect(links).toHaveLength(HEROES.length + CHROME_LINKS)
+    // The wordmark is now an image; its alt keeps the link's accessible
+    // name, so the way home still reads "Good Shots".
     screen.getByRole('link', { name: 'Good Shots' })
+    // The footer's outward links (footer only — the navbar stays a single
+    // plain anchor, ADR-0065).
+    screen.getByRole('link', { name: 'Instagram' })
+    screen.getByRole('link', { name: 'X (formerly Twitter)' })
+    expect(
+      screen.getByRole('link', { name: 'Email' }).getAttribute('href'),
+    ).toMatch(/^mailto:/)
 
     for (const [i, hero] of HEROES.entries()) {
       const link = links.find((a) => a.getAttribute('href') === `/${hero.slug}`)
@@ -50,7 +64,7 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
   it('states a registry miss plainly and still shows the directory', () => {
     render(<HeroIndexPage unknownPath="keyonte-george" />)
     screen.getByText(/No player lives at/)
-    expect(screen.getAllByRole('link')).toHaveLength(HEROES.length + 1)
+    expect(screen.getAllByRole('link')).toHaveLength(HEROES.length + CHROME_LINKS)
   })
 
   it('has no hero switcher: navigation is plain links only', () => {
