@@ -20,7 +20,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Hero scaffolding | ✅ built 2026-07-23 (ADR-0063): `hero:scaffold` emits the season-argument skeleton; the authoring tripwire holds the suite red until authored |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
-| Launch (August 2026) | 🔜 open — three items, all first-impression rather than engine work: the social card (no `og:`/`twitter:` meta; per-hero vs product-wide is a real decision), whether the directory should explain itself to a cold visitor, and the marquee's heading outline. See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark; per-hero cards stay the deliberate upgrade). Still open, both first-impression rather than engine work: whether the directory should explain itself to a cold visitor, and the marquee's heading outline. See [Launch (August 2026)](#launch-august-2026--open-items). |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -638,25 +638,26 @@ before anyone has clicked it. The plan is one or two heroes at launch (Cody
 Williams certainly, as the reason the tool exists), so these are judged at a
 small roster, the same lens the marquee layout was chosen under._
 
-1. **The social card** — the biggest gap, and the one the product's own
-   first sentence names: CONTEXT.md calls this "an interactive, shareable
-   web tool", and today a shared link is a bare URL. `index.html` carries
-   the title and description (set 2026-07-24) but **zero `og:` / `twitter:`
-   meta**, so Slack, iMessage, X, and LinkedIn unfurl nothing. The
-   deliberate hold: a card needs an image, and the image is branding work in
-   flight (the favicon lands with it).
+1. **The social card** — MVP shipped 2026-07-27: product-wide `og:` /
+   `twitter:` meta in `index.html` with a 1200×630 card
+   (`public/social-card.png`, the stacked wordmark on black, derived from
+   the branding asset `public/Good Shots-02.png`). `og:url` is deliberately
+   omitted: scrapers treat it as canonical, and a root value would collapse
+   a shared hero link back to the front page. The same change cache-busted
+   the icon links (`?v=2`) — Safari keeps showing a domain's old favicon
+   until the icon URL itself changes, which is why phones still showed the
+   Vite bolt after the new favicon set deployed.
 
-   Questions worth settling rather than defaulting: is the card image one
-   product-wide mark (simple, brand-forward, identical for every share) or
-   **per hero** (the hero's own poster or headshot with his name, so
-   sharing a player's argument previews that player)? Per-hero is the far
-   stronger share, and the assets already exist per hero — but a static
-   host serves one `index.html` for every route, so per-hero cards need
-   either build-time HTML generation per hero page or a prerender/meta
-   step at the edge. That is a real architectural decision (today the app
-   resolves the hero from the URL at runtime; see ADR-0022), so it wants a
-   deliberate answer, not an improvised one. A single product-wide card is
-   the honest MVP and does not block a per-hero upgrade later.
+   Still open, the deliberate upgrade: **per-hero cards** (the hero's own
+   poster or headshot with his name, so sharing a player's argument
+   previews that player). Per-hero is the far stronger share, and the
+   assets already exist per hero — but a static host serves one
+   `index.html` for every route, so per-hero cards need either build-time
+   HTML generation per hero page or a prerender/meta step at the edge.
+   That is a real architectural decision (today the app resolves the hero
+   from the URL at runtime; see ADR-0022), so it wants a deliberate
+   answer, not an improvised one. The product-wide card does not block
+   that upgrade.
 
 2. **The directory no longer explains itself** — a consequence of the
    marquee redesign worth taking a second look at, not a defect. The old

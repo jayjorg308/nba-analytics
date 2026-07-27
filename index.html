@@ -2,12 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <!-- The ?v=2 query busts per-site icon caches: Safari (iOS especially)
+         keeps showing a domain's old icon until the icon URL itself changes,
+         so devices that saw the Vite-template favicon hold it otherwise. Bump
+         the version on every icon redesign. -->
+        <link rel="icon" href="/favicon.ico?v=2" sizes="32x32" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
         <!-- iOS ignores the manifest icons and uses this one for the home
          screen; Android reads android-chrome-* out of the manifest. -->
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#16171d" />
@@ -22,6 +26,39 @@
         <meta
             name="description"
             content="One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after."
+        />
+        <!-- The social card (ROADMAP: Launch, item 1). One product-wide card
+         for every route: the static host serves this index.html for each hero
+         URL, so per-hero cards need build-time or edge-generated HTML and
+         remain a deliberate upgrade, not the default. og:url is omitted on
+         purpose — scrapers treat it as canonical, and a root og:url would
+         collapse a shared hero link back to the front page. -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Good Shots" />
+        <meta property="og:title" content="Good Shots" />
+        <meta
+            property="og:description"
+            content="One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after."
+        />
+        <meta
+            property="og:image"
+            content="https://www.nbagoodshots.com/social-card.png"
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+            property="og:image:alt"
+            content="Good Shots wordmark beside a basketball"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Good Shots" />
+        <meta
+            name="twitter:description"
+            content="One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after."
+        />
+        <meta
+            name="twitter:image"
+            content="https://www.nbagoodshots.com/social-card.png"
         />
     </head>
     <body>
