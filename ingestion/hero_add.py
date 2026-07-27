@@ -296,11 +296,14 @@ tripwire) until the judgment work is done:
      the hero:report output above — the CLAIM HEADROOM section is the
      authoring aid.
   3. Declare the claims in src/heroes/{slug}.{season}.guard.test.ts.
-  4. Optional team mark: land a transparent PNG at
+  4. npm run cards:generate — the share card was skipped above because its
+     eyebrow derives from the kicker; it generates once the kicker is
+     authored (the committed-card guard stays red until then).
+  5. Optional team mark: land a transparent PNG at
      public/img/<team>-logo.png, run
      python scripts/normalize_team_logo.py public/img/<team>-logo.png,
      and set teamLogoPath in the hero module.
-  5. npm test && npm run lint && npm run build
+  6. npm test && npm run lint && npm run build
 """)
 
 
