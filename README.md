@@ -4,7 +4,7 @@ An interactive NBA shot-quality essay that answers focused questions about one p
 
 Most shot charts lead with a scatter of makes and misses and leave the interpretation to the reader. nba-analytics leads with a guarded, plain-language verdict and then shows its work in four acts over one reconciled season of scoring: the where (a two-axis PPS decomposition, a zone-shaded court, per-zone details), the how (league-relative creation contexts), the credit (official assisted-make evidence), and the line (free throws at trip grain, priced against the floor). The page is structured as question → verdict → proof, not as a general-purpose stats dashboard.
 
-**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** the [hero directory](https://www.nbagoodshots.com/) at the root, with complete arguments for [Cody Williams](https://www.nbagoodshots.com/cody-williams) · [Keyonte George](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander](https://www.nbagoodshots.com/shai-gilgeous-alexander) · [Ace Bailey](https://www.nbagoodshots.com/ace-bailey) (all 2025-26)
+**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** the [hero directory](https://www.nbagoodshots.com/) at the root, with complete arguments for [Cody Williams](https://www.nbagoodshots.com/cody-williams) · [Keyonte George](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander](https://www.nbagoodshots.com/shai-gilgeous-alexander) · [Ace Bailey](https://www.nbagoodshots.com/ace-bailey) · [Donovan Mitchell](https://www.nbagoodshots.com/donovan-mitchell) (all 2025-26)
 
 Every page's byline states its season's reconciled frontier ("through Apr 12, 2026 · 72 games"), one form for completed and living seasons, so the verdict always reads as a statement about the season through a stated date.
 
@@ -57,30 +57,17 @@ stats.nba.com
   → static deployment at www.nbagoodshots.com
 ```
 
-Typical completed-season workflow:
+Adding a completed-season hero is one resumable command that runs the whole recipe — the raw pulls, the four derives, completing the shared play-by-play corpus (only the games it is missing), the config scaffold, the headshot and share-card assets, the deploy sync, and the closing authoring report:
 
 ```bash
-python ingestion/pull_shots.py --player "Name"
-python ingestion/pull_tracking.py --players "Name"
-python ingestion/pull_league_totals.py --season 2025-26
-python ingestion/derive_payload.py --player "Name" --season 2025-26
-python ingestion/derive_creation.py --player "Name" --season 2025-26
-
-# Uses the registered hero's deployed shot payload to enumerate its games;
-# for a hero with no deployed payload yet, pass --game-ids explicitly.
-python ingestion/pull_play_by_play.py --player-slugs <player-slug> --season 2025-26
-python ingestion/derive_shot_context.py \
-  --shot-payload-file data/derived/<player-slug>/2025-26/<pull-date>.json
-python ingestion/derive_freethrow.py \
-  --shot-payload-file data/derived/<player-slug>/2025-26/<pull-date>.json
-
-npm run hero:report -- <player-slug> 2025-26
-npm run hero:sync -- <player-slug> 2025-26
+npm run hero:add -- "Player Name" 2025-26
 ```
+
+Every step remains an explicit command underneath (the `ingestion/pull_*.py` and `ingestion/derive_*.py` scripts, `hero:scaffold`, `cards:generate`, `hero:sync`, `hero:report`) for partial reruns and the living-season tooling; a failed add is rerun with the same command and continues where it left off.
 
 `hero:report` prints the computed selection, making, creation-context, assisted-make, and free-throw (LINE) story, closing with a claim-headroom section that states every verdict-grade gap against the house threshold bars, before hero copy is written or changed. `hero:sync` is the explicit, reviewable step that requires and copies all four latest derived contracts to `public/data/<player-slug>/`: the shot payload, `.creation.json`, `.context.json`, and `.freethrow.json`; a partial sync fails. With no arguments it syncs every registered hero. The browser fetches and Zod-validates those committed files; it never contacts the NBA API.
 
-For a brand-new hero, or a new season argument on an existing one, `npm run hero:scaffold -- <player-slug> <season>` generates the mechanical skeleton first: the hero config module (created, or its season list appended), the per-season verdict-guard skeleton, and the registry entry, with the player name read from the derived payload and every authored field left as a `TODO(scaffold)` placeholder. A committed authoring tripwire keeps the test suite red until all placeholders are replaced and both image assets exist (the banner photo and the directory's headshot), so a half-finished hero can never merge. The tool drafts structure, never judgment: verdict prose, claim thresholds, and image crops are always written by a person.
+For a brand-new hero, or a new season argument on an existing one, `npm run hero:scaffold -- <player-slug> <season>` (run automatically inside `hero:add`) generates the mechanical skeleton first: the hero config module (created, or its season list appended), the per-season verdict-guard skeleton, and the registry entry, with the player name read from the derived payload and every authored field left as a `TODO(scaffold)` placeholder. A committed authoring tripwire keeps the test suite red until all placeholders are replaced and both image assets exist (the banner photo and the directory's headshot), so a half-finished hero can never merge. The tool drafts structure, never judgment: verdict prose, claim thresholds, and image crops are always written by a person.
 
 ### Living seasons
 
@@ -101,6 +88,8 @@ The asset guard requires a transparent 1024×1024 canvas with a consistently cen
 The project is a static React/Vite application deployed from the repository to Vercel and served at [www.nbagoodshots.com](https://www.nbagoodshots.com/). There is no production backend or database: the built app and its committed JSON payloads are the complete deployment.
 
 Deep hero URLs are served through the rewrite in `vercel.json`, which sends any path to `index.html`; the app then resolves the player slug from the URL against `src/heroes/registry.ts`. Navigation uses ordinary links and full page loads, so each hero remains a self-contained, shareable argument rather than view state in a player switcher. Vercel Analytics is included in the app.
+
+Shared links preview their player: the build's final step emits a real file at every hero route (the canonical alias and each season permalink) — a copy of the built page whose title, description, `og:`/`twitter:` card, and per-page `og:url` name that player over his generated 1200×630 share card (`public/social-cards/`, rendered by `npm run cards:generate` from the committed headshot, wordmark, and pinned fonts). Static files are served before the rewrite applies, so scrapers read hero meta while the app boots identically; the root keeps the product-wide wordmark card.
 
 The multi-hero shape is one deployment containing:
 
@@ -129,7 +118,7 @@ npm run build
 python -m pytest ingestion -q
 ```
 
-The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
+The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), the share-card guard (a committed 1200×630 card per registered hero, with the share-meta transform tested against the real `index.html`), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
 
 ## Roadmap
 
@@ -139,6 +128,8 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **Season-over-season** is built (2026-07-23): the hero-season is now the page unit, every argued season keeps a stable permalink with the hero URL as its canonical alias, and the SEASON OVER SEASON growth coda — movement in the vs-league residuals, each season measured against its own league — ships dark until Ace's flip lights the first instance. **Hero scaffolding** is built (2026-07-23): a season argument's mechanical skeleton is one command, held unmergeable by the authoring tripwire until a person writes the copy. **Archetype-adjusted selection** was explored and declined (2026-07-24, ADR-0064): a throwaway prototype showed it is a role-normalization that would soften the current roster's sharpest verdicts, so the selection axis stays benchmarked against the whole league (ADR-0002 reaffirmed). With that resolved, the planned roadmap is complete; the remaining work is operational: the 2026-27 activation and the first live flip.
 
+**Launch tooling** (2026-07-27): the standing add recipe became the one resumable `hero:add` command (ADR-0066), proven the same day by adding Donovan Mitchell as the fifth hero, and shared hero links gained per-hero social cards through build-time-emitted share pages (ADR-0067).
+
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
 ## Technology and project docs
@@ -146,7 +137,7 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checkli
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 64 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 67 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
 
 ## License

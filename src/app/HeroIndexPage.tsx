@@ -37,11 +37,14 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
         {/* Decorative: the adjacent text carries the name, so a repeated
             alt would double every screen-reader announcement. */}
         <img src={headshotUrl(featured)} alt="" />
-        <span className="index-marquee-text">
+        {/* A div, not a span: the featured name is a real heading (the
+            page's most important item must exist in the document outline —
+            ROADMAP launch item 3), and a heading needs a flow container. */}
+        <div className="index-marquee-text">
           <span className="index-meta">{indexMetaOf(featured)}</span>
-          <span className="index-marquee-name">{featured.playerName}</span>
+          <h2 className="index-marquee-name">{featured.playerName}</h2>
           <span className="index-cue">Is he taking good shots? → The verdict</span>
-        </span>
+        </div>
       </a>
       {/* The rail heading names its section via aria-labelledby (the house
           pattern): an aria-label beside a visible heading would give screen

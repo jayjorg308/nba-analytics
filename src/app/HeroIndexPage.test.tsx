@@ -31,6 +31,11 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
       screen.getByRole('link', { name: 'Email' }).getAttribute('href'),
     ).toMatch(/^mailto:/)
 
+    // The featured name is a real heading (ROADMAP launch item 3): heading
+    // navigation must reach the page's most important item, not skip from
+    // the hidden site h1 straight to the rail.
+    screen.getByRole('heading', { level: 2, name: HEROES[0]!.playerName })
+
     for (const [i, hero] of HEROES.entries()) {
       const link = links.find((a) => a.getAttribute('href') === `/${hero.slug}`)
       expect(link, hero.slug).toBeDefined()

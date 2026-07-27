@@ -128,6 +128,9 @@ The generated starting state of a season argument (`npm run hero:scaffold -- <sl
 **Authoring tripwire**:
 The guard test that keeps a scaffold unmergeable until authored (ADR-0063): one shared pure helper asserts that no `TODO(scaffold)` sentinel remains in any authored field and that every referenced image asset exists on disk — the banner photo, the directory's headshot (ADR-0065), and the optional team mark. It runs on clean clones (outside the payload `skipIf`) in every hero's guard — so an unauthored season argument, a forgotten photo, or a mistyped image path is a red suite, never a shipped page.
 
+**Hero add** (a.k.a. **the add recipe**):
+The one-command orchestration of a completed-season hero add: `npm run hero:add -- "<Player Name>" <season>` chains the standing recipe end to end — the raw pulls (shots, tracking, league totals, each skipped when its artifact exists), the four derives, completing the shared play-by-play corpus (only the missing game pairs), the season-argument scaffold, the headshot fetch, the share-card generation (ADR-0067), `hero:sync`, and the closing `hero:report` (ADR-0066). Resumable by construction: the rerun of a failed add continues where it left off, re-pulling nothing. It automates acquisition and mechanical assets only — on success the suite is deliberately red on the authoring tripwire, and the judgment work (banner, verdict, claims, credits) stays human (ADR-0063's boundary). Local-only like every pull; a living season belongs to the season loop, never this command.
+
 **v2 thesis**:
 "How does he create his shots?" — the second act, shipped: Case 2 creation contexts at the bucket grain, three families (see Context family; ADR-0030 plus the v2.1 defender fast-follow). Stretch: assisted/unassisted via Case 3 play-by-play reconstruction (v2.5).
 
