@@ -18,7 +18,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
 | Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip |
 | Hero scaffolding | ✅ built 2026-07-23 (ADR-0063): `hero:scaffold` emits the season-argument skeleton; the authoring tripwire holds the suite red until authored |
-| Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: Donovan Mitchell 2025-26, data-complete and deployed, authoring pending |
+| Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
 | Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch). See [Launch (August 2026)](#launch-august-2026--open-items). |
@@ -635,9 +635,13 @@ _Opened 2026-07-24, at the close of the directory redesign (ADR-0065). Every
 phase above is shipped and the "Beyond v3" forward list is closed, so this is
 the only near-term work besides October's activation. Scope is deliberately
 narrow: what a first-time visitor meets, and what a shared link looks like
-before anyone has clicked it. The plan is one or two heroes at launch (Cody
-Williams certainly, as the reason the tool exists), so these are judged at a
-small roster, the same lens the marquee layout was chosen under._
+before anyone has clicked it. The plan was opened at a one-or-two-hero
+assumption (Cody Williams certainly, as the reason the tool exists); the
+roster has since grown to five arguments (Donovan Mitchell joined
+2026-07-27 as the first `hero:add` add), still small enough that the
+marquee-layout lens these items were judged under holds. Banner-photo
+credits for the four photographic heroes are the one open provenance item
+(docs/image-credits.md; sources are the author's to supply)._
 
 1. **The social card** — MVP shipped 2026-07-27: product-wide `og:` /
    `twitter:` meta in `index.html` with a 1200×630 card
