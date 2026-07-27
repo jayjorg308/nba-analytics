@@ -7,4 +7,6 @@
   headshots, downloaded verbatim from
   `cdn.nba.com/headshots/nba/latest/1040x760/<playerId>.png` (the `playerId`
   is in the hero's shot payload `_meta`). The directory's asset class
-  (ADR-0065); pulled 2026-07-24 for the four registered heroes.
+  (ADR-0065); pulled 2026-07-24 for the first four registered heroes, and
+  fetched by `hero:add` (ADR-0066) for every hero since — Donovan Mitchell
+  2026-07-27.

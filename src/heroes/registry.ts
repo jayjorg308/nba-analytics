@@ -15,6 +15,7 @@ import { keyonteGeorge } from './keyonte-george'
 // Shai is v2.5's positive control: a max-volume MVP profile held to the same
 // contracts and guards as the two young-player arguments.
 import { shaiGilgeousAlexander } from './shai-gilgeous-alexander'
+import { donovanMitchell } from './donovan-mitchell'
 import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
@@ -23,6 +24,7 @@ export const HEROES: readonly HeroConfig[] = [
   keyonteGeorge,
   shaiGilgeousAlexander,
   aceBailey,
+  donovanMitchell,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {
