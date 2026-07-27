@@ -632,8 +632,11 @@
 
 .site-nav-scrolled {
     background: rgba(22, 23, 29, 0.78);
+    /* Standard form only — never hand-author -webkit-backdrop-filter here.
+       Lightning CSS merges the pair and keeps only the last-authored variant
+       (shipping a Safari-only navbar ground); authored unprefixed, it emits
+       both forms from the build targets. Guarded by SiteNav.builtCss.test.ts. */
     backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
     border-bottom-color: var(--border);
     text-shadow: none;
 }
