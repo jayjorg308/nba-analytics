@@ -21,7 +21,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: Donovan Mitchell 2025-26, data-complete and deployed, authoring pending |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
-| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark; per-hero cards stay the deliberate upgrade). Still open, both first-impression rather than engine work: whether the directory should explain itself to a cold visitor, and the marquee's heading outline. See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch). See [Launch (August 2026)](#launch-august-2026--open-items). |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -649,16 +649,16 @@ small roster, the same lens the marquee layout was chosen under._
    until the icon URL itself changes, which is why phones still showed the
    Vite bolt after the new favicon set deployed.
 
-   Still open, the deliberate upgrade: **per-hero cards** (the hero's own
-   poster or headshot with his name, so sharing a player's argument
-   previews that player). Per-hero is the far stronger share, and the
-   assets already exist per hero — but a static host serves one
-   `index.html` for every route, so per-hero cards need either build-time
-   HTML generation per hero page or a prerender/meta step at the edge.
-   That is a real architectural decision (today the app resolves the hero
-   from the URL at runtime; see ADR-0022), so it wants a deliberate
-   answer, not an improvised one. The product-wide card does not block
-   that upgrade.
+   The deliberate upgrade shipped 2026-07-27 (ADR-0067): **per-hero
+   cards** as generated marquee-grammar assets
+   (`npm run cards:generate` → `public/social-cards/<slug>.png`, one per
+   registered hero, guarded at exactly 1200×630) under **build-time
+   emitted share pages** (`npm run build` finishes by writing
+   `dist/<slug>[/<season>]/index.html` with swapped share meta and a
+   per-page `og:url`). Build-time emission was the deliberate answer:
+   the deployment stays static, the registry stays the single source of
+   truth, and ADR-0022's runtime hero resolution stands — only what a
+   non-JS scraper reads changed. The root keeps the product-wide card.
 
 2. **The directory no longer explains itself** — a consequence of the
    marquee redesign worth taking a second look at, not a defect. The old
@@ -682,16 +682,12 @@ small roster, the same lens the marquee layout was chosen under._
    wordmark. Worth watching real first-time reactions at launch before
    spending page weight on it.
 
-3. **The featured player's name is not a heading** — small, cheap, and
-   purely structural. The index outline runs `h1` (the visually hidden site
-   name, ADR-0065) → `h2` "More verdicts", so heading navigation skips the
-   marquee entirely, even though the featured hero is the page's most
-   important item. Nothing is broken: the name is inside the link, so link
-   navigation reaches him with his meta line. Promoting that name to an
-   `h2` (or the rail items to `h3`s beneath it) tidies the outline with no
-   visual change; the only care needed is that `.index-marquee-text` is a
-   `<span>` today and would have to become a flow container to hold a
-   heading legally.
+3. **The featured player's name is not a heading** — closed 2026-07-27,
+   exactly as scoped: the name is now an `h2` inside a flow-container
+   `.index-marquee-text` (span → div), the element-level `h2` rule's
+   margin and color neutralized in the class so the promotion changed
+   nothing visually, and the index test holds the heading in the outline
+   (`h1` site name → `h2` featured name → `h2` "More verdicts").
 
 ---
 

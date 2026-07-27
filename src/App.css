@@ -401,6 +401,11 @@
     text-transform: uppercase;
     text-wrap: balance;
     max-width: 8ch;
+    /* The name is an h2 for the document outline only — neutralize the
+       element-level h2 rule (margin, heading color) so the promotion
+       changes nothing visually. */
+    margin: 0;
+    color: inherit;
 }
 
 .index-marquee:focus-visible {

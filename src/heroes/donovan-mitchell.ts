@@ -15,33 +15,57 @@ export const donovanMitchell: HeroConfig = {
   thesis: 'Is Donovan Mitchell taking good shots?',
   hero: {
     // The committed image is always a web-sized derivative, never a
-    // full-resolution source (ADR-0021).
-    imagePath: 'img/donovan-mitchell-hero.jpg',
+    // full-resolution source (ADR-0021): 2048px q82 from the dunk source in
+    // data/hero-sources/donovan.webp. Chosen over the square layup source
+    // because the action sits in one vertical column (ball nearly straight
+    // above the body), so it survives both the portrait slice and the wide
+    // panel; the layup's diagonal loses the ball in a portrait crop.
+    imagePath: 'img/donovan-mitchell-hero.webp',
     // The directory's standard NBA headshot (ADR-0065): download
     //   cdn.nba.com/headshots/nba/latest/1040x760/<playerId>.png
     // (playerId is in the shot payload's _meta) to this conventional
     // path — a mechanical asset, no art direction.
     headshotPath: 'img/donovan-mitchell-headshot.png',
-    // Optional normalized team mark (1024px transparent square, 58–62%
-    // footprint — interface enforced by ingestion/test_team_logo_assets.py):
-    // teamLogoPath: 'img/<team>-logo.png',
-    imageAlt: 'TODO(scaffold): describe the banner photo for screen readers',
-    // Focal points: the narrow full-bleed poster crop, then the wide
-    // right-anchored panel crop (ADR-0021/0025) — e.g. '50% 28%'.
-    imagePosition: 'TODO(scaffold): narrow focal point',
-    imagePositionWide: 'TODO(scaffold): wide focal point',
+    // Normalized team mark (1024px transparent square, 58–62% footprint —
+    // interface enforced by ingestion/test_team_logo_assets.py). The glyph-only
+    // primary "C" (cdn.nba.com logos endpoint), not the black global shield,
+    // which would vanish on the wide layout's dark column.
+    teamLogoPath: 'img/cle-logo.png',
+    imageAlt:
+      'Donovan Mitchell rising for a one-handed dunk in the white Cavaliers number 45 jersey',
+    // Focal points (ADR-0021/0025): the action column (ball over head over
+    // torso) sits at ~55% x, so the portrait slice centers there with the
+    // subject in the upper stretch; the wide panel biases up to keep the
+    // ball and rim in frame.
+    imagePosition: '55% 30%',
+    imagePositionWide: '50% 25%',
   },
   canonicalSeason: '2025-26',
   seasons: [
     {
       season: '2025-26',
       // Season-owned copy (ADR-0060): the kicker embeds the season string.
-      kicker: 'Donovan Mitchell · TODO(scaffold): team · Nº TODO(scaffold): jersey · 2025-26',
-      // The verdict (ADR-0017): the answer before the evidence. AUTHORED
-      // COPY — author it from hero:report, then hold every directional
-      // claim in the colocated guard; when the data moves, rewrite both
-      // together, never loosen an assertion.
-      verdict: 'TODO(scaffold): author the verdict from hero:report',
+      kicker: 'Donovan Mitchell · Cleveland Cavaliers · Nº 45 · 2025-26',
+      // Authored from hero:report and held to the colocated guard: selection
+      // −0.031 PPS (past neutral, short of material), making +0.066
+      // (material, more than twice the give-away); pull-up share 45.4% vs
+      // 25.2% league at +0.077 PPS over the league pull-up value,
+      // catch-and-shoot +0.115; assisted share of makes 38.5% at complete
+      // coverage. The closing LINE sentence (ADR-0056): FTA rate
+      // 0.306/0.293 vs 0.264, conversion 0.865/0.876 vs 0.783 — every
+      // claim holding on both technical cuts (ADR-0055).
+      verdict:
+        'Mostly, yes. His diet tilts away from the rim and the corners toward pull-up ' +
+        'jumpers and long twos, and that tilt costs a little value against the league ' +
+        'diet, never enough to become the story. The story is conversion: his shot ' +
+        'making adds back more than twice what his selection gives away, with paint ' +
+        'and mid-range touch well above league. The creation evidence backs the bet: ' +
+        'nearly half of his attempts are pull-ups, close to double the league share, ' +
+        'and they still beat the league pull-up value; his rarer catch-and-shoot looks ' +
+        'land even further above it. Fewer than four in ten of his makes are ' +
+        'officially assisted. The line widens the margin quietly: he earns trips to ' +
+        'the line a bit more often than the league and converts well above the league ' +
+        'rate once there.',
     },
   ],
 }

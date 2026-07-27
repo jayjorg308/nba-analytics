@@ -14,8 +14,10 @@ dependency order —
   7. hero:scaffold         (module + guard skeleton + registry entry, ADR-0063)
   8. headshot download     (the ADR-0065 formula — a mechanical asset,
                             "a headshot needs no authoring")
-  9. hero:sync             (deploy all four payloads)
- 10. hero:report --deployed (the authoring input: the story + claim headroom)
+  9. cards:generate        (the hero's share card, from committed assets —
+                            ADR-0067; mechanical, like the headshot)
+ 10. hero:sync             (deploy all four payloads)
+ 11. hero:report --deployed (the authoring input: the story + claim headroom)
 
 WHAT THIS NEVER DOES (the ADR-0063 boundary — structure, never judgment):
 after a successful run the suite is RED ON PURPOSE via the authoring
@@ -175,7 +177,7 @@ def main() -> None:
     slug = slug_of(player)
     raw_root = REPO / args.raw_root
     python = sys.executable
-    total = 10
+    total = 11
 
     print(f"hero:add  {player} ({slug})  {season}")
 
@@ -264,8 +266,17 @@ def main() -> None:
     else:
         download_headshot(player_id, headshot_path)
 
-    # -- 10: deploy + the authoring report -------------------------------------
-    step(10, total, "sync + report (hero:sync, hero:report --deployed)")
+    # -- 10: the share card (ADR-0067; registry-driven, so after scaffold) -----
+    step(10, total, "share card (cards:generate, ADR-0067)")
+    card_path = REPO / "public" / "social-cards" / f"{slug}.png"
+    if card_path.exists():
+        print(f"{card_path.name} exists — skip")
+    else:
+        run([npm(), "run", "cards:generate"],
+            "Cards regenerate from committed assets; rerun freely.")
+
+    # -- 11: deploy + the authoring report -------------------------------------
+    step(11, total, "sync + report (hero:sync, hero:report --deployed)")
     run([npm(), "run", "hero:sync", "--", slug, season],
         "Sync copies the four derived payloads; rerun after fixing the derive.")
     run([npm(), "run", "hero:report", "--", slug, season, "--deployed"],
