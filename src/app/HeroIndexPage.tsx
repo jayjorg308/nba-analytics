@@ -36,7 +36,11 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
         )}
         <a className="index-marquee" href={heroPageUrl(featured)}>
           {/* Decorative: the adjacent text carries the name, so a repeated
-              alt would double every screen-reader announcement. */}
+              alt would double every screen-reader announcement. Face, name,
+              cue, and the derived eyebrow are the marquee's whole content:
+              team marks were explored here (behind the name, then in the
+              banner's own watermark grammar) and declined — the eyebrow
+              already names the team (ADR-0065 amendment, 2026-07-28). */}
           <img src={headshotUrl(featured)} alt="" />
           {/* A div, not a span: the featured name is a real heading (the
               page's most important item must exist in the document outline —

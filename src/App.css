@@ -470,12 +470,27 @@
     margin: 0 0 16px;
 }
 
+/* The rail owns its horizontal overflow at EVERY width: fixed-size cards
+   over a growing roster will not always fit (four cards already overflow
+   an iPad-portrait shell, and a seventh would overflow the desktop shell),
+   and before this rule the overflow escaped to the PAGE — the whole shell
+   scrolled sideways while the rail stood still. The old phone-only scroll
+   treatment left exactly that 641-1024px gap. */
 .index-rail ul {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 0 8px;
     display: flex;
     gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+/* The flex items are the LIs, not the .index-card anchors inside them —
+   size and snap belong here (a flex/snap rule on the anchor is inert). */
+.index-rail li {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
 }
 
 .index-card {
@@ -625,20 +640,12 @@
         padding-inline: 20px;
     }
 
+    /* Phones: tighter rail inset only — the sideways scroll is base
+       behavior now (the rail owns its overflow at every width), and the
+       old flex-basis card resize here was inert all along (the LI is the
+       flex item, not the anchor), so cards ship at 190px everywhere. */
     .index-rail {
         padding-inline: 20px;
-    }
-
-    /* Phones: the rail scrolls sideways — cards stay card-sized. */
-    .index-rail ul {
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        padding-bottom: 8px;
-    }
-
-    .index-card {
-        flex: 0 0 160px;
-        scroll-snap-align: start;
     }
 
     /* Phones: the footer stacks — on hero pages the way-back pill leads

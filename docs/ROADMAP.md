@@ -762,6 +762,31 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    alternative), and the ADR-0067 consequence: the share card renders the
    marquee grammar, so the same PR must either regenerate every card or
    record that cards deliberately stay mark-free.
+   _Done 2026-07-28, resolved as **considered, declined** (ADR-0065 third
+   amendment): four treatments were built or mocked on the real roster —
+   the marquee mark behind the name, the same mark in the banner's exact
+   watermark grammar (the strongest candidate: same corner and weight on
+   consecutive pages), ghosted rail marks (vanish behind the figures —
+   not busy, invisible), and a rail team-text eyebrow (clean, declined
+   for restraint) — and none survived the question "does it add anything
+   the derived eyebrow doesn't already say?". The directory stays
+   mark-free, guarded by the index test (no logo asset renders anywhere
+   on the index); the hero banner's watermark remains the mark's one
+   home, and the share cards never changed. Gate green (vitest 425,
+   lint, build)._
+
+   _Rail overflow bug fixed in the same pass (user-caught at iPad-portrait
+   width): the rail's sideways-scroll treatment lived only under the 640px
+   phone breakpoint, so between 641px and 1024px the four fixed-width
+   cards overflowed the PAGE — the whole shell scrolled sideways while the
+   rail stood still (a roster-growth bug: three cards fit, Mitchell's
+   fourth did not). The rail `ul` now owns its horizontal overflow at
+   every width, with the snap/size rules moved to the `li` — the actual
+   flex item; the old phone rule's `flex: 0 0 160px` on the anchor was
+   inert all along, so cards ship at 190px everywhere, as they always
+   visually did. Verified at 375/768×1024/1280: the page never scrolls
+   sideways, the rail scrolls and snaps internally where it must, and a
+   seventh hero can no longer break the desktop shell the same way._
 
 7. **Usage rate as descriptive context** — a little more context for how
    the hero is used. The rail: the 0.44 coefficient is permanently
