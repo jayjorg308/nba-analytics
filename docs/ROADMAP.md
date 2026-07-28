@@ -805,6 +805,23 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    as the low-footprint answer to item 2: a cold visitor learns what the
    site is without the marquee gaining a deck.
 
+9. **Payload caching** — added 2026-07-28 (user-noticed: a "Loading shot
+   data…" flash on every directory → hero navigation, live site
+   included). Diagnosis, verified against production headers: the host
+   served `/data/*` with `max-age=0, must-revalidate` (four conditional
+   round trips per visit, repeat visits included), and the fetches only
+   started after React booted (HTML → bundle → boot → fetch — the
+   waterfall was the flash).
+   _Done 2026-07-28, two layers. (1) `vercel.json` serves `/data/*` with
+   `max-age=300, stale-while-revalidate=86400` (ADR-0010 amendment: the
+   staleness window priced against the daily-data-commit worst case).
+   (2) The emitted hero pages preload their exact boot fetch set — four
+   siblings plus the prior shot payload on a canonical page with a
+   growth coda — via `payloadPreloadPaths` (ADR-0067 amendment;
+   `crossorigin` load-bearing for as="fetch" matching). Repeat visits
+   hit the browser cache with zero network; first visits download data
+   in parallel with the bundle. Headers take effect on the next deploy._
+
 ---
 
 ## Season-start parking lot — undesigned ideas (opened 2026-07-28)
