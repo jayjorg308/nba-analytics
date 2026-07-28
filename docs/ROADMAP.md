@@ -21,7 +21,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
-| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch). See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch), plus the pre-launch polish round opened 2026-07-28 (items 4–8). See [Launch (August 2026)](#launch-august-2026--open-items). |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -692,6 +692,107 @@ credits for the four photographic heroes are the one open provenance item
    margin and color neutralized in the class so the promotion changed
    nothing visually, and the index test holds the heading in the outline
    (`h1` site name → `h2` featured name → `h2` "More verdicts").
+
+_Widened 2026-07-28 (planning session): a pre-launch polish round, items 4–8,
+ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
+8 may slip past launch without harm._
+
+4. **Shared site footer** — the hero page's footer is a bare "← All players"
+   line while the index footer carries the tagline and the social row.
+   Extract one shared footer (tagline + social links + on hero pages the
+   polished directory link) used by both pages. The constraints stand:
+   outward links live in the footer, never the navbar (ADR-0065), and the
+   way back sits after the argument, never above it (ADR-0022).
+   _Done 2026-07-28: `src/app/SiteFooter.tsx`, rendered as a SIBLING of
+   each page's `<main>` — a real contentinfo landmark, spanning the shell
+   edge-to-edge on both pages (the index drops its `margin-top: auto`
+   hack; the main's flex-grow already pushes the footer down). The way
+   back is a 44px bordered pill in the social ring's own grammar, hero
+   pages only (`directoryLink`); the index-side count test doubles as the
+   guard that the directory never links to itself. Old `.hero-footer` /
+   `.index-footer` rules replaced by `.site-footer`. Gate green (vitest
+   419, lint, build); browser-verified both pages at desktop and mobile._
+
+5. **Verdict consistency pass** — five verdicts authored across five adds
+   have drifted in verbiage and criteria. The pass: `hero:report --deployed`
+   for every hero, audit each verdict's vocabulary against the house bars
+   (the CLAIM HEADROOM section is the shared ruler) and the lexicon, and
+   rewrite drifted copy together with its guard claim mapping (ADR-0017's
+   standing rule; the suite is the copy editor). A copy pass, not a
+   generator — verdicts stay authored (ADR-0063's boundary).
+
+6. **Directory team marks** — give the marquee the featured hero's team
+   mark, reusing the hero banner's wide-layout watermark grammar. Every
+   registered hero already has a normalized, asset-tested `teamLogoPath`,
+   so there is zero sourcing. Open decisions: whether the rail cards carry
+   anything (skepticism recorded — small cards, three Jazz marks in a
+   five-hero rail; the text eyebrow via `indexMetaOf` is the lighter
+   alternative), and the ADR-0067 consequence: the share card renders the
+   marquee grammar, so the same PR must either regenerate every card or
+   record that cards deliberately stay mark-free.
+
+7. **Usage rate as descriptive context** — a little more context for how
+   the hero is used. The rail: the 0.44 coefficient is permanently
+   forbidden (the not-to-do list) and conventional USG% embeds it, so the
+   product never computes usage — it pulls the NBA's official `USG_PCT`
+   and presents it as descriptive context only (the Matchup pattern:
+   sourced, formatted, never evaluation; also the ADR-0064-blessed shape —
+   role-relative descriptive color, never a re-graded number). Needs a
+   small ADR, a schema touch (likely shot-payload `_meta` + golden regen),
+   and a placement decision.
+
+8. **Methodology page** — a `/methodology` route of structural copy
+   explaining league diet, the rollup rule, the decomposition identity,
+   and the comparison-class stance; CONTEXT.md's Language section is the
+   draft. No guard obligations (no per-hero claims, no numbers). Doubles
+   as the low-footprint answer to item 2: a cold visitor learns what the
+   site is without the marquee gaining a deck.
+
+---
+
+## Season-start parking lot — undesigned ideas (opened 2026-07-28)
+
+_Recorded ahead of the 2026-27 activation, deliberately undesigned: each
+needs its own grilling/domain-modeling session (and likely an ADR) before
+build. Written down so the constraints already attached to them don't get
+rediscovered._
+
+- **Engagement chart pipeline** — a social-asset content class beside the
+  hero pages: small-dataset daily/weekly charts for season-start engagement
+  (daily shot charts, weekly diet drift, "first N games vs league" small
+  multiples, rookie trackers). The `cards:generate` pattern is the
+  precedent — generated PNGs from committed data — riding the season
+  loop's daily reconciled frontier, so the data supply is already solved.
+  The honesty constraints apply (visible denominators, no rate averaging,
+  descriptive thin-sample language); the eligibility gates do not — these
+  are not hero arguments. Rookies pre-gate-pass are exactly this class's
+  job: Peterson's born-live page is the product answer, social PNGs with
+  plain denominators the pre-flip answer. Design session ~September.
+
+- **Running league diet** — the league baseline as a within-season time
+  series. `DateTo` is proven (v3 Phase 0: true as-of baselines), so the
+  series accrues naturally in the raw layer once the loop runs daily, and
+  2025-26 is reconstructable retroactively (local-only pulls). Undecided
+  surface: a league page (the first non-hero data surface — new territory),
+  methodology-page content ("watch the benchmark settle"), or fuel for the
+  engagement charts. Early-season volatility is both the content and the
+  caution.
+
+- **Conclusion coda / badges** — a closing recap of how the argument
+  resolved, possibly as cross-hero icons ("catch-and-shoot expert").
+  The workable shape is *claims made visible*: authored per season
+  argument, each badge backed by a declared claim kind (the guard
+  machinery extends naturally — a shared badge lexicon, so a badge means
+  the same guarded thing on every page carrying it), rendered as a coda
+  that re-presents the verdict's claims. Never a second verdict surface:
+  ADR-0018's answer-first structure is the rail. Voice is the design risk
+  (editorial register, not 2K-style gamification).
+
+- **Player tags / taxonomy** — parked until the roster outgrows the rail
+  (ADR-0065's own escalation line). Structural tags (team, draft year) are
+  cheap registry facts whenever wanted; judgment tags are role vocabulary
+  under lexicon discipline. Likely the same system as the badges arriving
+  from the other direction — design the two together.
 
 ---
 

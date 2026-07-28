@@ -254,6 +254,28 @@ describe('HeroPage over the golden fixture', () => {
     screen.getByText(/not necessarily self-created/i)
   })
 
+  it('signs off with the shared footer: the way back leading the outward links', async () => {
+    stubFetch({ ok: true, json: goldenJson })
+    render(<HeroPage hero={hero} seasonConfig={seasonConfig} />)
+    await screen.findByText(hero.thesis)
+
+    // The footer is a SIBLING of the argument's <main> — a real contentinfo
+    // landmark (a footer nested in main loses the role), shared with the
+    // index (ROADMAP launch item 4).
+    const footer = document.querySelector('footer.site-footer')
+    expect(footer).not.toBeNull()
+    expect(footer!.closest('main')).toBeNull()
+
+    // The way back to the directory (ADR-0022): after the argument, never
+    // chrome above it.
+    const back = screen.getByRole('link', { name: '← All players' })
+    expect(back.getAttribute('href')).toBe('/')
+    // The outward links live down here, never in the navbar (ADR-0065).
+    screen.getByRole('link', { name: 'Instagram' })
+    screen.getByRole('link', { name: 'X (formerly Twitter)' })
+    expect(screen.getByRole('link', { name: 'Email' }).getAttribute('href')).toMatch(/^mailto:/)
+  })
+
   it('shades all six zones in the default Zones view despite included=false everywhere', async () => {
     // every golden zone is sub-15 attempts (included: false) — inclusion
     // gates the MIX view only; the making axis is flagged, never suppressed

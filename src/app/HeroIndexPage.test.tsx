@@ -8,7 +8,9 @@ import { HeroIndexPage } from './HeroIndexPage'
 afterEach(cleanup)
 
 // Non-hero links on the index: the navbar wordmark plus the footer's three
-// social links (Instagram, X, contact email).
+// social links (Instagram, X, contact email). The count also guards that
+// the shared footer renders no way-back pill here — the index IS the
+// directory (ROADMAP launch item 4).
 const CHROME_LINKS = 4
 
 describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
