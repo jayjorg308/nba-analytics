@@ -1,17 +1,21 @@
 {
-  "redirects": [
-    { "source": "/vite.svg", "destination": "/favicon.ico", "permanent": true }
-  ],
-  "rewrites": [{ "source": "/:path*", "destination": "/index.html" }],
-  "headers": [
-    {
-      "source": "/data/(.*)",
-      "headers": [
+    "redirects": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, stale-while-revalidate=86400"
+            "source": "/vite.svg",
+            "destination": "/favicon.ico",
+            "permanent": true
         }
-      ]
-    }
-  ]
+    ],
+    "rewrites": [{ "source": "/:path*", "destination": "/index.html" }],
+    "headers": [
+        {
+            "source": "/data/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=300, stale-while-revalidate=86400"
+                }
+            ]
+        }
+    ]
 }
