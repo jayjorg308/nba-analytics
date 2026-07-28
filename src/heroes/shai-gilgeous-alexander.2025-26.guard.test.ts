@@ -20,6 +20,7 @@ import {
   unbackedFreethrowTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
+import { FAR_FTA_RATE, FAR_PPS, MATERIAL_PPS, WELL_FT_PCT } from './verdictLadder'
 
 // The guarded season argument, selected explicitly (ADR-0060/0061): a flip
 // moving the canonical pointer must never silently repoint these claims at
@@ -55,20 +56,37 @@ const freethrowPath = path.resolve(
   `${seasonConfig.season}.freethrow.json`,
 )
 
-const MATERIAL_SELECTION_COST_PPS = 0.05
+// Verdict semantics — thresholds the prose is held to, priced from the
+// house ladder (ADR-0068) where a house word appears:
+// "a diet that costs value": a bare directional cost prices at material
+// (actual: −0.054).
+const MATERIAL_SELECTION_COST_PPS = MATERIAL_PPS
+// "nearly triple the league share": a TWO-SIDED band (ADR-0068's
+// approximation-word discipline) — short of 2.5x "triple" overstates,
+// past 3x "nearly" understates (actual: 2.66x).
 const NEARLY_TRIPLE = 2.5
+const NEARLY_TRIPLE_CEILING = 3
+// "far fewer threes": three-point share at most 60% of the league's — a
+// ratio form, declared locally.
 const FAR_FEWER_THREES_RATIO = 0.6
-const MVP_MAKING_GAIN_PPS = 0.15
+// "MVP-level shot making overwhelms the cost": priced at the ladder's far
+// bar, plus the overwhelm comparison in the assertion (actual: +0.156).
+const MVP_MAKING_GAIN_PPS = FAR_PPS
+// "more than half of his attempts": a floor by construction — "more than"
+// is one-sided (actual: 57.2%).
 const MORE_THAN_HALF = 0.5
-const FAR_ABOVE_VALUE_PPS = 0.15
+// "far above league value": the ladder's far bar (actual: +0.203).
+const FAR_ABOVE_VALUE_PPS = FAR_PPS
+// "only one in five of his makes": the worst-case MAXIMUM assisted share
+// at most one in five — bounds, never the point estimate (ADR-0037).
 const ONE_IN_FIVE_ASSISTED = 0.2
-// "draws fouls far more often": FTA rate at least 0.10 over the league's —
-// ten extra free throws per hundred shots (actual: 0.465 / 0.447 without
+// "draws fouls far more often": the ladder's far FTA-rate bar — ten extra
+// free throws per hundred shots (actual: 0.465 / 0.447 without
 // technicals, vs league 0.264).
-const FAR_MORE_FTA_RATE = 0.1
-// "converts well above the league rate": FT% at least 5 points over league
+const FAR_MORE_FTA_RATE = FAR_FTA_RATE
+// "converts well above the league rate": the ladder's FT "well" bar
 // (actual: 0.879 / 0.881 without technicals, vs league 0.783).
-const WELL_ABOVE_FT_PCT = 0.05
+const WELL_ABOVE_FT_PCT = WELL_FT_PCT
 // "roughly a quarter of his scoring": FT points share within [0.22, 0.28] —
 // a two-sided band, because the phrase overstates below it and understates
 // above it (actual: 0.255 / 0.246 without technicals).
@@ -177,6 +195,9 @@ describe.skipIf(
     it('takes mid-range shots at nearly triple league share and far fewer threes', () => {
       const mid = zone('Mid-Range')
       expect(mid.attemptShare!).toBeGreaterThanOrEqual(mid.leagueAttemptShare * NEARLY_TRIPLE)
+      expect(mid.attemptShare!).toBeLessThanOrEqual(
+        mid.leagueAttemptShare * NEARLY_TRIPLE_CEILING,
+      )
       expect(metrics.threes.attemptShare!).toBeLessThanOrEqual(
         metrics.threes.leagueAttemptShare * FAR_FEWER_THREES_RATIO,
       )

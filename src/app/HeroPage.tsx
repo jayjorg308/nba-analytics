@@ -19,7 +19,6 @@ import {
   freethrowPayloadUrl,
   heroImageUrl,
   heroPageUrl,
-  indexUrl,
   payloadUrl,
   seasonPageUrl,
   shotContextPayloadUrl,
@@ -38,6 +37,7 @@ import {
   usePayload,
   useShotContextPayload,
 } from './usePayload'
+import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 import { ZoneTable } from './ZoneTable'
 
@@ -105,19 +105,27 @@ export function HeroPage({
     )
   }
   return (
-    <HeroReady
-      hero={hero}
-      seasonConfig={seasonConfig}
-      payload={state.payload}
-      creation={creationState.payload}
-      context={contextState.payload}
-      freethrow={freethrowState.payload}
-      prior={
-        priorSeasonConfig !== null && priorState.status === 'ready'
-          ? { seasonConfig: priorSeasonConfig, payload: priorState.payload }
-          : null
-      }
-    />
+    <>
+      <HeroReady
+        hero={hero}
+        seasonConfig={seasonConfig}
+        payload={state.payload}
+        creation={creationState.payload}
+        context={contextState.payload}
+        freethrow={freethrowState.payload}
+        prior={
+          priorSeasonConfig !== null && priorState.status === 'ready'
+            ? { seasonConfig: priorSeasonConfig, payload: priorState.payload }
+            : null
+        }
+      />
+      {/* The shared sign-off, leading with the way back to the directory
+          (ADR-0022): after the argument, never above it — cross-hero
+          navigation is links between pages, not a switcher on this one. A
+          sibling of the argument's main, so it lands as a real contentinfo
+          landmark, like the index's. */}
+      <SiteFooter directoryLink />
+    </>
   )
 }
 
@@ -382,12 +390,6 @@ function HeroReady({
           </div>
         </section>
       )}
-      {/* The quiet way back to the directory (ADR-0022) — after the argument,
-          never above it; cross-hero navigation is links between pages, not a
-          switcher on this one. */}
-      <footer className="hero-footer">
-        <a href={indexUrl()}>← All players</a>
-      </footer>
     </main>
   )
 }

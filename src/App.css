@@ -296,23 +296,6 @@
     color: #dc2626;
 }
 
-/* The quiet way back to the directory (ADR-0022): after the argument, in
-   reference-material gray — never chrome above the question. */
-.hero-footer {
-    margin-top: 48px;
-    font-size: 14px;
-}
-
-.hero-footer a {
-    color: var(--text);
-    text-decoration: none;
-}
-
-.hero-footer a:hover,
-.hero-footer a:focus-visible {
-    color: var(--text-h);
-}
-
 /* --- Hero index (the directory of arguments, ADR-0022/0065) ----------------- */
 
 /* The directory shows WHO is on file: the first registered hero as a
@@ -487,12 +470,27 @@
     margin: 0 0 16px;
 }
 
+/* The rail owns its horizontal overflow at EVERY width: fixed-size cards
+   over a growing roster will not always fit (four cards already overflow
+   an iPad-portrait shell, and a seventh would overflow the desktop shell),
+   and before this rule the overflow escaped to the PAGE — the whole shell
+   scrolled sideways while the rail stood still. The old phone-only scroll
+   treatment left exactly that 641-1024px gap. */
 .index-rail ul {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 0 8px;
     display: flex;
     gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+/* The flex items are the LIs, not the .index-card anchors inside them —
+   size and snap belong here (a flex/snap rule on the anchor is inert). */
+.index-rail li {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
 }
 
 .index-card {
@@ -551,13 +549,20 @@
     );
 }
 
-.index-footer {
-    margin-top: auto;
+/* --- Site footer (the shared sign-off, ROADMAP launch item 4) --------------- */
+
+/* One footer on every page, rendered as a SIBLING of <main> — a real
+   contentinfo landmark, spanning the shell edge-to-edge on the index and
+   hero pages alike (the main's flex-grow pushes it to the viewport bottom
+   on short pages; #root centers text, so left-align is restated here).
+   Outward links live down here and never in the navbar (ADR-0065). */
+.site-footer {
     padding: 32px 32px 40px;
     border-top: 1px solid var(--border);
     font-size: 12px;
     letter-spacing: 0.06em;
     color: var(--text);
+    text-align: left;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -565,8 +570,33 @@
     gap: 20px 32px;
 }
 
-.index-footer p {
+.site-footer p {
     margin: 0;
+}
+
+/* The way back to the directory (ADR-0022: after the argument, never
+   chrome above it), in the social ring's own grammar: a 44px bordered
+   pill in footer gray, warming to white — a real target without
+   shouting. Hero pages only; the index IS the directory. */
+.footer-back {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    transition:
+        color 150ms ease,
+        border-color 150ms ease;
+}
+
+.footer-back:hover,
+.footer-back:focus-visible {
+    color: var(--text-h);
+    border-color: var(--text);
 }
 
 /* The social row: quiet ringed icon targets in the footer's own gray,
@@ -610,25 +640,18 @@
         padding-inline: 20px;
     }
 
+    /* Phones: tighter rail inset only — the sideways scroll is base
+       behavior now (the rail owns its overflow at every width), and the
+       old flex-basis card resize here was inert all along (the LI is the
+       flex item, not the anchor), so cards ship at 190px everywhere. */
     .index-rail {
         padding-inline: 20px;
     }
 
-    /* Phones: the rail scrolls sideways — cards stay card-sized. */
-    .index-rail ul {
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        padding-bottom: 8px;
-    }
-
-    .index-card {
-        flex: 0 0 160px;
-        scroll-snap-align: start;
-    }
-
-    /* Phones: the footer stacks — tagline as the sign-off line, the social
-       row beneath it on its own comfortable rank. */
-    .index-footer {
+    /* Phones: the footer stacks — on hero pages the way-back pill leads
+       (closest to the argument it follows), then the tagline as the
+       sign-off line, the social row beneath on its own comfortable rank. */
+    .site-footer {
         padding-inline: 20px;
         flex-direction: column;
         align-items: flex-start;

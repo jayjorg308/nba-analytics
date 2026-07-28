@@ -50,8 +50,8 @@ export const aceBailey: HeroConfig = {
         'double the league share and long twos at nearly triple it, and the rim attempts they trade ' +
         'away are the most valuable shots on the floor. His conversion is essentially league average ' +
         'overall, with a genuinely warm paint touch underneath. The creation cut inverts the usual ' +
-        'story: his pull-ups convert above league value while the easier catch-and-shoot looks land ' +
-        'well below it. And the line compounds the diet: he reaches the free-throw line at well ' +
+        'story. His pull-ups convert above league value while the easier catch-and-shoot looks land ' +
+        'well below it. And the line compounds the diet. He reaches the free-throw line at well ' +
         'under half the league rate, so the priciest trips to the line barely touch his scoring.',
     },
   ],

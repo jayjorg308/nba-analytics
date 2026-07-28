@@ -20,7 +20,7 @@
 //    of why 1 + why 2 together — his threes are overwhelmingly not
 //    self-created, and those are the ones missing.)
 //   "he draws fouls less often than the league"            -> line 1 (free throw)
-//   "converts below the league rate when he gets there"    -> line 2 (free throw)
+//   "converts well below the league rate once there"       -> line 2 (free throw)
 //   ("the line does not bail him out" is the rhetorical frame of line 1 +
 //    line 2: neither generation nor conversion offsets the making story.)
 // One engine-copy claim rides along: the zone table's Restricted Area
@@ -41,6 +41,13 @@ import { parseDerivedPayload } from '../domain/payload'
 import { authoringProblems } from './authoring'
 import { codyWilliams as hero } from './cody-williams'
 import { seasonArgumentOf } from './types'
+import {
+  FTA_RATE_FLOOR,
+  MATERIAL_DIET_LEAN_PP,
+  MATERIAL_PPS,
+  NEUTRAL_BAND_PPS,
+  WELL_FT_PCT,
+} from './verdictLadder'
 import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
 import {
   invalidAssistInterpretationsIn,
@@ -79,31 +86,35 @@ const freethrowPath = path.resolve(
   `${seasonConfig.season}.freethrow.json`,
 )
 
-// Verdict semantics — thresholds the prose is held to:
-// "essentially league-average": within ±0.02 PPS of the league diet (~2% of
+// Verdict semantics — thresholds the prose is held to, priced from the
+// house ladder (ADR-0068) unless a stricter local bar is declared:
+// "essentially league-average": within the ladder's neutral band (~2% of
 // the ~1.09 baseline; smaller than one made basket per hundred shots).
-const LEAGUE_AVERAGE_SELECTION_BAND_PPS = 0.02
-// "converts below": making costs at least 0.05 PPS — too large to be
-// rounding or one noisy zone.
-const MATERIAL_MAKING_PPS = 0.05
-// "lives at" / "rarely fires from": a diet lean of at least 5 percentage
-// points of attempt share — several shots per hundred, well outside
-// single-season share noise (shares stabilize by ~34 attempts, CONTEXT.md).
-const MATERIAL_DIET_LEAN_PP = 0.05
+const LEAGUE_AVERAGE_SELECTION_BAND_PPS = NEUTRAL_BAND_PPS
+// "converts below": a bare comparative prices at material — too large to
+// be rounding or one noisy zone.
+const MATERIAL_MAKING_PPS = MATERIAL_PPS
+// "lives at" / "rarely fires from": the ladder's diet-lean bar (imported
+// directly — the name already matches): several shots per hundred, well
+// outside single-season share noise (shares stabilize by ~34 attempts,
+// CONTEXT.md).
 // "almost all": at least four of five — below that the phrase is a lie
 // (actual: 117/131 = 89.3%).
 const ALMOST_ALL_SHARE = 0.8
-// "far below league value": a PPS gap of at least 0.25 — five times the
-// materiality bar; a quarter point per shot (actual: 0.711 vs 1.100).
+// "far below league value": declared STRICTER than the ladder's 0.15 far
+// floor — a 0.25 gap is five times the materiality bar, a quarter point
+// per shot, and the data supports pricing it there (actual: 0.711 vs
+// 1.100). Stricter is always legal; looser never (ADR-0068).
 const FAR_BELOW_PPS = 0.25
-// "draws fouls less often than the league": FTA rate at least 0.02 under the
-// league's — two trips' worth of free throws per hundred shots, past rounding
+// "draws fouls less often than the league": the ladder's FTA-rate floor —
+// two trips' worth of free throws per hundred shots, past rounding
 // (actual: 0.234 / 0.232 without technicals, vs league 0.264).
-const BELOW_LEAGUE_FTA_RATE = 0.02
-// "converts below the league rate": FT% at least 5 points under league —
-// the gap between an average and a poor free-throw shooter (actual:
-// 0.706 / 0.712 without technicals, vs league 0.783).
-const BELOW_LEAGUE_FT_PCT = 0.05
+const BELOW_LEAGUE_FTA_RATE = FTA_RATE_FLOOR
+// "converts well below the league rate": the ladder's FT "well" bar — the
+// same bar Mitchell's "well above" clears on the positive side, so "well"
+// grades the same magnitude on every page (actual: 0.706 / 0.712 without
+// technicals, vs league 0.783).
+const WELL_BELOW_LEAGUE_FT_PCT = WELL_FT_PCT
 
 // The creation-kind claims (ADR-0029): declaring these — asserted against
 // aggregateCreationMetrics over the DEPLOYED creation payload — is what
@@ -147,15 +158,15 @@ const freethrowClaims: FreethrowClaim[] = [
     },
   },
   {
-    name: 'line 2: converts below the league rate, on both cuts, sample-safe',
+    name: 'line 2: converts well below the league rate, on both cuts, sample-safe',
     assert: (f) => {
       const conv = f.seasonLine.conversion
       expect(conv.value).not.toBeNull()
       expect(conv.withoutTechnicals).not.toBeNull()
       // stated unhedged in the verdict, so it must clear the † bar
       expect(f.seasonLine.smallSampleConversion).toBe(false)
-      expect(conv.league - conv.value!).toBeGreaterThanOrEqual(BELOW_LEAGUE_FT_PCT)
-      expect(conv.league - conv.withoutTechnicals!).toBeGreaterThanOrEqual(BELOW_LEAGUE_FT_PCT)
+      expect(conv.league - conv.value!).toBeGreaterThanOrEqual(WELL_BELOW_LEAGUE_FT_PCT)
+      expect(conv.league - conv.withoutTechnicals!).toBeGreaterThanOrEqual(WELL_BELOW_LEAGUE_FT_PCT)
     },
   },
 ]

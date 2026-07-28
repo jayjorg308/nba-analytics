@@ -41,12 +41,12 @@ export const keyonteGeorge: HeroConfig = {
       // both technical cuts (ADR-0055) — authored from hero:report's LINE
       // section.
       verdict:
-        'No. His shot selection costs him: he gets to the rim about half as often as the league, ' +
+        'No. His shot selection costs him. He gets to the rim about half as often as the league, ' +
         'trading it for paint floaters and mid-range. Making is not the problem, as he converts at or ' +
         'above league expectation in every zone on the floor. ' +
-        'The diet is how he creates: far more of his shots are pull-up jumpers than is typical, ' +
+        'The diet is how he creates. Far more of his shots are pull-up jumpers than is typical, ' +
         'while the catch-and-shoot looks he does take convert well above league value. ' +
-        'The line softens the no: he draws fouls far more often than the league and converts ' +
+        'The line softens the no. He draws fouls far more often than the league and converts ' +
         'well above the league rate once there.',
     },
   ],

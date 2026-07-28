@@ -38,6 +38,14 @@ import { parseDerivedPayload } from '../domain/payload'
 import { authoringProblems } from './authoring'
 import { keyonteGeorge as hero } from './keyonte-george'
 import { seasonArgumentOf } from './types'
+import {
+  FAR_DIET_LEAN_PP,
+  FAR_FTA_RATE,
+  MATERIAL_PPS,
+  NEUTRAL_BAND_PPS,
+  STRONG_PPS,
+  WELL_FT_PCT,
+} from './verdictLadder'
 import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
 import {
   invalidAssistInterpretationsIn,
@@ -76,31 +84,35 @@ const freethrowPath = path.resolve(
   `${seasonConfig.season}.freethrow.json`,
 )
 
-// Verdict semantics — thresholds the prose is held to:
-// "costs him": selection at least 0.05 PPS below the league diet — too large
-// to be rounding or one noisy zone (George: −0.069).
-const MATERIAL_SELECTION_PPS = 0.05
-// "about half as often": his rim share may not exceed 60% of the league's —
-// past that, "half" is a lie (George: 15.3% vs 28.4% = 54%).
+// Verdict semantics — thresholds the prose is held to, priced from the
+// house ladder (ADR-0068):
+// "costs him": a bare directional cost prices at material — too large to
+// be rounding or one noisy zone (George: −0.069).
+const MATERIAL_SELECTION_PPS = MATERIAL_PPS
+// "about half as often": a TWO-SIDED band (ADR-0068's approximation-word
+// discipline) — under 40% of the league's rim share "half" understates,
+// past 60% it overstates (George: 15.3% vs 28.4% = 54%).
+const RIM_SHARE_HALF_FLOOR = 0.4
 const RIM_SHARE_HALF_CEILING = 0.6
-// "Making is not the problem": the making rollup must be positive by more
-// than rounding (George: +0.044).
-const MATERIAL_MAKING_PPS = 0.02
-// "far more ... than is typical": a pull-up share at least 10 percentage
-// points above the league's — double the diet-lean bar (George: 41.4% vs
-// 25.2%).
-const FAR_MORE_SHARE_PP = 0.1
-// "well above league value": a PPS gap of at least 0.10 — twice the
-// materiality bar (George: 1.273 vs 1.100).
-const WELL_ABOVE_PPS = 0.1
-// "draws fouls far more often": FTA rate at least 0.10 over the league's —
-// ten extra free throws per hundred shots, well past any rounding story
+// "Making is not the problem": positive past the neutral band — the claim
+// is direction, not magnitude, so the neutral edge is the right price
+// (George: +0.044; previously misnamed MATERIAL while carrying this same
+// neutral-edge value).
+const POSITIVE_MAKING_PPS = NEUTRAL_BAND_PPS
+// "far more ... than is typical": the ladder's far diet lean — double the
+// diet-lean bar (George: 41.4% vs 25.2%).
+const FAR_MORE_SHARE_PP = FAR_DIET_LEAN_PP
+// "well above league value": the ladder's strong bar — twice materiality
+// (George: 1.273 vs 1.100).
+const WELL_ABOVE_PPS = STRONG_PPS
+// "draws fouls far more often": the ladder's far FTA-rate bar — ten extra
+// free throws per hundred shots, well past any rounding story
 // (actual: 0.429 / 0.418 without technicals, vs league 0.264).
-const FAR_MORE_FTA_RATE = 0.1
-// "converts well above the league rate": FT% at least 5 points over league —
-// the gap between an average and a very good free-throw shooter (actual:
+const FAR_MORE_FTA_RATE = FAR_FTA_RATE
+// "converts well above the league rate": the ladder's FT "well" bar — the
+// gap between an average and a very good free-throw shooter (actual:
 // 0.892 / 0.894 without technicals, vs league 0.783).
-const WELL_ABOVE_FT_PCT = 0.05
+const WELL_ABOVE_FT_PCT = WELL_FT_PCT
 
 // The creation-kind claims (ADR-0029): declaring these — asserted against
 // aggregateCreationMetrics over the DEPLOYED creation payload — is what
@@ -179,6 +191,7 @@ describe.skipIf(
   it('claim 2: rim share ~half the league, traded for paint floaters and mid-range', () => {
     const ra = zone('Restricted Area')
     expect(ra.attemptShare).not.toBeNull()
+    expect(ra.attemptShare!).toBeGreaterThanOrEqual(ra.leagueAttemptShare * RIM_SHARE_HALF_FLOOR)
     expect(ra.attemptShare!).toBeLessThanOrEqual(ra.leagueAttemptShare * RIM_SHARE_HALF_CEILING)
     const itp = zone('In The Paint (Non-RA)')
     expect(itp.attemptShare!).toBeGreaterThan(itp.leagueAttemptShare)
@@ -186,14 +199,14 @@ describe.skipIf(
     expect(mid.attemptShare!).toBeGreaterThan(mid.leagueAttemptShare)
   })
 
-  it('claim 3: making at or above league in every zone, and materially positive overall', () => {
+  it('claim 3: making at or above league in every zone, and positive past the neutral band', () => {
     // "reads at league average or better" is the making scale's own
     // semantics (ADR-0013): no zone may bin cold.
     for (const z of m.zones) {
       expect(makingDeltaBin(z.makingDelta), z.zone).toBeGreaterThanOrEqual(0)
     }
     expect(m.making.makingPpsDelta).not.toBeNull()
-    expect(m.making.makingPpsDelta!).toBeGreaterThanOrEqual(MATERIAL_MAKING_PPS)
+    expect(m.making.makingPpsDelta!).toBeGreaterThanOrEqual(POSITIVE_MAKING_PPS)
   })
 
   // The why-sentence's creation-kind claims (ADR-0029), run against the

@@ -9,8 +9,14 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { HEROES } from './registry'
-import { canonicalSeasonOf } from './types'
-import { heroPageHtml, heroPageMeta, SITE_ORIGIN, socialCardPath } from './socialCards'
+import { canonicalSeasonOf, type HeroConfig } from './types'
+import {
+  heroPageHtml,
+  heroPageMeta,
+  payloadPreloadPaths,
+  SITE_ORIGIN,
+  socialCardPath,
+} from './socialCards'
 
 const indexHtml = readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8')
 const hero = HEROES[0]!
@@ -33,6 +39,38 @@ describe('heroPageMeta', () => {
   })
 })
 
+describe('payloadPreloadPaths (the boot fetch set, ADR-0067 amendment)', () => {
+  it('preloads the four required siblings for a single-season hero', () => {
+    expect(payloadPreloadPaths(hero, season)).toEqual([
+      `/data/${hero.slug}/${season.season}.json`,
+      `/data/${hero.slug}/${season.season}.creation.json`,
+      `/data/${hero.slug}/${season.season}.context.json`,
+      `/data/${hero.slug}/${season.season}.freethrow.json`,
+    ])
+  })
+
+  it('adds the prior SHOT payload exactly where the growth coda fetches it (ADR-0061)', () => {
+    // Synthetic two-season hero: no registered hero argues two seasons yet,
+    // but the flip PR will (the Ace activation), and the emitted page must
+    // preload what the canonical page actually fetches — five payloads on
+    // the canonical season, four on the frozen prior's own permalink.
+    const twoSeasons: HeroConfig = {
+      ...hero,
+      slug: 'two-season-hero',
+      canonicalSeason: '2026-27',
+      seasons: [
+        { season: '2025-26', kicker: 'k', verdict: 'v' },
+        { season: '2026-27', kicker: 'k', verdict: 'v' },
+      ],
+    }
+    const canonical = payloadPreloadPaths(twoSeasons, twoSeasons.seasons[1]!)
+    expect(canonical).toHaveLength(5)
+    expect(canonical[4]).toBe('/data/two-season-hero/2025-26.json')
+    // The frozen prior season's page has no coda: four payloads only.
+    expect(payloadPreloadPaths(twoSeasons, twoSeasons.seasons[0]!)).toHaveLength(4)
+  })
+})
+
 describe('heroPageHtml over the real index.html', () => {
   const meta = heroPageMeta(hero, season, { canonicalAlias: true })
   const html = heroPageHtml(indexHtml, meta)
@@ -52,6 +90,14 @@ describe('heroPageHtml over the real index.html', () => {
     // The source mentions og:url in a comment; what must be absent is the TAG.
     expect(indexHtml).not.toContain('property="og:url"')
     expect(html).toContain(`<meta property="og:url" content="${meta.url}" />`)
+  })
+
+  it('preloads every payload the page will fetch, as-fetch with crossorigin', () => {
+    for (const p of meta.preloadPaths) {
+      expect(html).toContain(`<link rel="preload" href="${p}" as="fetch" crossorigin />`)
+    }
+    // The root index.html carries none: the directory fetches no payloads.
+    expect(indexHtml).not.toContain('as="fetch"')
   })
 
   it('escapes swapped content into attribute-safe form', () => {

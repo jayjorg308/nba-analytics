@@ -46,6 +46,7 @@ import {
   unbackedFreethrowTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
+import { MATERIAL_PPS, NEUTRAL_BAND_PPS, STRONG_PPS } from './verdictLadder'
 
 // The guarded season argument, selected explicitly (ADR-0060/0061): a flip
 // moving the canonical pointer must never silently repoint these claims at
@@ -74,27 +75,33 @@ const freethrowPath = path.resolve(
   `${seasonConfig.season}.freethrow.json`,
 )
 
-// Verdict semantics — thresholds the prose is held to:
-// "the diet, not the touch" / "essentially league average": the ADR-0017
-// ±0.02 PPS band — selection must sit below it, making inside it
-// (actual: selection −0.038, making −0.014).
-const NEUTRAL_BAND_PPS = 0.02
-// "more than double the league share": mid-range share at least 2x the
-// league's (actual: 22.2% vs 10.1% — 2.19x).
+// Verdict semantics — thresholds the prose is held to, priced from the
+// house ladder (ADR-0068):
+// "the diet, not the touch" / "essentially league average": the ladder's
+// neutral band (imported directly — the name already matches): selection
+// must sit below it, making inside it (actual: selection −0.038, making
+// −0.014).
+// "more than double the league share": a floor by construction — "more
+// than" is one-sided (actual: 22.2% vs 10.1% — 2.19x).
 const DOUBLE_SHARE = 2
-// "nearly triple": the long-two band's diet share at least 2.5x the
-// league's (actual: 14.2% vs 4.9% — 2.90x).
+// "nearly triple": a TWO-SIDED band (ADR-0068's approximation-word
+// discipline) — short of 2.5x "triple" overstates, past 3x "nearly"
+// understates (actual: 14.2% vs 4.9% — 2.90x).
 const NEARLY_TRIPLE_SHARE = 2.5
+const NEARLY_TRIPLE_CEILING = 3
 // "a genuinely warm paint touch": the paint zone bins warm on the making
 // scale (ADR-0013 semantics — at least warm-1; actual +11.7 pp, warm-2),
 // unflagged (119 FGA).
 const WARM_BIN_MIN = 1
-// "convert above league value": a PPS gap past the neutral band (actual:
-// pull-ups +0.051).
-const ABOVE_PPS = 0.02
-// "land well below it": a PPS gap of at least 0.10 — twice the materiality
-// bar (actual: catch-and-shoot 0.924 vs league 1.100, gap 0.176).
-const WELL_BELOW_PPS = 0.1
+// "convert above league value": a bare comparative prices at material on
+// the house ladder (ADR-0068) — the 2026-07-28 audit found this bar at
+// the neutral edge while an equally bare claim elsewhere required
+// material. Actual +0.051: a 0.001 margin, acceptable only because the
+// season is frozen; on a living season the sentence would be rewritten.
+const ABOVE_PPS = MATERIAL_PPS
+// "land well below it": the ladder's strong bar — twice materiality
+// (actual: catch-and-shoot 0.924 vs league 1.100, gap 0.176).
+const WELL_BELOW_PPS = STRONG_PPS
 // "well under half the league rate" / "barely touch his scoring": at most
 // half the league value, on BOTH technical cuts (ADR-0055). Actual FTA
 // rate: 0.099 / 0.096 vs league 0.264 (0.37x); FT points share:
@@ -186,6 +193,9 @@ describe.skipIf(
     expect(longTwo.attemptShare).not.toBeNull()
     expect(longTwo.attemptShare!).toBeGreaterThanOrEqual(
       longTwo.leagueAttemptShare * NEARLY_TRIPLE_SHARE,
+    )
+    expect(longTwo.attemptShare!).toBeLessThanOrEqual(
+      longTwo.leagueAttemptShare * NEARLY_TRIPLE_CEILING,
     )
   })
 

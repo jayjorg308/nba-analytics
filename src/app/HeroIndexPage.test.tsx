@@ -8,7 +8,9 @@ import { HeroIndexPage } from './HeroIndexPage'
 afterEach(cleanup)
 
 // Non-hero links on the index: the navbar wordmark plus the footer's three
-// social links (Instagram, X, contact email).
+// social links (Instagram, X, contact email). The count also guards that
+// the shared footer renders no way-back pill here — the index IS the
+// directory (ROADMAP launch item 4).
 const CHROME_LINKS = 4
 
 describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
@@ -52,6 +54,18 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
         expect(link!.textContent).toContain(indexMetaOf(hero))
       }
     }
+  })
+
+  it('carries no team marks anywhere (ADR-0065 amendment: considered, declined)', () => {
+    render(<HeroIndexPage />)
+    // Explored 2026-07-28 (behind the marquee name, then in the banner's
+    // own watermark grammar, plus two rail treatments) and declined: the
+    // derived eyebrow already names the team, and the directory's
+    // restraint is the point. Re-adding a mark means revisiting that
+    // amendment, not just filling a CSS slot.
+    expect(document.querySelectorAll('img[src*="-logo"]')).toHaveLength(0)
+    // Every card img is a headshot: exactly one per rail card.
+    expect(document.querySelectorAll('.index-card img')).toHaveLength(HEROES.length - 1)
   })
 
   it('derives a name-free, season-bearing meta line from every kicker (ADR-0065)', () => {

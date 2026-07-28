@@ -32,6 +32,32 @@ export interface HeroPageMeta {
    * card deliberately omitted (a root og:url would collapse a shared hero
    * link back to the front page). */
   url: string
+  /** The payload paths this page's app boot will fetch, preloaded from the
+   * emitted HTML so the downloads start at parse time instead of after
+   * React boots (ADR-0067 amendment) — the visible "Loading shot data…"
+   * beat was mostly this waterfall. */
+  preloadPaths: string[]
+}
+
+/** The payloads a season argument's page fetches at boot: the four required
+ * siblings (ADRs 0030/0032/0053), plus the prior argued season's SHOT
+ * payload when this is the canonical season with a growth coda (ADR-0061 —
+ * the coda's exact fetch set). Absolute paths from the site root, the
+ * node-safe twin of src/heroes/urls.ts (which owns the runtime BASE_URL
+ * derivation and must stay in agreement). */
+export function payloadPreloadPaths(hero: HeroConfig, season: HeroSeasonConfig): string[] {
+  const base = `/data/${hero.slug}/${season.season}`
+  const paths = [
+    `${base}.json`,
+    `${base}.creation.json`,
+    `${base}.context.json`,
+    `${base}.freethrow.json`,
+  ]
+  const canonicalIdx = hero.seasons.findIndex((s) => s.season === hero.canonicalSeason)
+  if (season.season === hero.canonicalSeason && canonicalIdx > 0) {
+    paths.push(`/data/${hero.slug}/${hero.seasons[canonicalIdx - 1]!.season}.json`)
+  }
+  return paths
 }
 
 export function heroPageMeta(
@@ -47,6 +73,7 @@ export function heroPageMeta(
     url: canonicalAlias
       ? `${SITE_ORIGIN}/${hero.slug}`
       : `${SITE_ORIGIN}/${hero.slug}/${season.season}`,
+    preloadPaths: payloadPreloadPaths(hero, season),
   }
 }
 
@@ -93,10 +120,16 @@ export function heroPageHtml(indexHtml: string, meta: HeroPageMeta): string {
   html = swapMeta(html, 'name', 'twitter:title', meta.title)
   html = swapMeta(html, 'name', 'twitter:description', meta.description)
   html = swapMeta(html, 'name', 'twitter:image', meta.imageUrl)
+  // Payload preloads (ADR-0067 amendment): `crossorigin` is required for
+  // as="fetch" to match fetch()'s default credentials mode — without it
+  // the browser fetches twice and warns the preload went unused.
+  const preloads = meta.preloadPaths
+    .map((p) => `<link rel="preload" href="${escapeAttr(p)}" as="fetch" crossorigin />`)
+    .join('')
   return swap(
     html,
     /<\/head>/,
-    `<meta property="og:url" content="${escapeAttr(meta.url)}" /></head>`,
+    `${preloads}<meta property="og:url" content="${escapeAttr(meta.url)}" /></head>`,
     'head close',
   )
 }
