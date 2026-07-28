@@ -738,6 +738,21 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    every guard held without loosening. Gate green (vitest 419, lint,
    build); Cody and Mitchell browser-verified._
 
+   _Same-day follow-ups, both user-chosen: (1) the colon preference became
+   a committed guard — `heroCopy.test.ts` asserts no colon or semicolon in
+   any verdict, and CONTEXT.md's Punctuation style entry records the rule.
+   (2) The audit generalized into ADR-0068: verdict grading words now
+   price on a shared **house ladder** (`src/heroes/verdictLadder.ts` —
+   neutral ±0.02 / material 0.05 / strong "well" 0.10 / "far" 0.15 PPS,
+   plus the diet-lean, FT%, and FTA-rate analogs), consumed by all five
+   guards and printed by CLAIM HEADROOM's header (new far tier). Three
+   miscalibrations fixed at adoption (Ace's bare "above" priced at the
+   neutral edge, "far" at 0.15 vs 0.25 on different pages, a
+   material-named neutral constant), and the approximation words went
+   two-sided everywhere (Mitchell's discipline: "about half" gained its
+   floor, both "nearly triple"s their ceilings). Bars are floors — Cody's
+   stricter 0.25 "far below" stands; looser never._
+
 6. **Directory team marks** — give the marquee the featured hero's team
    mark, reusing the hero banner's wide-layout watermark grammar. Every
    registered hero already has a normalized, asset-tested `teamLogoPath`,

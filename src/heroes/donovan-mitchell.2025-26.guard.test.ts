@@ -48,6 +48,14 @@ import {
   unbackedFreethrowTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
+import {
+  FAR_FTA_RATE,
+  FTA_RATE_FLOOR,
+  MATERIAL_PPS,
+  NEUTRAL_BAND_PPS,
+  STRONG_PPS,
+  WELL_FT_PCT,
+} from './verdictLadder'
 
 // The guarded season argument, selected explicitly (ADR-0060/0061): a flip
 // moving the canonical pointer must never silently repoint these claims at
@@ -83,13 +91,13 @@ const freethrowPath = path.resolve(
   `${seasonConfig.season}.freethrow.json`,
 )
 
-// Verdict semantics — thresholds the prose is held to:
+// Verdict semantics — thresholds the prose is held to, priced from the
+// house ladder (ADR-0068; the neutral, material, and strong bars are
+// imported directly — the names already match):
 // "costs a little value ... never enough to become the story": selection
-// past the ADR-0017 ±0.02 neutral band but short of the 0.05 materiality
-// bar — TWO-SIDED, because "a little" overstates inside the band and
-// understates past materiality (actual: −0.031).
-const NEUTRAL_BAND_PPS = 0.02
-const MATERIAL_PPS = 0.05
+// past the neutral band but short of materiality — TWO-SIDED, because "a
+// little" overstates inside the band and understates past materiality
+// (actual: −0.031).
 // "tilts away from the rim and the corners": rim share clearly under the
 // league's (actual 0.78x), each corner at no more than two-thirds of its
 // league share (actual: left 0.50x, right 0.56x).
@@ -114,25 +122,24 @@ const NEARLY_HALF_CEILING = 0.5
 // for the same reason (actual: 45.4% vs 25.2% — 1.80x).
 const CLOSE_TO_DOUBLE_FLOOR = 1.6
 const CLOSE_TO_DOUBLE_CEILING = 2
-// "still beat the league pull-up value": a PPS gap at least the
-// materiality bar (actual: +0.077).
-const BEAT_PPS = 0.05
-// "land even further above it": catch-and-shoot's gap clears the strong
-// bar and exceeds the pull-up gap (actual: +0.115 vs +0.077).
-const STRONG_PPS = 0.1
+// "still beat the league pull-up value": a bare comparative prices at
+// material (actual: +0.077).
+const BEAT_PPS = MATERIAL_PPS
+// "land even further above it": catch-and-shoot's gap clears the ladder's
+// strong bar and exceeds the pull-up gap (actual: +0.115 vs +0.077).
 // "fewer than four in ten of his makes are officially assisted": the
 // worst-case MAXIMUM assisted share stays under 0.40 — bounds, not the
 // classified point estimate (actual: 38.5% at complete coverage).
 const FOUR_IN_TEN = 0.4
-// "earns trips to the line a bit more often than the league": FTA rate
-// over league by at least 0.02 but under 0.10 on BOTH technical cuts
+// "earns trips to the line a bit more often than the league": the ladder's
+// FTA-rate floor up to where "far" begins, on BOTH technical cuts
 // (ADR-0055) — two-sided, "a bit" must not quietly become "far more"
 // (actual: +0.043 / +0.029).
-const A_BIT_MORE_FTA_FLOOR = 0.02
-const A_BIT_MORE_FTA_CEILING = 0.1
-// "converts well above the league rate": FT% at least 5 points over
-// league on both cuts (actual: +0.082 / +0.093), sample-safe (430 FTA).
-const WELL_ABOVE_FT_PCT = 0.05
+const A_BIT_MORE_FTA_FLOOR = FTA_RATE_FLOOR
+const A_BIT_MORE_FTA_CEILING = FAR_FTA_RATE
+// "converts well above the league rate": the ladder's FT "well" bar, on
+// both cuts (actual: +0.082 / +0.093), sample-safe (430 FTA).
+const WELL_ABOVE_FT_PCT = WELL_FT_PCT
 
 // The verdict's directional shot claims (ADR-0017): one entry per claim,
 // named after the verdict words it backs, asserted against the shot

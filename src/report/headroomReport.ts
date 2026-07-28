@@ -21,21 +21,20 @@ import type { CreationPayload } from '../domain/creationPayload'
 import { LONG_TWO_BAND } from '../domain/constants'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
-
-// The house threshold vocabulary — the recurring guard bars (each guard
-// still declares its own, with rationale; these label the report columns).
-const NEUTRAL_PPS = 0.02
-const MATERIAL_PPS = 0.05
-const STRONG_PPS = 0.1
+// The house verdict ladder (ADR-0068) — one source for the report header
+// and every guard, so the authoring aid and the assertions speak the same
+// bars (guards may still declare stricter, never looser).
+import { FAR_PPS, MATERIAL_PPS, NEUTRAL_BAND_PPS, STRONG_PPS } from '../heroes/verdictLadder'
 
 const sign = (v: number, dp = 3) => `${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(dp)}`
 
 function ppsBandNote(gap: number): string {
   const a = Math.abs(gap)
-  if (a < NEUTRAL_PPS) return 'inside the neutral band'
+  if (a < NEUTRAL_BAND_PPS) return 'inside the neutral band'
   if (a < MATERIAL_PPS) return 'past neutral, short of material'
   if (a < STRONG_PPS) return 'material'
-  return 'strong'
+  if (a < FAR_PPS) return 'strong'
+  return 'far'
 }
 
 function line(label: string, gap: number, extra = ''): string {
@@ -53,9 +52,9 @@ export function renderClaimHeadroom(
   const m: ShotMetrics = aggregateShotMetrics(shot.shots, shot.zoneBaseline)
   const lines: string[] = []
   lines.push(
-    'CLAIM HEADROOM (ADR-0059) — verdict-grade gaps vs the house bars ' +
-      `(neutral ±${NEUTRAL_PPS} · material ${MATERIAL_PPS} · strong ${STRONG_PPS} PPS); ` +
-      'a live claim should clear its bar with margin',
+    'CLAIM HEADROOM (ADR-0059) — verdict-grade gaps vs the house ladder ' +
+      `(neutral ±${NEUTRAL_BAND_PPS} · material ${MATERIAL_PPS} · strong ${STRONG_PPS} · ` +
+      `far ${FAR_PPS} PPS, ADR-0068); a live claim should clear its bar with margin`,
   )
 
   lines.push('', '  TWO-AXIS (PPS)')
