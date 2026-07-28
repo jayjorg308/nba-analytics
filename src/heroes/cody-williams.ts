@@ -49,10 +49,10 @@ export const codyWilliams: HeroConfig = {
         'Yes, he lives at the rim and rarely fires from three, and that trade nets out to an ' +
         'essentially league-average shot diet. The problem is shot making. ' +
         'He converts below what his shot diet should yield, and the gap comes almost entirely from three. ' +
-        'The misses are not self-created difficulty: almost all of his threes arrive off the catch, ' +
+        'The misses are not self-created difficulty. Almost all of his threes arrive off the catch, ' +
         'and it is exactly those catch-and-shoot looks he converts far below league value. ' +
-        'The line does not bail him out: he draws fouls less often than the league and converts ' +
-        'below the league rate when he gets there.',
+        'The line does not bail him out. He draws fouls less often than the league and converts ' +
+        'well below the league rate once there.',
     },
   ],
 }

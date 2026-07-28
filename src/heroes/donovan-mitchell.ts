@@ -57,13 +57,13 @@ export const donovanMitchell: HeroConfig = {
       verdict:
         'Mostly, yes. His diet tilts away from the rim and the corners toward pull-up ' +
         'jumpers and long twos, and that tilt costs a little value against the league ' +
-        'diet, never enough to become the story. The story is conversion: his shot ' +
+        'diet, never enough to become the story. The story is conversion. His shot ' +
         'making adds back more than twice what his selection gives away, with paint ' +
-        'and mid-range touch well above league. The creation evidence backs the bet: ' +
-        'nearly half of his attempts are pull-ups, close to double the league share, ' +
-        'and they still beat the league pull-up value; his rarer catch-and-shoot looks ' +
+        'and mid-range touch well above league. The creation evidence backs the bet. ' +
+        'Nearly half of his attempts are pull-ups, close to double the league share, ' +
+        'and they still beat the league pull-up value. His rarer catch-and-shoot looks ' +
         'land even further above it. Fewer than four in ten of his makes are ' +
-        'officially assisted. The line widens the margin quietly: he earns trips to ' +
+        'officially assisted. The line widens the margin quietly. He earns trips to ' +
         'the line a bit more often than the league and converts well above the league ' +
         'rate once there.',
     },

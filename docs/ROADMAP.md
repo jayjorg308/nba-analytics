@@ -720,6 +720,23 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    rewrite drifted copy together with its guard claim mapping (ADR-0017's
    standing rule; the suite is the copy editor). A copy pass, not a
    generator — verdicts stay authored (ADR-0063's boundary).
+   _Done 2026-07-28. The audit found the skeleton and vocabulary held
+   across all five adds (answer word → selection → making turn →
+   why-sentence → line sentence, adverbs honestly calibrated) with two
+   real drifts: thirteen "setup: evidence" colons (an accidental house
+   move — the author's preference is commas and periods) and one adverb
+   miscalibration, Cody's FT conversion (−0.077) reading bare "below"
+   while Mitchell's same-magnitude "well above" (+0.082) cleared the same
+   0.05 bar. Treatment, author-chosen: the period split everywhere (the
+   colon becomes a full stop; "The problem is shot making." was already
+   the in-house model), Mitchell's lone semicolon resolved the same way,
+   Cody upgraded to "well below the league rate once there" (guard
+   constant renamed `WELL_BELOW_LEAGUE_FT_PCT`, same bar, the
+   calibration-parity rationale recorded in its comment), and Cody's
+   "when he gets there" aligned to the house "once there". The five
+   verdicts now carry zero colons; no claim-backed vocabulary moved, so
+   every guard held without loosening. Gate green (vitest 419, lint,
+   build); Cody and Mitchell browser-verified._
 
 6. **Directory team marks** — give the marquee the featured hero's team
    mark, reusing the hero banner's wide-layout watermark grammar. Every

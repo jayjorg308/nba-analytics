@@ -31,11 +31,11 @@ export const shaiGilgeousAlexander: HeroConfig = {
       verdict:
         'Not by league-average shot values, and that is the point. He takes mid-range shots ' +
         'at nearly triple the league share and far fewer threes, a diet that costs value. ' +
-        'Then MVP-level shot making overwhelms the cost: his conversion adds far more than ' +
-        'his selection gives away. The creation evidence explains the bet: more than half of ' +
+        'Then MVP-level shot making overwhelms the cost. His conversion adds far more than ' +
+        'his selection gives away. The creation evidence explains the bet. More than half of ' +
         'his attempts are pull-up jumpers, and those pull-ups still produce far above league value. ' +
         'Only one in five of his makes is officially assisted. ' +
-        'The line completes the argument: he draws fouls far more often than the league, converts ' +
+        'The line completes the argument. He draws fouls far more often than the league, converts ' +
         'well above the league rate, and roughly a quarter of his scoring arrives as free throws ' +
         'the shot chart never sees.',
     },

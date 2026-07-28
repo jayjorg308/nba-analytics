@@ -20,7 +20,7 @@
 //    of why 1 + why 2 together — his threes are overwhelmingly not
 //    self-created, and those are the ones missing.)
 //   "he draws fouls less often than the league"            -> line 1 (free throw)
-//   "converts below the league rate when he gets there"    -> line 2 (free throw)
+//   "converts well below the league rate once there"       -> line 2 (free throw)
 //   ("the line does not bail him out" is the rhetorical frame of line 1 +
 //    line 2: neither generation nor conversion offsets the making story.)
 // One engine-copy claim rides along: the zone table's Restricted Area
@@ -100,10 +100,12 @@ const FAR_BELOW_PPS = 0.25
 // league's — two trips' worth of free throws per hundred shots, past rounding
 // (actual: 0.234 / 0.232 without technicals, vs league 0.264).
 const BELOW_LEAGUE_FTA_RATE = 0.02
-// "converts below the league rate": FT% at least 5 points under league —
-// the gap between an average and a poor free-throw shooter (actual:
+// "converts well below the league rate": FT% at least 5 points under
+// league — the gap between an average and a poor free-throw shooter, and
+// the same bar Mitchell's "well above" clears on the positive side, so
+// "well" grades the same magnitude on every page (actual:
 // 0.706 / 0.712 without technicals, vs league 0.783).
-const BELOW_LEAGUE_FT_PCT = 0.05
+const WELL_BELOW_LEAGUE_FT_PCT = 0.05
 
 // The creation-kind claims (ADR-0029): declaring these — asserted against
 // aggregateCreationMetrics over the DEPLOYED creation payload — is what
@@ -147,15 +149,15 @@ const freethrowClaims: FreethrowClaim[] = [
     },
   },
   {
-    name: 'line 2: converts below the league rate, on both cuts, sample-safe',
+    name: 'line 2: converts well below the league rate, on both cuts, sample-safe',
     assert: (f) => {
       const conv = f.seasonLine.conversion
       expect(conv.value).not.toBeNull()
       expect(conv.withoutTechnicals).not.toBeNull()
       // stated unhedged in the verdict, so it must clear the † bar
       expect(f.seasonLine.smallSampleConversion).toBe(false)
-      expect(conv.league - conv.value!).toBeGreaterThanOrEqual(BELOW_LEAGUE_FT_PCT)
-      expect(conv.league - conv.withoutTechnicals!).toBeGreaterThanOrEqual(BELOW_LEAGUE_FT_PCT)
+      expect(conv.league - conv.value!).toBeGreaterThanOrEqual(WELL_BELOW_LEAGUE_FT_PCT)
+      expect(conv.league - conv.withoutTechnicals!).toBeGreaterThanOrEqual(WELL_BELOW_LEAGUE_FT_PCT)
     },
   },
 ]
