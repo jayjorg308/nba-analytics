@@ -77,6 +77,47 @@ export function heroPageMeta(
   }
 }
 
+/** The webfont files painted above the fold on every page — the marquee
+ * and banner display face plus the three body weights (nav, eyebrow, cue,
+ * verdict). Preloading them is what stops first-paint text from jumping
+ * out of the fallback font (`font-display: swap`, the @fontsource
+ * default); IBM Plex Mono and the non-latin subsets stay lazy — they
+ * paint below the fold or not at all. Prefixes of the built asset
+ * filenames (the hash suffix varies per build). */
+export const FONT_PRELOAD_FAMILIES = [
+  'big-shoulders-display-latin-900-normal-',
+  'public-sans-latin-400-normal-',
+  'public-sans-latin-500-normal-',
+  'public-sans-latin-600-normal-',
+]
+
+/** Preload links for the critical fonts, resolved against the built
+ * asset listing (dist/assets). Fails loudly when a family is missing —
+ * a @fontsource rename must break the build here, never silently ship
+ * the font jump back. `crossorigin` is load-bearing: font requests are
+ * always anonymous-CORS, and a mismatched preload downloads twice. */
+export function fontPreloadLinks(assetFiles: string[]): string {
+  return FONT_PRELOAD_FAMILIES.map((family) => {
+    const file = assetFiles.find((f) => f.startsWith(family) && f.endsWith('.woff2'))
+    if (!file) {
+      throw new Error(`font preload: no built .woff2 asset matches ${family}*`)
+    }
+    return `<link rel="preload" href="/assets/${file}" as="font" type="font/woff2" crossorigin />`
+  }).join('')
+}
+
+/** The built index.html with the critical-font preloads injected — applied
+ * to dist/index.html itself (the directory is where the font jump was
+ * noticed) and to every emitted hero page via the same source string. */
+export function withFontPreloads(html: string, assetFiles: string[]): string {
+  return swap(
+    html,
+    /<\/head>/,
+    `${fontPreloadLinks(assetFiles)}</head>`,
+    'head close',
+  )
+}
+
 function escapeAttr(value: string): string {
   return value
     .replace(/&/g, '&amp;')

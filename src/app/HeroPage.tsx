@@ -100,7 +100,12 @@ export function HeroPage({
     return (
       <main className="hero-page">
         <SiteNav />
-        <p className="page-status">Loading shot data…</p>
+        {/* page-loading delays the indicator's VISIBILITY (~350ms, CSS):
+            with preloaded payloads a warm load resolves in well under
+            that, so fast navigations paint dark → content with no
+            "Loading" blink, while slow first visits still get the
+            message. Error states stay immediate. */}
+        <p className="page-status page-loading">Loading shot data…</p>
       </main>
     )
   }

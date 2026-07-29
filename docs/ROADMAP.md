@@ -822,6 +822,23 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    hit the browser cache with zero network; first visits download data
    in parallel with the bundle. Headers take effect on the next deploy._
 
+   _Follow-up round, same day (user report from the deployed layers: the
+   loading screen still always shows, and mobile first paint jumps out
+   of the fallback font). Three residual causes, all fixed: (1)
+   `/assets/*` — the hashed bundle, CSS, and all seventeen webfonts —
+   still revalidated on every navigation; now `max-age=31536000,
+   immutable` (ADR-0010 follow-up amendment; the HTML deliberately keeps
+   revalidating). (2) `font-display: swap` + no preload meant first
+   paint always set fallback type; the emit step now injects
+   critical-font preloads (display latin 900, Public Sans latin
+   400/500/600) into dist/index.html AND every emitted hero page,
+   resolved from the built asset hashes, failing loudly on a missing
+   family (ADR-0067 follow-up amendment). (3) The "Loading shot data…"
+   indicator painted from frame one, guaranteeing a blink even with
+   instant data — it now waits ~350ms before becoming visible
+   (`.page-loading`), so warm loads never show it and slow first visits
+   still do. Error states stay immediate._
+
 ---
 
 ## Season-start parking lot — undesigned ideas (opened 2026-07-28)
