@@ -11,11 +11,14 @@ import { describe, expect, it } from 'vitest'
 import { HEROES } from './registry'
 import { canonicalSeasonOf, type HeroConfig } from './types'
 import {
+  FONT_PRELOAD_FAMILIES,
+  fontPreloadLinks,
   heroPageHtml,
   heroPageMeta,
   payloadPreloadPaths,
   SITE_ORIGIN,
   socialCardPath,
+  withFontPreloads,
 } from './socialCards'
 
 const indexHtml = readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8')
@@ -68,6 +71,51 @@ describe('payloadPreloadPaths (the boot fetch set, ADR-0067 amendment)', () => {
     expect(canonical[4]).toBe('/data/two-season-hero/2025-26.json')
     // The frozen prior season's page has no coda: four payloads only.
     expect(payloadPreloadPaths(twoSeasons, twoSeasons.seasons[0]!)).toHaveLength(4)
+  })
+})
+
+describe('font preloads (the first-paint jump fix)', () => {
+  // Synthetic built-asset listing: the four critical families plus files
+  // the filter must ignore (mono, non-latin subsets, non-woff2).
+  const assets = [
+    'big-shoulders-display-latin-900-normal-CW8trzgu.woff2',
+    'big-shoulders-display-latin-900-normal-DMT-1gsg.woff',
+    'big-shoulders-display-vietnamese-900-normal-B_uE6zXf.woff2',
+    'public-sans-latin-400-normal-8Rpg0ruU.woff2',
+    'public-sans-latin-500-normal-NlrCPXnF.woff2',
+    'public-sans-latin-600-normal-Fru-LXNs.woff2',
+    'public-sans-latin-ext-400-normal-mk90oQqJ.woff2',
+    'ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2',
+    'index-9N3Bwz62.js',
+  ]
+
+  it('preloads exactly the critical families, woff2 only, crossorigin set', () => {
+    const links = fontPreloadLinks(assets)
+    expect(links.match(/<link /g)).toHaveLength(FONT_PRELOAD_FAMILIES.length)
+    expect(links).toContain(
+      '/assets/big-shoulders-display-latin-900-normal-CW8trzgu.woff2',
+    )
+    // woff2 only (never the woff fallback), lazy families stay lazy.
+    expect(links).not.toContain('DMT-1gsg.woff')
+    expect(links).not.toContain('vietnamese')
+    expect(links).not.toContain('latin-ext')
+    expect(links).not.toContain('ibm-plex-mono')
+    // Load-bearing attributes: as=font + crossorigin, or the browser
+    // downloads every font twice.
+    expect(links.match(/as="font" type="font\/woff2" crossorigin/g)).toHaveLength(
+      FONT_PRELOAD_FAMILIES.length,
+    )
+  })
+
+  it('fails loudly when a critical family is missing from the build', () => {
+    const missingDisplay = assets.filter((f) => !f.startsWith('big-shoulders'))
+    expect(() => fontPreloadLinks(missingDisplay)).toThrow(/no built \.woff2 asset/)
+  })
+
+  it('injects into the head of the real index.html', () => {
+    const html = withFontPreloads(indexHtml, assets)
+    expect(html).toContain('as="font"')
+    expect(html.indexOf('as="font"')).toBeLessThan(html.indexOf('</head>'))
   })
 })
 

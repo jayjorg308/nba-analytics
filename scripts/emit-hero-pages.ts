@@ -9,10 +9,15 @@
 // registered hero without one fails the build, the hero:sync
 // partial-fails stance applied to share assets.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { HEROES } from '../src/heroes/registry'
-import { heroPageHtml, heroPageMeta, socialCardPath } from '../src/heroes/socialCards'
+import {
+  heroPageHtml,
+  heroPageMeta,
+  socialCardPath,
+  withFontPreloads,
+} from '../src/heroes/socialCards'
 import { canonicalSeasonOf } from '../src/heroes/types'
 
 function fail(message: string): never {
@@ -24,7 +29,15 @@ const distIndex = join('dist', 'index.html')
 if (!existsSync(distIndex)) {
   fail('dist/index.html not found — this step runs after vite build (npm run build)')
 }
-const indexHtml = readFileSync(distIndex, 'utf-8')
+// Critical-font preloads go into the ROOT page too (the directory is where
+// the first-paint font jump was noticed), then every hero page inherits
+// them by being emitted from the same string. Idempotence guard: the emit
+// step must not double-inject on a re-run over an already-processed dist.
+let indexHtml = readFileSync(distIndex, 'utf-8')
+if (!indexHtml.includes('as="font"')) {
+  indexHtml = withFontPreloads(indexHtml, readdirSync(join('dist', 'assets')))
+  writeFileSync(distIndex, indexHtml)
+}
 
 let pages = 0
 for (const hero of HEROES) {

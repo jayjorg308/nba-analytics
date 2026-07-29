@@ -292,6 +292,22 @@
     padding: 64px 0;
 }
 
+/* The loading indicator earns its paint (the page-loading class, hero page
+   only): invisible for its first ~350ms, so a warm-cache load — preloaded
+   payloads typically resolve and parse well inside that — never shows a
+   "Loading" blink at all. A slow first visit still gets the message, eased
+   in. Visibility (not display) so the layout never shifts when it appears. */
+.page-loading {
+    visibility: hidden;
+    animation: page-loading-appear 0s linear 350ms forwards;
+}
+
+@keyframes page-loading-appear {
+    to {
+        visibility: visible;
+    }
+}
+
 .page-error {
     color: #dc2626;
 }
