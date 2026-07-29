@@ -21,7 +21,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
-| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch), plus the pre-launch polish round opened 2026-07-28 (items 4–8). See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch) and the methodology page (item 8, may slip). See [Launch (August 2026)](#launch-august-2026--open-items). |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -797,6 +797,46 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    role-relative descriptive color, never a re-graded number). Needs a
    small ADR, a schema touch (likely shot-payload `_meta` + golden regen),
    and a placement decision.
+   _Designed 2026-07-28 (grilling + domain-modeling session; ADR-0069,
+   new CONTEXT.md term: usage rate). The decisions, locked: ship the
+   official `USG_PCT` (declining considered — the ADR-0064 role-context
+   gap is real and load-bearing for reading verdicts fairly; `PCT_FGA`
+   considered — no public calibration, blind to the line). Placement:
+   the byline only, between season and frontier ("18.4% usage", one
+   decimal, bare number), with the term popover carrying the definition
+   and the only honest calibration — an even share is 20 percent; a
+   computed league anchor would be rate averaging and never ships.
+   Contract: shot `_meta` v5, required `usagePct` verbatim + source
+   provenance, shot golden regen, all five deployed payloads re-derived
+   and re-synced in the build PR. Sourcing: one league-wide Advanced
+   artifact per season (`data/raw/_league/<season>/advanced/`) beside
+   the totals artifact, written by the same pull script; on a living
+   season the pull is frontier-anchored with the FGA oracle (the Advanced
+   row's FGA must equal the payload's pre-drop season FGA — the spike
+   falsified the GP form on Cody, whose five zero-FGA appearances put GP
+   at 67 vs 62 shot-record games), so a lagging source defers the publish
+   like any other. Vocabulary: "usage" is reserved — forbidden in
+   verdicts, no claim kind; graduation needs its own ADR. The build's
+   spike also proved Advanced-measure `DateTo` semantics and recorded the
+   unit (a fraction, three API decimals)._
+
+   _Built 2026-07-28, same day, exactly as designed (the FGA-oracle
+   correction above was the spike's one amendment, exact for all five
+   heroes on the real artifact). Shipped: the advanced artifact class
+   under an extended league pull (per-class append-only skips, so a
+   totals-only season gains just the missing artifact),
+   `pull_league_advanced_snapshot` + the loop's frontier-anchored
+   integration (explicit `--advanced-file` on the loop's shot derive;
+   the replay's provenance-exempt list grew `usageSourceSnapshot`), shot
+   schema v5 (`usagePct` stored as the verbatim fraction behind a (0,1)
+   unit guard + `usageSourceSnapshot`), goldens regenerated over the new
+   `league-advanced.truncated.json` fixture (whose GP deliberately
+   exceeds the golden's game count by one zero-FGA appearance), all five
+   heroes re-derived and re-synced, the byline segment with the usage
+   term popover, "usage" reserved in the verdict lexicon, and the
+   hero:report header line. Gate green (pytest 106, vitest 433, lint,
+   build); byline and popover browser-verified on Cody (15.9%) and Shai
+   (32.3%)._
 
 8. **Methodology page** — a `/methodology` route of structural copy
    explaining league diet, the rollup rule, the decomposition identity,

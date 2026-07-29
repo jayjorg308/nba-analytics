@@ -1,16 +1,18 @@
 {
   "_meta": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
     "seasonType": "Regular Season",
-    "pullDate": "2026-07-09",
+    "pullDate": "2026-07-23",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 62,
-    "sourceSnapshot": "data/raw/cody-williams/2025-26/2026-07-09.json",
+    "sourceSnapshot": "data/raw/cody-williams/2025-26/2026-07-23T155832-discovery.json",
     "totalShots": 509,
-    "zoneConflictsDropped": 0
+    "zoneConflictsDropped": 0,
+    "usagePct": 0.159,
+    "usageSourceSnapshot": "data/raw/_league/2025-26/advanced/2026-07-28.json"
   },
   "shots": [
     {

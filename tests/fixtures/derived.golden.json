@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
@@ -10,7 +10,9 @@
     "gamesIncluded": 6,
     "sourceSnapshot": "tests/fixtures/snapshot.truncated.json",
     "totalShots": 15,
-    "zoneConflictsDropped": 0
+    "zoneConflictsDropped": 0,
+    "usagePct": 0.159,
+    "usageSourceSnapshot": "tests/fixtures/league-advanced.truncated.json"
   },
   "shots": [
     {

@@ -6,7 +6,7 @@ dependency order —
 
   1. pull_shots            (raw shot snapshot + gate report)
   2. pull_tracking         (raw tracking snapshot; league baseline if absent)
-  3. pull_league_totals    (Gate 5 oracle artifact, if absent for the season)
+  3. pull_league_totals    (Gate 5 oracle + usage-source artifacts, if absent)
   4. derive_payload        (first contract; the game-id discovery source)
   5. pull_play_by_play     (only the corpus's MISSING games, via --game-ids —
                             the "pre-deploy hero-add path" that flag names)
@@ -201,13 +201,17 @@ def main() -> None:
             cmd.append("--skip-league")
         run(cmd, "The tracking pull is append-only; nothing to clean up.")
 
-    # -- 3: league season-totals artifact (Gate 5 oracle) ----------------------
-    step(3, total, "league totals (pull_league_totals)")
-    if latest_json(raw_root / "_league" / season / "totals"):
-        print("league totals artifact exists — skip")
+    # -- 3: league season artifacts (Gate 5 oracle + usage source) -------------
+    step(3, total, "league totals + advanced (pull_league_totals)")
+    if latest_json(raw_root / "_league" / season / "totals") and latest_json(
+        raw_root / "_league" / season / "advanced"
+    ):
+        print("league totals + advanced artifacts exist — skip")
     else:
+        # The script skips whichever class the season already has (per-class
+        # append-only guards), so this pulls only what is missing.
         run([python, "ingestion/pull_league_totals.py", "--season", season],
-            "The totals pull is append-only; nothing to clean up.")
+            "The league pulls are append-only; nothing to clean up.")
 
     # -- 4: derive the shot payload (also the game-id discovery source) --------
     step(4, total, "derive shot payload (derive_payload)")

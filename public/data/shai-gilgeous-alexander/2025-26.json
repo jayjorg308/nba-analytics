@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "player": "Shai Gilgeous-Alexander",
     "playerId": 1628983,
     "season": "2025-26",
@@ -10,7 +10,9 @@
     "gamesIncluded": 68,
     "sourceSnapshot": "data/raw/shai-gilgeous-alexander/2025-26/2026-07-16.json",
     "totalShots": 1321,
-    "zoneConflictsDropped": 0
+    "zoneConflictsDropped": 0,
+    "usagePct": 0.323,
+    "usageSourceSnapshot": "data/raw/_league/2025-26/advanced/2026-07-28.json"
   },
   "shots": [
     {

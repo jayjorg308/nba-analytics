@@ -319,6 +319,13 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
     totals_path = live_pulls.pull_league_totals_snapshot(
         season, raw_root / "_league" / season / "totals",
         date_to=frontier, stamp=stamp, pull_date=pull_date)
+    time.sleep(args.sleep)
+    # The usage source (ADR-0069), anchored like its totals sibling. A lag
+    # surfaces as the shot derive's FGA-oracle failure — a halt, the same
+    # class as a lagging totals artifact failing Gate 5.
+    advanced_path = live_pulls.pull_league_advanced_snapshot(
+        season, raw_root / "_league" / season / "advanced",
+        date_to=frontier, stamp=stamp, pull_date=pull_date)
     league_tracking_path = live_pulls.pull_league_tracking_snapshot(
         season, raw_root / "_league" / season / "tracking",
         date_to=frontier, stamp=stamp, pull_date=pull_date, sleep=args.sleep)
@@ -328,7 +335,9 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
     out = f"{pull_date}{stamp}.json"
     steps = [
         ("shot", f"python ingestion/derive_payload.py "
-                 f"--snapshot-file \"{shot_path}\" --out-file \"{derived / out}\""),
+                 f"--snapshot-file \"{shot_path}\" "
+                 f"--advanced-file \"{advanced_path}\" "
+                 f"--out-file \"{derived / out}\""),
         ("creation", f"python ingestion/derive_creation.py "
                      f"--snapshot-file \"{tracking_path}\" "
                      f"--league-file \"{league_tracking_path}\" "

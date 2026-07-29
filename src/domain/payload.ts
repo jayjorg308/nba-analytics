@@ -24,7 +24,11 @@ import {
 //     metadata (ADR-0058; v3 Phase 2). This payload computes them from its
 //     own rows (verified below); the three siblings copy them, and four-way
 //     equality is guarded at derive and at the deployed-pair tests.
-export const SCHEMA_VERSION = 4
+// v5: _meta.usagePct/usageSourceSnapshot — the hero's official USG_PCT taken
+//     verbatim from the league Advanced artifact behind the derive's FGA
+//     oracle (ADR-0069). Descriptive context only: the byline renders it,
+//     no aggregation reads it, no verdict may cite it.
+export const SCHEMA_VERSION = 5
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
 
@@ -87,6 +91,13 @@ export const derivedPayloadSchema = z
       /** Rows dropped at derive because the NBA's SHOT_TYPE contradicted the
        * zone's point value — reported in the UI whenever nonzero (ADR-0019). */
       zoneConflictsDropped: z.number().int().min(0),
+      /** The official USG_PCT, verbatim, as a fraction (ADR-0069). The open
+       * (0, 1) bounds double as the unit guard: a silent API switch to
+       * percent display fails the parse instead of rendering "1590% usage".
+       * Sourced, never computed — the derive's FGA oracle is what ties this
+       * number to the payload's own season-to-date record. */
+      usagePct: z.number().gt(0).lt(1),
+      usageSourceSnapshot: z.string().min(1),
     }),
     shots: z.array(enrichedShotSchema),
     zoneBaseline: z.array(zoneBaselineEntrySchema),

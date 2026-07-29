@@ -6,7 +6,7 @@ fixtures are not. There are four independent golden contracts — the shot,
 creation, shot-context, and free-throw payloads version on different clocks
 (ADR-0030/0032/0053), so each has its own fixtures and schema version.
 
-## Shot payload (ADR-0007; schema v4 — frontier metadata added by ADR-0058)
+## Shot payload (ADR-0007; schema v5 — frontier metadata added by ADR-0058, usage metadata by ADR-0069)
 
 - **`snapshot.truncated.json`** — a hand-trimmed copy of the real raw snapshot
   `data/raw/cody-williams/2025-26/2026-07-09.json`:
@@ -21,8 +21,17 @@ creation, shot-context, and free-throw payloads version on different clocks
   - `_meta.shot_rows`, `games_included`, and `date_range` were edited to match
     the trimmed row set; `_meta.fixture_note` marks the file as a fixture.
 
+- **`league-advanced.truncated.json`** — a hand-built league Advanced
+  artifact (real `LeagueDashPlayerStats` Advanced headers, 2 rows vs ~580) —
+  the usage-rate source (ADR-0069). The Williams row's FGA (15) matches the
+  shot golden's pre-drop season FGA (the derive's FGA oracle), and its GP (7)
+  deliberately exceeds the golden's `gamesIncluded` (6) by one zero-FGA
+  appearance — games played may legitimately exceed the shot record (the
+  spike finding that made the oracle FGA equality, never GP equality).
+
 - **`derived.golden.json`** — the derive step's output over the truncated
-  snapshot. **Never edit by hand**; regenerate via `npm run golden:regen`.
+  snapshot plus the advanced fixture. **Never edit by hand**; regenerate via
+  `npm run golden:regen`.
 
 ## Creation payload (ADR-0030; schema v4 — Closest Defender in v2.1, trackingShortfall in v3, frontier metadata in v4)
 

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "player": "Donovan Mitchell",
     "playerId": 1628378,
     "season": "2025-26",
@@ -10,7 +10,9 @@
     "gamesIncluded": 70,
     "sourceSnapshot": "data/raw/donovan-mitchell/2025-26/2026-07-27.json",
     "totalShots": 1403,
-    "zoneConflictsDropped": 0
+    "zoneConflictsDropped": 0,
+    "usagePct": 0.311,
+    "usageSourceSnapshot": "data/raw/_league/2025-26/advanced/2026-07-28.json"
   },
   "shots": [
     {

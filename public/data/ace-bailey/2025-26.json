@@ -1,16 +1,18 @@
 {
   "_meta": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "player": "Ace Bailey",
     "playerId": 1642846,
     "season": "2025-26",
     "seasonType": "Regular Season",
-    "pullDate": "2026-07-09",
+    "pullDate": "2026-07-23",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 72,
-    "sourceSnapshot": "data/raw/ace-bailey/2025-26/2026-07-09.json",
+    "sourceSnapshot": "data/raw/ace-bailey/2025-26/2026-07-23T154151-discovery.json",
     "totalShots": 892,
-    "zoneConflictsDropped": 0
+    "zoneConflictsDropped": 0,
+    "usagePct": 0.21,
+    "usageSourceSnapshot": "data/raw/_league/2025-26/advanced/2026-07-28.json"
   },
   "shots": [
     {
