@@ -22,7 +22,7 @@ USAGE:
   python ingestion/derive_payload.py                        # Cody Williams, 2025-26
   python ingestion/derive_payload.py --player "Keyonte George" --season 2024-25
   # golden-fixture regeneration (run from the repo root):
-  python ingestion/derive_payload.py --snapshot-file tests/fixtures/snapshot.truncated.json --out-file tests/fixtures/derived.golden.json
+  python ingestion/derive_payload.py --snapshot-file tests/fixtures/snapshot.truncated.json --advanced-file tests/fixtures/league-advanced.truncated.json --out-file tests/fixtures/derived.golden.json
 """
 
 from __future__ import annotations
@@ -43,7 +43,10 @@ import pandas as pd
 #     metadata (ADR-0058; v3 Phase 2). The shot payload computes them from
 #     its own rows; the three sibling derives copy them from this payload,
 #     so four-way frontier equality holds by construction.
-SCHEMA_VERSION = 4
+# v5: _meta.usagePct/usageSourceSnapshot — the hero's official USG_PCT taken
+#     verbatim from the league Advanced artifact, fenced by the FGA oracle
+#     (ADR-0069). Presented, never computed; descriptive context only.
+SCHEMA_VERSION = 5
 
 # --- Zone taxonomy (v1 evaluation grain = SHOT_ZONE_BASIC; see CONTEXT.md) -----
 BASIC_ZONES = [
@@ -127,6 +130,11 @@ LEAGUE_HEADERS = [
 ]
 
 META_KEYS = ["player", "player_id", "season", "season_type", "pull_date", "shot_rows"]
+
+# The league Advanced artifact (ADR-0069): the usage-rate source. Pinned to
+# what pull_league_totals.py validates at the source boundary.
+ADVANCED_RESULT_SET = "LeagueDashPlayerStats"
+ADVANCED_COLUMNS = ("PLAYER_ID", "GP", "FGA", "USG_PCT")
 
 
 def fail(msg: str) -> None:
@@ -269,6 +277,92 @@ def validate_snapshot(snapshot: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame,
     return meta, shots, league, zone_conflicts_dropped
 
 
+def latest_advanced_path(raw_root: Path, season: str) -> Path:
+    adv_dir = raw_root / "_league" / season / "advanced"
+    candidates = sorted(adv_dir.glob("*.json"))
+    if not candidates:
+        fail(
+            f"no league advanced artifact under {adv_dir} — run "
+            f"ingestion/pull_league_totals.py first (ADR-0069)"
+        )
+    # Same latest-snapshot rule as the raw shot layer: ISO names sort
+    # chronologically, and a live 'T'-stamped retry sorts after the same
+    # day's plain date.
+    return candidates[-1]
+
+
+def read_usage(
+    advanced_path: Path,
+    season: str,
+    player_id: int,
+    pre_drop_fga: int,
+    games_included: int,
+) -> float:
+    """The hero's official USG_PCT, taken verbatim — never computed (ADR-0069).
+
+    The value itself is unverifiable (a sourced formula output — the one
+    number in the payload the product presents but cannot reconcile), so the
+    read is fenced by the facts that ARE checkable:
+      - the artifact must be this season's Advanced measure;
+      - THE FGA ORACLE: the hero row's FGA must equal the payload's pre-drop
+        season FGA, so the usage figure and the payload describe the same
+        season-to-date record. A stale or mis-anchored artifact fails here.
+      - GP >= gamesIncluded, a corruption sanity check ONLY. Equality is
+        deliberately not asserted: games played legitimately exceeds the
+        shot record for a low-usage hero with zero-FGA appearances
+        (Cody 2025-26: GP 67 vs 62 shot-record games — the spike finding
+        that replaced the GP oracle with the FGA oracle).
+      - 0 < USG_PCT < 1, the unit guard: the endpoint reports a fraction,
+        and a silent switch to percent display must fail loudly, never flow
+        into the UI.
+    """
+    artifact = json.loads(advanced_path.read_text(encoding="utf-8"))
+    a_meta = artifact.get("_meta")
+    response = artifact.get("response")
+    if not isinstance(a_meta, dict) or not isinstance(response, dict):
+        fail(f"advanced artifact missing _meta/response: {advanced_path}")
+    if a_meta.get("measure_type") != "Advanced":
+        fail(f"artifact _meta.measure_type != 'Advanced': {advanced_path}")
+    if a_meta.get("season") != season:
+        fail(
+            f"advanced artifact is season {a_meta.get('season')!r}, "
+            f"snapshot is {season!r}"
+        )
+    rows = result_set(response, ADVANCED_RESULT_SET)
+    if rows is None:
+        fail(f"result set {ADVANCED_RESULT_SET} missing from {advanced_path}")
+    missing = [c for c in ADVANCED_COLUMNS if c not in rows.columns]
+    if missing:
+        fail(f"advanced artifact missing columns: {missing}")
+    hero = rows[rows["PLAYER_ID"].astype(int) == player_id]
+    if len(hero) != 1:
+        fail(
+            f"expected exactly one advanced row for player {player_id}, "
+            f"found {len(hero)}"
+        )
+    row = hero.iloc[0]
+    fga = int(row["FGA"])
+    if fga != pre_drop_fga:
+        fail(
+            f"advanced FGA ({fga}) != pre-drop season FGA ({pre_drop_fga}) — "
+            f"the usage figure does not describe this payload's record; "
+            f"stale or mis-anchored artifact? (ADR-0069)"
+        )
+    gp = int(row["GP"])
+    if gp < games_included:
+        fail(
+            f"advanced GP ({gp}) < gamesIncluded ({games_included}) — "
+            f"a game with shots the source says was never played; artifact corrupt"
+        )
+    usage_pct = float(row["USG_PCT"])
+    if not 0 < usage_pct < 1:
+        fail(
+            f"USG_PCT ({usage_pct!r}) outside (0, 1) — unit drift? the payload "
+            f"stores the fraction verbatim (ADR-0069)"
+        )
+    return usage_pct
+
+
 def matchup(team_name: str, htm: str, vtm: str) -> tuple[str, bool]:
     """(opponent abbreviation, home) for one shot row, derived HERE — the UI
     only formats, never computes (ADR-0011).
@@ -369,6 +463,8 @@ def build_payload(
     shots: list[dict],
     baseline: list[dict],
     zone_conflicts_dropped: int,
+    usage_pct: float,
+    usage_source: str,
 ) -> dict:
     # The reconciled frontier (ADR-0058), computed from the rows themselves:
     # the latest game date the payload's data runs through, and the games it
@@ -392,6 +488,10 @@ def build_payload(
             # Post-drop count: totalShots is what the payload carries.
             "totalShots": len(shots),
             "zoneConflictsDropped": zone_conflicts_dropped,
+            # The official USG_PCT, verbatim (a fraction — ADR-0069).
+            # Descriptive context only; no aggregation ever reads it.
+            "usagePct": usage_pct,
+            "usageSourceSnapshot": usage_source,
         },
         "shots": shots,
         "zoneBaseline": baseline,
@@ -424,6 +524,9 @@ def main() -> None:
     ap.add_argument("--snapshot-file",
                     help="explicit snapshot path, bypassing the raw-root lookup "
                          "(golden-fixture workflow)")
+    ap.add_argument("--advanced-file",
+                    help="explicit league advanced artifact path, bypassing the "
+                         "raw-root lookup (golden-fixture workflow — ADR-0069)")
     ap.add_argument("--out-file",
                     help="explicit output path (golden-fixture workflow)")
     args = ap.parse_args()
@@ -440,7 +543,30 @@ def main() -> None:
     meta, shots_df, league_df, conflicts = validate_snapshot(snapshot)
     enriched = enrich_shots(shots_df)
     baseline = rollup_baseline(league_df)
-    payload = build_payload(meta, repo_relative(snapshot_path), enriched, baseline, conflicts)
+
+    if args.advanced_file:
+        advanced_path = Path(args.advanced_file)
+        if not advanced_path.exists():
+            fail(f"advanced artifact not found: {advanced_path}")
+    else:
+        advanced_path = latest_advanced_path(Path(args.raw_root), str(meta["season"]))
+    usage_pct = read_usage(
+        advanced_path,
+        str(meta["season"]),
+        int(meta["player_id"]),
+        pre_drop_fga=len(enriched) + conflicts,
+        games_included=len({s["gameId"] for s in enriched}),
+    )
+
+    payload = build_payload(
+        meta,
+        repo_relative(snapshot_path),
+        enriched,
+        baseline,
+        conflicts,
+        usage_pct,
+        repo_relative(advanced_path),
+    )
 
     if args.out_file:
         out_path = Path(args.out_file)
@@ -454,7 +580,7 @@ def main() -> None:
     counts = Counter(s["zoneBasic"] for s in enriched)
     print(f"derived payload -> {out_path}")
     print(f"  {meta['player']} {meta['season']}  shots={len(enriched)}  "
-          f"baseline entries={len(baseline)}")
+          f"baseline entries={len(baseline)}  usage={usage_pct} (FGA oracle exact)")
     if conflicts:
         print(f"  zone-point conflicts dropped (ADR-0019): {conflicts}")
     for zone in BASIC_ZONES:

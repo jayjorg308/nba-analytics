@@ -49,9 +49,13 @@ export const GROWTH_TERMS = [
  * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056). What
  * remains: CONTEXT.md's reserved 'scoring attempt' (no product surface may
  * use it until the widened decomposition ships — the ADR-0053 destination),
- * and the ADR-0061 growth terms, staged here until the first hero ships a
- * growth-sentence over a rendered growth coda. */
-export const UNSHIPPED_TERMS = ['scoring attempt', ...GROWTH_TERMS] as const
+ * the ADR-0061 growth terms, staged here until the first hero ships a
+ * growth-sentence over a rendered growth coda, and 'usage' (ADR-0069):
+ * usage rate ships as byline context with NO claim kind — a sourced number
+ * the product cannot verify describes, never argues — so the word (covering
+ * 'high-usage', 'usage rate') stays out of verdicts until a graduation ADR
+ * defines a UsageClaim first. */
+export const UNSHIPPED_TERMS = ['scoring attempt', 'usage', ...GROWTH_TERMS] as const
 
 /** Free-throw vocabulary (v2.6, THE LINE — ADR-0053/0056): legal only when
  * the hero's guard declares at least one free-throw claim asserted against

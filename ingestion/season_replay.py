@@ -51,10 +51,14 @@ EVAL_ZONES = [
 ZONE_INCLUSION_MIN_ATTEMPTS = 15
 
 # Provenance: the fields a replay derive legitimately stamps differently
-# (pull dates, source paths). EVERYTHING else must match byte-for-byte.
+# (pull dates, source paths). EVERYTHING else must match byte-for-byte —
+# including usagePct (ADR-0069): a terminal-frame Advanced pull must report
+# the same season-final USG_PCT the committed payload carries; only its
+# source path is provenance.
 PROVENANCE_KEYS = {
     "pullDate", "sourceSnapshot", "leagueSourceSnapshot",
     "sourceShotPayload", "sourceLeagueTotals", "leagueTotalsPullDate",
+    "usageSourceSnapshot",
 }
 
 failures: list[str] = []

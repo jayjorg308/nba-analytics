@@ -56,6 +56,10 @@ describe('renderHeroReport', () => {
     expect(report).toContain(`${included}/${metrics.zones.length} zones clear the bar`)
   })
 
+  it('prints usage as authoring context (ADR-0069: golden 0.159, verbatim source)', () => {
+    expect(report).toContain('15.9% usage')
+  })
+
   it('carries the honesty flags: †, mix-view exclusion, conflict count', () => {
     // 15 golden shots: every zone is sub-50 (†) and at most one zone could
     // reach the 15-FGA inclusion bar, so the * marker must appear.

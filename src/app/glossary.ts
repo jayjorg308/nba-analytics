@@ -63,6 +63,11 @@ export const GLOSSARY = {
     definition:
       "The percentage of a player's shots taken from a row: his shot diet, one line at a time. 'Lg share' is the same figure for the league, the comparison class every number is judged against.",
   },
+  'usage-rate': {
+    term: 'Usage rate',
+    definition:
+      "The share of his team's possessions that end with this player's shot, drawn foul, or turnover while he is on the floor, as the NBA reports it. Five players share the floor, so an even share is 20 percent. Context for how much of the offense runs through him, never part of the evaluation.",
+  },
   trip: {
     term: 'Trip',
     definition:

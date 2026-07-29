@@ -85,6 +85,14 @@ describe('parseDerivedPayload', () => {
     expectRejected(p)
   })
 
+  it('rejects a percent-unit usagePct (the ADR-0069 unit guard)', () => {
+    const p = clone()
+    // the contract stores the fraction verbatim; percent display (15.9)
+    // leaking through the derive must fail the parse, never render
+    p._meta.usagePct = 15.9
+    expectRejected(p)
+  })
+
   it('rejects totalShots inconsistent with shots.length', () => {
     const p = clone()
     p._meta.totalShots = 14

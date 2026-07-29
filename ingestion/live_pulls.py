@@ -205,6 +205,43 @@ def pull_league_totals_snapshot(
     return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
 
 
+def pull_league_advanced_snapshot(
+    season: str,
+    out_dir: Path,
+    *,
+    date_to: str | None = None,
+    stamp: str = "",
+    pull_date: str,
+    timeout: int = 60,
+) -> Path:
+    """One LeagueDashPlayerStats Advanced Totals pull, optionally anchored —
+    the usage-rate source (ADR-0069): the hero rows' official USG_PCT taken
+    verbatim, with FGA for the derive's pre-drop oracle. The spike proved the
+    Advanced measure respects DateTo (rows, GP, and USG_PCT all move with the
+    date), so an anchored pull carries the true as-of usage."""
+    raw = leaguedashplayerstats.LeagueDashPlayerStats(
+        season=season,
+        season_type_all_star=SEASON_TYPE,
+        per_mode_detailed="Totals",
+        measure_type_detailed_defense="Advanced",
+        date_to_nullable=nba_date(date_to) if date_to else "",
+        timeout=timeout,
+    ).get_dict()
+    snapshot = {
+        "_meta": {
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "per_mode": "Totals",
+            "measure_type": "Advanced",
+            "pull_date": pull_date,
+            "date_to": date_to,
+            "source": "stats.nba.com leaguedashplayerstats (unofficial)",
+        },
+        "response": raw,
+    }
+    return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
+
+
 def pull_league_tracking_snapshot(
     season: str,
     out_dir: Path,

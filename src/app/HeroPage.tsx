@@ -12,7 +12,7 @@ import type { CreationPayload } from '../domain/creationPayload'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import type { DerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
-import { formatDataThrough } from '../format'
+import { formatDataThrough, formatPercent1 } from '../format'
 import type { HeroConfig, HeroSeasonConfig } from '../heroes/types'
 import {
   creationPayloadUrl,
@@ -263,9 +263,13 @@ function HeroReady({
         {/* The byline carries the reconciled frontier (ADR-0058/0059):
             structural copy, one form for completed and living seasons, so
             the verdict always reads as a statement about the season through
-            the stated date. */}
+            the stated date. The usage segment (ADR-0069) is the official
+            USG_PCT verbatim from _meta — descriptive identity context whose
+            one home is this line; the derive's FGA oracle ties it to the
+            frontier the same line states. */}
         <p className="hero-byline">
           {payload._meta.player} · {payload._meta.season} ·{' '}
+          {formatPercent1(payload._meta.usagePct)} <Term id="usage-rate">usage</Term> ·{' '}
           {formatDataThrough(payload._meta.dataThrough, payload._meta.gamesIncluded)} · vs
           league average
         </p>

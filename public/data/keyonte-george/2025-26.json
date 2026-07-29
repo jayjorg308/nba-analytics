@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "player": "Keyonte George",
     "playerId": 1641718,
     "season": "2025-26",
@@ -10,7 +10,9 @@
     "gamesIncluded": 54,
     "sourceSnapshot": "data/raw/keyonte-george/2025-26/2026-07-09.json",
     "totalShots": 880,
-    "zoneConflictsDropped": 1
+    "zoneConflictsDropped": 1,
+    "usagePct": 0.275,
+    "usageSourceSnapshot": "data/raw/_league/2025-26/advanced/2026-07-28.json"
   },
   "shots": [
     {

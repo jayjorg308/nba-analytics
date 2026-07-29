@@ -112,6 +112,13 @@ describe('HeroPage over the golden fixture', () => {
     expect(statValues).toContain('1.09')
     expect(screen.getAllByText(/vs league average/).length).toBeGreaterThanOrEqual(2)
 
+    // the byline: identity → usage (ADR-0069: the golden's 0.159 verbatim,
+    // formatted the NBA's way, with "usage" as a term popover trigger) →
+    // frontier → comparison class
+    const byline = document.querySelector('.hero-byline')!
+    expect(byline.textContent!.replace(/\s+/g, ' ')).toContain('15.9% usage')
+    expect(byline.querySelector('button.term')).not.toBeNull()
+
     // making gets equal billing (ADR-0016): golden actual PPS 17/14 -> "1.21"
     screen.getByRole('heading', { name: /Shot making/i })
     expect(statValues).toContain('1.21')

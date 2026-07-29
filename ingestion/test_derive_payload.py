@@ -18,6 +18,7 @@ FIXTURES = REPO_ROOT / "tests" / "fixtures"
 
 GOLDEN_REGEN = ("python ingestion/derive_payload.py "
                 "--snapshot-file tests/fixtures/snapshot.truncated.json "
+                "--advanced-file tests/fixtures/league-advanced.truncated.json "
                 "--out-file tests/fixtures/derived.golden.json")
 
 
@@ -295,7 +296,8 @@ def test_zone_point_conflict_dropped_and_counted():
     assert int(shots.iloc[0]["GAME_EVENT_ID"]) == 2
 
     payload = dp.build_payload(
-        meta, "test", dp.enrich_shots(shots), dp.rollup_baseline(league), conflicts
+        meta, "test", dp.enrich_shots(shots), dp.rollup_baseline(league), conflicts,
+        0.159, "test-advanced",
     )
     assert payload["_meta"]["zoneConflictsDropped"] == 1
     assert payload["_meta"]["totalShots"] == 1  # post-drop count
@@ -312,17 +314,113 @@ def test_latest_snapshot_selection(tmp_path):
     assert picked.name == "2026-07-09.json"
 
 
+# --- Usage read (ADR-0069: verbatim value behind the FGA oracle) -----------------
+
+def _advanced_artifact(*, usg=0.159, gp=7, fga=15, player_id=1642262,
+                       season="2025-26", measure_type="Advanced", rows=None):
+    """Minimal advanced artifact: just the columns read_usage validates."""
+    row_set = rows if rows is not None else [[player_id, gp, fga, usg]]
+    return {
+        "_meta": {"season": season, "measure_type": measure_type},
+        "response": {
+            "resultSets": [{
+                "name": dp.ADVANCED_RESULT_SET,
+                "headers": ["PLAYER_ID", "GP", "FGA", "USG_PCT"],
+                "rowSet": row_set,
+            }],
+        },
+    }
+
+
+def _write_advanced(tmp_path, artifact) -> Path:
+    path = tmp_path / "advanced.json"
+    path.write_text(json.dumps(artifact), encoding="utf-8")
+    return path
+
+
+def test_read_usage_verbatim_with_gp_exceeding_games(tmp_path):
+    """GP (7) > gamesIncluded (6) is legitimate — zero-FGA appearances (the
+    spike finding: Cody 2025-26 played 67 games with a 62-game shot record).
+    The value comes back verbatim."""
+    path = _write_advanced(tmp_path, _advanced_artifact())
+    assert dp.read_usage(path, "2025-26", 1642262,
+                         pre_drop_fga=15, games_included=6) == 0.159
+
+
+def test_read_usage_fga_oracle_fails_on_mismatch(tmp_path):
+    """The FGA oracle: a stale or mis-anchored artifact (usage describing a
+    different season-to-date record than the payload) must hard-fail."""
+    path = _write_advanced(tmp_path, _advanced_artifact(fga=509))
+    with pytest.raises(SystemExit, match="pre-drop season FGA"):
+        dp.read_usage(path, "2025-26", 1642262, pre_drop_fga=15, games_included=6)
+
+
+def test_read_usage_gp_below_games_is_corruption(tmp_path):
+    # a game with shots the source says was never played
+    path = _write_advanced(tmp_path, _advanced_artifact(gp=5))
+    with pytest.raises(SystemExit, match="artifact corrupt"):
+        dp.read_usage(path, "2025-26", 1642262, pre_drop_fga=15, games_included=6)
+
+
+def test_read_usage_unit_drift_fails(tmp_path):
+    # the endpoint reports a fraction; percent display must never flow through
+    path = _write_advanced(tmp_path, _advanced_artifact(usg=15.9))
+    with pytest.raises(SystemExit, match="unit drift"):
+        dp.read_usage(path, "2025-26", 1642262, pre_drop_fga=15, games_included=6)
+
+
+def test_read_usage_wrong_season_fails(tmp_path):
+    path = _write_advanced(tmp_path, _advanced_artifact(season="2024-25"))
+    with pytest.raises(SystemExit, match="season"):
+        dp.read_usage(path, "2025-26", 1642262, pre_drop_fga=15, games_included=6)
+
+
+def test_read_usage_wrong_measure_type_fails(tmp_path):
+    path = _write_advanced(tmp_path, _advanced_artifact(measure_type="Base"))
+    with pytest.raises(SystemExit, match="measure_type"):
+        dp.read_usage(path, "2025-26", 1642262, pre_drop_fga=15, games_included=6)
+
+
+def test_read_usage_missing_hero_row_fails(tmp_path):
+    path = _write_advanced(tmp_path, _advanced_artifact(player_id=999))
+    with pytest.raises(SystemExit, match="exactly one advanced row"):
+        dp.read_usage(path, "2025-26", 1642262, pre_drop_fga=15, games_included=6)
+
+
+def test_latest_advanced_path_selection(tmp_path):
+    adv_dir = tmp_path / "_league" / "2025-26" / "advanced"
+    adv_dir.mkdir(parents=True)
+    (adv_dir / "2026-01-01.json").write_text("{}")
+    (adv_dir / "2026-07-28.json").write_text("{}")
+    assert dp.latest_advanced_path(tmp_path, "2025-26").name == "2026-07-28.json"
+
+
+def test_latest_advanced_path_missing_fails(tmp_path):
+    with pytest.raises(SystemExit, match="no league advanced artifact"):
+        dp.latest_advanced_path(tmp_path, "2025-26")
+
+
 # --- Golden (the cross-language handshake; see tests/fixtures/README.md) --------
 
 def test_golden_matches_derive_output():
     snapshot = load_truncated()
     meta, shots, league, conflicts = dp.validate_snapshot(snapshot)
+    enriched = dp.enrich_shots(shots)
+    usage_pct = dp.read_usage(
+        FIXTURES / "league-advanced.truncated.json",
+        str(meta["season"]),
+        int(meta["player_id"]),
+        pre_drop_fga=len(enriched) + conflicts,
+        games_included=len({s["gameId"] for s in enriched}),
+    )
     payload = dp.build_payload(
         meta,
         "tests/fixtures/snapshot.truncated.json",
-        dp.enrich_shots(shots),
+        enriched,
         dp.rollup_baseline(league),
         conflicts,
+        usage_pct,
+        "tests/fixtures/league-advanced.truncated.json",
     )
     golden = json.loads((FIXTURES / "derived.golden.json").read_text(encoding="utf-8"))
     assert payload == golden, f"payload shape changed — regenerate: {GOLDEN_REGEN}"
