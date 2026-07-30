@@ -55,17 +55,16 @@ export const donovanMitchell: HeroConfig = {
       // 0.306/0.293 vs 0.264, conversion 0.865/0.876 vs 0.783 — every
       // claim holding on both technical cuts (ADR-0055).
       verdict:
-        'Mostly, yes. His diet tilts away from the rim and the corners toward pull-up ' +
-        'jumpers and long twos, and that tilt costs a little value against the league ' +
-        'diet, never enough to become the story. The story is conversion. His shot ' +
+        "Mostly, yes. Donovan Mitchell's diet tilts away from the rim and the corners " +
+        'toward pull-up jumpers, and that tilt costs him a little value, though never ' +
+        'enough to become the story. The story is about his conversion. His shot ' +
         'making adds back more than twice what his selection gives away, with paint ' +
-        'and mid-range touch well above league. The creation evidence backs the bet. ' +
-        'Nearly half of his attempts are pull-ups, close to double the league share, ' +
-        'and they still beat the league pull-up value. His rarer catch-and-shoot looks ' +
-        'land even further above it. Fewer than four in ten of his makes are ' +
-        'officially assisted. The line widens the margin quietly. He earns trips to ' +
-        'the line a bit more often than the league and converts well above the league ' +
-        'rate once there.',
+        "and mid-range touch well above average. Nearly half of Mitchell's attempts " +
+        'are pull-ups, close to double the league share, and more than six in ten of ' +
+        'his makes are unassisted. Those pull-ups still beat the average for that ' +
+        'shot, and his rarer catch-and-shoot looks land even further above. ' +
+        'The free throw line widens the margin quietly. He earns trips a bit more ' +
+        'often than average and converts well above the league rate once he gets there.',
     },
   ],
 }

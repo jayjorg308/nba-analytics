@@ -8,22 +8,23 @@
 // George and Cody Williams sit in opposite quadrants of the two-axis model,
 // so the two heroes' claim mappings share no shape.
 //
-// Current verdict, claim by claim:
+// Current verdict (voice per docs/voice/VOICE.md, ADR-0070), claim by claim:
 //   "his shot selection costs him"                          -> claim 1
-//   "gets to the rim about half as often as the league,
-//    trading it for paint floaters and mid-range"           -> claim 2
-//   "converts at or above league expectation in every zone" -> claim 3
-//   "Making is not the problem"                             -> claim 3 (rollup)
-//   "far more of his shots are pull-up jumpers than is
+//   "gets to the rim about half as often as the league
+//    does, trading those attempts for paint floaters and
+//    mid-range jumpers"                                     -> claim 2
+//   "converts at or above expectation in every zone"        -> claim 3
+//   "Shot making isn't the problem"                         -> claim 3 (rollup)
+//   "far more of his attempts are pull-up jumpers than is
 //    typical"                                               -> why 1 (creation)
-//   "the catch-and-shoot looks he does take convert well
-//    above league value"                                    -> why 2 (creation)
-//   ("the diet is how he creates" is the rhetorical frame of why 1: the
-//    selection cost and the pull-up-heavy creation are the same fact.)
-//   "he draws fouls far more often than the league"         -> line 1 (free throw)
-//   "converts well above the league rate once there"        -> line 2 (free throw)
-//   ("the line softens the no" is the rhetorical frame of line 1 + line 2:
-//    real scoring the shot chart cannot see, on both technical cuts.)
+//   "the catch-and-shoot looks he gets least often"         -> why 2 (creation)
+//   "are the ones he hits far above average"                -> why 3 (creation)
+//   "he draws fouls far more often than average"            -> line 1 (free throw)
+//   "converts well above the league rate once he gets
+//    there"                                                 -> line 2 (free throw)
+//   ("the free throw line softens the verdict" is the rhetorical frame of
+//    line 1 + line 2: real scoring the shot chart cannot see, on both
+//    technical cuts.)
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -41,9 +42,9 @@ import { seasonArgumentOf } from './types'
 import {
   FAR_DIET_LEAN_PP,
   FAR_FTA_RATE,
+  FAR_PPS,
   MATERIAL_PPS,
   NEUTRAL_BAND_PPS,
-  STRONG_PPS,
   WELL_FT_PCT,
 } from './verdictLadder'
 import type { CreationClaim, FreethrowClaim } from './verdictLexicon'
@@ -102,9 +103,9 @@ const POSITIVE_MAKING_PPS = NEUTRAL_BAND_PPS
 // "far more ... than is typical": the ladder's far diet lean — double the
 // diet-lean bar (George: 41.4% vs 25.2%).
 const FAR_MORE_SHARE_PP = FAR_DIET_LEAN_PP
-// "well above league value": the ladder's strong bar — twice materiality
-// (George: 1.273 vs 1.100).
-const WELL_ABOVE_PPS = STRONG_PPS
+// "hits far above average": the ladder's far bar (George: 1.273 vs
+// 1.100 — a +0.172 gap, past the 0.15 floor with margin).
+const FAR_ABOVE_PPS = FAR_PPS
 // "draws fouls far more often": the ladder's far FTA-rate bar — ten extra
 // free throws per hundred shots, well past any rounding story
 // (actual: 0.429 / 0.418 without technicals, vs league 0.264).
@@ -127,14 +128,30 @@ const creationClaims: CreationClaim[] = [
     },
   },
   {
-    name: 'why 2: catch-and-shoot converts well above league value, sample-safe',
+    name: 'why 2: catch-and-shoot is the context he gets least often',
+    assert: (c) => {
+      // "least often" is a within-diet comparative over the real contexts:
+      // catch-and-shoot's share sits under both inside-10 and pull-ups
+      // (22.5% vs 35.9% and 41.4%). The 2-attempt 'Other' residual is the
+      // classifier's gap, not a kind of look a reader counts (ADR-0031).
+      const cs = c.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
+      const pu = c.general.jumperContexts.find((r) => r.context === 'Pull Ups')!
+      expect(cs.attemptShare).not.toBeNull()
+      expect(c.general.inside.attemptShare).not.toBeNull()
+      expect(pu.attemptShare).not.toBeNull()
+      expect(cs.attemptShare!).toBeLessThan(c.general.inside.attemptShare!)
+      expect(cs.attemptShare!).toBeLessThan(pu.attemptShare!)
+    },
+  },
+  {
+    name: 'why 3: catch-and-shoot hits far above average, sample-safe',
     assert: (c) => {
       const cs = c.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
       expect(cs.pps).not.toBeNull()
       expect(cs.leaguePps).not.toBeNull()
       // stated unhedged in the verdict, so it must clear the † bar
       expect(cs.smallSamplePps).toBe(false)
-      expect(cs.pps! - cs.leaguePps!).toBeGreaterThanOrEqual(WELL_ABOVE_PPS)
+      expect(cs.pps! - cs.leaguePps!).toBeGreaterThanOrEqual(FAR_ABOVE_PPS)
     },
   },
 ]
@@ -188,7 +205,7 @@ describe.skipIf(
     expect(m.selection.selectionDelta!).toBeLessThanOrEqual(-MATERIAL_SELECTION_PPS)
   })
 
-  it('claim 2: rim share ~half the league, traded for paint floaters and mid-range', () => {
+  it('claim 2: rim share ~half the league, traded for paint floaters and mid-range jumpers', () => {
     const ra = zone('Restricted Area')
     expect(ra.attemptShare).not.toBeNull()
     expect(ra.attemptShare!).toBeGreaterThanOrEqual(ra.leagueAttemptShare * RIM_SHARE_HALF_FLOOR)

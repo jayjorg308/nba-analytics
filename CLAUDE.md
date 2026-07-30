@@ -14,6 +14,10 @@ Uses the default label vocabulary (needs-triage, needs-info, ready-for-agent, re
 
 Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agents/domain.md`.
 
+### Verdict voice
+
+Authored hero copy (verdicts, why-sentences, line-sentences, growth-sentences) is drafted in the author's voice, inside the house rails (lexicon, ladder, claim guards). Before drafting or editing any verdict, read `docs/voice/VOICE.md` and the red-penned before/after samples in `docs/voice/samples/` — the samples outrank the guide where they disagree.
+
 ## Commands
 
 - `python ingestion/pull_shots.py --player "Name"` — pull raw snapshots. **Local only**: stats.nba.com blocks cloud IPs; never run from CI or the deployed app.

@@ -46,13 +46,13 @@ export const codyWilliams: HeroConfig = {
       // both technical cuts (ADR-0055) — authored from hero:report's LINE
       // section, like the rest is from its decomposition.
       verdict:
-        'Yes, he lives at the rim and rarely fires from three, and that trade nets out to an ' +
-        'essentially league-average shot diet. The problem is shot making. ' +
-        'He converts below what his shot diet should yield, and the gap comes almost entirely from three. ' +
-        'The misses are not self-created difficulty. Almost all of his threes arrive off the catch, ' +
-        'and it is exactly those catch-and-shoot looks he converts far below league value. ' +
-        'The line does not bail him out. He draws fouls less often than the league and converts ' +
-        'well below the league rate once there.',
+        'Yes, Cody Williams lives at the rim and rarely fires from three, and that tradeoff ' +
+        'nets out to an essentially league-average shot diet. The problem is his shot making. ' +
+        'He converts below what that diet should yield, and the gap comes almost entirely from ' +
+        'beyond the arc. Nearly all of his threes arrive off the catch, and those catch-and-shoot ' +
+        'looks are exactly where Williams lands far below league average. ' +
+        "The free throw line doesn't bail him out either. For a player who lives inside, he draws " +
+        'fouls at a below-average clip, and he converts well below the league rate once he gets there.',
     },
   ],
 }
