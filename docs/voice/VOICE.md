@@ -1,10 +1,12 @@
 # Verdict voice guide
 
 How authored verdicts should sound. Distilled from the red-penned before/after
-pairs in `docs/voice/samples/` — the Befores are the shipped 2025-26 verdicts,
-the Afters are the author's voice. Read this file *and* the samples before
-drafting any verdict copy; where a rule here and a sample disagree, the sample
-wins (and this file should be corrected).
+pairs in `docs/voice/samples/`, which come in two kinds: the founding five
+(Before = the pre-voice shipped verdict, After = the author's rewrite) and
+every hero added since (Before = the voice-guided draft, After = the author's
+red-pen — the residual delta this guide has not learned yet). Read this file
+*and* the samples before drafting any verdict copy; where a rule here and a
+sample disagree, the sample wins (and this file should be corrected).
 
 Voice operates inside the house rails. Nothing below licenses vocabulary
 drift, a re-graded magnitude word, or a claim without a guard mapping.
@@ -84,8 +86,25 @@ on shared basketball sense; it may never be an unguarded comparison dressed
 as data.
 
 **Plainer words.** Hits, gets, gives up, factor into; tradeoff, clip. Value
-is priced from the buyer's side ("the cheapest points available"), not the
-seller's ("the priciest trips").
+is priced from the buyer's side, and the ledger metaphor is a family: "the
+cheapest points available", "breaks even", "the shortfall" — never the
+seller's "priciest trips".
+
+**Natural basketball phrasing beats zone-precise phrasing** — when the data
+still backs the looser reading. "Paint shots outside the restricted area"
+became "short shots in the paint rather than threes"; the guard then maps to
+what the words naturally say (combined paint share, three share below
+league), never to the precise phrasing that was edited away. Check the
+looser reading against the payload before accepting it (rim-inclusive "the
+paint" holds at 81.8%; "grades out well" at a neutral rim did not).
+
+**The watch sentence.** A verdict may carry one forward-looking fragment
+naming a flagged signal and its thinness in the same breath: "Worth watching
+whether the right corner holds up on real volume." It is the † discipline in
+prose, and its guard shape matches: assert the warm bin AND the
+small-sample flag's presence ("real volume" claims the current volume is not
+yet real, so the flag being set is part of the claim). Sparingly — one per
+verdict at most, only for a signal the table already shows the reader.
 
 **Trim decorative tails.** "In every zone", "land well below" (no trailing
 "it"). Subject to the scope-word rail above.

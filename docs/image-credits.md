@@ -23,6 +23,14 @@
   only official mark; the NBA CDN serves it as SVG only
   (`cdn.nba.com/logos/nba/1610612760/global/L/logo.svg`), committed as a
   high-resolution PNG rendering on the shared normalized canvas.
+- `public/img/maxime-raynaud-hero.jpg` — photograph by Ray Chavez, Bay Area
+  News Group (Kings at Golden State, 2025-26); committed as a web-sized
+  2048px JPEG derivative of the author-supplied source (ADR-0021).
+- `public/img/sac-logo.png` — the Kings' primary crown lockup; the NBA CDN
+  serves it as SVG only
+  (`cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg`, 2026-07-29),
+  browser-rasterized and committed on the shared normalized watermark
+  canvas (60% footprint).
 - `public/social-cards/*.png` — generated derivatives
   (`npm run cards:generate`, ADR-0067) composed entirely from the credited
   headshots above plus the site's own wordmark; no external imagery.
