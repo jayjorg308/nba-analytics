@@ -21,7 +21,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
-| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch) and the methodology page (item 8, may slip). See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build — and the verdict voice pass (item 10, ADR-0070) landed 2026-07-29. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch) and the methodology page (item 8, may slip). See [Launch (August 2026)](#launch-august-2026--open-items). |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -878,6 +878,26 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    instant data — it now waits ~350ms before becoming visible
    (`.page-loading`), so warm loads never show it and slow first visits
    still do. Error states stay immediate._
+
+10. **Verdict voice pass** — opened and closed 2026-07-29 (ADR-0070; branch
+    `task_ResearchVerdictVoiceTuning`). The five verdicts were each honest
+    and ladder-calibrated, but five drafting sessions had produced one
+    recognizable house voice. The author red-penned a before/after pair per
+    hero (`docs/voice/samples/`), the recurring deltas distilled into a
+    committed voice guide (`docs/voice/VOICE.md`, wired through CLAUDE.md's
+    agent-skills section; samples outrank the guide), and all five verdicts
+    were rewritten to the locked Afters with guards moved claim-for-claim:
+    two catch-and-shoot grading words priced UP to the ladder's far bar
+    because the data clears it (Keyonte +0.172, Ace −0.176, vs the 0.15
+    floor), a new within-diet share claim behind Keyonte's "the looks he
+    gets least often", Mitchell's assist claim flipped to the complement
+    unassisted floor (61.5% at complete coverage), and his under-bar
+    long-two claim (1.37x league) retired with its sentence. Voice never
+    overrode data: the red-pens' three honesty collisions ("short
+    mid-range" false at the band grain, "in basketball" vs the
+    line-vs-floor scope, "long pull-up jumpers" as an unguardable
+    cross-family claim) were corrected against the payloads before landing.
+    Gate green (vitest 435, lint, build).
 
 ---
 

@@ -10,18 +10,22 @@
 // Ace (pull-ups and long twos) reads as a fair bet here, because the
 // conversion actually arrives.
 //
-// Current verdict, claim by claim:
-//   "tilts away from the rim and the corners toward ... long twos" -> claim 2
-//   "costs a little value ... never enough to become the story"    -> claim 1
+// Current verdict (voice per docs/voice/VOICE.md, ADR-0070), claim by claim:
+//   "tilts away from the rim and the corners"                      -> claim 2
+//   ("toward pull-up jumpers" is why 1's creation claim; the prior
+//    wording's long-two claim retired with its sentence — the weakest
+//    fact in the tilt list at 1.37x league, under the ladder's bare
+//    diet-lean bar.)
+//   "costs him a little value ... never enough to become the story" -> claim 1
 //   "adds back more than twice what his selection gives away"      -> claim 3
-//   "paint and mid-range touch well above league"                  -> claim 4
-//   "nearly half of his attempts are pull-ups, close to double
-//    the league share"                                             -> why 1
-//   "still beat the league pull-up value"                          -> why 2
-//   "catch-and-shoot looks land even further above it"             -> why 3
-//   "fewer than four in ten of his makes are officially assisted"  -> assist 1
-//   "earns trips to the line a bit more often than the league"     -> line 1
-//   "converts well above the league rate once there"               -> line 2
+//   "paint and mid-range touch well above average"                 -> claim 4
+//   "nearly half of Mitchell's attempts are pull-ups, close to
+//    double the league share"                                      -> why 1
+//   "more than six in ten of his makes are unassisted"             -> assist 1
+//   "still beat the average for that shot"                         -> why 2
+//   "catch-and-shoot looks land even further above"                -> why 3
+//   "earns trips a bit more often than average"                    -> line 1
+//   "converts well above the league rate once he gets there"       -> line 2
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -32,7 +36,6 @@ import { aggregateShotMetrics } from '../domain/aggregate'
 import { aggregateCreationMetrics } from '../domain/aggregateCreation'
 import { aggregateFreethrowMetrics } from '../domain/aggregateFreethrow'
 import { aggregateShotContextMetrics } from '../domain/aggregateShotContext'
-import { LONG_TWO_BAND } from '../domain/constants'
 import { parseCreationPayload } from '../domain/creationPayload'
 import { parseFreethrowPayload } from '../domain/freethrowPayload'
 import { parseDerivedPayload } from '../domain/payload'
@@ -103,9 +106,6 @@ const freethrowPath = path.resolve(
 // league share (actual: left 0.50x, right 0.56x).
 const RIM_SHARE_CEILING = 0.85
 const CORNER_SHARE_CEILING = 0.67
-// "toward ... long twos": the 16-24 ft band's diet share at least 1.25x
-// the league's (actual: 6.7% vs 4.9% — 1.37x).
-const LONG_TWO_MIN_RATIO = 1.25
 // "adds back more than twice what his selection gives away": making at
 // least material AND at least double the selection cost (actual: +0.066
 // vs −0.031 — 2.1x).
@@ -122,18 +122,20 @@ const NEARLY_HALF_CEILING = 0.5
 // for the same reason (actual: 45.4% vs 25.2% — 1.80x).
 const CLOSE_TO_DOUBLE_FLOOR = 1.6
 const CLOSE_TO_DOUBLE_CEILING = 2
-// "still beat the league pull-up value": a bare comparative prices at
-// material (actual: +0.077).
+// "still beat the average for that shot": a bare comparative against the
+// league's same-context value prices at material (actual: +0.077).
 const BEAT_PPS = MATERIAL_PPS
-// "land even further above it": catch-and-shoot's gap clears the ladder's
+// "land even further above": catch-and-shoot's gap clears the ladder's
 // strong bar and exceeds the pull-up gap (actual: +0.115 vs +0.077).
-// "fewer than four in ten of his makes are officially assisted": the
-// worst-case MAXIMUM assisted share stays under 0.40 — bounds, not the
-// classified point estimate (actual: 38.5% at complete coverage).
-const FOUR_IN_TEN = 0.4
-// "earns trips to the line a bit more often than the league": the ladder's
-// FTA-rate floor up to where "far" begins, on BOTH technical cuts
-// (ADR-0055) — two-sided, "a bit" must not quietly become "far more"
+// "more than six in ten of his makes are unassisted": the worst-case
+// MINIMUM unassisted share (unknowns counted as assisted) exceeds six in
+// ten — bounds, not the classified point estimate (actual: 61.5% at
+// complete coverage; the exact complement of the prior wording's "fewer
+// than four in ten assisted").
+const SIX_IN_TEN_UNASSISTED = 0.6
+// "earns trips a bit more often than average": the ladder's FTA-rate
+// floor up to where "far" begins, on BOTH technical cuts (ADR-0055) —
+// two-sided, "a bit" must not quietly become "far more"
 // (actual: +0.043 / +0.029).
 const A_BIT_MORE_FTA_FLOOR = FTA_RATE_FLOOR
 const A_BIT_MORE_FTA_CEILING = FAR_FTA_RATE
@@ -160,7 +162,7 @@ const shotClaims: ShotClaim[] = [
     },
   },
   {
-    name: 'claim 2: the diet tilts away from rim and corners toward long twos',
+    name: 'claim 2: the diet tilts away from the rim and the corners',
     assert: (m) => {
       const zone = (z: string) => m.zones.find((r) => r.zone === z)!
       const ra = zone('Restricted Area')
@@ -173,14 +175,8 @@ const shotClaims: ShotClaim[] = [
           row.leagueAttemptShare * CORNER_SHARE_CEILING,
         )
       }
-      // The long-two claim is stated at the band grain the split ships
-      // (ADR-0008 — visible for this hero because 16-24 ft clears the bar).
-      expect(m.midRangeSplit.visible).toBe(true)
-      const longTwo = m.midRangeSplit.bands.find((b) => b.band === LONG_TWO_BAND)!
-      expect(longTwo.attemptShare).not.toBeNull()
-      expect(longTwo.attemptShare!).toBeGreaterThanOrEqual(
-        longTwo.leagueAttemptShare * LONG_TWO_MIN_RATIO,
-      )
+      // The "toward pull-up jumpers" side of the tilt is why 1's creation
+      // claim (pull-up share close to double the league's).
     },
   },
   {
@@ -223,7 +219,7 @@ const creationClaims: CreationClaim[] = [
     },
   },
   {
-    name: 'why 2: pull-ups beat the league pull-up value, sample-safe',
+    name: 'why 2: pull-ups beat the average for that shot, sample-safe',
     assert: (c) => {
       const pu = c.general.jumperContexts.find((r) => r.context === 'Pull Ups')!
       expect(pu.pps).not.toBeNull()
@@ -249,10 +245,12 @@ const creationClaims: CreationClaim[] = [
 // classified point estimate alone (ROADMAP v2.5 Phase 4; ADR-0037).
 const assistClaims: AssistClaim[] = [
   {
-    name: 'assist 1: fewer than four in ten makes officially assisted, across full bounds',
+    name: 'assist 1: more than six in ten makes unassisted, across full bounds',
     assert: (context) => {
       expect(context.all.maxAssistedShare).not.toBeNull()
-      expect(context.all.maxAssistedShare!).toBeLessThan(FOUR_IN_TEN)
+      // Worst case for an unassisted floor: every unknown make counted as
+      // assisted — the complement of the maximum assisted share.
+      expect(1 - context.all.maxAssistedShare!).toBeGreaterThan(SIX_IN_TEN_UNASSISTED)
     },
   },
 ]
@@ -261,7 +259,7 @@ const assistClaims: AssistClaim[] = [
 // on a league-baselined metric holds on BOTH technical cuts.
 const freethrowClaims: FreethrowClaim[] = [
   {
-    name: 'line 1: earns trips a bit more often than the league, on both cuts',
+    name: 'line 1: earns trips a bit more often than average, on both cuts',
     assert: (f) => {
       const rate = f.seasonLine.ftaRate
       expect(rate.value).not.toBeNull()

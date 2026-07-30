@@ -8,21 +8,21 @@
 // essentially league. The line sentence is the diet's consequence stated at
 // the line: a jump-shot diet forfeits trips.
 //
-// Current verdict, claim by claim:
-//   "the reason is the diet, not the touch"                  -> claims 1 + 4
+// Current verdict (voice per docs/voice/VOICE.md, ADR-0070), claim by claim:
+//   "the reason is Ace Bailey's diet, not his touch"         -> claims 1 + 4
 //   "mid-range jumpers at more than double the league share" -> claim 2
-//   "long twos at nearly triple it"                          -> claim 2 (band)
-//   "the rim attempts they trade away are the most valuable
-//    shots on the floor"                                     -> claim 3
-//   "conversion is essentially league average overall"       -> claim 4
-//   "a genuinely warm paint touch underneath"                -> claim 5
-//   "pull-ups convert above league value"                    -> why 1 (creation)
-//   "the easier catch-and-shoot looks land well below it"    -> why 2 (creation)
-//   "reaches the free-throw line at well under half the
-//    league rate"                                            -> line 1 (free throw)
-//   "the priciest trips to the line barely touch his
-//    scoring"                                                -> line 2 (free throw)
-//   ("the line compounds the diet" is the rhetorical frame of line 1 + 2.)
+//   "the long twos among them at nearly triple it"           -> claim 2 (band)
+//   "the rim looks he gives up are the most valuable shots
+//    on the floor"                                           -> claim 3
+//   "conversion is essentially average overall"              -> claim 4
+//   "a soft paint touch underneath"                          -> claim 5
+//   "pull-ups convert above average"                         -> why 1 (creation)
+//   "the easier catch-and-shoot looks land far below"        -> why 2 (creation)
+//   "gets there at well under half the league rate"          -> line 1 (free throw)
+//   "the cheapest points available barely factor into his
+//    scoring"                                                -> line 2 + pricing
+//   ("the free throw line compounds the problem" is the rhetorical frame
+//    of line 1 + 2.)
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -46,7 +46,7 @@ import {
   unbackedFreethrowTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
-import { MATERIAL_PPS, NEUTRAL_BAND_PPS, STRONG_PPS } from './verdictLadder'
+import { FAR_PPS, MATERIAL_PPS, NEUTRAL_BAND_PPS } from './verdictLadder'
 
 // The guarded season argument, selected explicitly (ADR-0060/0061): a flip
 // moving the canonical pointer must never silently repoint these claims at
@@ -93,19 +93,19 @@ const NEARLY_TRIPLE_CEILING = 3
 // scale (ADR-0013 semantics — at least warm-1; actual +11.7 pp, warm-2),
 // unflagged (119 FGA).
 const WARM_BIN_MIN = 1
-// "convert above league value": a bare comparative prices at material on
+// "convert above average": a bare comparative prices at material on
 // the house ladder (ADR-0068) — the 2026-07-28 audit found this bar at
 // the neutral edge while an equally bare claim elsewhere required
 // material. Actual +0.051: a 0.001 margin, acceptable only because the
 // season is frozen; on a living season the sentence would be rewritten.
 const ABOVE_PPS = MATERIAL_PPS
-// "land well below it": the ladder's strong bar — twice materiality
-// (actual: catch-and-shoot 0.924 vs league 1.100, gap 0.176).
-const WELL_BELOW_PPS = STRONG_PPS
-// "well under half the league rate" / "barely touch his scoring": at most
-// half the league value, on BOTH technical cuts (ADR-0055). Actual FTA
-// rate: 0.099 / 0.096 vs league 0.264 (0.37x); FT points share:
-// 0.066 / 0.064 vs league 0.159 (0.41x).
+// "land far below": the ladder's far bar (actual: catch-and-shoot 0.924
+// vs league 1.100 — a 0.176 gap, past the 0.15 floor).
+const FAR_BELOW_PPS = FAR_PPS
+// "well under half the league rate" / "barely factor into his scoring":
+// at most half the league value, on BOTH technical cuts (ADR-0055).
+// Actual FTA rate: 0.099 / 0.096 vs league 0.264 (0.37x); FT points
+// share: 0.066 / 0.064 vs league 0.159 (0.41x).
 const HALF_CEILING = 0.5
 
 // The creation-kind claims (ADR-0029): declaring these licenses the
@@ -122,13 +122,13 @@ const creationClaims: CreationClaim[] = [
     },
   },
   {
-    name: 'why 2: catch-and-shoot lands well below league value on the easier context, sample-safe',
+    name: 'why 2: catch-and-shoot lands far below league value on the easier context, sample-safe',
     assert: (c) => {
       const cs = c.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
       const pu = c.general.jumperContexts.find((r) => r.context === 'Pull Ups')!
       expect(cs.pps).not.toBeNull()
       expect(cs.smallSamplePps).toBe(false)
-      expect(cs.leaguePps! - cs.pps!).toBeGreaterThanOrEqual(WELL_BELOW_PPS)
+      expect(cs.leaguePps! - cs.pps!).toBeGreaterThanOrEqual(FAR_BELOW_PPS)
       // "easier": the league itself converts the catch-and-shoot context
       // better than the pull-up context — the inversion is his, not the
       // league's.
@@ -199,7 +199,7 @@ describe.skipIf(
     )
   })
 
-  it('claim 3: rim attempts below the league share, and the rim is the most valuable zone', () => {
+  it('claim 3: rim looks given up below the league share, and the rim is the most valuable zone', () => {
     const ra = zone('Restricted Area')
     expect(ra.attemptShare).not.toBeNull()
     expect(ra.attemptShare!).toBeLessThan(ra.leagueAttemptShare)
@@ -232,6 +232,19 @@ describe.skipIf(
   for (const claim of freethrowClaims) {
     it(claim.name, () => claim.assert(freethrow))
   }
+
+  it('line pricing: a league two-shot trip outprices every zone on the floor', () => {
+    // "the cheapest points available" is the buyer's phrasing of the
+    // line-vs-floor pricing (ADR-0055/0056): at league conversion a
+    // two-shot trip expects more points than any zone's league PPS — which
+    // is also why claim 3's "most valuable shots" stays scoped to the
+    // FLOOR. Cross-payload juxtaposition, each side from its own
+    // aggregation (ADR-0011).
+    const leagueTwoShotTrip = 2 * freethrow.seasonLine.conversion.league
+    for (const z of m.zones) {
+      expect(leagueTwoShotTrip, z.zone).toBeGreaterThan(z.leaguePps)
+    }
+  })
 
   it('creation and line vocabulary are claim-backed; unshipped vocabulary absent (ADR-0029)', () => {
     expect(unshippedTermsIn(seasonConfig.verdict)).toEqual([])

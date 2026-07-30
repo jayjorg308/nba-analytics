@@ -7,22 +7,23 @@
 // The fix is always to rewrite the copy (and this claim mapping with it) —
 // never to loosen an assertion so stale prose survives.
 //
-// Current verdict, claim by claim:
+// Current verdict (voice per docs/voice/VOICE.md, ADR-0070), claim by claim:
 //   "lives at the rim"                                     -> claim 1
 //   "rarely fires from three"                              -> claim 2
 //   "nets out to an essentially league-average shot diet"  -> claim 3
-//   "he converts below what his shot diet should yield"    -> claim 4
-//   "the gap comes almost entirely from three"             -> claim 5
-//   "almost all of his threes arrive off the catch"        -> why 1 (creation)
-//   "those catch-and-shoot looks he converts far below
-//    league value"                                         -> why 2 (creation)
-//   ("the misses are not self-created difficulty" is the rhetorical frame
-//    of why 1 + why 2 together — his threes are overwhelmingly not
-//    self-created, and those are the ones missing.)
-//   "he draws fouls less often than the league"            -> line 1 (free throw)
-//   "converts well below the league rate once there"       -> line 2 (free throw)
-//   ("the line does not bail him out" is the rhetorical frame of line 1 +
-//    line 2: neither generation nor conversion offsets the making story.)
+//   "he converts below what that diet should yield"        -> claim 4
+//   "the gap comes almost entirely from beyond the arc"    -> claim 5
+//   "nearly all of his threes arrive off the catch"        -> why 1 (creation)
+//   "those catch-and-shoot looks are exactly where
+//    Williams lands far below league average"              -> why 2 (creation)
+//   "he draws fouls at a below-average clip"               -> line 1 (free throw)
+//   "converts well below the league rate once he gets
+//    there"                                                -> line 2 (free throw)
+//   ("the free throw line doesn't bail him out either" is the rhetorical
+//    frame of line 1 + line 2: neither generation nor conversion offsets
+//    the making story. "For a player who lives inside" leans on claim 1's
+//    rim share plus shared basketball sense — a frame, never an unguarded
+//    comparison dressed as data.)
 // One engine-copy claim rides along: the zone table's Restricted Area
 // annotation ("highest-value shot on the floor") states a league value
 // hierarchy, asserted against the same deployed payload    -> table claim
@@ -98,15 +99,15 @@ const MATERIAL_MAKING_PPS = MATERIAL_PPS
 // directly — the name already matches): several shots per hundred, well
 // outside single-season share noise (shares stabilize by ~34 attempts,
 // CONTEXT.md).
-// "almost all": at least four of five — below that the phrase is a lie
-// (actual: 117/131 = 89.3%).
-const ALMOST_ALL_SHARE = 0.8
-// "far below league value": declared STRICTER than the ladder's 0.15 far
-// floor — a 0.25 gap is five times the materiality bar, a quarter point
-// per shot, and the data supports pricing it there (actual: 0.711 vs
+// "nearly all": a two-sided approximation (ADR-0068) — at least four of
+// five, and strictly short of literally all (actual: 117/131 = 89.3%).
+const NEARLY_ALL_FLOOR = 0.8
+// "lands far below league average": declared STRICTER than the ladder's
+// 0.15 far floor — a 0.25 gap is five times the materiality bar, a quarter
+// point per shot, and the data supports pricing it there (actual: 0.711 vs
 // 1.100). Stricter is always legal; looser never (ADR-0068).
 const FAR_BELOW_PPS = 0.25
-// "draws fouls less often than the league": the ladder's FTA-rate floor —
+// "draws fouls at a below-average clip": the ladder's FTA-rate floor —
 // two trips' worth of free throws per hundred shots, past rounding
 // (actual: 0.234 / 0.232 without technicals, vs league 0.264).
 const BELOW_LEAGUE_FTA_RATE = FTA_RATE_FLOOR
@@ -122,15 +123,16 @@ const WELL_BELOW_LEAGUE_FT_PCT = WELL_FT_PCT
 // creation vocabulary = tripwire failure.
 const creationClaims: CreationClaim[] = [
   {
-    name: 'why 1: almost all of his threes arrive off the catch',
+    name: 'why 1: nearly all of his threes arrive off the catch',
     assert: (c) => {
       const cs3 = c.general.catchAndShootThrees
       expect(cs3.share).not.toBeNull()
-      expect(cs3.share!).toBeGreaterThanOrEqual(ALMOST_ALL_SHARE)
+      expect(cs3.share!).toBeGreaterThanOrEqual(NEARLY_ALL_FLOOR)
+      expect(cs3.share!).toBeLessThan(1)
     },
   },
   {
-    name: 'why 2: catch-and-shoot converts far below league value, sample-safe',
+    name: 'why 2: catch-and-shoot lands far below league average, sample-safe',
     assert: (c) => {
       const cs = c.general.jumperContexts.find((r) => r.context === 'Catch and Shoot')!
       expect(cs.pps).not.toBeNull()
@@ -148,7 +150,7 @@ const creationClaims: CreationClaim[] = [
 // clears the † bar, so both sentences state unhedged.
 const freethrowClaims: FreethrowClaim[] = [
   {
-    name: 'line 1: draws fouls less often than the league, on both cuts',
+    name: 'line 1: draws fouls at a below-average clip, on both cuts',
     assert: (f) => {
       const rate = f.seasonLine.ftaRate
       expect(rate.value).not.toBeNull()
@@ -212,7 +214,7 @@ describe.skipIf(
     expect(m.making.makingPpsDelta!).toBeLessThanOrEqual(-MATERIAL_MAKING_PPS)
   })
 
-  it('claim 5: the gap comes almost entirely from three', () => {
+  it('claim 5: the gap comes almost entirely from beyond the arc', () => {
     // The combined threes read cold, at a grain that clears the
     // small-sample bar (the whole point of the ADR-0016 rollup)...
     expect(makingDeltaBin(m.threes.makingDelta)).toBeLessThan(0)

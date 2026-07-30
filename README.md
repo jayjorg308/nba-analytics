@@ -6,7 +6,7 @@ Most shot charts lead with a scatter of makes and misses and leave the interpret
 
 **Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** the [hero directory](https://www.nbagoodshots.com/) at the root, with complete arguments for [Cody Williams](https://www.nbagoodshots.com/cody-williams) · [Keyonte George](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander](https://www.nbagoodshots.com/shai-gilgeous-alexander) · [Ace Bailey](https://www.nbagoodshots.com/ace-bailey) · [Donovan Mitchell](https://www.nbagoodshots.com/donovan-mitchell) (all 2025-26)
 
-Every page's byline states its season's reconciled frontier ("through Apr 12, 2026 · 72 games"), one form for completed and living seasons, so the verdict always reads as a statement about the season through a stated date.
+Every page's byline carries the hero's official usage rate as descriptive role context ("15.9% usage", the NBA's own figure, presented and never computed) and its season's reconciled frontier ("through Apr 12, 2026 · 72 games"), one form for completed and living seasons, so the verdict always reads as a statement about the season through a stated date.
 
 ## What the model measures
 
@@ -42,22 +42,23 @@ The product is deliberately opinionated about honesty:
 - hero-side trips are exact reconstructions that reconcile per game with the box score and per season with an independent league source; the 0.44 free-throw trip estimator (and any successor) is permanently forbidden;
 - a shooting-foul trip keeps the denied attempt's point class (two or three free throws) but is never guessed into a zone, and technical free throws are never trips: counted and reported, excluded from evaluation;
 - league free-throw comparisons include technicals on both sides because league totals cannot exclude them, and any generation or conversion claim must also survive the hero's own without-technicals cut;
-- authored verdicts are guarded by tests against the deployed data;
+- usage rate is presented, never computed: conventional usage math embeds the forbidden 0.44 estimator, so the page shows the NBA's official figure as descriptive context only, pinned to the payload's own record by an exact FGA reconciliation, fenced out of evaluation, and reserved out of verdict vocabulary;
+- authored verdicts are guarded by tests against the deployed data, and their grading words ("well above", "far below") price on one shared house ladder so the same word promises the same magnitude on every page;
 - displayed deltas are derived from their displayed anchors, so the visible arithmetic always reconciles.
 
 ## Data pipeline
 
-The project uses several unofficial stats.nba.com endpoints: `shotchartdetail` for shots and league zone baselines, tracking dashboards for aggregate creation contexts and league comparisons, `PlayByPlayV3` paired with `BoxScoreTraditionalV3` for per-shot assist classification and free-throw trip reconstruction, and `LeagueDashPlayerStats` season totals as both the free-throw completeness oracle (Gate 5) and the league free-throw baseline. Stats.nba.com blocks cloud IPs, so all collection is a local-only workflow and never runs in CI or on the deployed site.
+The project uses several unofficial stats.nba.com endpoints: `shotchartdetail` for shots and league zone baselines, tracking dashboards for aggregate creation contexts and league comparisons, `PlayByPlayV3` paired with `BoxScoreTraditionalV3` for per-shot assist classification and free-throw trip reconstruction, and `LeagueDashPlayerStats` season totals as both the free-throw completeness oracle (Gate 5) and the league free-throw baseline, with its Advanced measure supplying each hero's official usage rate. Stats.nba.com blocks cloud IPs, so all collection is a local-only workflow and never runs in CI or on the deployed site.
 
 ```text
 stats.nba.com
-  → append-only shot, tracking, play-by-play, box-score, and league-totals snapshots (gitignored)
+  → append-only shot, tracking, play-by-play, box-score, and league totals/advanced snapshots (gitignored)
   → validated shot, creation, shot-context, and free-throw payloads (gitignored)
   → explicitly synced deployment siblings in public/data/ (committed)
   → static deployment at www.nbagoodshots.com
 ```
 
-Adding a completed-season hero is one resumable command that runs the whole recipe — the raw pulls, the four derives, completing the shared play-by-play corpus (only the games it is missing), the config scaffold, the headshot and share-card assets, the deploy sync, and the closing authoring report:
+Adding a completed-season hero is one resumable command that runs the whole recipe (the raw pulls, the four derives, completing the shared play-by-play corpus with only the games it is missing, the config scaffold, the headshot and share-card assets, the deploy sync, and the closing authoring report):
 
 ```bash
 npm run hero:add -- "Player Name" 2025-26
@@ -89,7 +90,7 @@ The project is a static React/Vite application deployed from the repository to V
 
 Deep hero URLs are served through the rewrite in `vercel.json`, which sends any path to `index.html`; the app then resolves the player slug from the URL against `src/heroes/registry.ts`. Navigation uses ordinary links and full page loads, so each hero remains a self-contained, shareable argument rather than view state in a player switcher. Vercel Analytics is included in the app.
 
-Shared links preview their player: the build's final step emits a real file at every hero route (the canonical alias and each season permalink) — a copy of the built page whose title, description, `og:`/`twitter:` card, and per-page `og:url` name that player over his generated 1200×630 share card (`public/social-cards/`, rendered by `npm run cards:generate` from the committed headshot, wordmark, and pinned fonts). Static files are served before the rewrite applies, so scrapers read hero meta while the app boots identically; the root keeps the product-wide wordmark card.
+Shared links preview their player: the build's final step emits a real file at every hero route (the canonical alias and each season permalink). Each is a copy of the built page whose title, description, `og:`/`twitter:` card, and per-page `og:url` name that player over his generated 1200×630 share card (`public/social-cards/`, rendered by `npm run cards:generate` from the committed headshot, wordmark, and pinned fonts). Static files are served before the rewrite applies, so scrapers read hero meta while the app boots identically; the root keeps the product-wide wordmark card. The emitted pages also preload their exact payload fetch set and the above-the-fold webfonts, and `vercel.json` serves hashed assets immutable and data payloads stale-while-revalidate, so repeat visits render without a loading beat.
 
 The multi-hero shape is one deployment containing:
 
@@ -118,7 +119,7 @@ npm run build
 python -m pytest ingestion -q
 ```
 
-The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), the share-card guard (a committed 1200×630 card per registered hero, with the share-meta transform tested against the real `index.html`), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
+The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the usage-rate unit guard and FGA oracle, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), the share-card guard (a committed 1200×630 card per registered hero, with the share-meta transform tested against the real `index.html`), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
 
 ## Roadmap
 
@@ -126,9 +127,11 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **v3: living seasons** is built and its machinery is proven (2026-07-23). It added Ace Bailey as the fourth hero (whose season surfaced the first characterized hero-side tracking outages, now handled exact-or-reported with per-game pins), the reconciled-frontier contract in all four payloads' metadata, the restored hero directory, the season loop with automated data-only commits gated on the full test suite, and the replay proof: the production loop driven over seven historical frontier dates against a completed season, reproducing the committed deployment byte-for-byte modulo provenance and firing the flip signal on exactly the right day. Activation for 2026-27 is a configuration change; until opening night the loop runs dark against the unstarted season.
 
-**Season-over-season** is built (2026-07-23): the hero-season is now the page unit, every argued season keeps a stable permalink with the hero URL as its canonical alias, and the SEASON OVER SEASON growth coda — movement in the vs-league residuals, each season measured against its own league — ships dark until Ace's flip lights the first instance. **Hero scaffolding** is built (2026-07-23): a season argument's mechanical skeleton is one command, held unmergeable by the authoring tripwire until a person writes the copy. **Archetype-adjusted selection** was explored and declined (2026-07-24, ADR-0064): a throwaway prototype showed it is a role-normalization that would soften the current roster's sharpest verdicts, so the selection axis stays benchmarked against the whole league (ADR-0002 reaffirmed). With that resolved, the planned roadmap is complete; the remaining work is operational: the 2026-27 activation and the first live flip.
+**Season-over-season** is built (2026-07-23): the hero-season is now the page unit, every argued season keeps a stable permalink with the hero URL as its canonical alias, and the SEASON OVER SEASON growth coda (movement in the vs-league residuals, each season measured against its own league) ships dark until Ace's flip lights the first instance. **Hero scaffolding** is built (2026-07-23): a season argument's mechanical skeleton is one command, held unmergeable by the authoring tripwire until a person writes the copy. **Archetype-adjusted selection** was explored and declined (2026-07-24, ADR-0064): a throwaway prototype showed it is a role-normalization that would soften the current roster's sharpest verdicts, so the selection axis stays benchmarked against the whole league (ADR-0002 reaffirmed). With that resolved, the planned roadmap is complete; the remaining work is operational: the 2026-27 activation and the first live flip.
 
 **Launch tooling** (2026-07-27): the standing add recipe became the one resumable `hero:add` command (ADR-0066), proven the same day by adding Donovan Mitchell as the fifth hero, and shared hero links gained per-hero social cards through build-time-emitted share pages (ADR-0067).
+
+**Launch polish** (2026-07-28): the pre-launch round closed in one day. It delivered a shared site footer on both page types; a verdict consistency pass across all five heroes that grew into the house ladder (ADR-0068: grading words price on one shared scale, consumed by every guard); payload and asset caching with payload and critical-font preloads on the emitted pages; directory team marks considered and declined for restraint (ADR-0065); and usage rate as sourced descriptive context (ADR-0069: the official `USG_PCT` on every byline, presented never computed, verified through an exact FGA reconciliation, its vocabulary reserved out of verdicts). Still open before the August launch: the methodology page (allowed to slip) and whether the directory should explain itself to a cold first-time visitor, a deliberate watch-at-launch question.
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
@@ -137,7 +140,7 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checkli
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 67 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 69 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
 
 ## License
