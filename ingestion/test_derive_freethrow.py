@@ -213,3 +213,56 @@ def test_a_game_with_no_hero_free_throws_reconciles_at_zero():
     assert payload["_meta"]["totalTrips"] == 0
     assert payload["_meta"]["seasonFta"] == 0
     assert payload["_meta"]["tripClassCounts"]["shootingFoul2"] == 0
+
+
+def _write_pair(
+    raw_root: Path, game_id: str, home_players: list, away_players: list
+) -> None:
+    pull_date = "2026-07-29"
+    pbp = {
+        "_meta": {"game_id": game_id, "source": "NBA Stats PlayByPlayV3", "pull_date": pull_date},
+        "response": {"game": {"gameId": game_id, "actions": []}},
+    }
+    box = {
+        "_meta": {
+            "game_id": game_id,
+            "source": "NBA Stats BoxScoreTraditionalV3",
+            "pull_date": pull_date,
+        },
+        "response": {
+            "boxScoreTraditional": {
+                "gameId": game_id,
+                "homeTeam": {"players": home_players},
+                "awayTeam": {"players": away_players},
+            }
+        },
+    }
+    for kind, doc in (("play-by-play", pbp), ("box-score", box)):
+        game_dir = raw_root / kind / game_id
+        game_dir.mkdir(parents=True)
+        (game_dir / f"{pull_date}.json").write_text(json.dumps(doc), encoding="utf-8")
+
+
+def test_corpus_discovery_includes_shotless_free_throw_games(tmp_path):
+    """ADR-0054's remedy, made mechanical: a pulled pair for a game where the
+    hero shot free throws without a field-goal attempt joins the
+    reconstruction universe; a 0/0 shotless game and a hero-absent game do
+    not (so discovery is byte-neutral for every prior hero)."""
+    hero = 99
+
+    def player(person_id: int, ftm: int, fta: int) -> dict:
+        return {
+            "personId": person_id,
+            "statistics": {"freeThrowsMade": ftm, "freeThrowsAttempted": fta},
+        }
+
+    _write_pair(tmp_path, "0022500001", [player(hero, 2, 2)], [])  # shot game
+    _write_pair(tmp_path, "0022500002", [player(hero, 3, 4)], [])  # shotless FT game
+    _write_pair(tmp_path, "0022500003", [player(hero, 0, 0)], [])  # shotless, no FT
+    _write_pair(tmp_path, "0022500004", [player(12345, 5, 6)], [])  # hero absent
+
+    shot_payload = {"shots": [{"gameId": "0022500001"}]}
+    games = df.load_freethrow_game_snapshots(
+        shot_payload, tmp_path, hero, allow_missing_games=False
+    )
+    assert sorted(games) == ["0022500001", "0022500002"]

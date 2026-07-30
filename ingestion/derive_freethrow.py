@@ -404,7 +404,11 @@ def derive(
                 trip_class: sum(1 for trip in all_trips if trip.trip_class == trip_class)
                 for trip_class in TRIP_CLASSES
             },
-            "gamesExpected": len(expected_games),
+            # The reconstruction universe: the shot payload's games plus any
+            # corpus-discovered hero free-throw games (ADR-0054's remedy) —
+            # so completeness (gamesLoaded == gamesExpected) covers the whole
+            # universe, not only the shot-keyed subset.
+            "gamesExpected": len(set(expected_games) | set(game_snapshots)),
             "gamesLoaded": len(source_games),
             "sourceGames": source_games,
         },
@@ -427,6 +431,66 @@ def derive(
             "points": league_points,
         },
     }
+
+
+def load_freethrow_game_snapshots(
+    shot_payload: dict,
+    raw_root: Path,
+    player_id: int,
+    *,
+    allow_missing_games: bool,
+) -> dict[str, tuple[dict, dict]]:
+    """The free-throw reconstruction universe: the shot-keyed corpus games
+    plus any pulled corpus game whose box score credits the hero with a
+    free-throw attempt (ADR-0054's remedy, made mechanical).
+
+    Free throws do not require a field-goal attempt, so a hero's shotless
+    free-throw game can never enter the shot-keyed set — pulling the named
+    pair (ADR-0054's remedy) must also let the derive consume it. First
+    observed on Nique Clifford 2025-26: 3/4 free throws in a zero-FGA game.
+    Discovery reads only committed raw artifacts, never an endpoint, and is
+    byte-neutral for a hero whose season reconciles from shot games alone:
+    extra games enter only on a nonzero hero free-throw line, and every
+    prior hero's Gate 5 pass proves no such game exists for them. A shotless
+    free-throw game whose pair is NOT in the corpus still fails the
+    season-total oracle loudly, naming the gap (ADR-0054 unchanged).
+    """
+    snapshots = load_game_snapshots(
+        shot_payload, raw_root, allow_missing_games=allow_missing_games
+    )
+    shot_game_ids = {str(shot["gameId"]) for shot in shot_payload.get("shots", [])}
+    box_root = raw_root / "box-score"
+    if not box_root.exists():
+        return snapshots
+    for box_dir in sorted(path for path in box_root.iterdir() if path.is_dir()):
+        game_id = box_dir.name
+        if game_id in shot_game_ids:
+            continue
+        pbp_dir = raw_root / "play-by-play" / game_id
+        box_files = {path.name: path for path in box_dir.glob("*.json")}
+        pbp_files = (
+            {path.name: path for path in pbp_dir.glob("*.json")} if pbp_dir.exists() else {}
+        )
+        common = sorted(set(box_files) & set(pbp_files))
+        if not common:
+            # An unpaired snapshot cannot be reconstructed; if the hero has
+            # free throws here, the season-total oracle names the gap.
+            continue
+        pair_name = common[-1]
+        box_snapshot = _load(box_files[pair_name])
+        response = box_snapshot.get("response")
+        box_game = response.get("boxScoreTraditional") if isinstance(response, dict) else None
+        if not isinstance(box_game, dict):
+            fail(f"corpus scan: game {game_id} box snapshot has no boxScoreTraditional")
+        _, fta = _hero_box_line(box_game, player_id, game_id)
+        if fta <= 0:
+            continue
+        pbp_snapshot = _load(pbp_files[pair_name])
+        _, _, parsed_id = validate_game_pair(pbp_snapshot, box_snapshot)
+        if parsed_id != game_id:
+            fail(f"corpus scan: snapshot directory {game_id} != parsed game ID {parsed_id}")
+        snapshots[game_id] = (pbp_snapshot, box_snapshot)
+    return snapshots
 
 
 def _latest_league_totals(raw_root: Path, season: str) -> Path:
@@ -468,9 +532,11 @@ def main() -> None:
             fail("explicit play-by-play fixture has no _meta.game_id")
         games = {game_id: (pbp, box)}
     else:
-        games = load_game_snapshots(
+        hero_id = int(shot.get("_meta", {}).get("playerId", 0))
+        games = load_freethrow_game_snapshots(
             shot,
             Path(args.raw_root),
+            hero_id,
             allow_missing_games=args.allow_missing_games,
         )
 

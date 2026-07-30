@@ -18,7 +18,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
 | Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip |
 | Hero scaffolding | ✅ built 2026-07-23 (ADR-0063): `hero:scaffold` emits the season-argument skeleton; the authoring tripwire holds the suite red until authored |
-| Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green |
+| Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green. Adds six and seven — **Nique Clifford + Maxime Raynaud 2025-26, both complete 2026-07-29**: the first verdicts authored under the voice guide (ADR-0070), and Clifford's add triggered the first real Gate 5 shotless-free-throw failure, completing ADR-0054's remedy mechanically (the free-throw derive now consumes explicitly pulled corpus games) |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
 | Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build — and the verdict voice pass (item 10, ADR-0070) landed 2026-07-29. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch) and the methodology page (item 8, may slip). See [Launch (August 2026)](#launch-august-2026--open-items). |
@@ -897,7 +897,12 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
     mid-range" false at the band grain, "in basketball" vs the
     line-vs-floor scope, "long pull-up jumpers" as an unguardable
     cross-family claim) were corrected against the payloads before landing.
-    Gate green (vitest 435, lint, build).
+    Gate green (vitest 435, lint, build). _The loop's first live use
+    followed the same day: adds six and seven (Clifford, Raynaud) were
+    drafted under the guide, red-penned lightly, and archived as the
+    corpus's first draft-to-red-pen pairs — seven pairs total, two new
+    voice moves recorded (the ledger metaphor family and the watch
+    sentence; ADR-0070 amendment)._
 
 ---
 

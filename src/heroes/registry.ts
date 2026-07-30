@@ -16,6 +16,8 @@ import { keyonteGeorge } from './keyonte-george'
 // contracts and guards as the two young-player arguments.
 import { shaiGilgeousAlexander } from './shai-gilgeous-alexander'
 import { donovanMitchell } from './donovan-mitchell'
+import { niqueClifford } from './nique-clifford'
+import { maximeRaynaud } from './maxime-raynaud'
 import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
@@ -25,6 +27,8 @@ export const HEROES: readonly HeroConfig[] = [
   shaiGilgeousAlexander,
   aceBailey,
   donovanMitchell,
+  niqueClifford,
+  maximeRaynaud,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {
