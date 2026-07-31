@@ -17,7 +17,7 @@ export const keyonteGeorge: HeroConfig = {
     headshotPath: 'img/keyonte-george-headshot.png',
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
-      'Keyonte George hangs in the air for a jumper over two Minnesota Timberwolves defenders in the white Jazz number 3 jersey',
+      'Keyonte George hangs in the air for a jumper over a Minnesota defender in the white Jazz number 3 jersey',
     // The reader-facing SOURCES line (ADR-0071): Jazz team-site photo
     // (at Minnesota, 2025-26), a raw camera filename with no photographer
     // credited, so the credit stays at team grain. Swapped in 2026-07-30

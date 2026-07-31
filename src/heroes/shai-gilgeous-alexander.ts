@@ -13,7 +13,7 @@ export const shaiGilgeousAlexander: HeroConfig = {
     headshotPath: 'img/shai-gilgeous-alexander-headshot.png',
     teamLogoPath: 'img/okc-logo.png',
     imageAlt:
-      'Shai Gilgeous-Alexander extending for a layup over the Phoenix Suns in the navy OKC number 2 jersey',
+      'Shai Gilgeous-Alexander extends for a layup over a Phoenix defender in the navy OKC number 2 jersey',
     // The reader-facing SOURCES line (ADR-0071). Record correction
     // (2026-07-30): long misrecorded as generated stylized artwork — it is
     // a real game photograph from the Thunder's team site (OKC vs PHX,

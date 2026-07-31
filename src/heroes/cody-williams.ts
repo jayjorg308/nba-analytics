@@ -21,7 +21,7 @@ export const codyWilliams: HeroConfig = {
     // by the stylesheet (grayscale + low opacity) — the asset stays color.
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
-      'Cody Williams hangs mid-air after dunking on the San Antonio Spurs, the ball still in the net',
+      'Cody Williams falls away after dunking on the San Antonio Spurs, the ball still in the net',
     // The reader-facing SOURCES line (ADR-0071): Jazz team-site photo
     // (vs San Antonio at Delta Center, 2025-26), a raw camera filename
     // with no photographer credited, so the credit stays at team grain.

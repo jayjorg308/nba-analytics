@@ -60,7 +60,7 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
             marquee cue's grammar, so it never wraps mid-phrase. */}
         <div className="index-blurb">
           <p>
-            Good Shots asks one question of one player's season: is he taking good shots?
+            Good Shots asks one question of a player's season: “Is he taking good shots?”
             Each page argues its answer, verdict first and evidence after.
           </p>
           <a href={methodologyUrl()}>How the argument works →</a>
