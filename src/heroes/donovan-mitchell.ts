@@ -32,7 +32,7 @@ export const donovanMitchell: HeroConfig = {
     // which would vanish on the wide layout's dark column.
     teamLogoPath: 'img/cle-logo.png',
     imageAlt:
-      'Donovan Mitchell rising for a one-handed dunk in the white Cavaliers number 45 jersey',
+      'Donovan Mitchell rises for a one-handed dunk in the white Cavaliers number 45 jersey',
     // The reader-facing SOURCES line (ADR-0071), identified 2026-07-30 by
     // reverse-image search (wire ID USATSI 26094611: Cavaliers vs Pacers,
     // 2025 playoffs, Rocket Arena, 2025-05-04); docs/image-credits.md

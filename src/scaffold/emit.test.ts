@@ -52,6 +52,14 @@ describe('emitHeroModule', () => {
     expect(source).not.toMatch(/^\s*teamLogoPath:/m)
   })
 
+  it('leaves the optional image credit commented, so an unknown credit stays pending', () => {
+    // Emitting a live sentinel here would red the tripwire over a credit
+    // that may be genuinely unrecoverable; absent renders the honest
+    // "photograph credit pending" line instead (ADR-0071).
+    expect(source).toContain(`// imageCredit:`)
+    expect(source).not.toMatch(/^\s*imageCredit:/m)
+  })
+
   it('escapes player names with apostrophes into valid string literals', () => {
     const escaped = emitHeroModule({ ...id, playerName: "De'Aaron Test" })
     expect(escaped).toContain("playerName: 'De\\'Aaron Test',")

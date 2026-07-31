@@ -16,7 +16,7 @@ Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agen
 
 ### Verdict voice
 
-Authored hero copy (verdicts, why-sentences, line-sentences, growth-sentences) is drafted in the author's voice, inside the house rails (lexicon, ladder, claim guards). Before drafting or editing any verdict, read `docs/voice/VOICE.md` and the red-penned before/after samples in `docs/voice/samples/` — the samples outrank the guide where they disagree.
+Authored hero copy (verdicts, why-sentences, line-sentences, growth-sentences, and the banner's alt text and credit line) is drafted in the author's voice, inside the house rails (lexicon, ladder, claim guards). Before drafting or editing any of it, read `docs/voice/VOICE.md` and the red-penned before/after samples in `docs/voice/samples/` — the samples outrank the guide where they disagree. Banner alt text has its own section in the guide, and the credit line's two forms are in CONTEXT.md's Hero banner entry.
 
 ## Commands
 
