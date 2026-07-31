@@ -30,6 +30,9 @@ export const maximeRaynaud: HeroConfig = {
     // paint, ball secured, a defender in his chest.
     imageAlt:
       'Maxime Raynaud gathers for a shot in the paint through three defenders in the purple Kings number 42 jersey',
+    // The reader-facing SOURCES line (ADR-0071); docs/image-credits.md
+    // carries the full provenance note (Kings at Golden State, 2025-26).
+    imageCredit: 'photograph by Ray Chavez, Bay Area News Group',
     // Focal points (ADR-0021/0025): he stands right-of-center with his
     // face and the ball in the upper-right quadrant, so the narrow 3:4
     // crop steers hard toward him; the wide panel crops ~30% of the

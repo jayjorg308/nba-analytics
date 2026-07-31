@@ -22,15 +22,15 @@ import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
 export const HEROES: readonly HeroConfig[] = [
-  codyWilliams,
-  keyonteGeorge,
-  shaiGilgeousAlexander,
-  aceBailey,
-  donovanMitchell,
-  niqueClifford,
-  maximeRaynaud,
+    codyWilliams,
+    keyonteGeorge,
+    aceBailey,
+    shaiGilgeousAlexander,
+    donovanMitchell,
+    maximeRaynaud,
+    niqueClifford,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {
-  return HEROES.find((h) => h.slug === slug)
+    return HEROES.find((h) => h.slug === slug)
 }

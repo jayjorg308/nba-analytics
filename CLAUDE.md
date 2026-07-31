@@ -16,7 +16,11 @@ Single-context (one `CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agen
 
 ### Verdict voice
 
-Authored hero copy (verdicts, why-sentences, line-sentences, growth-sentences) is drafted in the author's voice, inside the house rails (lexicon, ladder, claim guards). Before drafting or editing any verdict, read `docs/voice/VOICE.md` and the red-penned before/after samples in `docs/voice/samples/` — the samples outrank the guide where they disagree.
+Authored hero copy (verdicts, why-sentences, line-sentences, growth-sentences, and the banner's alt text and credit line) is drafted in the author's voice, inside the house rails (lexicon, ladder, claim guards). Before drafting or editing any of it, read `docs/voice/VOICE.md` and the red-penned before/after samples in `docs/voice/samples/` — the samples outrank the guide where they disagree. Banner alt text has its own section in the guide, and the credit line's two forms are in CONTEXT.md's Hero banner entry.
+
+### Structural copy
+
+Product copy that makes no per-hero claim — the methodology page, glossary definitions, section descriptions and kickers, the directory blurb, the footer tagline — carries **no verdict-guard obligations**, which is exactly why it needs deliberate checking: nothing fails when it drifts, so a false sentence ships reading perfectly and stays. Before writing or editing any of it, verify each claim against the code, the constants, and the deployed payloads, never against a description of them. Two rules from the pass that found six errors in the methodology page's first draft (ADR-0071's verification amendment records them): **a claim true of today's roster is not a true claim** (an exclusion is invisible until the hero it applies to), and **where a qualifier is load-bearing, say so in a source comment** — the next editor reads scoping phrases as clutter. Structural copy is product voice, not the author's voice: `docs/voice/VOICE.md` governs verdicts and banner copy, not this class.
 
 ## Commands
 

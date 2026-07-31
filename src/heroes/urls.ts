@@ -6,6 +6,7 @@
 // Payload URLs take the season string explicitly (ADR-0060): a hero is a
 // directory of season arguments, and the page says which one it is fetching.
 
+import { METHODOLOGY_ROUTE } from '../app/routes'
 import type { HeroConfig } from './types'
 
 export function payloadUrl(hero: HeroConfig, season: string): string {
@@ -56,4 +57,10 @@ export function seasonPageUrl(hero: HeroConfig, season: string): string {
 
 export function indexUrl(): string {
   return import.meta.env.BASE_URL
+}
+
+/** The methodology page (ADR-0071): the site's one self-explanation
+ * surface, a static route beside the directory. */
+export function methodologyUrl(): string {
+  return `${import.meta.env.BASE_URL}${METHODOLOGY_ROUTE}`
 }

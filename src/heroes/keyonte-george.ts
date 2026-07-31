@@ -17,13 +17,20 @@ export const keyonteGeorge: HeroConfig = {
     headshotPath: 'img/keyonte-george-headshot.png',
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
-      'Keyonte George rises for a one-handed finish at the rim between two Oklahoma City Thunder defenders',
-    // Narrow (full-bleed 3:4) shows nearly the full frame height, so the
-    // focal point mostly steers the horizontal crop toward him; the wide
-    // panel crops ~30% of the height, so its point sits high to keep the
-    // ball-to-knees flight in view.
-    imagePosition: '55% 25%',
-    imagePositionWide: '52% 20%',
+      'Keyonte George hangs in the air for a jumper over a Minnesota defender in the white Jazz number 3 jersey',
+    // The reader-facing SOURCES line (ADR-0071): Jazz team-site photo
+    // (at Minnesota, 2025-26), a raw camera filename with no photographer
+    // credited, so the credit stays at team grain. Swapped in 2026-07-30
+    // to replace an NBAE/Getty-licensed frame (with the Cody swap, the
+    // deliberate exit from that licensing tier). Full provenance in
+    // docs/image-credits.md.
+    imageCredit: 'photograph via the Utah Jazz',
+    // Focal points per banner layout. He rises off-the-dribble with the
+    // ball at the frame's top band: the narrow full-bleed crop biases to
+    // the face-and-ball column; the wide panel crops ~30% of the height,
+    // so its point rides higher to keep the release in view.
+    imagePosition: '58% 25%',
+    imagePositionWide: '58% 20%',
   },
   canonicalSeason: '2025-26',
   seasons: [

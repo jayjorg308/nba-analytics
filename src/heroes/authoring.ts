@@ -28,6 +28,10 @@ export function sentinelProblems(hero: HeroConfig, seasonArgument: HeroSeasonCon
     ['hero.imagePath', hero.hero.imagePath],
     ['hero.headshotPath', hero.hero.headshotPath],
     ['hero.teamLogoPath', hero.hero.teamLogoPath],
+    // Optional (ADR-0071): absent filters out below — a missing credit
+    // renders the SOURCES pending line, never a red suite — but a
+    // sentinel left in an authored credit is still caught.
+    ['hero.imageCredit', hero.hero.imageCredit],
     ['hero.imagePosition', hero.hero.imagePosition],
     ['hero.imagePositionWide', hero.hero.imagePositionWide],
     [`seasons[${seasonArgument.season}].kicker`, seasonArgument.kicker],

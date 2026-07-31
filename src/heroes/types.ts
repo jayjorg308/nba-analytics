@@ -17,6 +17,15 @@ export interface HeroBannerConfig {
    * direction); the action poster above stays the hero page's argument. */
   headshotPath: string
   imageAlt: string
+  /** Reader-facing credit line for the banner image, rendered in the
+   * methodology page's SOURCES section (ADR-0071). AUTHORED COPY under the
+   * punctuation rails. Optional because a credit can be genuinely unknown
+   * pending research: absent renders an honest "credit pending" line and
+   * never trips the authoring tripwire (the credit stays on hero:add's
+   * human checklist, ADR-0066). docs/image-credits.md remains the
+   * engineering provenance record (URLs, dates); this is the reader's
+   * line only. */
+  imageCredit?: string
   /** Optional normalized `*-logo.png` team mark: a 1024px transparent square
    * with its centered mark at a 58–62% max footprint. Rendered as a faint
    * watermark in the wide layout (decorative and hidden on narrow screens).

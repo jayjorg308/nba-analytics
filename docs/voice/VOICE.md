@@ -1,15 +1,23 @@
 # Verdict voice guide
 
-How authored verdicts should sound. Distilled from the red-penned before/after
+How authored verdicts should sound — and, in the closing section, the banner
+alt text beside them. Distilled from the red-penned before/after
 pairs in `docs/voice/samples/`, which come in two kinds: the founding five
 (Before = the pre-voice shipped verdict, After = the author's rewrite) and
 every hero added since (Before = the voice-guided draft, After = the author's
 red-pen — the residual delta this guide has not learned yet). Read this file
-*and* the samples before drafting any verdict copy; where a rule here and a
+*and* the samples before drafting any hero copy; where a rule here and a
 sample disagree, the sample wins (and this file should be corrected).
 
 Voice operates inside the house rails. Nothing below licenses vocabulary
 drift, a re-graded magnitude word, or a claim without a guard mapping.
+
+Scope: this guide covers **authored hero copy** (verdicts, their sentence
+families, and banner alt text). It does not govern **structural copy** — the
+methodology page, glossary definitions, section descriptions, the directory
+blurb — which is product voice rather than the author's, and whose discipline
+is claim verification rather than cadence (CLAUDE.md's Structural copy entry,
+ADR-0071).
 
 ## The rails (voice never touches these)
 
@@ -110,6 +118,28 @@ verdict at most, only for a signal the table already shows the reader.
 "it"). Subject to the scope-word rail above.
 
 **No cute self-callbacks.** "Softens the verdict", not "softens the no".
+
+## Banner alt text
+
+The banner photo's alt text is authored copy too (ADR-0021), and it is the
+one place the house voice describes rather than argues. Same rails, one
+extra: it may claim only what the frame shows.
+
+- **The player is the subject, in the present tense.** "Rises", "hangs",
+  "extends", "falls away" — never a participle ("rising for a dunk") and
+  never the photo as the subject ("image of", "photo of"). Describe the
+  play, not the file.
+- **Then the opponent, then the jersey and number.** "...for a jumper over
+  a Minnesota defender in the white Jazz number 3 jersey."
+- **A player rises over a defender, never over a team.** "Over the Phoenix
+  Suns" is the alt-text cousin of an unguarded claim: the frame shows a
+  man, not a franchise.
+- **Count what is actually there.** "Two defenders" when one is contesting
+  and the other is passing through the frame is a small lie no test can
+  catch — nothing asserts alt text against the photo, so the honesty is
+  entirely the author's.
+- The credit line beside it takes two forms and never guesses: see
+  CONTEXT.md's Hero banner entry.
 
 ## Vocabulary calls settled during the corpus build
 

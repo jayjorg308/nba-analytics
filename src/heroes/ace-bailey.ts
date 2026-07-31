@@ -25,6 +25,11 @@ export const aceBailey: HeroConfig = {
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
       'Ace Bailey hangs in the air for a one-handed dunk in Utah’s purple mountain jersey, the ball at the rim',
+    // The reader-facing SOURCES line (ADR-0071): Jazz team-site photo
+    // (at Orlando, Kia Center, 2026-02-07); the source is a raw camera
+    // filename with no photographer credited, so the credit stays at team
+    // grain. Full provenance in docs/image-credits.md.
+    imageCredit: 'photograph via the Utah Jazz',
     // The dunk argues the verdict by contrast: the poster shows the exact
     // shot his diet trades away. Narrow (full-bleed 3:4) crops a 4:5 frame
     // lightly — the point steers toward his face and the ball high in the

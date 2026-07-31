@@ -12,6 +12,15 @@ export interface HeroRoute {
   season?: string
 }
 
+/** The one static page route (ADR-0071): the site's self-explanation
+ * surface, resolved by the app before any registry lookup. */
+export const METHODOLOGY_ROUTE = 'methodology'
+
+/** Single-segment paths owned by static pages. A hero slug may never
+ * collide with one — guarded by the registry coherence tests, so a future
+ * hero:add for a colliding name fails loudly instead of shadowing a page. */
+export const RESERVED_ROUTES: readonly string[] = [METHODOLOGY_ROUTE]
+
 /**
  * The route after BASE_URL: { slug: '' } for the index, { slug } for a
  * canonical alias, { slug, season } for a season permalink. Tolerates

@@ -21,12 +21,21 @@ export const codyWilliams: HeroConfig = {
     // by the stylesheet (grayscale + low opacity) — the asset stays color.
     teamLogoPath: 'img/utah-logo.png',
     imageAlt:
-      'Cody Williams hangs on the rim after a dunk against the New York Knicks',
-    // Focal points per banner layout. Narrow (full-bleed) crops to the
-    // rim-and-player top of the frame; the wide layout right-anchors the
-    // photo as a panel, so its crop sits lower to show more of the player.
-    imagePosition: '68% 10%',
-    imagePositionWide: '50% 24%',
+      'Cody Williams falls away after dunking on the San Antonio Spurs, the ball still in the net',
+    // The reader-facing SOURCES line (ADR-0071): Jazz team-site photo
+    // (vs San Antonio at Delta Center, 2025-26), a raw camera filename
+    // with no photographer credited, so the credit stays at team grain.
+    // Swapped in 2026-07-30 to replace an NBAE/Getty-licensed frame (the
+    // deliberate exit from that licensing tier). Full provenance in
+    // docs/image-credits.md.
+    imageCredit: 'photograph via the Utah Jazz',
+    // Focal points per banner layout. He hangs below the rim with the
+    // ball dropping through the net above him: the narrow full-bleed crop
+    // biases to the face-and-ball upper band; the wide panel crops ~30%
+    // of the height, so its point rides slightly higher to keep the net
+    // and follow-through arm in frame.
+    imagePosition: '55% 25%',
+    imagePositionWide: '55% 22%',
   },
   // The season arguments (ADR-0060), oldest first; the canonical season is
   // the one /cody-williams renders, moved only by a flip PR.

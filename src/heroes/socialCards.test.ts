@@ -15,6 +15,7 @@ import {
   fontPreloadLinks,
   heroPageHtml,
   heroPageMeta,
+  methodologyPageMeta,
   payloadPreloadPaths,
   SITE_ORIGIN,
   socialCardPath,
@@ -159,6 +160,28 @@ describe('heroPageHtml over the real index.html', () => {
     expect(() => heroPageHtml('<html><head></head></html>', meta)).toThrow(
       /not found in the built index\.html/,
     )
+  })
+})
+
+describe('methodologyPageMeta (the one non-hero emitted page, ADR-0071)', () => {
+  const meta = methodologyPageMeta()
+
+  it('keeps the product-wide card, carries its own url, preloads nothing', () => {
+    expect(meta.url).toBe(`${SITE_ORIGIN}/methodology`)
+    expect(meta.imageUrl).toBe(`${SITE_ORIGIN}/social-card.png`)
+    expect(meta.preloadPaths).toEqual([])
+    // Mirrors the page's runtime document.title, the heroPageMeta rule.
+    expect(meta.title).toBe('Methodology · Good Shots')
+  })
+
+  it('emits through the same transform: swapped title, own og:url, no fetch preloads', () => {
+    const html = heroPageHtml(indexHtml, meta)
+    expect(html).toContain('<title>Methodology · Good Shots</title>')
+    expect(html).toContain(`<meta property="og:url" content="${meta.url}" />`)
+    expect(html).not.toContain('as="fetch"')
+    // The product-wide card survives the swap (unlike hero pages, which
+    // must never point at it).
+    expect(html).toContain('social-card.png')
   })
 })
 

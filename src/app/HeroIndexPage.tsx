@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { HEROES } from '../heroes/registry'
 import { indexMetaOf } from '../heroes/types'
-import { headshotUrl, heroPageUrl } from '../heroes/urls'
+import { headshotUrl, heroPageUrl, methodologyUrl } from '../heroes/urls'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 
@@ -51,6 +51,20 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
             <span className="index-cue">Is he taking good shots? → The verdict</span>
           </div>
         </a>
+        {/* The directory's one line of self-explanation (ADR-0071, launch
+            item 2): a cold visitor learns what the site is without the
+            marquee gaining a deck. Plain prose and a plain anchor only — no
+            heading (the outline stays h1 site → h2 name → h2 rail) and no
+            Term popovers (the index renders no buttons; the no-switcher
+            test holds it that way). The link stands on its own line in the
+            marquee cue's grammar, so it never wraps mid-phrase. */}
+        <div className="index-blurb">
+          <p>
+            Good Shots asks one question of a player's season: “Is he taking good shots?”
+            Each page argues its answer, verdict first and evidence after.
+          </p>
+          <a href={methodologyUrl()}>How the argument works →</a>
+        </div>
         {/* The rail heading names its section via aria-labelledby (the house
             pattern): an aria-label beside a visible heading would give screen
             readers different words than the page shows. "Verdicts" is the

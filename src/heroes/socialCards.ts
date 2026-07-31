@@ -60,6 +60,23 @@ export function payloadPreloadPaths(hero: HeroConfig, season: HeroSeasonConfig):
   return paths
 }
 
+/** The methodology page's share meta (ADR-0071): the one non-hero emitted
+ * page. It keeps the product-wide card (the page is the product explaining
+ * itself, not a hero), gains its own og:url like every emitted page, and
+ * preloads nothing (it fetches no payloads). The title mirrors the page's
+ * runtime document.title, the heroPageMeta convention. */
+export function methodologyPageMeta(): HeroPageMeta {
+  return {
+    title: 'Methodology · Good Shots',
+    description:
+      'How Good Shots judges a shot: expected value in points per shot, the league diet as the benchmark, and the tests that keep every verdict honest.',
+    imageUrl: `${SITE_ORIGIN}/social-card.png`,
+    imageAlt: 'Good Shots wordmark beside a basketball',
+    url: `${SITE_ORIGIN}/methodology`,
+    preloadPaths: [],
+  }
+}
+
 export function heroPageMeta(
   hero: HeroConfig,
   season: HeroSeasonConfig,
