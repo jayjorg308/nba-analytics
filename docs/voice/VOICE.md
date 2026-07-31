@@ -12,6 +12,13 @@ sample disagree, the sample wins (and this file should be corrected).
 Voice operates inside the house rails. Nothing below licenses vocabulary
 drift, a re-graded magnitude word, or a claim without a guard mapping.
 
+Scope: this guide covers **authored hero copy** (verdicts, their sentence
+families, and banner alt text). It does not govern **structural copy** — the
+methodology page, glossary definitions, section descriptions, the directory
+blurb — which is product voice rather than the author's, and whose discipline
+is claim verification rather than cadence (CLAUDE.md's Structural copy entry,
+ADR-0071).
+
 ## The rails (voice never touches these)
 
 - **Magnitude words price on the verdict ladder** (`src/heroes/verdictLadder.ts`,

@@ -23,6 +23,14 @@ export const GLOSSARY = {
     definition:
       "Where a player's shots come from: the share of his attempts taken from each part of the floor. The raw material of shot selection, judged by what its shots are worth, not by whether they went in.",
   },
+  // Selection and making are the argument's two axes, so both are defined:
+  // the vocabulary section lists every entry in order, and a reader who has
+  // just met the pair would otherwise find one half missing.
+  'shot-selection': {
+    term: 'Shot selection',
+    definition:
+      "One of the two axes the argument splits into: whether a player's choice of shots is worth more or less than the league's own mix, before any question of whether they went in. Its counterpart is shot making.",
+  },
   'shot-making': {
     term: 'Shot making',
     definition:
@@ -36,7 +44,7 @@ export const GLOSSARY = {
   pps: {
     term: 'PPS (points per shot)',
     definition:
-      "Points scored per shot attempt: make rate × the shot's point value. It is the unit of shot value here because it prices the 3-vs-2 difference fairly, so a 38% three (1.14 PPS) outranks a 45% mid-range two (0.90 PPS). '(lg)' beside a figure is the league's number on the same shots.",
+      "Points scored per shot attempt: make rate × the shot's point value. It is the unit of shot value here because it prices the 3-vs-2 difference fairly, so a 38% three (1.14 PPS) outranks a 45% mid-range two (0.90 PPS). '(lg)' beside a figure is the league's number from the same places.",
   },
   'expected-pps': {
     term: 'Expected points per shot',
@@ -46,7 +54,9 @@ export const GLOSSARY = {
   'catch-and-shoot': {
     term: 'Catch and shoot',
     definition:
-      'A jumper taken straight out of a pass, held under two seconds with no dribbles. The look arrives ready-made. The NBA classifies creation this way for jumpers from 10 ft and out.',
+      // "two seconds or less", never "under two seconds": the NBA's
+      // classifier includes exactly 2.0 (ADR-0031 records it as ≤2s hold).
+      'A jumper taken straight out of a pass, held for two seconds or less with no dribbles. The look arrives ready-made. The NBA classifies creation this way for jumpers from 10 ft and out.',
   },
   'pull-up': {
     term: 'Pull-up',
