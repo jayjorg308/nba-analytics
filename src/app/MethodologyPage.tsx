@@ -29,11 +29,16 @@ export function MethodologyPage() {
         <header className="methodology-header">
           <p className="section-kicker">METHODOLOGY</p>
           <h1 className="methodology-title">What makes a good shot?</h1>
+          {/* The deck answers the h1 in its first clause — the page applying
+              the site's own answer-before-evidence rule (ADR-0018) to
+              itself. It deliberately does NOT restate what the site is: the
+              directory blurb that links here already said it, and this
+              page's reader most often arrives from that very sentence. */}
           <p className="methodology-deck">
-            Good Shots asks one question of one player's season: is he taking good shots?
-            Every page argues its answer, verdict first and evidence after. This page
-            explains the model behind the verdicts, the rules that keep them honest, and
-            where the numbers come from.
+            Not whether it went in. Good Shots judges every attempt by what a shot from
+            that spot is worth, then asks what the player's conversion added or cost. This
+            page explains the model behind the verdicts, the rules that keep them honest,
+            and where the numbers come from.
           </p>
         </header>
 
@@ -44,15 +49,20 @@ export function MethodologyPage() {
               expected value, points per shot, and the two-axis split
             </p>
           </header>
+          {/* Opens on the case, not the definition: the deck above already
+              states what a good shot is, so this paragraph proves it and
+              then gives the reason the definition exists (ADR-0001's own
+              argument, which appears nowhere else on the page). */}
           <p>
-            A good shot is a high-value shot. Every attempt is judged by the points a shot
-            from its spot is expected to produce, not by whether it went in. A made long
-            two is still a bad shot, and a missed corner three is still a good one.
+            A made long two is still a bad shot, and a missed corner three is still a good
+            one. Grading by outcome rewards the luck in a single make. Grading by value
+            reads the choice behind the shot.
           </p>
+          {/* The mechanism alone: the three-versus-two example lives in the
+              vocabulary section below, with the arithmetic. */}
           <p>
-            The unit is points per shot: make rate times point value, so a modest three
-            can outrank a well-made two. One unit prices every shot on the page, from a
-            dunk to a corner three to a trip to the line.
+            The unit is points per shot: make rate times point value. One unit prices
+            every shot on the page, from a dunk to a corner three to a trip to the line.
           </p>
           <p>
             The benchmark is the league. A player's shot diet, where his attempts come
@@ -60,11 +70,31 @@ export function MethodologyPage() {
             league's rates on the same shots. The comparison class is stated plainly on
             every page: vs league average, never adjusted for position or role.
           </p>
+          {/* The identity as an anchor plus two moves (ADR-0016), which is
+              what the headline pair draws. Deliberately never "the two add
+              up": the decomposition has three terms because the league's
+              diet is the starting point, not a third axis, and saying
+              "two" of a three-term sum is the small lie this page exists
+              to avoid. The section description already frames the split,
+              so the paragraph does not announce it again.
+
+              Both scoping phrases in the closing sentence are load-bearing
+              and must not be trimmed as clutter. "From the field" keeps a
+              general reader from folding free throws into the figure (they
+              are trips, not shots — THE LINE's whole point). "Over every
+              attempt the model counts" is what keeps "exactly" earned:
+              backcourt heaves are excluded from evaluation (ADR-0016) and
+              zone-conflict rows are dropped outright (ADR-0019), so the
+              arithmetic closes over the evaluated set, not over every shot
+              a box score would list. No current hero has a heave and only
+              two carry a dropped row, which is exactly why the overclaim
+              would be invisible until the hero who breaks it. */}
           <p>
-            The argument then splits in two. Shot selection asks what his choices would be
-            worth at league-average shooting. Shot making asks what his conversion adds or
-            subtracts on top. The two add up exactly: the league's diet, plus his
-            selection, plus his making, equals the points per shot he actually scored.
+            Shot selection asks what his choices would be worth at league-average
+            shooting. Shot making asks what his conversion adds or costs on top. Both move
+            from one starting point: the value of the league's own diet. Together they
+            land exactly on the points per shot he scored from the field, over every
+            attempt the model counts.
           </p>
         </section>
 
