@@ -737,6 +737,23 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    `.index-footer` rules replaced by `.site-footer`. Gate green (vitest
    419, lint, build); browser-verified both pages at desktop and mobile._
 
+   _Re-formed 2026-07-30 (ADR-0071 amendment), after the methodology link
+   made it a four-item row: one `space-between` row of items with very
+   different weight left the tagline drifting between page classes, so
+   the footer became a **1fr auto 1fr grid** — utility links left, the
+   tagline pinned dead-center on every page, the social rings right. One
+   ring grammar now carries both flanks (`.footer-ring` shares the social
+   row's 44px recipe; the old way-back pill is retired as a distinct
+   form), with the adaptive rule that a utility alone in its zone spells
+   itself out as a labeled pill and utilities in company compress to icon
+   rings — so hero pages show `← 📖`, the index a full "Methodology" pill,
+   and the methodology page a full "All players" pill. The methodology
+   glyph is an open book, chosen over an info "i" and a question mark by
+   live comparison (the "?" reads as help once a label sits beside it).
+   Accessible names ride the pill's own text and the ring's aria-label,
+   so no test moved. Phones stack the tagline over one centered row of
+   targets._
+
 5. **Verdict consistency pass** — five verdicts authored across five adds
    have drifted in verbiage and criteria. The pass: `hero:report --deployed`
    for every hero, audit each verdict's vocabulary against the house bars

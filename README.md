@@ -4,7 +4,7 @@ An interactive NBA shot-quality essay that answers focused questions about one p
 
 Most shot charts lead with a scatter of makes and misses and leave the interpretation to the reader. nba-analytics leads with a guarded, plain-language verdict and then shows its work in four acts over one reconciled season of scoring: the where (a two-axis PPS decomposition, a zone-shaded court, per-zone details), the how (league-relative creation contexts), the credit (official assisted-make evidence), and the line (free throws at trip grain, priced against the floor). The page is structured as question → verdict → proof, not as a general-purpose stats dashboard.
 
-**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** the [hero directory](https://www.nbagoodshots.com/) at the root, with complete arguments for [Cody Williams](https://www.nbagoodshots.com/cody-williams) · [Keyonte George](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander](https://www.nbagoodshots.com/shai-gilgeous-alexander) · [Ace Bailey](https://www.nbagoodshots.com/ace-bailey) · [Donovan Mitchell](https://www.nbagoodshots.com/donovan-mitchell) (all 2025-26)
+**Live at [nbagoodshots.com](https://www.nbagoodshots.com/):** the [hero directory](https://www.nbagoodshots.com/) at the root, with complete arguments for [Cody Williams](https://www.nbagoodshots.com/cody-williams) · [Keyonte George](https://www.nbagoodshots.com/keyonte-george) · [Shai Gilgeous-Alexander](https://www.nbagoodshots.com/shai-gilgeous-alexander) · [Ace Bailey](https://www.nbagoodshots.com/ace-bailey) · [Donovan Mitchell](https://www.nbagoodshots.com/donovan-mitchell) · [Nique Clifford](https://www.nbagoodshots.com/nique-clifford) · [Maxime Raynaud](https://www.nbagoodshots.com/maxime-raynaud) (all 2025-26), and [the methodology](https://www.nbagoodshots.com/methodology) behind them
 
 Every page's byline carries the hero's official usage rate as descriptive role context ("15.9% usage", the NBA's own figure, presented and never computed) and its season's reconciled frontier ("through Apr 12, 2026 · 72 games"), one form for completed and living seasons, so the verdict always reads as a statement about the season through a stated date.
 
@@ -94,11 +94,12 @@ Shared links preview their player: the build's final step emits a real file at e
 
 The multi-hero shape is one deployment containing:
 
-- `/` - the directory: a headshot marquee of the first registered hero over a name-only rail of the rest, read straight off the registry;
+- `/` - the directory: a headshot marquee of the first registered hero over a name-only rail of the rest, read straight off the registry, with one line of self-explanation between them;
 - `/<player-slug>` - the canonical alias: the hero's current argument, rendered in place;
-- `/<player-slug>/<season>` - a stable permalink for every argued season. A hero is a directory of season arguments; a live flip moves which season the alias renders and freezes the prior argument verbatim at its permalink.
+- `/<player-slug>/<season>` - a stable permalink for every argued season. A hero is a directory of season arguments; a live flip moves which season the alias renders and freezes the prior argument verbatim at its permalink;
+- `/methodology` - the one static page: how the numbers are made and read, in structural copy with no per-hero claims, closing with the imagery credits. Its vocabulary section re-renders the same glossary registry the in-page dictionary popovers read, so the two can never disagree.
 
-Unknown paths render the directory with a quiet note. Cross-hero navigation is the directory's player links, the "Good Shots" wordmark in the site navbar, and each hero page's "All players" footer link, all plain anchors; there is deliberately no player switcher, and the navbar carries no hero list or menu.
+Unknown paths render the directory with a quiet note. Cross-hero navigation is the directory's player links, the "Good Shots" wordmark in the site navbar, and each hero page's way back in the footer, all plain anchors; there is deliberately no player switcher, and the navbar carries no hero list or menu. The shared footer sits in three registered zones — utility links left, the tagline centered, outward social links right — where a utility standing alone in its zone spells itself out and utilities in company compress to icons.
 
 ## Running locally
 
@@ -119,7 +120,7 @@ npm run build
 python -m pytest ingestion -q
 ```
 
-The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the usage-rate unit guard and FGA oracle, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), the share-card guard (a committed 1200×630 card per registered hero, with the share-meta transform tested against the real `index.html`), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary punctuation guard, and the normalized team-logo asset guard.
+The clean-clone-safe suite includes cross-language golden contracts for all four payloads, real-data-aware tests that skip when local snapshots are absent, exact tracking, assist, and free-throw trip reconciliation, four-way frontier equality across the deployed sibling payloads, the pinned tracking-shortfall guard, the usage-rate unit guard and FGA oracle, the season loop's decision-logic tests, deployed-payload and per-season verdict guards, the authoring tripwire (no scaffold placeholder or missing image asset can merge), the share-card guard (a committed 1200×630 card per registered hero, with the share-meta transform tested against the real `index.html`), display-identity checks, court geometry checks, the committed making-palette contrast guard, the glossary and hero-copy punctuation guards, the methodology page's own suite (every glossary entry rendered, every registered banner credited, no em dash anywhere on the page), the reserved-route guard that stops a hero slug from shadowing a static page, and the normalized team-logo asset guard.
 
 ## Roadmap
 
@@ -131,7 +132,11 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **Launch tooling** (2026-07-27): the standing add recipe became the one resumable `hero:add` command (ADR-0066), proven the same day by adding Donovan Mitchell as the fifth hero, and shared hero links gained per-hero social cards through build-time-emitted share pages (ADR-0067).
 
-**Launch polish** (2026-07-28): the pre-launch round closed in one day. It delivered a shared site footer on both page types; a verdict consistency pass across all five heroes that grew into the house ladder (ADR-0068: grading words price on one shared scale, consumed by every guard); payload and asset caching with payload and critical-font preloads on the emitted pages; directory team marks considered and declined for restraint (ADR-0065); and usage rate as sourced descriptive context (ADR-0069: the official `USG_PCT` on every byline, presented never computed, verified through an exact FGA reconciliation, its vocabulary reserved out of verdicts). Still open before the August launch: the methodology page (allowed to slip) and whether the directory should explain itself to a cold first-time visitor, a deliberate watch-at-launch question.
+**Launch polish** (2026-07-28): the pre-launch round closed in one day. It delivered a shared site footer on both page types; a verdict consistency pass across all five heroes that grew into the house ladder (ADR-0068: grading words price on one shared scale, consumed by every guard); payload and asset caching with payload and critical-font preloads on the emitted pages; directory team marks considered and declined for restraint (ADR-0065); and usage rate as sourced descriptive context (ADR-0069: the official `USG_PCT` on every byline, presented never computed, verified through an exact FGA reconciliation, its vocabulary reserved out of verdicts).
+
+**Verdict voice** (2026-07-29, ADR-0070): authored copy is now written from a committed voice guide distilled from red-penned before/after samples, which outrank the guide where they disagree. Voice operates strictly inside the house rails: a voice edit never re-grades a magnitude word, and one that adds a fact adds a guarded claim. The Kings adds, Nique Clifford and Maxime Raynaud, were the guide's first live use and brought the roster to seven.
+
+**Launch complete** (2026-07-30, ADR-0071): the last two launch items closed together. The methodology page ships as the site's one self-explanation surface, and the directory gains a single line of self-explanation linking it, so a cold visitor learns what the site is without the marquee gaining a deck. The same change made image credits reader-facing: every banner is credited on that page, with an unknown credit stated plainly rather than omitted. The planned roadmap is now complete; what remains is operational, the 2026-27 activation and the first live flip.
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
@@ -140,7 +145,7 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checkli
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 69 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 71 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
 
 ## License
@@ -149,4 +154,4 @@ Copyright © 2026 Jayson Jorgensen. All rights reserved.
 
 This repository is public so the method can be read and the arguments checked. It is not open source: no permission is granted to copy, modify, or redistribute the code, the derived payloads, or the authored analysis. If you want to build on it, ask.
 
-Player photographs, headshots, and team marks are the property of their respective owners and appear here for non-commercial illustrative purposes.
+Player photographs, headshots, and team marks are the property of their respective owners and appear here for non-commercial illustrative purposes. Each is credited on the [methodology page](https://www.nbagoodshots.com/methodology), with the engineering provenance recorded in [docs/image-credits.md](docs/image-credits.md).
