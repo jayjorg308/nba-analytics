@@ -90,6 +90,19 @@ sga-hero.jpg record (see its entry)._
   (`cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg`, 2026-07-29),
   browser-rasterized and committed on the shared normalized watermark
   canvas (60% footprint).
+- `public/img/goodshots-wordmark.png` — the site's own brand lockup, made by
+  the author; the committed file is a web-sized transparent derivation of the
+  branding source `Good Shots-01.png` (whose black plate is opaque, so the
+  undoctored source would ride over the poster as a black box — ADR-0065's
+  2026-07-27 amendment).
+- **Typefaces** — Public Sans, IBM Plex Mono, and Big Shoulders Display, all
+  under the SIL Open Font License, self-hosted from the pinned `@fontsource`
+  packages (ADR-0020 chose open-licensed faces over the commercial ones they
+  stand in for precisely so self-hosting carries no license exposure). The
+  social-card generator reads those same committed `.woff` files rather than
+  re-downloading a cousin that could drift, so they are card inputs as much
+  as the imagery above and are credited on `/methodology` alongside it.
 - `public/social-cards/*.png` — generated derivatives
   (`npm run cards:generate`, ADR-0067) composed entirely from the credited
-  headshots above plus the site's own wordmark; no external imagery.
+  headshots above plus the site's own wordmark and the pinned typefaces; no
+  external imagery.
