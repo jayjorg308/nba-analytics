@@ -21,7 +21,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green. Adds six and seven — **Nique Clifford + Maxime Raynaud 2025-26, both complete 2026-07-29**: the first verdicts authored under the voice guide (ADR-0070), and Clifford's add triggered the first real Gate 5 shotless-free-throw failure, completing ADR-0054's remedy mechanically (the free-throw derive now consumes explicitly pulled corpus games) |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
-| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build — and the verdict voice pass (item 10, ADR-0070) landed 2026-07-29. Still open: whether the directory should explain itself to a cold visitor (item 2, watch-at-launch) and the methodology page (item 8, may slip). See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Launch (August 2026) | 🔜 open — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build — and the verdict voice pass (item 10, ADR-0070) landed 2026-07-29. Items 2 and 8 closed together 2026-07-30 (ADR-0071): the `/methodology` page (model, honesty rules, data story, verdict stance, the glossary re-rendered, image SOURCES) plus the directory blurb and the shared-footer link. Banner credits closed the same day (two recovered by the credit hunt, five author-supplied team-site sources; SGA's "generated artwork" record corrected — it was always a real Jimmy Do photograph), so every launch item is now closed. See [Launch (August 2026)](#launch-august-2026--open-items). |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -37,8 +37,12 @@ flags, authored-and-guarded copy — on a new axis._
 > _The max-FGA stress test is now a shipped v2.5 commitment: Shai's 2025-26
 > MVP season is the positive control. His action banner, guarded copy, and all
 > three required payloads are production data; he receives no payload, gate,
-> or guard exemption. The original action artwork is intentionally retained
-> as a stylized production illustration, not a documentary game photo._
+> or guard exemption. **Record correction (2026-07-30):** this note long
+> claimed the banner was "original action artwork ... a stylized production
+> illustration" — wrong. It is a real game photograph (Jimmy Do, Oklahoma
+> City Thunder, OKC vs PHX 2026-04-22), likely confused with the
+> registration-era generated placeholder it replaced; docs/image-credits.md
+> carries the corrected provenance._
 
 **Where v1 ended:** the thesis ("Is this player taking good shots?") is
 answered by the two-axis model, argued verdict-first (ADR-0018), guarded
@@ -640,8 +644,21 @@ assumption (Cody Williams certainly, as the reason the tool exists); the
 roster has since grown to five arguments (Donovan Mitchell joined
 2026-07-27 as the first `hero:add` add), still small enough that the
 marquee-layout lens these items were judged under holds. Banner-photo
-credits for the four photographic heroes are the one open provenance item
-(docs/image-credits.md; sources are the author's to supply)._
+credits CLOSED 2026-07-30, in two moves: the credit hunt recovered
+Clifford's (Troy Wayrynen, Imagn — from the file's own embedded wire
+metadata) and Mitchell's (Ken Blaze, Imagn — exact reverse-image match),
+then the author supplied the team-site source URLs for the rest — Keyonte
+(Zach Beeker, NBAE via Getty Images — the one banner whose source caption
+carries the explicit Getty license notice), Ace (via the Utah Jazz, no
+photographer credited), and SGA (Jimmy Do, Oklahoma City Thunder —
+correcting the long-standing "generated artwork" record; see the note
+under the status table). Cody's and Keyonte's banners were then both SWAPPED the same day
+(author-picked team-content frames from the Jazz's site — the Spurs dunk
+follow-through and the Minnesota hanging jumper, each "via the Utah
+Jazz") to exit the NBAE-via-Getty licensing tier deliberately; no
+committed banner remains in it. All seven render credited in
+/methodology's SOURCES section (ADR-0071); docs/image-credits.md is the
+engineering record._
 
 1. **The social card** — MVP shipped 2026-07-27: product-wide `og:` /
    `twitter:` meta in `index.html` with a 1200×630 card
@@ -685,6 +702,13 @@ credits for the four photographic heroes are the one open provenance item
    subordinate line under the cue; or restore a short deck under the
    wordmark. Worth watching real first-time reactions at launch before
    spending page weight on it.
+
+   _Done 2026-07-30, closed together with item 8 (ADR-0071): the directory
+   gains a two-sentence blurb between the marquee and the rail — plain
+   prose, no heading (the outline stands), no popovers (the index stays
+   button-free) — ending in a link to the new /methodology page, which is
+   the full-story answer item 8 always promised. The marquee itself gained
+   nothing: no deck, restraint intact._
 
 3. **The featured player's name is not a heading** — closed 2026-07-27,
    exactly as scoped: the name is now an `h2` inside a flow-container
@@ -844,6 +868,20 @@ ordered roughly by effort. Items 4–6 are self-contained; 7 needs a small ADR;
    draft. No guard obligations (no per-hero claims, no numbers). Doubles
    as the low-footprint answer to item 2: a cold visitor learns what the
    site is without the marquee gaining a deck.
+
+   _Done 2026-07-30 (ADR-0071), at full-story depth: THE MODEL / THE
+   HONESTY RULES / THE DATA / THE VERDICTS in the acts' section-caption
+   recipe, THE VOCABULARY re-rendering the glossary registry whole (one
+   source, drift impossible; the page prints definitions in place and
+   carries no Term popovers), and a closing SOURCES section crediting the
+   imagery per registered hero — an optional `imageCredit` on the banner
+   config, with unknown credits stated as "photograph credit pending"
+   rather than omitted. `methodology` is a reserved route (registry
+   collision guard); the shared footer links the page from everywhere and
+   the page never links itself; the build emits
+   `dist/methodology/index.html` with its own og:url over the product-wide
+   card (ADR-0067's transform, first non-hero use). Gate green (vitest
+   501, lint, build)._
 
 9. **Payload caching** — added 2026-07-28 (user-noticed: a "Loading shot
    data…" flash on every directory → hero navigation, live site

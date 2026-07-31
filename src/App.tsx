@@ -2,7 +2,8 @@ import './App.css'
 import { Analytics } from '@vercel/analytics/react'
 import { HeroIndexPage } from './app/HeroIndexPage'
 import { HeroPage } from './app/HeroPage'
-import { parseRoute } from './app/routes'
+import { MethodologyPage } from './app/MethodologyPage'
+import { METHODOLOGY_ROUTE, parseRoute } from './app/routes'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
 
@@ -19,6 +20,19 @@ function App() {
         return (
             <>
                 <HeroIndexPage />
+                <Analytics />
+            </>
+        )
+    }
+    // The methodology page (ADR-0071): the one static route beside the
+    // directory, resolved before the registry so a hero slug can never
+    // shadow it (the reserved-route guard in registry.test.ts forbids the
+    // collision from the other side). A deeper path under it is nobody's
+    // page and falls through to the directory's unknown-path note.
+    if (route.slug === METHODOLOGY_ROUTE && route.season === undefined) {
+        return (
+            <>
+                <MethodologyPage />
                 <Analytics />
             </>
         )

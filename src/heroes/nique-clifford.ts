@@ -33,6 +33,11 @@ export const niqueClifford: HeroConfig = {
     // jumper mid-release, the diet the verdict indicts, outcome unknown.
     imageAlt:
       'Nique Clifford rises for a contested jumper over a Portland defender in the white Kings number 5 jersey',
+    // The reader-facing SOURCES line (ADR-0071), recovered 2026-07-30 from
+    // the committed file's own embedded XMP wire metadata (Kings at
+    // Trail Blazers, Moda Center, 2026-04-12); docs/image-credits.md
+    // carries the full provenance note.
+    imageCredit: 'photograph by Troy Wayrynen, Imagn Images',
     // Focal points (ADR-0021/0025): he releases left-of-center with the
     // ball above him, so the narrow 3:4 crop steers left and high to keep
     // the release in frame; the wide panel crops ~30% of the height, so

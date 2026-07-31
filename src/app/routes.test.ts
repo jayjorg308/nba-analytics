@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { parseRoute } from './routes'
+import { METHODOLOGY_ROUTE, parseRoute } from './routes'
 
 describe('parseRoute', () => {
   it('resolves the root to the index (empty slug)', () => {
     expect(parseRoute('/', '/')).toEqual({ slug: '' })
+  })
+
+  it('parses the reserved methodology route like any single segment (ADR-0071)', () => {
+    // The parser stays route-table-free: App.tsx resolves the reserved
+    // slug before the registry lookup.
+    expect(parseRoute('/methodology', '/')).toEqual({ slug: METHODOLOGY_ROUTE })
   })
 
   it('resolves a hero path to its canonical alias (no season)', () => {

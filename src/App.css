@@ -572,61 +572,51 @@
    hero pages alike (the main's flex-grow pushes it to the viewport bottom
    on short pages; #root centers text, so left-align is restated here).
    Outward links live down here and never in the navbar (ADR-0065). */
+/* Three registered zones (ADR-0071 amendment): utility rings left, the
+   tagline dead-center, the social rings right — 1fr auto 1fr, so the
+   tagline sits in the exact center of the shell on every page no matter
+   which utility links render. One ring grammar carries both ends. */
 .site-footer {
     padding: 32px 32px 40px;
     border-top: 1px solid var(--border);
     font-size: 12px;
     letter-spacing: 0.06em;
     color: var(--text);
-    text-align: left;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px 32px;
+    gap: 20px 24px;
 }
 
 .site-footer p {
     margin: 0;
+    text-align: center;
 }
 
-/* The way back to the directory (ADR-0022: after the argument, never
-   chrome above it), in the social ring's own grammar: a 44px bordered
-   pill in footer gray, warming to white — a real target without
-   shouting. Hero pages only; the index IS the directory. */
-.footer-back {
-    display: inline-flex;
-    align-items: center;
-    height: 44px;
-    padding: 0 20px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    color: var(--text);
-    text-decoration: none;
-    font-size: 13px;
-    transition:
-        color 150ms ease,
-        border-color 150ms ease;
-}
-
-.footer-back:hover,
-.footer-back:focus-visible {
-    color: var(--text-h);
-    border-color: var(--text);
+/* The utility rings: the way back (ADR-0022: after the argument, never
+   chrome above it) and the methodology page (ADR-0071), as quiet ringed
+   icon targets — the social row's own recipe, mirrored to the left edge. */
+.footer-utility {
+    display: flex;
+    gap: 10px;
+    justify-self: start;
 }
 
 /* The social row: quiet ringed icon targets in the footer's own gray,
    warming to white on hover/focus like every reference link. The ring is
-   what makes a 20px glyph a real 44px target — tap size without shouting. */
+   what makes a 20px glyph a real 44px target — tap size without shouting.
+   .footer-ring shares the recipe: one grammar, both ends of the row. */
 .footer-social {
     list-style: none;
     display: flex;
     gap: 10px;
     margin: 0;
     padding: 0;
+    justify-self: end;
 }
 
-.footer-social a {
+.footer-social a,
+.footer-ring {
     display: grid;
     place-items: center;
     width: 44px;
@@ -639,13 +629,32 @@
         border-color 150ms ease;
 }
 
+.footer-ring:hover,
+.footer-ring:focus-visible {
+    color: var(--text-h);
+    border-color: var(--text);
+}
+
+/* The solo state: a utility alone in its zone spells itself out — the
+   ring recipe stretched into a labeled pill, so a single unlabeled glyph
+   never floats by itself (icon rings return whenever the zone holds two). */
+.footer-ring.footer-pill {
+    width: auto;
+    grid-auto-flow: column;
+    column-gap: 8px;
+    padding: 0 20px 0 14px;
+    font-size: 13px;
+    text-decoration: none;
+}
+
 .footer-social a:hover,
 .footer-social a:focus-visible {
     color: var(--text-h);
     border-color: var(--text);
 }
 
-.footer-social svg {
+.footer-social svg,
+.footer-ring svg {
     width: 19px;
     height: 19px;
     display: block;
@@ -664,14 +673,18 @@
         padding-inline: 20px;
     }
 
-    /* Phones: the footer stacks — on hero pages the way-back pill leads
-       (closest to the argument it follows), then the tagline as the
-       sign-off line, the social row beneath on its own comfortable rank. */
+    /* Phones: the tagline signs off on top, centered, with both ring
+       groups side by side beneath it — one centered row of targets. */
     .site-footer {
         padding-inline: 20px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+        grid-template-columns: auto auto;
+        justify-content: center;
+        gap: 20px 24px;
+    }
+
+    .site-footer p {
+        grid-column: 1 / -1;
+        order: -1;
     }
 }
 
@@ -2150,4 +2163,134 @@
     &:hover {
         color: var(--text-h);
     }
+}
+
+/* --- Methodology page + directory blurb (ADR-0071) ------------------------- */
+
+/* The directory's one line of self-explanation (launch item 2): quiet gray
+   prose between the marquee and the rail, with the methodology link on
+   its own line in the marquee cue's grammar — the site's register for
+   "what happens next", and a phrase that can never wrap mid-link. */
+.index-blurb {
+    padding: 32px 32px 0;
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+
+    @media (max-width: 640px) {
+        padding-inline: 20px;
+    }
+}
+
+.index-blurb p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+    max-width: 58ch;
+}
+
+.index-blurb a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-h);
+    opacity: 0.8;
+    text-decoration: none;
+    /* A comfortable target without a ring: the line-height pad. */
+    padding-block: 6px;
+    transition: opacity 150ms ease;
+}
+
+.index-blurb a:hover,
+.index-blurb a:focus-visible {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* The page: structural prose at reading measure, opened by the section
+   recipe (caption + description) the acts established — no act numbers
+   (the kickers name cuts of one hero's season; this page is the product
+   explaining itself). Top padding clears the fixed navbar. */
+.methodology-page {
+    flex-grow: 1;
+    text-align: left;
+    padding: 108px 32px 64px;
+
+    @media (max-width: 640px) {
+        padding: 96px 20px 56px;
+    }
+}
+
+.methodology-title {
+    margin: 4px 0 0; /* 4px binds the title to its kicker */
+    font-size: clamp(28px, 4.5vw, 40px);
+    line-height: 1.15;
+    color: var(--text-h);
+}
+
+.methodology-deck {
+    margin: 16px 0 0;
+    max-width: 62ch;
+    color: var(--text);
+}
+
+.methodology-section {
+    margin-top: 48px; /* the act-break rhythm */
+}
+
+.methodology-section p {
+    margin: 16px 0 0;
+    max-width: 68ch;
+}
+
+.methodology-page a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.methodology-page a:hover,
+.methodology-page a:focus-visible {
+    color: var(--text-h);
+}
+
+.methodology-glossary {
+    margin: 20px 0 0;
+    display: grid;
+    gap: 16px;
+}
+
+.methodology-glossary dt {
+    font-weight: 600;
+    color: var(--text-h);
+    line-height: normal;
+}
+
+.methodology-glossary dd {
+    margin: 4px 0 0; /* 4px binds a definition to its headword */
+    max-width: 68ch;
+    font-size: 14px;
+    line-height: 1.45; /* the term popover's own body leading */
+    color: var(--text);
+}
+
+.methodology-credits {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+/* The blanket mechanical-asset lines: reference material in the credit
+   list's own register, not body argument. */
+.methodology-credits-note {
+    font-size: 14px;
+    line-height: 1.45;
 }

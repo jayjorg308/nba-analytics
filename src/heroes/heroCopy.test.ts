@@ -27,6 +27,10 @@ describe('authored hero copy (CONTEXT.md punctuation style)', () => {
     it(`${hero.slug}: no em dash in thesis or banner copy`, () => {
       expect(hero.thesis).not.toContain('—')
       expect(hero.hero.imageAlt).not.toContain('—')
+      // The SOURCES credit line (ADR-0071) is rendered authored copy too.
+      if (hero.hero.imageCredit !== undefined) {
+        expect(hero.hero.imageCredit).not.toContain('—')
+      }
     })
 
     for (const seasonConfig of hero.seasons) {

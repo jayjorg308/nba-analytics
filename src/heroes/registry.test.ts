@@ -4,11 +4,21 @@
 // makes the same breakage a named test failure at commit time.
 
 import { describe, expect, it } from 'vitest'
+import { RESERVED_ROUTES } from '../app/routes'
 import { HEROES } from './registry'
 
 describe('hero registry coherence (ADR-0060)', () => {
   it('slugs are unique (each hero owns its /<slug> namespace)', () => {
     expect(new Set(HEROES.map((h) => h.slug)).size).toBe(HEROES.length)
+  })
+
+  it('no slug collides with a reserved static route (ADR-0071)', () => {
+    // The router resolves static pages before the registry, so a colliding
+    // hero would silently lose its page — this makes a future hero:add for
+    // such a name a named failure instead.
+    for (const hero of HEROES) {
+      expect(RESERVED_ROUTES).not.toContain(hero.slug)
+    }
   })
 
   for (const hero of HEROES) {

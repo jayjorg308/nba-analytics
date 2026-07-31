@@ -33,6 +33,11 @@ export const donovanMitchell: HeroConfig = {
     teamLogoPath: 'img/cle-logo.png',
     imageAlt:
       'Donovan Mitchell rising for a one-handed dunk in the white Cavaliers number 45 jersey',
+    // The reader-facing SOURCES line (ADR-0071), identified 2026-07-30 by
+    // reverse-image search (wire ID USATSI 26094611: Cavaliers vs Pacers,
+    // 2025 playoffs, Rocket Arena, 2025-05-04); docs/image-credits.md
+    // carries the full provenance note.
+    imageCredit: 'photograph by Ken Blaze, Imagn Images',
     // Focal points (ADR-0021/0025): the action column (ball over head over
     // torso) sits at ~55% x, so the portrait slice centers there with the
     // subject in the upper stretch; the wide panel biases up to keep the

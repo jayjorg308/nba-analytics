@@ -274,9 +274,14 @@ describe('HeroPage over the golden fixture', () => {
     expect(footer!.closest('main')).toBeNull()
 
     // The way back to the directory (ADR-0022): after the argument, never
-    // chrome above it.
-    const back = screen.getByRole('link', { name: '← All players' })
+    // chrome above it. An icon ring since the ADR-0071 footer re-form;
+    // the aria-label carries the name.
+    const back = screen.getByRole('link', { name: 'All players' })
     expect(back.getAttribute('href')).toBe('/')
+    // The methodology link rides the shared footer on every page (ADR-0071).
+    expect(
+      screen.getByRole('link', { name: 'Methodology' }).getAttribute('href'),
+    ).toBe('/methodology')
     // The outward links live down here, never in the navbar (ADR-0065).
     screen.getByRole('link', { name: 'Instagram' })
     screen.getByRole('link', { name: 'X (formerly Twitter)' })

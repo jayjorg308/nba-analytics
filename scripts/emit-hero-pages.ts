@@ -15,6 +15,7 @@ import { HEROES } from '../src/heroes/registry'
 import {
   heroPageHtml,
   heroPageMeta,
+  methodologyPageMeta,
   socialCardPath,
   withFontPreloads,
 } from '../src/heroes/socialCards'
@@ -61,4 +62,15 @@ for (const hero of HEROES) {
     pages += 1
   }
 }
-console.log(`emitted ${pages} hero share pages for ${HEROES.length} heroes into dist/`)
+// The methodology page (ADR-0071): the one non-hero share page — the same
+// transform over the same font-preloaded source, hand-built meta, the
+// product-wide card. No card check: public/social-card.png is committed
+// and already load-bearing for the root.
+mkdirSync(join('dist', 'methodology'), { recursive: true })
+writeFileSync(
+  join('dist', 'methodology', 'index.html'),
+  heroPageHtml(indexHtml, methodologyPageMeta()),
+)
+console.log(
+  `emitted ${pages} hero share pages for ${HEROES.length} heroes, plus the methodology page, into dist/`,
+)

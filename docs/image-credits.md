@@ -1,8 +1,26 @@
 # Image provenance
 
-- `public/img/sga-hero.jpg` — the project's original generated Shai action
-  artwork, intentionally adopted as the production banner. It is presented as
-  a stylized illustration, not as a documentary photograph of a named game.
+_This file is the engineering record (URLs, pull dates, derivation notes).
+The reader-facing credits render at `/methodology`'s SOURCES section from
+each hero config's `imageCredit` field (ADR-0071); the two update together.
+**All seven banners are credited as of 2026-07-30**: two recovered by the
+credit hunt (Clifford from embedded metadata, Mitchell by reverse-image
+match) and the remaining five resolved by the author supplying the
+team-site source URLs — which also corrected this file's long-standing
+sga-hero.jpg record (see its entry)._
+
+- `public/img/sga-hero.jpg` — photograph by **Jimmy Do, Oklahoma City
+  Thunder** (OKC vs Phoenix, Paycom Center, 2026-04-22), from the Thunder's
+  team site:
+  `cdn.nba.com/teams/uploads/sites/1610612760/2026/04/1-260422_JIMMYDO_OKCPHX_0033.jpg`
+  (the filename encodes date, photographer, and matchup; frame verified
+  identical to the committed file). **Record correction (2026-07-30):**
+  this entry long described the file as "the project's original generated
+  Shai action artwork ... a stylized illustration" — that was wrong. The
+  likely origin of the confusion is the registration-era THROWAWAY
+  generated placeholder the real photo replaced (v2.5 Phase 4); the
+  banner is and always was a real game photograph. The author identified
+  the true source.
 - `public/img/<slug>-headshot.png` (all heroes) — the NBA's standard player
   headshots, downloaded verbatim from
   `cdn.nba.com/headshots/nba/latest/1040x760/<playerId>.png` (the `playerId`
@@ -23,9 +41,50 @@
   only official mark; the NBA CDN serves it as SVG only
   (`cdn.nba.com/logos/nba/1610612760/global/L/logo.svg`), committed as a
   high-resolution PNG rendering on the shared normalized canvas.
+- `public/img/cody-williams-hero.jpg` — team photograph via the Utah Jazz
+  (Jazz vs San Antonio at Delta Center, 2025-26), from the Jazz's team
+  site: `cdn.nba.com/teams/uploads/sites/1610612762/2026/04/U5A4008.jpg`
+  (a raw camera filename, no photographer credited, no embedded credit
+  metadata — the same team-content class as the Ace banner). Committed as
+  a 2048px q82 JPEG derivative; source retained in `data/hero-sources/`.
+  **Swap note (2026-07-30):** this replaced the original banner (the
+  Knicks rim-hang from
+  `.../031126_UTAvNYK_GAME_MMH_1240.jpg`, photograph by Melissa Majchrzak,
+  NBAE via Getty Images) — swapped deliberately to exit the
+  NBAE-via-Getty licensing tier; the Keyonte banner followed the same day
+  (see its entry), leaving no committed banner in that tier.
+- `public/img/keyonte-george-hero.webp` — team photograph via the Utah
+  Jazz (Jazz at Minnesota, 2025-26), from the Jazz's team site:
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/04/U5A3605.jpg`
+  (a raw camera filename, no photographer credited, no embedded credit
+  metadata — the same team-content class as the Ace and Cody banners).
+  Committed as a 2048px q82 webp derivative; source retained in
+  `data/hero-sources/`. **Swap note (2026-07-30):** this replaced the
+  original banner (the one-handed finish at OKC from
+  `.../525_01072026_Jazz_Thunder_Beeker_0240.jpg`, photograph by Zach
+  Beeker, NBAE via Getty Images, whose source caption carried the full
+  Getty Images License Agreement notice) — the second and final swap out
+  of the NBAE-via-Getty licensing tier; no committed banner remains in
+  it.
+- `public/img/ace-bailey-hero.jpg` — team photograph via the Utah Jazz
+  (Jazz at Orlando Magic, Kia Center, 2026-02-07), from the Jazz's team
+  site: `cdn.nba.com/teams/uploads/sites/1610612762/2026/04/U5A6952.jpg`
+  (a raw camera filename; no photographer credited on the source, so the
+  credit stays at team grain). Committed as a 2048px q82 JPEG derivative.
 - `public/img/maxime-raynaud-hero.jpg` — photograph by Ray Chavez, Bay Area
   News Group (Kings at Golden State, 2025-26); committed as a web-sized
   2048px JPEG derivative of the author-supplied source (ADR-0021).
+- `public/img/nique-clifford-hero.webp` — wire photograph by Troy Wayrynen,
+  Imagn Images via Reuters Connect (Kings at Trail Blazers, Moda Center,
+  2026-04-12; transmission ref IMAGN-1295913). Recovered 2026-07-30 from
+  the committed file's own embedded XMP credit metadata, which the webp
+  derivation preserved.
+- `public/img/donovan-mitchell-hero.webp` — photograph by Ken Blaze, Imagn
+  Images (Cavaliers vs Pacers, game one of the second round, 2025 NBA
+  playoffs, Rocket Arena, 2025-05-04; wire ID USATSI 26094611). Identified
+  2026-07-30 by exact-match reverse-image search (TinEye → the same frame
+  captioned with its mandatory credit on si.com); committed as a 2048px
+  webp derivative of `data/hero-sources/donovan.webp`.
 - `public/img/sac-logo.png` — the Kings' primary crown lockup; the NBA CDN
   serves it as SVG only
   (`cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg`, 2026-07-29),
