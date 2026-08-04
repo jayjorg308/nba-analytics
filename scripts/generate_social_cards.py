@@ -205,9 +205,25 @@ def compose(spec: dict, display_woff: Path, sans_woff: Path) -> Image.Image:
 def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
+    # stdin MUST be reconfigured too, not just stdout. The TS driver writes
+    # UTF-8 bytes, but Windows defaults sys.stdin to the locale codepage
+    # (cp1252), which silently decodes the kicker's "·" and "º" into mojibake
+    # ("Â·", "Âº") and bakes it into every card. Load-bearing on Windows.
+    if hasattr(sys.stdin, "reconfigure"):
+        sys.stdin.reconfigure(encoding="utf-8")
     specs = json.load(sys.stdin)
     if not isinstance(specs, list) or not specs:
         sys.exit("expected a non-empty JSON list of card specs on stdin")
+    # Loud tripwire for the regression above: U+00C2 never legitimately
+    # appears in a kicker, so its presence means stdin was decoded wrong.
+    # A card is a committed asset nobody re-reads, so a silent mojibake ships.
+    for spec in specs:
+        for field, text in spec.items():
+            if isinstance(text, str) and "Â" in text:
+                sys.exit(
+                    f"mojibake in {spec.get('slug', '?')}.{field}: {text!r} "
+                    "— stdin decoded as something other than UTF-8"
+                )
     for asset in (DISPLAY_900, SANS_500, WORDMARK):
         if not asset.exists():
             sys.exit(f"missing asset: {asset} (run npm install?)")
