@@ -41,3 +41,7 @@ venv/
 *.njsproj
 *.sln
 *.sw?
+
+# Vertical export cards (npm run cards:vertical) — hand-posted social
+# artifacts, not deployed assets; regenerable from committed inputs.
+/social-exports/
