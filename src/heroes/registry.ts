@@ -27,12 +27,12 @@ export const HEROES: readonly HeroConfig[] = [
     codyWilliams,
     keyonteGeorge,
     aceBailey,
-    shaiGilgeousAlexander,
-    donovanMitchell,
     maximeRaynaud,
     niqueClifford,
-  bubCarrington,
-  alexSarr,
+    bubCarrington,
+    alexSarr,
+    shaiGilgeousAlexander,
+    donovanMitchell,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {
