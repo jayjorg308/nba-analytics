@@ -90,6 +90,40 @@ sga-hero.jpg record (see its entry)._
   (`cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg`, 2026-07-29),
   browser-rasterized and committed on the shared normalized watermark
   canvas (60% footprint).
+- `public/img/bub-carrington-hero.jpg` — team photograph via the Washington
+  Wizards (vs San Antonio at Capital One Arena, 2025-26; Carrington holds
+  the follow-through in the gold City Edition #7), from the team site's
+  "Top Pics of the Season" gallery
+  (`cdn.nba.com/teams/uploads/sites/1610612764/2026/04/Top-Shots-25-26-Season-Bugged-02.jpg`,
+  pulled 2026-08-08; no photographer credited on the source, so the credit
+  stays at team grain). Committed as a B&W q82 derivative with the
+  gallery's bottom sponsor-bug band cropped away; source retained in
+  `data/hero-sources/`.
+- `public/img/alex-sarr-hero.jpg` — team photograph via the Washington
+  Wizards (vs the LA Lakers, 2025-26; Sarr finishes a two-handed dunk over
+  LeBron James in the gold City Edition #20), from the same "Top Pics of
+  the Season" gallery
+  (`cdn.nba.com/teams/uploads/sites/1610612764/2026/04/Top-Shots-25-26-Season-Bugged-08.jpg`,
+  pulled 2026-08-08; no photographer credited on the source). Committed as
+  a B&W q82 derivative with the same sponsor-bug crop; source retained in
+  `data/hero-sources/`.
+- `public/img/was-logo.png` — the Wizards' primary mark; the NBA CDN now
+  serves the team logos as SVG only
+  (`cdn.nba.com/logos/nba/1610612764/primary/L/logo.svg`, 2026-08-08 — the
+  PNG paths that served the Cavaliers mark return 403 as of this pull),
+  browser-rasterized and committed on the shared normalized watermark
+  canvas (60% footprint) by `scripts/normalize_team_logo.py`; SVG source
+  retained in `data/hero-sources/`. **Re-rasterized 2026-08-09:** the first
+  rasterization captured the browser's BROKEN-IMAGE placeholder rather than
+  the mark (the SVG never loaded), and the 5.9KB white box it produced was
+  committed and shipped — both Washington banners rendered a blank
+  watermark. The retained SVG was fine; only the raster was wrong, so the
+  fix re-rendered from that same source with the SVG inlined into the page
+  instead of fetched. Note that `ingestion/test_team_logo_assets.py` PASSED
+  on the placeholder: the guard checks canvas size, footprint ratio, and
+  centering, and a centered white box satisfies all three. It is an
+  interface guard, not a content one, and nothing in the suite looks at
+  what a team mark actually depicts.
 - `public/img/goodshots-wordmark.png` — the site's own brand lockup, made by
   the author; the committed file is a web-sized transparent derivation of the
   branding source `Good Shots-01.png` (whose black plate is opaque, so the
