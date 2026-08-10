@@ -12,8 +12,8 @@
 // making number will otherwise assume it squares the ledger.
 //
 // Current verdict (voice per docs/voice/VOICE.md, ADR-0070), claim by claim:
-//   "his shot diet gives up the rim" / "shoots there less than a
-//    third as often as the league does"                          -> claim 1
+//   "gives up the rim" / "shoots there less than a third as
+//    often as the league does"                                   -> claim 1
 //   "mid-range jumpers at more than double the league share"      -> claim 2
 //   "and threes from above the break"                             -> claim 3
 //   "that tradeoff costs him real value"                          -> claim 4
