@@ -120,10 +120,15 @@ sga-hero.jpg record (see its entry)._
   watermark. The retained SVG was fine; only the raster was wrong, so the
   fix re-rendered from that same source with the SVG inlined into the page
   instead of fetched. Note that `ingestion/test_team_logo_assets.py` PASSED
-  on the placeholder: the guard checks canvas size, footprint ratio, and
-  centering, and a centered white box satisfies all three. It is an
-  interface guard, not a content one, and nothing in the suite looks at
-  what a team mark actually depicts.
+  on the placeholder: at the time the guard checked only canvas size,
+  footprint ratio, and centering, and a centered white box satisfies all
+  three — an interface guard, not a content one. **Closed 2026-08-10:** the
+  guard now also enforces a minimum ink-edge ratio (contour plus internal
+  tonal edges over opaque pixels) that this placeholder fails by ~3x, with
+  a synthesized-blank negative case proving the teeth; the threshold's
+  derivation, including why a distinct-color count would have failed the
+  flat single-color Jazz mark, is the comment block above
+  `MIN_INK_EDGE_RATIO` in that test.
 - `public/img/goodshots-wordmark.png` — the site's own brand lockup, made by
   the author; the committed file is a web-sized transparent derivation of the
   branding source `Good Shots-01.png` (whose black plate is opaque, so the

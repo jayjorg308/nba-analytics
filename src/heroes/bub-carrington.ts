@@ -67,7 +67,7 @@ export const bubCarrington: HeroConfig = {
       // clears the "well below" bar by 0.0002 on the without-technicals
       // cut, which is not margin — hence the bare "below average".
       verdict:
-        'No, Bub Carrington gives up the rim. He shoots there less than a third ' +
+        "No, Bub Carrington doesn't get to the rim. He shoots there less than a third " +
         'as often as the league does, trading those attempts for mid-range jumpers at more ' +
         'than double the league share and threes from above the break. That tradeoff costs ' +
         'him real value. His shot making adds some of it back, though not all. Carrington ' +
