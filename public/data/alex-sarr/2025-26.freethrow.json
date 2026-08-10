@@ -1,0 +1,1020 @@
+{
+  "_meta": {
+    "schemaVersion": 2,
+    "player": "Alex Sarr",
+    "playerId": 1642259,
+    "season": "2025-26",
+    "dataThrough": "2026-03-27",
+    "gamesIncluded": 48,
+    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\alex-sarr\\2025-26\\2026-08-08.json",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
+    "leagueTotalsPullDate": "2026-07-23",
+    "seasonFga": 656,
+    "seasonPoints": 783,
+    "seasonFtm": 101,
+    "seasonFta": 146,
+    "technicalFtm": 0,
+    "technicalFta": 0,
+    "totalTrips": 82,
+    "tripClassCounts": {
+      "shootingFoul2": 58,
+      "shootingFoul3": 0,
+      "bonus": 5,
+      "andOne": 18,
+      "flagrant": 1,
+      "awayFromPlay": 0,
+      "transitionTake": 0,
+      "clearPath": 0
+    },
+    "gamesExpected": 48,
+    "gamesLoaded": 48,
+    "sourceGames": [
+      {
+        "gameId": "0022500029",
+        "playByPlayPullDate": "2026-07-27",
+        "boxScorePullDate": "2026-07-27"
+      },
+      {
+        "gameId": "0022500057",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500073",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500086",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500096",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500109",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500123",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500140",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022500145",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500159",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500174",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500183",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500199",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500218",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500235",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500271",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500370",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500391",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500409",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500425",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500443",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500448",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500469",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500477",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500498",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500511",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500518",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500534",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500555",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500577",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500592",
+        "playByPlayPullDate": "2026-07-29",
+        "boxScorePullDate": "2026-07-29"
+      },
+      {
+        "gameId": "0022500600",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500608",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500629",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500645",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500664",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500681",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500688",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500718",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500733",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500758",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500925",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500938",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500955",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022500971",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022501009",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      },
+      {
+        "gameId": "0022501022",
+        "playByPlayPullDate": "2026-07-16",
+        "boxScorePullDate": "2026-07-16"
+      },
+      {
+        "gameId": "0022501073",
+        "playByPlayPullDate": "2026-08-08",
+        "boxScorePullDate": "2026-08-08"
+      }
+    ]
+  },
+  "trips": [
+    {
+      "gameId": "0022500029",
+      "period": 1,
+      "clock": "PT03M14.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500057",
+      "period": 3,
+      "clock": "PT10M44.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500057",
+      "period": 3,
+      "clock": "PT02M52.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500057",
+      "period": 4,
+      "clock": "PT10M19.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500057",
+      "period": 4,
+      "clock": "PT07M22.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500073",
+      "period": 1,
+      "clock": "PT06M03.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500073",
+      "period": 1,
+      "clock": "PT04M25.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500073",
+      "period": 2,
+      "clock": "PT08M16.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500073",
+      "period": 2,
+      "clock": "PT01M05.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500073",
+      "period": 3,
+      "clock": "PT10M06.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500073",
+      "period": 4,
+      "clock": "PT06M45.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500086",
+      "period": 4,
+      "clock": "PT04M24.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500096",
+      "period": 3,
+      "clock": "PT05M20.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500096",
+      "period": 4,
+      "clock": "PT00M43.00S",
+      "tripClass": "bonus",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500109",
+      "period": 2,
+      "clock": "PT00M02.40S",
+      "tripClass": "bonus",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500109",
+      "period": 4,
+      "clock": "PT02M21.00S",
+      "tripClass": "bonus",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500123",
+      "period": 1,
+      "clock": "PT07M33.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500140",
+      "period": 2,
+      "clock": "PT04M30.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 289
+    },
+    {
+      "gameId": "0022500140",
+      "period": 4,
+      "clock": "PT04M52.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 643
+    },
+    {
+      "gameId": "0022500145",
+      "period": 3,
+      "clock": "PT11M43.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500145",
+      "period": 3,
+      "clock": "PT11M10.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500159",
+      "period": 1,
+      "clock": "PT05M10.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 81
+    },
+    {
+      "gameId": "0022500159",
+      "period": 2,
+      "clock": "PT07M13.00S",
+      "tripClass": "flagrant",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500174",
+      "period": 1,
+      "clock": "PT11M40.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500174",
+      "period": 4,
+      "clock": "PT09M30.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500183",
+      "period": 2,
+      "clock": "PT00M30.30S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500183",
+      "period": 3,
+      "clock": "PT05M53.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500183",
+      "period": 4,
+      "clock": "PT04M48.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500218",
+      "period": 1,
+      "clock": "PT04M13.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500218",
+      "period": 2,
+      "clock": "PT06M39.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 275
+    },
+    {
+      "gameId": "0022500218",
+      "period": 2,
+      "clock": "PT01M47.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500271",
+      "period": 2,
+      "clock": "PT03M17.00S",
+      "tripClass": "andOne",
+      "ftm": 0,
+      "fta": 1,
+      "shotId": 324
+    },
+    {
+      "gameId": "0022500271",
+      "period": 4,
+      "clock": "PT04M28.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500409",
+      "period": 1,
+      "clock": "PT05M33.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500409",
+      "period": 2,
+      "clock": "PT02M12.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500443",
+      "period": 3,
+      "clock": "PT07M02.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 473
+    },
+    {
+      "gameId": "0022500469",
+      "period": 1,
+      "clock": "PT05M36.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500469",
+      "period": 2,
+      "clock": "PT05M56.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500469",
+      "period": 4,
+      "clock": "PT04M19.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500477",
+      "period": 4,
+      "clock": "PT06M13.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500511",
+      "period": 1,
+      "clock": "PT09M16.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500511",
+      "period": 2,
+      "clock": "PT02M03.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500511",
+      "period": 3,
+      "clock": "PT10M09.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 342
+    },
+    {
+      "gameId": "0022500511",
+      "period": 3,
+      "clock": "PT09M02.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500518",
+      "period": 3,
+      "clock": "PT07M59.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500534",
+      "period": 1,
+      "clock": "PT07M16.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 58
+    },
+    {
+      "gameId": "0022500534",
+      "period": 2,
+      "clock": "PT03M58.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500534",
+      "period": 2,
+      "clock": "PT03M24.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500534",
+      "period": 3,
+      "clock": "PT07M44.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 449
+    },
+    {
+      "gameId": "0022500534",
+      "period": 4,
+      "clock": "PT02M44.00S",
+      "tripClass": "bonus",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500555",
+      "period": 1,
+      "clock": "PT03M29.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 110
+    },
+    {
+      "gameId": "0022500555",
+      "period": 2,
+      "clock": "PT03M48.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500555",
+      "period": 3,
+      "clock": "PT10M33.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500592",
+      "period": 1,
+      "clock": "PT07M50.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 47
+    },
+    {
+      "gameId": "0022500592",
+      "period": 2,
+      "clock": "PT04M25.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 286
+    },
+    {
+      "gameId": "0022500592",
+      "period": 3,
+      "clock": "PT05M32.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500600",
+      "period": 1,
+      "clock": "PT09M09.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500600",
+      "period": 2,
+      "clock": "PT03M11.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500600",
+      "period": 3,
+      "clock": "PT11M48.00S",
+      "tripClass": "andOne",
+      "ftm": 0,
+      "fta": 1,
+      "shotId": 338
+    },
+    {
+      "gameId": "0022500600",
+      "period": 4,
+      "clock": "PT06M19.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500608",
+      "period": 1,
+      "clock": "PT03M56.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500608",
+      "period": 2,
+      "clock": "PT04M24.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500608",
+      "period": 4,
+      "clock": "PT04M26.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500629",
+      "period": 2,
+      "clock": "PT08M01.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500629",
+      "period": 4,
+      "clock": "PT11M08.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500629",
+      "period": 4,
+      "clock": "PT09M22.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500645",
+      "period": 4,
+      "clock": "PT04M49.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 607
+    },
+    {
+      "gameId": "0022500664",
+      "period": 1,
+      "clock": "PT08M44.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 41
+    },
+    {
+      "gameId": "0022500664",
+      "period": 2,
+      "clock": "PT06M45.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 261
+    },
+    {
+      "gameId": "0022500664",
+      "period": 4,
+      "clock": "PT08M51.00S",
+      "tripClass": "andOne",
+      "ftm": 0,
+      "fta": 1,
+      "shotId": 615
+    },
+    {
+      "gameId": "0022500664",
+      "period": 4,
+      "clock": "PT08M00.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500681",
+      "period": 2,
+      "clock": "PT08M05.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500681",
+      "period": 3,
+      "clock": "PT11M30.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500718",
+      "period": 3,
+      "clock": "PT05M29.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500718",
+      "period": 3,
+      "clock": "PT04M29.00S",
+      "tripClass": "bonus",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500733",
+      "period": 2,
+      "clock": "PT01M34.00S",
+      "tripClass": "andOne",
+      "ftm": 0,
+      "fta": 1,
+      "shotId": 339
+    },
+    {
+      "gameId": "0022500758",
+      "period": 2,
+      "clock": "PT06M59.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 0,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500955",
+      "period": 1,
+      "clock": "PT04M05.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500955",
+      "period": 3,
+      "clock": "PT05M50.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022500971",
+      "period": 3,
+      "clock": "PT09M05.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022501022",
+      "period": 2,
+      "clock": "PT04M55.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 2,
+      "fta": 2,
+      "shotId": null
+    },
+    {
+      "gameId": "0022501073",
+      "period": 1,
+      "clock": "PT04M24.00S",
+      "tripClass": "shootingFoul2",
+      "ftm": 1,
+      "fta": 2,
+      "shotId": null
+    }
+  ],
+  "leagueBaseline": {
+    "ftm": 45224,
+    "fta": 57768,
+    "fga": 219160,
+    "points": 284395
+  }
+}

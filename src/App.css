@@ -500,6 +500,48 @@
     gap: 16px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    /* The rail's position indicator: color-scheme dark hands this scroller
+     the UA's dark-on-dark thumb, which disappears into the ground — a
+     track with no "where am I". Quiet but legible: the body-text gray at
+     low alpha. This standard-properties pair is the FIREFOX path; the
+     Chromium/Safari path is the @supports block below. */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.45) transparent;
+}
+
+/* Chromium/Safari get the ::-webkit-scrollbar rules instead — but only if
+   the standard properties are reverted first: Chromium ignores the pseudo
+   -elements whenever scrollbar-width/color are set, and its standard-
+   property scrollbar keeps the platform's OVERLAY behavior (Windows 11
+   auto-hides it between scrolls — a thumb that vanishes at rest is still
+   no indicator). Custom webkit scrollbars are always painted, which is
+   the point: the reader should see there is more rail, at rest. Firefox
+   fails this selector probe and never enters the block. */
+@supports selector(::-webkit-scrollbar) {
+    .index-rail ul {
+        scrollbar-width: auto;
+        scrollbar-color: auto;
+    }
+}
+
+.index-rail ul::-webkit-scrollbar {
+    height: 8px;
+}
+
+/* A faint visible track, so the thumb reads as position-within-extent
+   rather than a floating dash. */
+.index-rail ul::-webkit-scrollbar-track {
+    background: rgba(156, 163, 175, 0.12);
+    border-radius: 4px;
+}
+
+.index-rail ul::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.45);
+    border-radius: 4px;
+}
+
+.index-rail ul::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.65);
 }
 
 /* The flex items are the LIs, not the .index-card anchors inside them —

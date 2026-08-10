@@ -19,7 +19,18 @@
     "season total (the sum); the loop retreats the frontier on any gap the",
     "pins do not explain (lag defers) and halts on over-attribution.",
     "ace-bailey/2025-26: 0022500363 = 2025-12-07 single-game partial outage",
-    "(3); 0022500900 = 2026-03-05 league-wide meltdown night (5)."
+    "(3); 0022500900 = 2026-03-05 league-wide meltdown night (5).",
+    "bub-carrington/2025-26: 0022500029 = 2025-11-07 single-game partial",
+    "outage (1 of his 12 attempts; every tracking family short by exactly 1).",
+    "alex-sarr/2025-26: 0022500938 = 2026-03-10 single-game partial outage",
+    "(6 of his 19 attempts; every family short by exactly 6). Both localized",
+    "2026-08-10 by bisecting DateTo-anchored pulls over each player's game",
+    "dates (ingestion/localize_shortfall.py, ADR-0072; snapshots retained",
+    "in tracking/investigation/). This CORRECTED",
+    "an earlier circumstantial pin of Carrington's 1 to the 0022500900",
+    "meltdown night — he played that game AND 0022500938, but the bisection",
+    "put his missing attempt on 2025-11-07, a night no other pin covers.",
+    "Proximity to a characterized outage is not characterization."
   ],
   "liveSeasons": [
     {
@@ -34,6 +45,12 @@
     "ace-bailey/2025-26": {
       "0022500363": 3,
       "0022500900": 5
+    },
+    "bub-carrington/2025-26": {
+      "0022500029": 1
+    },
+    "alex-sarr/2025-26": {
+      "0022500938": 6
     }
   }
 }
