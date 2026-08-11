@@ -129,6 +129,44 @@ sga-hero.jpg record (see its entry)._
   derivation, including why a distinct-color count would have failed the
   flat single-color Jazz mark, is the comment block above
   `MIN_INK_EDGE_RATIO` in that test.
+- `public/img/austin-reaves-hero.jpg` — team photograph via the Los Angeles
+  Lakers (vs Chicago at Crypto.com Arena, 2025-26; Reaves extends to finish
+  at the rim over a Bulls defender in the gold Icon #15), from the team
+  site's "Basketball Sickos: Best Gametime Moments" gallery
+  (`cdn.nba.com/teams/uploads/sites/1610612747/2024/11/005A5622.jpg`, pulled
+  2026-08-10; no photographer credited on the source, so the credit stays at
+  team grain). Committed as a 2048px q84 derivative, a straight downscale —
+  the native 2399x2999 is already the house portrait ratio, so no crop
+  judgment enters the asset; source retained in `data/hero-sources/`.
+  **Two provenance notes, both load-bearing.** First, `005A5622.jpg` is a
+  camera-original filename, and that is the *entire* basis for the team
+  credit: most images in the Lakers' galleries are named `GettyImages-*`
+  and are Getty-licensed photos the team re-hosted on its own CDN, so
+  "via the Lakers" would be false for those. Crediting by host rather than
+  by filename would silently put a banner back in the NBAE-via-Getty tier
+  the 2026-07-30 sweep cleared. Second, the `2024/11` in the path is a CMS
+  upload bucket and **not the game date** — the same folder holds this
+  gallery's 2025-26 images. The game was identified from the photograph
+  itself: the scoreboard reads 73-67 with 10:19 left in the third, and the
+  committed play-by-play for game `0022500960` (2026-03-12, the only
+  Lakers-Chicago home game in his season) puts Reaves's 3-foot driving
+  layup at Q3 `PT10M17`, taking the score to 75-67. The banner therefore
+  depicts action 382, a made Restricted Area attempt that is one of the 762
+  shots the page argues about.
+- `public/img/lal-logo.png` — the Lakers' primary mark; like the Wizards and
+  Kings marks the NBA CDN serves it as SVG only
+  (`cdn.nba.com/logos/nba/1610612747/primary/L/logo.svg`, 2026-08-10),
+  browser-rasterized at 2048px and committed on the shared normalized
+  watermark canvas (60% footprint) by `scripts/normalize_team_logo.py`; SVG
+  source retained in `data/hero-sources/`. Rasterized by **inlining the SVG
+  markup into the page** rather than pointing an `<img>` at the file, which
+  is the specific step that produced the `was-logo.png` blank above: an
+  `<img>` whose source fails to load rasterizes as the browser's
+  broken-image placeholder, while inline markup either renders or throws.
+  Verified before normalizing — the raster carries all four of the SVG's
+  declared colors in sensible proportion (gold `#FAB624` 42.5%, white 31.3%,
+  purple `#542C81` 20.6%, `#0B1A23` 3.7%) — and its ink-edge ratio is 0.2024,
+  10.1x the guard's bar and second only to the Thunder shield.
 - `public/img/goodshots-wordmark.png` — the site's own brand lockup, made by
   the author; the committed file is a web-sized transparent derivation of the
   branding source `Good Shots-01.png` (whose black plate is opaque, so the

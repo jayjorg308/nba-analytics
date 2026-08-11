@@ -30,7 +30,12 @@
     "an earlier circumstantial pin of Carrington's 1 to the 0022500900",
     "meltdown night — he played that game AND 0022500938, but the bisection",
     "put his missing attempt on 2025-11-07, a night no other pin covers.",
-    "Proximity to a characterized outage is not characterization."
+    "Proximity to a characterized outage is not characterization.",
+    "austin-reaves/2025-26: 0022500906 = 2026-03-05 league-wide meltdown",
+    "night (1 of his 11 attempts). Localized 2026-08-10 by the same",
+    "bisection, in 7 pulls. The date independently corroborates",
+    "ace-bailey's 0022500900 pin on that night — corroboration arriving",
+    "after the bisection, never the reasoning that produced the pin."
   ],
   "liveSeasons": [
     {
@@ -51,6 +56,9 @@
     },
     "alex-sarr/2025-26": {
       "0022500938": 6
+    },
+    "austin-reaves/2025-26": {
+      "0022500906": 1
     }
   }
 }

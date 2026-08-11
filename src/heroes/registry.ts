@@ -20,6 +20,7 @@ import { niqueClifford } from './nique-clifford'
 import { maximeRaynaud } from './maxime-raynaud'
 import { bubCarrington } from './bub-carrington'
 import { alexSarr } from './alex-sarr'
+import { austinReaves } from './austin-reaves'
 import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
@@ -27,10 +28,11 @@ export const HEROES: readonly HeroConfig[] = [
     codyWilliams,
     keyonteGeorge,
     aceBailey,
-    maximeRaynaud,
-    niqueClifford,
+    austinReaves,
     bubCarrington,
     alexSarr,
+    maximeRaynaud,
+    niqueClifford,
     shaiGilgeousAlexander,
     donovanMitchell,
 ]
