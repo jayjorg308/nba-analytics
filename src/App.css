@@ -2336,3 +2336,368 @@
     font-size: 14px;
     line-height: 1.45;
 }
+
+/* --- Comparison page (comparison plan; ADR-0073..0077) ---------------------- */
+
+/* The static-page shell (the methodology page's register): fixed-nav
+   clearance, left-set text, the shared dark ground. The page reads compact
+   and tool-like through its content register, not new chrome. */
+.comparison-page {
+    flex-grow: 1;
+    text-align: left;
+    padding: 108px 32px 64px;
+
+    @media (max-width: 640px) {
+        padding: 96px 20px 56px;
+    }
+}
+
+.comparison-page a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.comparison-page a:hover,
+.comparison-page a:focus-visible {
+    color: var(--text-h);
+}
+
+.comparison-title {
+    margin: 4px 0 0; /* 4px binds the title to its kicker / baseline block */
+    font-size: clamp(28px, 4.5vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: var(--text-h);
+}
+
+.comparison-deck {
+    margin: 16px 0 0;
+    max-width: 62ch;
+    color: var(--text);
+}
+
+/* Setup and controls (plan §1): one bordered row of real labeled controls. */
+.comparison-setup {
+    margin: 24px 0 0;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+/* Mode control: the court-view-toggle recipe at form scale — real radios,
+   labels carry the UI. */
+.comparison-mode {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+    margin: 0 0 16px;
+    gap: 2px;
+}
+
+.comparison-mode label {
+    font-size: 14px;
+    line-height: normal;
+    padding: 4px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text);
+}
+
+.comparison-mode label.mode-active {
+    background: var(--accent-bg);
+    color: var(--text-h);
+}
+
+.comparison-mode input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.comparison-mode label:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.comparison-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+.comparison-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 4px binds a control to its label */
+    font-size: 12px;
+    line-height: normal;
+}
+
+.comparison-field select,
+.comparison-field input {
+    font: 14px / normal var(--sans);
+    color: var(--text-h);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    min-width: 170px;
+}
+
+.comparison-swap,
+.comparison-go {
+    font: 500 14px / normal var(--sans);
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: none;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.comparison-swap:hover,
+.comparison-swap:focus-visible,
+.comparison-go:hover,
+.comparison-go:focus-visible {
+    color: var(--text-h);
+    border-color: var(--text);
+}
+
+/* One focus grammar for every setup control (the mode toggle's accent
+   outline): keyboard position must be unmistakable on the dark ground —
+   a border-color shift alone reads as hover, not focus. */
+.comparison-field select:focus-visible,
+.comparison-field input:focus-visible,
+.comparison-swap:focus-visible,
+.comparison-go:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.comparison-go {
+    background: var(--code-bg);
+    color: var(--text-h);
+}
+
+/* Plain validation sentence (plan §1): quiet, specific, never a toast. */
+.comparison-message {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: #dc2626;
+}
+
+.comparison-examples {
+    margin: 24px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.comparison-examples ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 6px;
+}
+
+/* Compact header (plan §2): identity and unequal-precision disclosure, no
+   banner, no verdict cue, no team color. */
+.comparison-header {
+    margin: 32px 0 0;
+}
+
+.comparison-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* The product's B&W identity, applied like every photo (the index rule). */
+.comparison-headshot {
+    width: 88px;
+    filter: grayscale(1) contrast(1.08) brightness(0.94);
+}
+
+.comparison-baseline {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.comparison-sides {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 16px 0 0;
+}
+
+.comparison-side {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+}
+
+.comparison-side .comparison-headshot {
+    width: 64px;
+}
+
+.comparison-side-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.comparison-side-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-h);
+}
+
+/* The integrated two-axis headline (plan §3): the headline-banner card
+   grammar, opened below the compact header. */
+.comparison-headline {
+    margin-top: 32px;
+}
+
+/* --- Zone evidence (plan §4) ------------------------------------------------ */
+
+/* The act-break rhythm below the headline cards. */
+.comparison-zones {
+    margin-top: 48px;
+}
+
+/* The two panels together on desktop, stacked on narrow screens — identical
+   zone order and side identity in both arrangements (the plan's rule:
+   meaning never depends on two permanently adjacent columns). */
+.comparison-zone-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+/* Side identity is shape + fill style, never color (plan §4): the left
+   window is a solid circle, the right an outlined diamond. */
+.comparison-dot-left {
+    fill: var(--text-h);
+}
+
+.comparison-dot-right {
+    fill: var(--bg);
+    stroke: var(--text-h);
+    stroke-width: 1.6;
+}
+
+/* Legend swatches drawing the actual marks: a filled dot and an outlined
+   diamond (a rotated square), in the creation legend's register. */
+.comparison-swatch-left {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--text-h);
+}
+
+.comparison-swatch-right {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 1.6px solid var(--text-h);
+    transform: rotate(45deg);
+    margin-left: 12px;
+}
+
+/* Both sides' value labels share one ink: the sides are peers (no emphasis
+   hierarchy) — position distinguishes them (left above, right below). */
+.comparison-value {
+    font: 400 11px var(--mono);
+    fill: var(--text-h);
+
+    @media (max-width: 480px) {
+        font-size: 14px;
+    }
+}
+
+/* The grouped header's top row: quiet metric-group captions over the side
+   columns, centered over their spans. */
+.comparison-zone-table .comparison-group-row th {
+    text-align: center;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.comparison-zone-table .comparison-group-row td {
+    border-bottom: none;
+}
+
+/* Side headers may wrap: player-mode columns repeat full names eight times,
+   and the zone table's usual nowrap headers would push this table's
+   min-content past the shell — a scrolling desktop table, which the house
+   forbids. Wrapped names keep the columns honest at every width. */
+.comparison-zone-table thead th {
+    white-space: normal;
+}
+
+.comparison-plain table {
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: normal;
+}
+
+.comparison-plain th,
+.comparison-plain td {
+    padding: 4px 12px 4px 0;
+    text-align: right;
+}
+
+.comparison-plain th[scope='row'],
+.comparison-plain thead th:first-child {
+    text-align: left;
+}
+
+/* --- Comparison discovery links (plan §5) ----------------------------------- */
+
+/* The hero page's quiet way out, at the footer boundary: the hero-forward
+   grammar after the whole argument. */
+.hero-compare {
+    margin: 48px 0 0;
+    font-size: 14px;
+}
+
+.hero-compare a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.hero-compare a:hover,
+.hero-compare a:focus-visible {
+    color: var(--text-h);
+}
+
+/* The directory's one line into the tool, in the rail's own gutter. */
+.index-compare {
+    padding: 0 32px 48px;
+    font-size: 14px;
+    line-height: normal;
+}
+
+.index-page .index-compare a {
+    color: var(--text);
+}
+
+.index-page .index-compare a:hover,
+.index-page .index-compare a:focus-visible {
+    color: var(--text-h);
+}

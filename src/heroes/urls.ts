@@ -6,7 +6,9 @@
 // Payload URLs take the season string explicitly (ADR-0060): a hero is a
 // directory of season arguments, and the page says which one it is fetching.
 
-import { METHODOLOGY_ROUTE } from '../app/routes'
+import type { ComparisonRequest } from '../app/comparisonRoute'
+import { serializeComparison } from '../app/comparisonRoute'
+import { COMPARE_ROUTE, METHODOLOGY_ROUTE } from '../app/routes'
 import type { HeroConfig } from './types'
 
 export function payloadUrl(hero: HeroConfig, season: string): string {
@@ -63,4 +65,25 @@ export function indexUrl(): string {
  * surface, a static route beside the directory. */
 export function methodologyUrl(): string {
   return `${import.meta.env.BASE_URL}${METHODOLOGY_ROUTE}`
+}
+
+/** The comparison page (ADR-0076): bare for the setup state, or carrying a
+ * valid request's canonical query string — the one link form every example
+ * and discovery link uses. */
+export function compareUrl(request?: ComparisonRequest): string {
+  return `${import.meta.env.BASE_URL}${COMPARE_ROUTE}${
+    request === undefined ? '' : serializeComparison(request)
+  }`
+}
+
+/** A HeroPage's discovery link into the comparison (comparison plan §5): a
+ * deliberately INCOMPLETE setup URL — this player and rendered season
+ * preselected, the setup asking for the other player before producing
+ * results. */
+export function comparePreselectUrl(hero: HeroConfig, season: string): string {
+  const params = new URLSearchParams()
+  params.set('mode', 'players')
+  params.set('season', season)
+  params.set('left', hero.slug)
+  return `${import.meta.env.BASE_URL}${COMPARE_ROUTE}?${params.toString()}`
 }

@@ -97,6 +97,15 @@ export function useOptionalShotPayload(
   return useOptionalParsedPayload(url, parseDerivedPayload, 'prior season shot data')
 }
 
+/** A comparison window's shot payload (comparison plan / ADR-0076): a valid
+ * /compare URL needs one payload (split mode) or two (player mode) — the
+ * second slot stays null, so absence is a state, never a skipped hook. */
+export function useOptionalComparisonPayload(
+  url: string | null,
+): OptionalPayloadState<DerivedPayload> {
+  return useOptionalParsedPayload(url, parseDerivedPayload, 'comparison shot data')
+}
+
 /** The sibling creation payload (ADR-0030) — one class of hero page: the
  * page waits for every required payload and surfaces any failure. */
 export function useCreationPayload(url: string): PayloadState<CreationPayload> {

@@ -15,6 +15,7 @@ import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { formatDataThrough, formatPercent1 } from '../format'
 import type { HeroConfig, HeroSeasonConfig } from '../heroes/types'
 import {
+  comparePreselectUrl,
   creationPayloadUrl,
   freethrowPayloadUrl,
   heroImageUrl,
@@ -399,6 +400,16 @@ function HeroReady({
           </div>
         </section>
       )}
+      {/* Discovery into the comparison tool (comparison plan §5): a quiet
+          way out AFTER the whole argument, at the footer boundary — the
+          hero-forward grammar, preselecting this player and rendered
+          season. The link leaves the page; the argument itself stays a
+          complete page with no inline switcher (ADR-0018). */}
+      <p className="hero-compare">
+        <a href={comparePreselectUrl(hero, seasonConfig.season)}>
+          Compare {payload._meta.player} with another player →
+        </a>
+      </p>
     </main>
   )
 }

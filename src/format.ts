@@ -34,10 +34,42 @@ export function formatSignedGap(
   decimals: number,
 ): string {
   if (minuend === null || subtrahend === null) return EM_DASH
-  const scale = 10 ** decimals
+  const units = displayUnits(minuend, decimals) - displayUnits(subtrahend, decimals)
+  return signedFromUnits(units, decimals)
+}
+
+/**
+ * The right-minus-left gap of two displayed RESIDUALS, where each residual
+ * is itself the gap of its two displayed anchors (formatSignedGap) — the
+ * comparison headline's third number (ADR-0023 at the comparison grain).
+ * All arithmetic runs in integer display units, so the visible chain
+ * reconciles exactly: gap = (right anchors' displayed gap) − (left anchors'
+ * displayed gap). Subtracting the two RAW residuals instead can miss by a
+ * display unit whenever one side's anchors round apart.
+ */
+export function formatSignedGapOfGaps(
+  right: readonly [number | null, number | null],
+  left: readonly [number | null, number | null],
+  decimals: number,
+): string {
+  if (right[0] === null || right[1] === null || left[0] === null || left[1] === null) {
+    return EM_DASH
+  }
   const units =
-    Math.round(Number(minuend.toFixed(decimals)) * scale) -
-    Math.round(Number(subtrahend.toFixed(decimals)) * scale)
+    displayUnits(right[0], decimals) -
+    displayUnits(right[1], decimals) -
+    (displayUnits(left[0], decimals) - displayUnits(left[1], decimals))
+  return signedFromUnits(units, decimals)
+}
+
+/** A number as the integer count of its display units at N decimals — the
+ * shared currency of every ADR-0023 gap. */
+function displayUnits(x: number, decimals: number): number {
+  return Math.round(Number(x.toFixed(decimals)) * 10 ** decimals)
+}
+
+function signedFromUnits(units: number, decimals: number): string {
+  const scale = 10 ** decimals
   return `${units < 0 ? MINUS : '+'}${(Math.abs(units) / scale).toFixed(decimals)}`
 }
 
@@ -136,6 +168,14 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export function formatGameDate(isoDate: string): string {
   const [year, month, day] = isoDate.split('-')
   return `${MONTHS[Number(month) - 1]} ${Number(day)}, ${year}`
+}
+
+/** "2026-02-07" -> "Feb 7" — the comparison h1's split-date form. Yearless
+ * is unambiguous inside one stated season (Oct–Jun never repeats a month),
+ * and the season line under the h1 carries the year context. */
+export function formatMonthDay(isoDate: string): string {
+  const [, month, day] = isoDate.split('-')
+  return `${MONTHS[Number(month) - 1]} ${Number(day)}`
 }
 
 /** The freshness line (ADR-0058/0059): the reconciled frontier as structural

@@ -274,6 +274,22 @@ The claim kind backing a growth-sentence (the verdict's optional cross-season se
 **Prior argued season**:
 The growth coda's comparison side: the hero's most recent earlier season argument. Both sides of the comparison passed all five gates by construction — argued status is the gate provenance; an unargued season never qualifies, however its data looks.
 
+**Comparison window**:
+One side of a comparison: a player-season constrained to an inclusive date interval — a full season is the unconstrained case. Windows do not inherit hero eligibility (ADR-0075): a non-empty window renders, with honesty carried locally — a zone below 15 attempts is marked too thin for a stable selection reading, making below 50 attempts keeps the standard uncertainty flag, and attempts stay visible beside every flagged value. A flag never deletes a zone or vetoes the comparison.
+
+**Comparison**:
+A side-by-side shot-profile evaluation of two comparison windows — how the windows differ in shot selection and shot making, never why they differ, who is better overall, or what caused a change. Two modes over one model: player comparison and within-season comparison (UI mode labels **Players** and **Before & since**). Every included section evaluates both sides over the exact comparison windows, deferring a section until its source contract is date-grained rather than falling back to season totals (ADR-0073); a valid comparison is fully reproducible from its URL with no server state (ADR-0076).
+_Avoid_: "Timeline" as a mode label (the page shows no chronological series), and causal event labels ("before/after the trade") in product claims.
+
+**Player comparison**:
+Two distinct registered players in one shared NBA season — each side's full-season window over its own deployed shot payload. Their evaluation-zone league baselines must be identical before one is shared; a mismatch is a plain contradiction, never permission to choose one silently.
+
+**Within-season comparison**:
+One player in two non-overlapping windows from one season, partitioned at a split date. Both windows keep every available game — complete natural windows, never trimmed to matched game counts, with visible game/shot/attempt counts disclosing unequal precision (ADR-0077) — and both are measured against the same full-season league baseline, labeled with its season, so residual differences are attributable to the player's two windows rather than a moving ruler (ADR-0074).
+
+**Split date**:
+The first date in the right-side window of a within-season comparison; the left window ends the day before it. The partition is exact: left is `gameDate < split`, right is `gameDate >= split`, both sides non-empty, together reproducing the payload's complete shot set.
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 
