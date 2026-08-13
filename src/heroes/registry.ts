@@ -21,6 +21,7 @@ import { maximeRaynaud } from './maxime-raynaud'
 import { bubCarrington } from './bub-carrington'
 import { alexSarr } from './alex-sarr'
 import { austinReaves } from './austin-reaves'
+import { jalenBrunson } from './jalen-brunson'
 import type { HeroConfig } from './types'
 
 /** Ordered: the index page lists heroes in this order. */
@@ -35,6 +36,7 @@ export const HEROES: readonly HeroConfig[] = [
     niqueClifford,
     shaiGilgeousAlexander,
     donovanMitchell,
+  jalenBrunson,
 ]
 
 export function heroBySlug(slug: string): HeroConfig | undefined {
