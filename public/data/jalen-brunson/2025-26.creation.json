@@ -1,0 +1,291 @@
+{
+  "_meta": {
+    "schemaVersion": 4,
+    "player": "Jalen Brunson",
+    "playerId": 1628973,
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "pullDate": "2026-07-16",
+    "dataThrough": "2026-04-10",
+    "gamesIncluded": 74,
+    "sourceSnapshot": "data/raw/jalen-brunson/2025-26/tracking/2026-07-16.json",
+    "leagueSourceSnapshot": "data/raw/_league/2025-26/tracking/2026-07-23T155832.json",
+    "seasonFga": 1475,
+    "trackingShortfall": 0,
+    "shotClockUnattributed": 0,
+    "defenderUnattributed": 0,
+    "leagueFga": 218352,
+    "leagueShotClockUnattributed": 0,
+    "leagueDefenderUnattributed": 0
+  },
+  "general": {
+    "player": [
+      {
+        "context": "Catch and Shoot",
+        "fga": 229,
+        "fgm": 93,
+        "fg2a": 8,
+        "fg2m": 3,
+        "fg3a": 221,
+        "fg3m": 90
+      },
+      {
+        "context": "Pull Ups",
+        "fga": 807,
+        "fgm": 354,
+        "fg2a": 501,
+        "fg2m": 249,
+        "fg3a": 306,
+        "fg3m": 105
+      },
+      {
+        "context": "Less than 10 ft",
+        "fga": 438,
+        "fgm": 242,
+        "fg2a": 438,
+        "fg2m": 242,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "Other",
+        "fga": 1,
+        "fgm": 0,
+        "fg2a": 0,
+        "fg2m": 0,
+        "fg3a": 1,
+        "fg3m": 0
+      }
+    ],
+    "league": [
+      {
+        "context": "Catch and Shoot",
+        "fga": 69260,
+        "fgm": 25997,
+        "fg2a": 3886,
+        "fg2m": 1786,
+        "fg3a": 65374,
+        "fg3m": 24211
+      },
+      {
+        "context": "Pull Ups",
+        "fga": 54929,
+        "fgm": 21229,
+        "fg2a": 30447,
+        "fg2m": 13147,
+        "fg3a": 24482,
+        "fg3m": 8082
+      },
+      {
+        "context": "Less than 10 ft",
+        "fga": 92963,
+        "fgm": 55146,
+        "fg2a": 92963,
+        "fg2m": 55146,
+        "fg3a": 0,
+        "fg3m": 0
+      },
+      {
+        "context": "Other",
+        "fga": 1200,
+        "fgm": 468,
+        "fg2a": 376,
+        "fg2m": 155,
+        "fg3a": 824,
+        "fg3m": 313
+      }
+    ]
+  },
+  "shotClock": {
+    "player": [
+      {
+        "context": "24-22",
+        "fga": 6,
+        "fgm": 3,
+        "fg2a": 2,
+        "fg2m": 2,
+        "fg3a": 4,
+        "fg3m": 1
+      },
+      {
+        "context": "22-18 Very Early",
+        "fga": 176,
+        "fgm": 79,
+        "fg2a": 85,
+        "fg2m": 52,
+        "fg3a": 91,
+        "fg3m": 27
+      },
+      {
+        "context": "18-15 Early",
+        "fga": 264,
+        "fgm": 122,
+        "fg2a": 172,
+        "fg2m": 86,
+        "fg3a": 92,
+        "fg3m": 36
+      },
+      {
+        "context": "15-7 Average",
+        "fga": 699,
+        "fgm": 328,
+        "fg2a": 461,
+        "fg2m": 234,
+        "fg3a": 238,
+        "fg3m": 94
+      },
+      {
+        "context": "7-4 Late",
+        "fga": 167,
+        "fgm": 79,
+        "fg2a": 118,
+        "fg2m": 61,
+        "fg3a": 49,
+        "fg3m": 18
+      },
+      {
+        "context": "4-0 Very Late",
+        "fga": 163,
+        "fgm": 78,
+        "fg2a": 109,
+        "fg2m": 59,
+        "fg3a": 54,
+        "fg3m": 19
+      }
+    ],
+    "league": [
+      {
+        "context": "24-22",
+        "fga": 7095,
+        "fgm": 4184,
+        "fg2a": 6692,
+        "fg2m": 4045,
+        "fg3a": 403,
+        "fg3m": 139
+      },
+      {
+        "context": "22-18 Very Early",
+        "fga": 32225,
+        "fgm": 17280,
+        "fg2a": 19330,
+        "fg2m": 12500,
+        "fg3a": 12895,
+        "fg3m": 4780
+      },
+      {
+        "context": "18-15 Early",
+        "fga": 37420,
+        "fgm": 17764,
+        "fg2a": 20309,
+        "fg2m": 11422,
+        "fg3a": 17111,
+        "fg3m": 6342
+      },
+      {
+        "context": "15-7 Average",
+        "fga": 102990,
+        "fgm": 47973,
+        "fg2a": 58848,
+        "fg2m": 31710,
+        "fg3a": 44142,
+        "fg3m": 16263
+      },
+      {
+        "context": "7-4 Late",
+        "fga": 19889,
+        "fgm": 8622,
+        "fg2a": 11779,
+        "fg2m": 5813,
+        "fg3a": 8110,
+        "fg3m": 2809
+      },
+      {
+        "context": "4-0 Very Late",
+        "fga": 18733,
+        "fgm": 7017,
+        "fg2a": 10714,
+        "fg2m": 4744,
+        "fg3a": 8019,
+        "fg3m": 2273
+      }
+    ]
+  },
+  "closestDefender": {
+    "player": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 59,
+        "fgm": 28,
+        "fg2a": 56,
+        "fg2m": 27,
+        "fg3a": 3,
+        "fg3m": 1
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 632,
+        "fgm": 307,
+        "fg2a": 533,
+        "fg2m": 270,
+        "fg3a": 99,
+        "fg3m": 37
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 625,
+        "fgm": 281,
+        "fg2a": 326,
+        "fg2m": 174,
+        "fg3a": 299,
+        "fg3m": 107
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 159,
+        "fgm": 73,
+        "fg2a": 32,
+        "fg2m": 23,
+        "fg3a": 127,
+        "fg3m": 50
+      }
+    ],
+    "league": [
+      {
+        "context": "0-2 Feet - Very Tight",
+        "fga": 14468,
+        "fgm": 6702,
+        "fg2a": 14172,
+        "fg2m": 6606,
+        "fg3a": 296,
+        "fg3m": 96
+      },
+      {
+        "context": "2-4 Feet - Tight",
+        "fga": 83893,
+        "fgm": 43968,
+        "fg2a": 75760,
+        "fg2m": 41504,
+        "fg3a": 8133,
+        "fg3m": 2464
+      },
+      {
+        "context": "4-6 Feet - Open",
+        "fga": 65275,
+        "fgm": 29080,
+        "fg2a": 30439,
+        "fg2m": 17300,
+        "fg3a": 34836,
+        "fg3m": 11780
+      },
+      {
+        "context": "6+ Feet - Wide Open",
+        "fga": 54716,
+        "fgm": 23090,
+        "fg2a": 7301,
+        "fg2m": 4824,
+        "fg3a": 47415,
+        "fg3m": 18266
+      }
+    ]
+  }
+}

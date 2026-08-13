@@ -167,6 +167,38 @@ sga-hero.jpg record (see its entry)._
   declared colors in sensible proportion (gold `#FAB624` 42.5%, white 31.3%,
   purple `#542C81` 20.6%, `#0B1A23` 3.7%) — and its ink-edge ratio is 0.2024,
   10.1x the guard's bar and second only to the Thunder shield.
+- `public/img/jalen-brunson-hero.jpg` — team photograph via the New York
+  Knicks (vs Toronto at Madison Square Garden, 2026-04-10, the final game of
+  his argued regular season; Brunson rises into a jumper in the black City
+  Edition #11, a defender's hand reaching in at the top right), from the
+  team site's "Knicks on the Court" gallery for that game
+  (`cdn.nba.com/teams/uploads/sites/1610612752/2026/04/06-4.png`, pulled
+  2026-08-12). Committed **byte-identical to the source**: the Knicks
+  publish their game galleries only as 1080x1350 social exports (the file
+  is served as `.png` but is a JPEG, with the team's roundel watermark
+  baked into the top-right corner), so there is nothing larger to derive
+  from — the smallest banner source in the repo, and no re-encode or crop
+  judgment enters the asset. No photographer is credited on the source and
+  the file carries no embedded EXIF/XMP credit metadata (checked before
+  committing), so the credit stays at team grain. The filename distinction
+  the Reaves entry records applies here from the other side: when these
+  galleries re-host wire photos the `GettyImages-*` name survives (the
+  2026-06-13 Finals gallery carries one), while team content gets CMS
+  numbering like this file's — that is the basis for the team-grain
+  credit. Source retained in `data/hero-sources/` (`brunson-06-4.png`,
+  plus the alternate drive frame `brunson-08-4.png`).
+- `public/img/nyk-logo.png` — the Knicks' primary roundel; the NBA CDN
+  serves it as SVG only
+  (`cdn.nba.com/logos/nba/1610612752/primary/L/logo.svg`, 2026-08-12),
+  browser-rasterized at 1536px and committed on the shared normalized
+  watermark canvas (60% footprint) by `scripts/normalize_team_logo.py`;
+  SVG source retained in `data/hero-sources/`. Rasterized with the SVG
+  markup **inlined into the page** rather than fetched by an `<img>` (the
+  `was-logo.png` lesson above) and verified before normalizing: the raster
+  carries all four of the SVG's declared colors in sensible proportion
+  (orange `#F58426` 41.9%, blue `#1D428A` 31.5%, white 14.7%, gray
+  `#9EA2A2` 9.2% of opaque samples), and its ink-edge ratio is 0.2104,
+  10.5x the guard's bar and second only to the Thunder shield.
 - `public/img/goodshots-wordmark.png` — the site's own brand lockup, made by
   the author; the committed file is a web-sized transparent derivation of the
   branding source `Good Shots-01.png` (whose black plate is opaque, so the

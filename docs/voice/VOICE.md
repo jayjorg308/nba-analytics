@@ -51,6 +51,12 @@ player's full name lands in the opening beat.
 > "Yes, Cody Williams lives at the rim and rarely fires from three..."
 > "No, Keyonte George's shot selection costs him."
 
+The name may slide to the second sentence when the opener carries only the
+answer and the judgment — the pronoun leads, and the full name then opens
+the first evidence sentence (the Brunson red-pen, 2026-08-12):
+> "Not quite, but he makes it close. Jalen Brunson takes shots at the
+> rim..."
+
 **Names.** One surname re-mention mid-verdict, riding an evidence sentence
 ("since George converts", "Bailey gets there", "Nearly half of Mitchell's
 attempts"). Use the handle real fans use where one exists ("SGA").
@@ -70,6 +76,13 @@ league does", "far fewer threes than average".
 "expectation" / "the league rate" — never the same phrase twice in a row.
 Bare "expectation" is safe: the product pins "expected" as at-league-average
 (CONTEXT.md).
+
+**Rotate repeated content nouns too.** A noun repeated across adjacent
+sentences reads as a flaw even when every use is claim-backed: the Brunson
+draft's "pull-up jumpers ... Those pull-ups ... the league pull-up value"
+red-penned down to two mentions, the third absorbed by "the average for
+that shot" (2026-08-12). Two mentions of a term in adjacent sentences is
+the ceiling; past it, replace one with the class it belongs to.
 
 **Announcement pivots die; judgment pivots live.** Cut sentences that only
 introduce the next evidence ("The diet is how he creates.", "How he creates
