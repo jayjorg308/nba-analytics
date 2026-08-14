@@ -17,7 +17,7 @@ export function ComparisonHeader({ metrics }: { metrics: ComparisonMetrics }) {
   const splitHero = m.mode === 'split' ? heroBySlug(m.left.playerSlug) : undefined
   return (
     <header className="comparison-header">
-      <div className="comparison-heading">
+      <div className={`comparison-heading comparison-heading-${m.mode}`}>
         {splitHero !== undefined && (
           // Decorative: the h1 beside it carries the name.
           <img className="comparison-headshot" src={headshotUrl(splitHero)} alt="" />

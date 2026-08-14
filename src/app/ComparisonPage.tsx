@@ -235,10 +235,10 @@ export function ComparisonSetup({
           Before &amp; since
         </label>
       </fieldset>
-      <div className="comparison-fields">
+      <div className={`comparison-fields comparison-fields-${mode}`}>
         {mode === 'players' ? (
           <>
-            <label className="comparison-field">
+            <label className="comparison-field comparison-field-season">
               <span>Season</span>
               <select
                 name="season"
@@ -253,7 +253,7 @@ export function ComparisonSetup({
                 ))}
               </select>
             </label>
-            <label className="comparison-field">
+            <label className="comparison-field comparison-field-left">
               <span>Left player</span>
               <select name="left" required value={left} onChange={(e) => setLeft(e.target.value)}>
                 <option value="">Choose a player</option>
@@ -262,7 +262,7 @@ export function ComparisonSetup({
             </label>
             <button
               type="button"
-              className="comparison-swap"
+              className="comparison-swap comparison-action-swap"
               onClick={() => {
                 setLeft(right)
                 setRight(left)
@@ -270,7 +270,7 @@ export function ComparisonSetup({
             >
               Swap
             </button>
-            <label className="comparison-field">
+            <label className="comparison-field comparison-field-right">
               <span>Right player</span>
               <select name="right" required value={right} onChange={(e) => setRight(e.target.value)}>
                 <option value="">Choose a player</option>
@@ -280,7 +280,7 @@ export function ComparisonSetup({
           </>
         ) : (
           <>
-            <label className="comparison-field">
+            <label className="comparison-field comparison-field-player">
               <span>Player</span>
               <select
                 name="player"
@@ -292,7 +292,7 @@ export function ComparisonSetup({
                 {playerOptions([...HEROES])}
               </select>
             </label>
-            <label className="comparison-field">
+            <label className="comparison-field comparison-field-season">
               <span>Season</span>
               <select
                 name="season"
@@ -312,7 +312,7 @@ export function ComparisonSetup({
                 )}
               </select>
             </label>
-            <label className="comparison-field">
+            <label className="comparison-field comparison-field-split">
               <span>Split date</span>
               <input
                 type="date"
@@ -324,7 +324,7 @@ export function ComparisonSetup({
             </label>
           </>
         )}
-        <button type="submit" className="comparison-go">
+        <button type="submit" className="comparison-go comparison-action-go">
           Compare
         </button>
       </div>
@@ -457,22 +457,36 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
           player: request!.player,
           split: request!.split,
         }
+  const setup = <ComparisonSetup initial={setupInitial} urlMessage={null} navigate={navigate} />
+  const statusMessage =
+    leftState.status === 'error'
+      ? leftState.message
+      : rightState.status === 'error'
+        ? rightState.message
+        : computed.status === 'error'
+          ? computed.message
+          : null
   return (
     <>
-      <main className="comparison-page">
+      <main className="comparison-page comparison-page-results">
         <SiteNav />
-        <ComparisonSetup initial={setupInitial} urlMessage={null} navigate={navigate} />
-        {leftState.status === 'error' ? (
-          <p className="page-status page-error">{leftState.message}</p>
-        ) : rightState.status === 'error' ? (
-          <p className="page-status page-error">{rightState.message}</p>
-        ) : computed.status === 'error' ? (
-          <p className="page-status page-error">{computed.message}</p>
-        ) : computed.status === 'pending' ? (
-          <p className="page-status page-loading">Loading shot data…</p>
+        {statusMessage !== null ? (
+          <>
+            {setup}
+            <p className="page-status page-error">{statusMessage}</p>
+          </>
+        ) : computed.status !== 'ready' ? (
+          <>
+            {setup}
+            <p className="page-status page-loading">Loading shot data…</p>
+          </>
         ) : (
           <>
             <ComparisonHeader metrics={computed.metrics} />
+            <details className="comparison-change">
+              <summary>Change comparison</summary>
+              {setup}
+            </details>
             <ComparisonHeadline metrics={computed.metrics} />
             {/* The zone evidence (plan §4): both axes simultaneously over
                 the same six rows — panels together on desktop, stacked on
@@ -499,4 +513,3 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
     </>
   )
 }
-

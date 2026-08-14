@@ -60,6 +60,9 @@ export function ComparisonZoneTable({ metrics }: { metrics: ComparisonMetrics })
   const backcourt = left.metrics.backcourt.attempts + right.metrics.backcourt.attempts > 0
   return (
     <div className="table-panel">
+      <p className="comparison-scroll-cue" aria-hidden="true">
+        Swipe horizontally to see every column
+      </p>
       <div className="zone-scroll">
         <table
           className="zone-table comparison-zone-table"

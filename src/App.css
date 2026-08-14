@@ -2345,10 +2345,10 @@
 .comparison-page {
     flex-grow: 1;
     text-align: left;
-    padding: 108px 32px 64px;
+    padding: 80px 32px 64px;
 
     @media (max-width: 640px) {
-        padding: 96px 20px 56px;
+        padding: 72px 20px 56px;
     }
 }
 
@@ -2422,10 +2422,48 @@
 }
 
 .comparison-fields {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 16px;
     align-items: flex-end;
+}
+
+.comparison-fields-players {
+    grid-template-columns: 170px minmax(170px, 1fr) auto minmax(170px, 1fr) auto;
+    grid-template-areas: 'season left swap right go';
+}
+
+.comparison-fields-split {
+    grid-template-columns: minmax(200px, 1fr) 170px 190px auto;
+    grid-template-areas: 'player season split go';
+}
+
+.comparison-field-season {
+    grid-area: season;
+    max-width: 170px;
+}
+
+.comparison-field-left {
+    grid-area: left;
+}
+
+.comparison-field-right {
+    grid-area: right;
+}
+
+.comparison-field-player {
+    grid-area: player;
+}
+
+.comparison-field-split {
+    grid-area: split;
+}
+
+.comparison-action-swap {
+    grid-area: swap;
+}
+
+.comparison-action-go {
+    grid-area: go;
 }
 
 .comparison-field {
@@ -2445,6 +2483,8 @@
     border-radius: 6px;
     padding: 8px 10px;
     min-width: 170px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .comparison-swap,
@@ -2482,6 +2522,83 @@
     color: var(--text-h);
 }
 
+@media (max-width: 1024px) {
+    .comparison-fields-players {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            'season season season season'
+            'left swap right go';
+    }
+
+    .comparison-fields-split {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            'player season'
+            'split go';
+    }
+}
+
+@media (max-width: 640px) {
+    .comparison-fields-players,
+    .comparison-fields-split {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .comparison-fields-players {
+        grid-template-areas:
+            'season'
+            'left'
+            'swap'
+            'right'
+            'go';
+    }
+
+    .comparison-fields-split {
+        grid-template-areas:
+            'player'
+            'season'
+            'split'
+            'go';
+    }
+
+    .comparison-field {
+        width: 100%;
+    }
+
+    .comparison-field-season {
+        max-width: none;
+    }
+
+    .comparison-field select,
+    .comparison-field input {
+        min-width: 0;
+        min-height: 44px;
+    }
+
+    .comparison-swap,
+    .comparison-go {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .comparison-mode {
+        display: flex;
+    }
+
+    .comparison-mode label {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .comparison-change summary {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
 /* Plain validation sentence (plan §1): quiet, specific, never a toast. */
 .comparison-message {
     margin: 12px 0 0;
@@ -2510,6 +2627,30 @@
     margin: 32px 0 0;
 }
 
+.comparison-page-results .comparison-header {
+    margin-top: 0;
+}
+
+.comparison-change {
+    margin-top: 16px;
+    color: var(--text);
+    font-size: 14px;
+    line-height: normal;
+}
+
+.comparison-change summary {
+    width: max-content;
+    cursor: pointer;
+}
+
+.comparison-change[open] summary {
+    color: var(--text-h);
+}
+
+.comparison-change .comparison-setup {
+    margin-top: 12px;
+}
+
 .comparison-heading {
     display: flex;
     align-items: center;
@@ -2534,6 +2675,24 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin: 16px 0 0;
+}
+
+@media (max-width: 480px) {
+    .comparison-heading-split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+        gap: 12px;
+    }
+
+    .comparison-heading-split > .comparison-headshot {
+        width: 64px;
+    }
+
+    .comparison-sides {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
 }
 
 .comparison-side {
@@ -2568,6 +2727,20 @@
    grammar, opened below the compact header. */
 .comparison-headline {
     margin-top: 32px;
+}
+
+.comparison-scroll-cue {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .comparison-scroll-cue {
+        display: block;
+        margin: 0 0 8px;
+        font-size: 12px;
+        line-height: normal;
+        color: var(--text);
+    }
 }
 
 /* --- Zone evidence (plan §4) ------------------------------------------------ */

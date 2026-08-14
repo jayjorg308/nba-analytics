@@ -110,6 +110,14 @@ describe('ComparisonPage over the golden fixture', () => {
     screen.getByText('Loading shot data…')
     await screen.findByRole('heading', { name: 'Left Golden vs Right Golden' })
 
+    // Results lead with the comparison itself. Editing stays available in a
+    // collapsed disclosure directly below instead of owning the first row.
+    const heading = screen.getByRole('heading', { name: 'Left Golden vs Right Golden' })
+    const change = screen.getByText('Change comparison')
+    expect(heading.compareDocumentPosition(change) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0)
+    expect(change.closest('details')?.hasAttribute('open')).toBe(false)
+    expect(document.querySelector('main')?.classList.contains('comparison-page-results')).toBe(true)
+
     // Two payloads fetched, one per side.
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2)
 
@@ -268,6 +276,9 @@ describe('ComparisonPage over the golden fixture', () => {
     screen.getByText(/Complete windows: every game through/)
     // The golden's one backcourt heave stays reported, never hidden.
     screen.getByText(/Backcourt heaves, excluded from evaluation/)
+    expect(screen.getByText(/Swipe horizontally to see every column/).getAttribute('aria-hidden')).toBe(
+      'true',
+    )
   })
 
   it('a fetch failure uses the plain page-error contract', async () => {
@@ -292,6 +303,7 @@ describe('ComparisonSetup', () => {
 
     // The shared season defaults to the latest season two heroes carry.
     expect((screen.getByLabelText('Season') as HTMLSelectElement).value).toBe('2025-26')
+    expect(document.querySelector('.comparison-fields-players')).not.toBeNull()
     fireEvent.change(screen.getByLabelText('Left player'), {
       target: { value: 'donovan-mitchell' },
     })
@@ -340,6 +352,7 @@ describe('ComparisonSetup', () => {
     render(<ComparisonSetup initial={{ mode: 'players' }} urlMessage={null} navigate={navigate} />)
 
     fireEvent.click(screen.getByLabelText('Before & since'))
+    expect(document.querySelector('.comparison-fields-split')).not.toBeNull()
     // Season waits on the player (never a configuration without registry
     // support, plan §1).
     expect((screen.getByLabelText('Season') as HTMLSelectElement).disabled).toBe(true)
