@@ -217,8 +217,8 @@
     margin-bottom: 10px;
 }
 
-/* The poster face appears here and nowhere else — reading sizes stay on
-   --sans/--mono (the two-text-font rule). */
+/* The poster face marks product-identity display headings; reading sizes
+   stay on --sans/--mono (the two-text-font rule). */
 .hero-title {
     font-family: var(--display);
     font-weight: 900;
@@ -2365,10 +2365,24 @@
 
 .comparison-title {
     margin: 4px 0 0; /* 4px binds the title to its kicker / baseline block */
+    font-family: var(--heading);
+    font-weight: 500;
     font-size: clamp(28px, 4.5vw, 40px);
     line-height: 1.15;
     letter-spacing: -0.5px;
     color: var(--text-h);
+}
+
+/* Branded split: setup copy stays in Public Sans, while the identity-first
+   result heading joins the hero and directory display system. */
+.comparison-page-results .comparison-title {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(36px, 5.5vw, 48px);
+    line-height: 0.96;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    text-wrap: balance;
 }
 
 .comparison-deck {
