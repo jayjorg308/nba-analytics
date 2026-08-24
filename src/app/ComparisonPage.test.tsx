@@ -1,0 +1,571 @@
+// @vitest-environment jsdom
+// The comparison page's component contract (comparison plan, increment 2):
+// the setup state's real labeled controls and examples, URL-derived results
+// over one or two fetched payloads, the plain page-error contract, and
+// distinct per-mode titles. The URL/domain seams have their own tests; this
+// file covers what renders.
+
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ComparisonPage, ComparisonSetup } from './ComparisonPage'
+
+// under jsdom, import.meta.url is not a file URL — resolve from the vitest
+// root (the repo root) instead
+const goldenPath = path.resolve(process.cwd(), 'tests/fixtures/derived.golden.json')
+const goldenJson = JSON.parse(readFileSync(goldenPath, 'utf-8')) as {
+  _meta: Record<string, unknown>
+  shots: { gameDate: string; gameId: string }[]
+}
+const ftGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/freethrow.golden.json')
+const ftGoldenJson = JSON.parse(readFileSync(ftGoldenPath, 'utf-8')) as {
+  _meta: Record<string, unknown>
+  trips: { tripClass: string; ftm: number }[]
+}
+
+/** The golden re-badged per side: the fixture is hero-independent, and the
+ * payload's own _meta.player is what the header renders. */
+function goldenAs(player: string): unknown {
+  const clone = structuredClone(goldenJson) as { _meta: Record<string, unknown> }
+  clone._meta.player = player
+  return clone
+}
+
+/** The free-throw golden re-badged per side (ADR-0079). `dropFoulMake`
+ * turns the shooting-foul trip's 1/2 into 0/2 (season 4/6 -> 3/6), keeping
+ * every schema identity, so the two sides can differ where a test needs a
+ * non-zero Δ. */
+function ftGoldenAs(player: string, over: { dropFoulMake?: boolean } = {}): unknown {
+  const clone = structuredClone(ftGoldenJson) as {
+    _meta: Record<string, unknown>
+    trips: { tripClass: string; ftm: number }[]
+  }
+  clone._meta.player = player
+  if (over.dropFoulMake === true) {
+    clone.trips.find((t) => t.tripClass === 'shootingFoul2')!.ftm = 0
+    clone._meta.seasonFtm = (clone._meta.seasonFtm as number) - 1
+  }
+  return clone
+}
+
+interface StubResponse {
+  ok: boolean
+  status?: number
+  json?: unknown
+}
+
+function stubFetch(routes: Record<string, StubResponse>) {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn((url: unknown) => {
+      const key = String(url)
+      const r = routes[key]
+      if (r === undefined) return Promise.reject(new Error(`unexpected fetch ${key}`))
+      return Promise.resolve({ ok: r.ok, status: r.status ?? 200, json: async () => r.json })
+    }),
+  )
+}
+
+function setUrl(pathAndQuery: string) {
+  window.history.replaceState({}, '', pathAndQuery)
+}
+
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+  setUrl('/')
+})
+
+describe('ComparisonPage setup state', () => {
+  it('renders labeled controls and the two example links on bare /compare', () => {
+    stubFetch({})
+    setUrl('/compare')
+    render(<ComparisonPage />)
+
+    // Real labels, native controls (plan §1).
+    screen.getByLabelText('Players')
+    screen.getByLabelText('Before & since')
+    screen.getByLabelText('Season')
+    screen.getByLabelText('Left player')
+    screen.getByLabelText('Right player')
+    screen.getByRole('button', { name: 'Swap' })
+    screen.getByRole('button', { name: 'Compare' })
+
+    // Bare setup carries the two motivating examples as canonical URLs.
+    expect(
+      screen
+        .getByRole('link', { name: 'Donovan Mitchell vs Jalen Brunson, 2025-26' })
+        .getAttribute('href'),
+    ).toBe('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
+    expect(
+      screen
+        .getByRole('link', { name: 'Donovan Mitchell, before & since Feb 7, 2026' })
+        .getAttribute('href'),
+    ).toBe('/compare?mode=split&season=2025-26&player=donovan-mitchell&split=2026-02-07')
+
+    // No metrics and no fetch: the setup state never partially renders.
+    expect(vi.mocked(fetch)).not.toHaveBeenCalled()
+    expect(document.title).toBe('Compare · Good Shots')
+  })
+
+  it('keeps an invalid URL in setup with its specific message, fetching nothing', () => {
+    stubFetch({})
+    setUrl('/compare?mode=split&season=2025-26&player=donovan-mitchell&split=2026-02-30')
+    render(<ComparisonPage />)
+
+    screen.getByText('"2026-02-30" is not a real date. The split date takes YYYY-MM-DD form.')
+    expect(screen.queryByRole('table')).toBeNull()
+    expect(vi.mocked(fetch)).not.toHaveBeenCalled()
+  })
+})
+
+describe('ComparisonPage over the golden fixture', () => {
+  it('players mode: loads both payload pairs and renders the compact header', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Left Golden') },
+      '/data/jalen-brunson/2025-26.json': { ok: true, json: goldenAs('Right Golden') },
+      '/data/donovan-mitchell/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Left Golden'),
+      },
+      '/data/jalen-brunson/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Right Golden'),
+      },
+    })
+    setUrl('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
+    render(<ComparisonPage />)
+
+    screen.getByText('Loading comparison data…')
+    await screen.findByRole('heading', { name: 'Left Golden vs Right Golden' })
+
+    // Results lead with the comparison itself. Editing stays available in a
+    // collapsed disclosure directly below instead of owning the first row.
+    const heading = screen.getByRole('heading', { name: 'Left Golden vs Right Golden' })
+    const change = screen.getByText('Change comparison')
+    expect(heading.compareDocumentPosition(change) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0)
+    expect(change.closest('details')?.hasAttribute('open')).toBe(false)
+    expect(document.querySelector('main')?.classList.contains('comparison-page-results')).toBe(true)
+
+    // Four payloads fetched: a shot and a free-throw payload per side
+    // (ADR-0079).
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(4)
+
+    // The ruler is named beside the season (ADR-0074).
+    screen.getByText('2025-26 · vs 2025-26 league average')
+    // Each side disclosed: label, games, shots, and window boundary — the
+    // golden is 15 shots over 6 games through Mar 4, on both sides here.
+    expect(screen.getAllByText('6 games · 15 shots')).toHaveLength(2)
+    expect(screen.getAllByText('Oct 31, 2025 through Mar 4, 2026')).toHaveLength(2)
+    // One small headshot per side (plan §2); the header carries no banner.
+    expect(document.querySelectorAll('.comparison-header .comparison-headshot')).toHaveLength(2)
+
+    // The title names the players from the registry, distinctly per mode.
+    expect(document.title).toBe('Donovan Mitchell vs Jalen Brunson · 2025-26 · comparison')
+
+    // The integrated two-axis headline (plan §3): both axes present, gap
+    // direction named with the side labels. Identical payloads on both
+    // sides make every named gap exactly +0.00.
+    screen.getByRole('region', { name: 'Shot selection comparison' })
+    screen.getByRole('region', { name: 'Shot making comparison' })
+    expect(screen.getAllByText('Right Golden minus Left Golden')).toHaveLength(2)
+    const gapValues = [...document.querySelectorAll('.comparison-headline .headline-stat')]
+      .filter((stat) => stat.textContent!.includes('minus'))
+      .map((stat) => stat.querySelector('.stat-value')!.textContent)
+    expect(gapValues).toEqual(['+0.00', '+0.00'])
+
+    // The free-throw section (ADR-0079, the prototype's winning C variant):
+    // players mode carries THE LINE — three season-line scoreboard cards,
+    // then the transposed taxonomy. Identical payloads on both sides read
+    // as even on every call, the conversion call inheriting the two thin
+    // sides' † (6 FTA, under 50).
+    screen.getByRole('heading', { name: 'THE LINE' })
+    const cardChip = (name: string) =>
+      screen.getByRole('region', { name }).querySelector('.comparison-call-chip')!.textContent
+    expect(cardChip('FTA rate')).toBe('even')
+    expect(cardChip('FT conversion')).toBe('even†')
+    expect(cardChip('FT share of points')).toBe('even')
+    screen.getByRole('table', { name: 'Free-throw trips by class, both sides' })
+    // The calls' meanings are defined where they appear.
+    screen.getByText(/Draw edge: the side drawing more free throws/)
+  })
+
+  it('split mode: loads one payload, partitions it, and shows one headshot', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Split Golden') },
+    })
+    setUrl('/compare?mode=split&season=2025-26&player=donovan-mitchell&split=2025-12-07')
+    render(<ComparisonPage />)
+
+    await screen.findByRole('heading', { name: 'Split Golden, before & since Dec 7' })
+    // One payload, one fetch: split mode has no date-grained free-throw
+    // contract, so no free-throw payload is requested and no free-throw
+    // section renders (ADR-0079).
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('heading', { name: 'THE LINE' })).toBeNull()
+
+    const before = goldenJson.shots.filter((s) => s.gameDate < '2025-12-07')
+    const since = goldenJson.shots.filter((s) => s.gameDate >= '2025-12-07')
+    const games = (shots: { gameId: string }[]) => new Set(shots.map((s) => s.gameId)).size
+    expect(
+      [...document.querySelectorAll('.comparison-side-label')].map((el) => el.textContent),
+    ).toEqual(['Before', 'Since'])
+    screen.getByText(`${games(before)} games · ${before.length} shots`)
+    screen.getByText(`${games(since)} games · ${since.length} shots`)
+    // Split mode carries ONE identity: a single headshot beside the h1.
+    expect(document.querySelectorAll('.comparison-header .comparison-headshot')).toHaveLength(1)
+
+    expect(document.title).toBe(
+      'Donovan Mitchell · 2025-26 · before & since Dec 7, 2025',
+    )
+  })
+
+  it('headline residuals and named gaps subtract exactly as displayed (ADR-0023)', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Split Golden') },
+    })
+    setUrl('/compare?mode=split&season=2025-26&player=donovan-mitchell&split=2025-12-07')
+    render(<ComparisonPage />)
+    await screen.findByRole('region', { name: 'Shot selection comparison' })
+
+    // Six visible numbers per the surface: [left, right, gap] per axis. The
+    // gap must subtract the two DISPLAYED residuals, in display units.
+    const values = [...document.querySelectorAll('.comparison-headline .stat-value')].map((el) =>
+      Number(el.textContent!.replace('−', '-')),
+    )
+    expect(values).toHaveLength(6)
+    expect(values.every(Number.isFinite)).toBe(true)
+    const cents = (x: number) => Math.round(x * 100)
+    const [selLeft, selRight, selGap, mkLeft, mkRight, mkGap] = values as [
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ]
+    expect(cents(selRight) - cents(selLeft)).toBe(cents(selGap))
+    expect(cents(mkRight) - cents(mkLeft)).toBe(cents(mkGap))
+
+    // The direction is named with the side labels, on both axes.
+    expect(screen.getAllByText('Since minus Before')).toHaveLength(2)
+    // Supporting anchors: expected-from-diet and actual PPS, per side.
+    screen.getByText(/Expected from diet: Before/)
+    screen.getByText(/Actual vs expected: Before/)
+    // Neutral language: the tool never grades, ranks, or declares a winner
+    // (scoped to main — the shared footer tagline says "verdict" by design).
+    const mainText = document.querySelector('main')!.textContent!.toLowerCase()
+    for (const word of ['verdict', 'winner', 'better', 'worse', 'clutch']) {
+      expect(mainText).not.toContain(word)
+    }
+  })
+
+  it('zone evidence: both panels present, every thin zone a card, calls price displayed gaps', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Split Golden') },
+    })
+    setUrl('/compare?mode=split&season=2025-26&player=donovan-mitchell&split=2025-12-07')
+    render(<ComparisonPage />)
+
+    // Both axes simultaneously (plan §4).
+    await screen.findByRole('img', { name: /Shot diet comparison/ })
+    screen.getByRole('img', { name: /Shot making comparison/ })
+    screen.getByRole('heading', { name: 'ZONE BY ZONE' })
+
+    // The scoreboard keeps all six zones as cards — the golden's windows
+    // are uniformly thin, and a flag never deletes a zone (ADR-0075).
+    const zones = [
+      'Restricted Area',
+      'In The Paint (Non-RA)',
+      'Mid-Range',
+      'Left Corner 3',
+      'Right Corner 3',
+      'Above the Break 3',
+    ]
+    expect(document.querySelectorAll('.comparison-zone-card')).toHaveLength(6)
+    const cards = zones.map((zone) => screen.getByRole('region', { name: zone }))
+
+    // Chip text -> the call it claims: nothing ('—'), even, or a named
+    // side with a margin in tenths.
+    const parseChip = (text: string) => {
+      if (text === '—') return { kind: 'none' as const }
+      const call = /^(.+) \+(\d+\.\d)†?$/.exec(text)
+      if (call !== null) {
+        return { kind: 'call' as const, name: call[1]!, marginTenths: Math.round(Number(call[2]) * 10) }
+      }
+      expect(text).toMatch(/^even†?$/)
+      return { kind: 'even' as const }
+    }
+    const parseCell = (s: string) =>
+      s.includes('—') ? null : Number(s.replace('†', '').replace('%', '').replace('−', '-'))
+    const tenths = (x: number) => Math.round(x * 10)
+
+    for (const card of cards) {
+      // Each card: both windows then the league ruler row, four numeric
+      // cells per row.
+      within(card).getByRole('rowheader', { name: 'Before' })
+      within(card).getByRole('rowheader', { name: 'Since' })
+      within(card).getByRole('rowheader', { name: 'Lg' })
+      const [before, since, lg] = [...card.querySelectorAll('tbody tr')].map((tr) =>
+        [...tr.querySelectorAll('td')].map((td) => td.textContent!),
+      ) as [string[], string[], string[]]
+      expect(before).toHaveLength(4)
+      expect(since).toHaveLength(4)
+      // The Lg row carries only the two ruler values: league-wide FGA and
+      // the zero-point Making Δ are not comparable values.
+      expect(lg[0]).toBe('—')
+      expect(lg[1]).toMatch(/^\d+\.\d%$/)
+      expect(lg[2]).toMatch(/^\d+\.\d%$/)
+      expect(lg[3]).toBe('—')
+
+      // Each window's Making Δ subtracts its two displayed FG% anchors —
+      // the window's and the Lg row's (ADR-0023, the ZoneDetailCard
+      // precedent).
+      for (const row of [before, since]) {
+        const fg = parseCell(row[2]!)
+        const delta = parseCell(row[3]!)
+        if (fg !== null && delta !== null) {
+          expect(tenths(fg) - tenths(parseCell(lg[2]!)!)).toBe(tenths(delta))
+        }
+      }
+      const chips = [...card.querySelectorAll('.comparison-call-chip')].map(
+        (el) => el.textContent!,
+      )
+      expect(chips).toHaveLength(2)
+
+      // Each call decides and prices on the gap of its two DISPLAYED
+      // anchors (ADR-0023): the chip and the numbers beneath it subtract.
+      // Anchor columns: [FGA, Share, FG%, Δ].
+      const check = (chipText: string, l: number | null, r: number | null) => {
+        const chip = parseChip(chipText)
+        if (l === null || r === null) {
+          expect(chip.kind).toBe('none')
+          return
+        }
+        const gap = tenths(r) - tenths(l)
+        if (Math.abs(gap) < 10) {
+          expect(chip.kind).toBe('even')
+        } else {
+          expect(chip).toEqual({
+            kind: 'call',
+            name: gap > 0 ? 'Since' : 'Before',
+            marginTenths: Math.abs(gap),
+          })
+        }
+      }
+      check(chips[0]!, parseCell(before[1]!), parseCell(since[1]!))
+      check(chips[1]!, parseCell(before[3]!), parseCell(since[3]!))
+
+      // A call can never read cleaner than its inputs: every window is
+      // under both bars, so every non-empty chip inherits the flag.
+      for (const chip of chips) {
+        if (chip !== '—') expect(chip).toMatch(/†$/)
+      }
+    }
+
+    // The Δ column's meaning, the calls' meanings, the even threshold, and
+    // the flags' meanings are defined where they appear.
+    screen.getByText(/FG% minus the Lg row's FG% in the same zone/)
+    screen.getByText(/Diet lean: the window taking the larger/)
+    screen.getByText(/Making edge: the window with the higher/)
+    screen.getByText(/margins under 1\.0 read as even/)
+    screen.getByText(/A call carries † whenever either of its windows does/)
+    screen.getByText(/fewer than 15 attempts in that window/)
+    screen.getByText(/fewer than 50 attempts in that window/)
+    // The split header states the completeness invariant (ADR-0077): page 2
+    // alone proves no game fell between the windows.
+    screen.getByText(/Complete windows: every game through/)
+    // The golden's one backcourt heave stays reported, never hidden.
+    screen.getByText(/Backcourt heaves, excluded from evaluation/)
+  })
+
+  it('free-throw calls price the displayed anchors exactly (ADR-0023)', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Left Golden') },
+      '/data/jalen-brunson/2025-26.json': { ok: true, json: goldenAs('Right Golden') },
+      '/data/donovan-mitchell/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Left Golden'),
+      },
+      // The right side drops one foul make: 3/6 against the left's 4/6, so
+      // the conversion call is a real margin that must reconcile as
+      // displayed.
+      '/data/jalen-brunson/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Right Golden', { dropFoulMake: true }),
+      },
+    })
+    setUrl('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
+    render(<ComparisonPage />)
+    await screen.findByRole('heading', { name: 'THE LINE' })
+
+    const parseChip = (text: string) => {
+      if (text === '—') return { kind: 'none' as const }
+      const call = /^(.+) \+(\d+\.\d)†?$/.exec(text)
+      if (call !== null) {
+        return {
+          kind: 'call' as const,
+          name: call[1]!,
+          marginTenths: Math.round(Number(call[2]) * 10),
+        }
+      }
+      expect(text).toMatch(/^even†?$/)
+      return { kind: 'even' as const }
+    }
+    const parseCell = (s: string) => Number(s.replace('†', '').replace('%', '').replace('−', '-'))
+    const tenths = (x: number) => Math.round(x * 10)
+
+    // Every card's chip decides and prices on the gap of its two displayed
+    // Value cells (ADR-0023): the chip and the numbers beneath it subtract.
+    for (const name of ['FTA rate', 'FT conversion', 'FT share of points']) {
+      const card = screen.getByRole('region', { name })
+      const [left, right] = [...card.querySelectorAll('tbody tr')]
+        .slice(0, 2)
+        .map((tr) => parseCell(tr.querySelector('td')!.textContent!)) as [number, number]
+      const chip = parseChip(card.querySelector('.comparison-call-chip')!.textContent!)
+      const gap = tenths(right) - tenths(left)
+      if (Math.abs(gap) < 10) {
+        expect(chip.kind).toBe('even')
+      } else {
+        expect(chip).toEqual({
+          kind: 'call',
+          name: gap > 0 ? 'Right Golden' : 'Left Golden',
+          marginTenths: Math.abs(gap),
+        })
+      }
+    }
+    // The crafted gaps themselves: 66.7† vs 50.0† prices Left Golden +16.7†
+    // (a call never reads cleaner than its inputs); the identical FTA rates
+    // read as even; the point shares split 19.0 vs 14.3.
+    const cardChip = (name: string) =>
+      screen.getByRole('region', { name }).querySelector('.comparison-call-chip')!.textContent
+    expect(cardChip('FTA rate')).toBe('even')
+    expect(cardChip('FT conversion')).toBe('Left Golden +16.7†')
+    expect(cardChip('FT share of points')).toBe('Left Golden +4.7')
+
+    // The transposed taxonomy: the class name spans two side rows, each
+    // name sitting beside its own numbers.
+    const tripsTable = screen.getByRole('table', { name: 'Free-throw trips by class, both sides' })
+    const classHeader = within(tripsTable).getByRole('rowheader', { name: 'Shooting foul (2 FT)' })
+    const row1 = classHeader.closest('tr')!
+    const row2 = row1.nextElementSibling!
+    const cells = (tr: Element) => [...tr.querySelectorAll('td')].map((td) => td.textContent!)
+    expect(classHeader.getAttribute('rowspan')).toBe('2')
+    expect(cells(row1)[0]).toContain('Left Golden')
+    expect(cells(row1).slice(1)).toEqual(['1', '1/2', '50.0%†'])
+    expect(cells(row2)[0]).toContain('Right Golden')
+    expect(cells(row2).slice(1)).toEqual(['1', '0/2', '0.0%†'])
+  })
+
+  it('a fetch failure uses the plain page-error contract', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: false, status: 404 },
+      '/data/jalen-brunson/2025-26.json': { ok: true, json: goldenAs('Right Golden') },
+      '/data/donovan-mitchell/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Left Golden'),
+      },
+      '/data/jalen-brunson/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Right Golden'),
+      },
+    })
+    setUrl('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
+    render(<ComparisonPage />)
+
+    const message = await screen.findByText('HTTP 404 loading comparison shot data')
+    expect(message.className).toContain('page-error')
+    // No partial metrics beside an error.
+    expect(screen.queryByRole('table')).toBeNull()
+  })
+})
+
+describe('ComparisonSetup', () => {
+  it('a valid submit navigates to the canonical serialized URL', () => {
+    const navigate = vi.fn()
+    render(<ComparisonSetup initial={{ mode: 'players' }} urlMessage={null} navigate={navigate} />)
+
+    // The shared season defaults to the latest season two heroes carry.
+    expect((screen.getByLabelText('Season') as HTMLSelectElement).value).toBe('2025-26')
+    expect(document.querySelector('.comparison-fields-players')).not.toBeNull()
+    fireEvent.change(screen.getByLabelText('Left player'), {
+      target: { value: 'donovan-mitchell' },
+    })
+    fireEvent.change(screen.getByLabelText('Right player'), {
+      target: { value: 'jalen-brunson' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Compare' }))
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(
+      '/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson',
+    )
+  })
+
+  it('an invalid submit stays put and states the problem', () => {
+    const navigate = vi.fn()
+    render(<ComparisonSetup initial={{ mode: 'players' }} urlMessage={null} navigate={navigate} />)
+
+    fireEvent.change(screen.getByLabelText('Left player'), {
+      target: { value: 'donovan-mitchell' },
+    })
+    fireEvent.change(screen.getByLabelText('Right player'), {
+      target: { value: 'donovan-mitchell' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Compare' }))
+    expect(navigate).not.toHaveBeenCalled()
+    screen.getByText('Pick two different players to compare.')
+  })
+
+  it('swap reverses the two sides', () => {
+    render(<ComparisonSetup initial={{ mode: 'players' }} urlMessage={null} navigate={vi.fn()} />)
+
+    fireEvent.change(screen.getByLabelText('Left player'), {
+      target: { value: 'donovan-mitchell' },
+    })
+    fireEvent.change(screen.getByLabelText('Right player'), {
+      target: { value: 'jalen-brunson' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Swap' }))
+    expect((screen.getByLabelText('Left player') as HTMLSelectElement).value).toBe('jalen-brunson')
+    expect((screen.getByLabelText('Right player') as HTMLSelectElement).value).toBe(
+      'donovan-mitchell',
+    )
+  })
+
+  it('before-and-since mode offers the chosen player’s seasons and submits canonically', () => {
+    const navigate = vi.fn()
+    render(<ComparisonSetup initial={{ mode: 'players' }} urlMessage={null} navigate={navigate} />)
+
+    fireEvent.click(screen.getByLabelText('Before & since'))
+    expect(document.querySelector('.comparison-fields-split')).not.toBeNull()
+    // Season waits on the player (never a configuration without registry
+    // support, plan §1).
+    expect((screen.getByLabelText('Season') as HTMLSelectElement).disabled).toBe(true)
+    fireEvent.change(screen.getByLabelText('Player'), {
+      target: { value: 'donovan-mitchell' },
+    })
+    const season = screen.getByLabelText('Season') as HTMLSelectElement
+    expect(season.disabled).toBe(false)
+    expect(season.value).toBe('2025-26')
+    fireEvent.change(screen.getByLabelText('Split date'), { target: { value: '2026-02-07' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Compare' }))
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(
+      '/compare?mode=split&season=2025-26&player=donovan-mitchell&split=2026-02-07',
+    )
+  })
+
+  it('a prefilled HeroPage link preselects its player and season', () => {
+    render(
+      <ComparisonSetup
+        initial={{ mode: 'players', season: '2025-26', left: 'donovan-mitchell' }}
+        urlMessage="Pick a right player to compare."
+        navigate={vi.fn()}
+      />,
+    )
+    expect((screen.getByLabelText('Left player') as HTMLSelectElement).value).toBe(
+      'donovan-mitchell',
+    )
+    expect((screen.getByLabelText('Right player') as HTMLSelectElement).value).toBe('')
+    screen.getByText('Pick a right player to compare.')
+  })
+})

@@ -5,7 +5,7 @@ dependency and value-per-effort, not by calendar. Each phase repeats the v1
 recipe — a data spine with a golden fixture, a pure metrics function, honesty
 flags, authored-and-guarded copy — on a new axis._
 
-## Status — updated 2026-07-24
+## Status — updated 2026-08-23
 
 | Phase | State |
 | --- | --- |
@@ -22,6 +22,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
 | Launch (August 2026) | ✅ closed 2026-07-30 — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build — and the verdict voice pass (item 10, ADR-0070) landed 2026-07-29. Items 2 and 8 closed together 2026-07-30 (ADR-0071): the `/methodology` page (model, honesty rules, data story, verdict stance, the glossary re-rendered, image SOURCES) plus the directory blurb and the shared-footer link. Banner credits closed the same day (two recovered by the credit hunt, five author-supplied team-site sources; SGA's "generated artwork" record corrected — it was always a real Jimmy Do photograph), so every launch item is now closed. See [Launch (August 2026)](#launch-august-2026--open-items). |
+| Comparison page | ✅ shipped 2026-08-23 (ADRs 0073–0079): the first post-launch surface, a tool and not an argument. Planned 2026-08-12 ([the plan doc](plans/comparison-page-prototype.md) + the five window/baseline/URL decisions, ADRs 0073–0077); increments 1–5 built 2026-08-13 (`/compare`: Players and Before & since modes over exact windows, URL-owned state, registry-derived setup); the zone evidence reshaped 2026-08-14 into the scoreboard of priced calls (ADR-0078, prototype-chosen from four variants). Players-mode free throws closed it 2026-08-23 (ADR-0079): no data change needed — a full-season window IS the season-total contract — rendered as season-line cards with the line-call vocabulary (Draw edge / Conversion edge / Reliance lean, the C variant of a second four-variant prototype) over the transposed trip taxonomy; split mode defers free throws until a date-grained contract exists (trip `gameDate`, dated technicals, a windowable FTA-rate denominator) |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody

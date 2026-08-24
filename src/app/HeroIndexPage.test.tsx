@@ -8,11 +8,12 @@ import { HeroIndexPage } from './HeroIndexPage'
 afterEach(cleanup)
 
 // Non-hero links on the index: the navbar wordmark, the blurb's methodology
-// link and the footer's Methodology link (ADR-0071), plus the footer's
-// three social links (Instagram, X, contact email). The count also guards
-// that the shared footer renders no way-back pill here — the index IS the
-// directory (ROADMAP launch item 4).
-const CHROME_LINKS = 6
+// link and the footer's Methodology link (ADR-0071), the comparison
+// discovery link (comparison plan §5), plus the footer's three social links
+// (Instagram, X, contact email). The count also guards that the shared
+// footer renders no way-back pill here — the index IS the directory
+// (ROADMAP launch item 4).
+const CHROME_LINKS = 7
 
 describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
   it('marquees the first registered hero and rails the rest, all as plain links', () => {
@@ -42,6 +43,11 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
     expect(
       screen.getByRole('link', { name: 'Methodology' }).getAttribute('href'),
     ).toBe('/methodology')
+    // The comparison discovery link (comparison plan §5): a plain anchor to
+    // the bare setup state.
+    expect(
+      screen.getByRole('link', { name: /compare players/i }).getAttribute('href'),
+    ).toBe('/compare')
 
     // The featured name is a real heading (ROADMAP launch item 3): heading
     // navigation must reach the page's most important item, not skip from

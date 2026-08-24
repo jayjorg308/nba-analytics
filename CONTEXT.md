@@ -274,6 +274,29 @@ The claim kind backing a growth-sentence (the verdict's optional cross-season se
 **Prior argued season**:
 The growth coda's comparison side: the hero's most recent earlier season argument. Both sides of the comparison passed all five gates by construction — argued status is the gate provenance; an unargued season never qualifies, however its data looks.
 
+**Comparison window**:
+One side of a comparison: a player-season constrained to an inclusive date interval — a full season is the unconstrained case. Windows do not inherit hero eligibility (ADR-0075): a non-empty window renders, with honesty carried locally — a zone below 15 attempts is marked too thin for a stable selection reading, making below 50 attempts keeps the standard uncertainty flag, and attempts stay visible beside every flagged value. A flag never deletes a zone or vetoes the comparison.
+
+**Comparison**:
+A side-by-side shot-profile evaluation of two comparison windows — how the windows differ in shot selection and shot making, never why they differ, who is better overall, or what caused a change. Two modes over one model: player comparison and within-season comparison (UI mode labels **Players** and **Before & since**). Every included section evaluates both sides over the exact comparison windows, deferring a section until its source contract is date-grained rather than falling back to season totals (ADR-0073); free throws ship in Players mode only, where the full-season windows are exactly the season-total contract, and stay deferred in split mode until a date-grained free-throw contract exists (ADR-0079); a valid comparison is fully reproducible from its URL with no server state (ADR-0076).
+_Avoid_: "Timeline" as a mode label (the page shows no chronological series), and causal event labels ("before/after the trade") in product claims.
+
+**Player comparison**:
+Two distinct registered players in one shared NBA season — each side's full-season window over its own deployed shot payload, plus its deployed free-throw payload for THE LINE section (ADR-0079). Their evaluation-zone league baselines — and their league free-throw lines — must be identical before one is shared; a mismatch is a plain contradiction, never permission to choose one silently.
+
+**Within-season comparison**:
+One player in two non-overlapping windows from one season, partitioned at a split date. Both windows keep every available game — complete natural windows, never trimmed to matched game counts, with visible game/shot/attempt counts disclosing unequal precision (ADR-0077) — and both are measured against the same full-season league baseline, labeled with its season, so residual differences are attributable to the player's two windows rather than a moving ruler (ADR-0074).
+
+**Split date**:
+The first date in the right-side window of a within-season comparison; the left window ends the day before it. The partition is exact: left is `gameDate < split`, right is `gameDate >= split`, both sides non-empty, together reproducing the payload's complete shot set.
+
+**Zone call** (**Diet lean** / **Making edge**):
+The comparison scoreboard's per-zone, per-axis statement of which window a zone favors (ADR-0078). **Diet lean** names the window taking the larger displayed attempt share (a preference); **Making edge** names the window with the higher displayed making Δ (a result against the league) — "edge" is never claimed on the diet axis. A call decides and prices its margin on the gap of the two displayed anchors (ADR-0023), reads as **even** under 1.0 display units, and inherits † from either window's corresponding flag (ADR-0075). Margins render unitless beside the anchors they subtract; the notes name the units (share points, FG percentage points — never "%", which would misstate a point difference as a relative change). Calls are zone-and-axis scoped: no surface aggregates them into an overall grade.
+_Avoid_: "winner", "better", or any whole-comparison framing — the page is a tool, not an argument.
+
+**Line call** (**Draw edge** / **Conversion edge** / **Reliance lean**):
+The zone call's grammar at the free-throw line (ADR-0079), one call per season-line card in a player comparison. **Draw edge** names the side with the higher FTA rate and **Conversion edge** the side with the higher FT% — both results against the league — while **Reliance lean** names the side with the larger FT share of points, a scoring mix with no better direction, so it never claims an edge. Same mechanics as every call: decided and priced on displayed anchors, even under 1.0 display units, † inherited from either side. Calls live only at the season line, where full-season free-throw samples support them; the trip taxonomy carries no per-class calls (most classes sit under the 50-FTA bar, and flagged chips everywhere would be noise, not answers).
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 

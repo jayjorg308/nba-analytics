@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { HEROES } from '../heroes/registry'
 import { indexMetaOf } from '../heroes/types'
-import { headshotUrl, heroPageUrl, methodologyUrl } from '../heroes/urls'
+import { compareUrl, headshotUrl, heroPageUrl, methodologyUrl } from '../heroes/urls'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 
@@ -88,6 +88,13 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
             </ul>
           </section>
         )}
+        {/* Discovery into the comparison tool (comparison plan §5): one
+            quiet line after the directory proper — a plain anchor in the
+            cue grammar, never a control (the no-switcher test holds the
+            index to links only). */}
+        <p className="index-compare">
+          <a href={compareUrl()}>Compare players →</a>
+        </p>
       </main>
       {/* The shared sign-off (a sibling of main — a real contentinfo
           landmark). The index is the directory, so no back link here. */}

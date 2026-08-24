@@ -1,9 +1,10 @@
 import './App.css'
 import { Analytics } from '@vercel/analytics/react'
+import { ComparisonPage } from './app/ComparisonPage'
 import { HeroIndexPage } from './app/HeroIndexPage'
 import { HeroPage } from './app/HeroPage'
 import { MethodologyPage } from './app/MethodologyPage'
-import { METHODOLOGY_ROUTE, parseRoute } from './app/routes'
+import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseRoute } from './app/routes'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
 
@@ -33,6 +34,18 @@ function App() {
         return (
             <>
                 <MethodologyPage />
+                <Analytics />
+            </>
+        )
+    }
+    // The comparison page (ADR-0076): the second reserved static route,
+    // resolved before the registry like the methodology page. Its state
+    // lives entirely in the query string — comparisonRoute.ts reads it; the
+    // path itself carries nothing. A deeper path under it is nobody's page.
+    if (route.slug === COMPARE_ROUTE && route.season === undefined) {
+        return (
+            <>
+                <ComparisonPage />
                 <Analytics />
             </>
         )

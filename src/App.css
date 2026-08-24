@@ -217,8 +217,8 @@
     margin-bottom: 10px;
 }
 
-/* The poster face appears here and nowhere else — reading sizes stay on
-   --sans/--mono (the two-text-font rule). */
+/* The poster face marks product-identity display headings; reading sizes
+   stay on --sans/--mono (the two-text-font rule). */
 .hero-title {
     font-family: var(--display);
     font-weight: 900;
@@ -2335,4 +2335,669 @@
 .methodology-credits-note {
     font-size: 14px;
     line-height: 1.45;
+}
+
+/* --- Comparison page (comparison plan; ADR-0073..0077) ---------------------- */
+
+/* The static-page shell (the methodology page's register): fixed-nav
+   clearance, left-set text, the shared dark ground. The page reads compact
+   and tool-like through its content register, not new chrome. */
+.comparison-page {
+    flex-grow: 1;
+    text-align: left;
+    padding: 80px 32px 64px;
+
+    @media (max-width: 640px) {
+        padding: 72px 20px 56px;
+    }
+}
+
+.comparison-page a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.comparison-page a:hover,
+.comparison-page a:focus-visible {
+    color: var(--text-h);
+}
+
+.comparison-title {
+    margin: 4px 0 0; /* 4px binds the title to its kicker / baseline block */
+    font-family: var(--heading);
+    font-weight: 500;
+    font-size: clamp(28px, 4.5vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: var(--text-h);
+}
+
+/* Branded split: setup copy stays in Public Sans, while the identity-first
+   result heading joins the hero and directory display system. */
+.comparison-page-results .comparison-title {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(36px, 5.5vw, 48px);
+    line-height: 0.96;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    text-wrap: balance;
+}
+
+.comparison-deck {
+    margin: 16px 0 0;
+    max-width: 62ch;
+    color: var(--text);
+}
+
+/* Setup and controls (plan §1): one bordered row of real labeled controls. */
+.comparison-setup {
+    margin: 24px 0 0;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+/* Mode control: the court-view-toggle recipe at form scale — real radios,
+   labels carry the UI. */
+.comparison-mode {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+    margin: 0 0 16px;
+    gap: 2px;
+}
+
+.comparison-mode label {
+    font-size: 14px;
+    line-height: normal;
+    padding: 4px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text);
+}
+
+.comparison-mode label.mode-active {
+    background: var(--accent-bg);
+    color: var(--text-h);
+}
+
+.comparison-mode input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.comparison-mode label:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.comparison-fields {
+    display: grid;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+.comparison-fields-players {
+    grid-template-columns: 170px minmax(170px, 1fr) auto minmax(170px, 1fr) auto;
+    grid-template-areas: 'season left swap right go';
+}
+
+.comparison-fields-split {
+    grid-template-columns: minmax(200px, 1fr) 170px 190px auto;
+    grid-template-areas: 'player season split go';
+}
+
+.comparison-field-season {
+    grid-area: season;
+    max-width: 170px;
+}
+
+.comparison-field-left {
+    grid-area: left;
+}
+
+.comparison-field-right {
+    grid-area: right;
+}
+
+.comparison-field-player {
+    grid-area: player;
+}
+
+.comparison-field-split {
+    grid-area: split;
+}
+
+.comparison-action-swap {
+    grid-area: swap;
+}
+
+.comparison-action-go {
+    grid-area: go;
+}
+
+.comparison-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 4px binds a control to its label */
+    font-size: 12px;
+    line-height: normal;
+}
+
+.comparison-field select,
+.comparison-field input {
+    font: 14px / normal var(--sans);
+    color: var(--text-h);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    min-width: 170px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.comparison-swap,
+.comparison-go {
+    font: 500 14px / normal var(--sans);
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: none;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.comparison-swap:hover,
+.comparison-swap:focus-visible,
+.comparison-go:hover,
+.comparison-go:focus-visible {
+    color: var(--text-h);
+    border-color: var(--text);
+}
+
+/* One focus grammar for every setup control (the mode toggle's accent
+   outline): keyboard position must be unmistakable on the dark ground —
+   a border-color shift alone reads as hover, not focus. */
+.comparison-field select:focus-visible,
+.comparison-field input:focus-visible,
+.comparison-swap:focus-visible,
+.comparison-go:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.comparison-go {
+    background: var(--code-bg);
+    color: var(--text-h);
+}
+
+@media (max-width: 1024px) {
+    .comparison-fields-players {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            'season season season season'
+            'left swap right go';
+    }
+
+    .comparison-fields-split {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            'player season'
+            'split go';
+    }
+}
+
+@media (max-width: 640px) {
+    .comparison-fields-players,
+    .comparison-fields-split {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .comparison-fields-players {
+        grid-template-areas:
+            'season'
+            'left'
+            'swap'
+            'right'
+            'go';
+    }
+
+    .comparison-fields-split {
+        grid-template-areas:
+            'player'
+            'season'
+            'split'
+            'go';
+    }
+
+    .comparison-field {
+        width: 100%;
+    }
+
+    .comparison-field-season {
+        max-width: none;
+    }
+
+    .comparison-field select,
+    .comparison-field input {
+        min-width: 0;
+        min-height: 44px;
+    }
+
+    .comparison-swap,
+    .comparison-go {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .comparison-mode {
+        display: flex;
+    }
+
+    .comparison-mode label {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .comparison-change summary {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Plain validation sentence (plan §1): quiet, specific, never a toast. */
+.comparison-message {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: #dc2626;
+}
+
+.comparison-examples {
+    margin: 24px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.comparison-examples ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 6px;
+}
+
+/* Compact header (plan §2): identity and unequal-precision disclosure, no
+   banner, no verdict cue, no team color. */
+.comparison-header {
+    margin: 32px 0 0;
+}
+
+.comparison-page-results .comparison-header {
+    margin-top: 0;
+}
+
+.comparison-change {
+    margin-top: 16px;
+    color: var(--text);
+    font-size: 14px;
+    line-height: normal;
+}
+
+.comparison-change summary {
+    width: max-content;
+    cursor: pointer;
+}
+
+.comparison-change[open] summary {
+    color: var(--text-h);
+}
+
+.comparison-change .comparison-setup {
+    margin-top: 12px;
+}
+
+.comparison-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* The product's B&W identity, applied like every photo (the index rule). */
+.comparison-headshot {
+    width: 88px;
+    filter: grayscale(1) contrast(1.08) brightness(0.94);
+}
+
+.comparison-baseline {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.comparison-sides {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 16px 0 0;
+}
+
+@media (max-width: 480px) {
+    .comparison-heading-split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+        gap: 12px;
+    }
+
+    .comparison-heading-split > .comparison-headshot {
+        width: 64px;
+    }
+
+    .comparison-sides {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+}
+
+.comparison-side {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+}
+
+.comparison-side .comparison-headshot {
+    width: 64px;
+}
+
+.comparison-side-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.comparison-side-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-h);
+}
+
+/* The integrated two-axis headline (plan §3): the headline-banner card
+   grammar, opened below the compact header. */
+.comparison-headline {
+    margin-top: 32px;
+}
+
+/* --- Zone evidence (plan §4) ------------------------------------------------ */
+
+/* The act-break rhythm below the headline cards. */
+.comparison-zones {
+    margin-top: 48px;
+}
+
+/* The two panels together on desktop, stacked on narrow screens — identical
+   zone order and side identity in both arrangements (the plan's rule:
+   meaning never depends on two permanently adjacent columns). */
+.comparison-zone-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+/* Side identity is shape + fill style, never color (plan §4): the left
+   window is a solid circle, the right an outlined diamond. */
+.comparison-dot-left {
+    fill: var(--text-h);
+}
+
+.comparison-dot-right {
+    fill: var(--bg);
+    stroke: var(--text-h);
+    stroke-width: 1.6;
+}
+
+/* Legend swatches drawing the actual marks: a filled dot and an outlined
+   diamond (a rotated square), in the creation legend's register. */
+.comparison-swatch-left {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--text-h);
+}
+
+.comparison-swatch-right {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 1.6px solid var(--text-h);
+    transform: rotate(45deg);
+    margin-left: 12px;
+}
+
+/* Both sides' value labels share one ink: the sides are peers (no emphasis
+   hierarchy) — position distinguishes them (left above, right below). */
+.comparison-value {
+    font: 400 11px var(--mono);
+    fill: var(--text-h);
+
+    @media (max-width: 480px) {
+        font-size: 14px;
+    }
+}
+
+/* --- Zone scoreboard (ADR-0078) --------------------------------------------- */
+
+/* Six per-zone cards under the paired chart panels: three across in the
+   full shell, reflowing to two and one under width pressure — no table
+   ever scrolls, on any device. */
+.comparison-scoreboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.comparison-zone-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+}
+
+.comparison-zone-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.comparison-zone-card-head h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    color: var(--text-h);
+}
+
+/* The calls lead the card (the answer-before-evidence rhythm, ADR-0018,
+   at card scale): label left, chip right. */
+.comparison-card-calls {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.comparison-card-call {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.comparison-card-call-label {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.comparison-call-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font: 400 11px var(--mono);
+    color: var(--text-h);
+    white-space: nowrap;
+}
+
+/* An even (or uncallable) zone stays quiet: dimmed ink, dashed boundary —
+   visibly a non-claim, never an emphasis. */
+.comparison-call-even {
+    color: var(--text);
+    border-style: dashed;
+}
+
+/* Side identity is shape + fill, never color (plan §4): the left window is
+   a solid dot, the right an outlined diamond — the chart panels' marks,
+   repeated wherever a side is named. */
+.comparison-mark-left {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-h);
+    flex: none;
+}
+
+.comparison-mark-right {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border: 1.4px solid var(--text-h);
+    transform: rotate(45deg);
+    flex: none;
+}
+
+.comparison-card-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: normal;
+}
+
+.comparison-card-table th,
+.comparison-card-table td {
+    padding: 4px 0 4px 10px;
+    text-align: right;
+    border-top: 1px solid var(--border);
+}
+
+.comparison-card-table thead th,
+.comparison-card-table thead td {
+    border-top: none;
+    padding-top: 0;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.comparison-card-table tbody th {
+    text-align: left;
+    padding-left: 0;
+    font-weight: 500;
+    color: var(--text-h);
+    white-space: nowrap;
+}
+
+.comparison-card-table td {
+    font-family: var(--mono);
+    color: var(--text-h);
+    white-space: nowrap;
+}
+
+/* The league ruler row reads as reference, not as a third contestant —
+   the .lg ink, both header and cells. */
+.comparison-card-row-lg th,
+.comparison-card-row-lg td {
+    color: var(--text);
+    font-weight: 400;
+}
+
+/* --- Comparison free throws (ADR-0079) -------------------------------------- */
+
+/* The act-break rhythm again below the zone evidence. */
+.comparison-freethrow {
+    margin-top: 48px;
+}
+
+/* The season-line cards lead (the C-variant layout from the THE LINE
+   prototype), then the transposed taxonomy panel below. */
+.comparison-freethrow .comparison-scoreboard {
+    margin-bottom: 32px;
+}
+
+/* The taxonomy's side cells: a name beside its numbers — a label, not a
+   value, so it reads left in the label face, never wrapping apart from its
+   mark. (Qualified to outweigh .zone-table td.) */
+.zone-table td.comparison-side-cell {
+    text-align: left;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+/* --- Comparison discovery links (plan §5) ----------------------------------- */
+
+/* The hero page's quiet way out, at the footer boundary: the hero-forward
+   grammar after the whole argument. */
+.hero-compare {
+    margin: 48px 0 0;
+    font-size: 14px;
+}
+
+.hero-compare a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.hero-compare a:hover,
+.hero-compare a:focus-visible {
+    color: var(--text-h);
+}
+
+/* The directory's one line into the tool, in the rail's own gutter. */
+.index-compare {
+    padding: 0 32px 48px;
+    font-size: 14px;
+    line-height: normal;
+}
+
+.index-page .index-compare a {
+    color: var(--text);
+}
+
+.index-page .index-compare a:hover,
+.index-page .index-compare a:focus-visible {
+    color: var(--text-h);
 }

@@ -21,8 +21,9 @@
   --sans: 'Public Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: 'Public Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
-  /* Poster face for the hero banner ONLY (weight 900 is the sole cut
-     shipped). Reading sizes stay on --sans/--mono — two text fonts max. */
+  /* Display face for poster/editorial identity headings (weight 900 is the
+     sole cut shipped). Reading sizes stay on --sans/--mono — two text fonts
+     max. */
   --display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
 
   font: 18px/145% var(--sans);

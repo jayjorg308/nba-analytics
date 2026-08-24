@@ -16,10 +16,15 @@ export interface HeroRoute {
  * surface, resolved by the app before any registry lookup. */
 export const METHODOLOGY_ROUTE = 'methodology'
 
+/** The comparison page (ADR-0076): comparison state is owned by the URL's
+ * query string; this reserves the path segment. Query interpretation lives
+ * in comparisonRoute.ts, not here. */
+export const COMPARE_ROUTE = 'compare'
+
 /** Single-segment paths owned by static pages. A hero slug may never
  * collide with one — guarded by the registry coherence tests, so a future
  * hero:add for a colliding name fails loudly instead of shadowing a page. */
-export const RESERVED_ROUTES: readonly string[] = [METHODOLOGY_ROUTE]
+export const RESERVED_ROUTES: readonly string[] = [METHODOLOGY_ROUTE, COMPARE_ROUTE]
 
 /**
  * The route after BASE_URL: { slug: '' } for the index, { slug } for a

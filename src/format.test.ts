@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  displayGapUnits,
   formatClock,
   formatGameDate,
   formatMatchup,
@@ -7,7 +8,9 @@ import {
   formatPeriod,
   formatPps2,
   formatSignedGap,
+  formatSignedGapOfGaps,
   formatSignedPp1,
+  formatUnsignedUnits,
   withSmallSampleMark,
 } from './format'
 
@@ -36,6 +39,39 @@ describe('format', () => {
     expect(formatSignedGap(71.9, 67.1, 1)).toBe('+4.8') // report Δ pp, 1dp
     expect(formatSignedGap(null, 1, 2)).toBe('—')
     expect(formatSignedGap(1, null, 2)).toBe('—')
+  })
+
+  it('gap-of-gaps subtracts the two DISPLAYED residuals (ADR-0023, comparison grain)', () => {
+    // Right residual displays +0.05 (1.07 − 1.02, anchors rounding apart);
+    // left displays −0.11 (0.99 − 1.10). The visible chain must say +0.16 —
+    // subtracting the raw residuals (0.0442 − (−0.1084) = 0.1526) would
+    // round to +0.15 and fail the reader's arithmetic.
+    expect(formatSignedGapOfGaps([1.0664, 1.0222], [0.9902, 1.0986], 2)).toBe('+0.16')
+    // A shared subtrahend anchor cancels in display units: the gap equals
+    // formatSignedGap of the two minuend anchors (the selection case, where
+    // both sides subtract the same league diet).
+    expect(formatSignedGapOfGaps([1.0664, 1.0912], [1.0222, 1.0912], 2)).toBe(
+      formatSignedGap(1.0664, 1.0222, 2),
+    )
+    expect(formatSignedGapOfGaps([1.1, 1.1], [1.1, 1.1], 2)).toBe('+0.00') // never −0.00
+    expect(formatSignedGapOfGaps([null, 1], [1, 1], 2)).toBe('—')
+    expect(formatSignedGapOfGaps([1, 1], [1, null], 2)).toBe('—')
+  })
+
+  it('gap units are the integer currency formatSignedGap renders (ADR-0023)', () => {
+    // The George anchors again: displayed 1.07 − 1.02 is 5 units at 2 dp,
+    // even though the raw delta rounds to 4.
+    expect(displayGapUnits(1.0664, 1.0222, 2)).toBe(5)
+    expect(displayGapUnits(22.24, 14.16, 1)).toBe(80) // shares at pp grain
+    expect(displayGapUnits(1.0912, 1.0912, 2)).toBe(0)
+    expect(displayGapUnits(null, 1, 2)).toBeNull()
+    expect(displayGapUnits(1, null, 2)).toBeNull()
+  })
+
+  it('renders integer display units unsigned (the call-chip margin form)', () => {
+    expect(formatUnsignedUnits(80, 1)).toBe('8.0')
+    expect(formatUnsignedUnits(-24, 1)).toBe('2.4')
+    expect(formatUnsignedUnits(5, 2)).toBe('0.05')
   })
 
   it('formats making deltas as signed percentage points', () => {
