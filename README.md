@@ -97,7 +97,8 @@ The multi-hero shape is one deployment containing:
 - `/` - the directory: a headshot marquee of the first registered hero over a name-only rail of the rest, read straight off the registry, with one line of self-explanation between them;
 - `/<player-slug>` - the canonical alias: the hero's current argument, rendered in place;
 - `/<player-slug>/<season>` - a stable permalink for every argued season. A hero is a directory of season arguments; a live flip moves which season the alias renders and freezes the prior argument verbatim at its permalink;
-- `/methodology` - the one static page: how the numbers are made and read, in structural copy with no per-hero claims, closing with the imagery credits. Its vocabulary section re-renders the same glossary registry the in-page dictionary popovers read, so the two can never disagree.
+- `/methodology` - the one static page: how the numbers are made and read, in structural copy with no per-hero claims, closing with the imagery credits. Its vocabulary section re-renders the same glossary registry the in-page dictionary popovers read, so the two can never disagree;
+- `/compare` - the comparison tool, deliberately a tool and not an argument: two registered players' shot profiles side by side in one shared season, or one player before and since a split date, over exact windows and one shared league baseline, with the zone evidence as per-zone priced calls and, in a player comparison, the free-throw line under the same call grammar. No verdict and no winner; the whole comparison is owned by its URL, so every result is shareable and reproducible.
 
 Unknown paths render the directory with a quiet note. Cross-hero navigation is the directory's player links, the "Good Shots" wordmark in the site navbar, and each hero page's way back in the footer, all plain anchors; there is deliberately no player switcher, and the navbar carries no hero list or menu. The shared footer sits in three registered zones — utility links left, the tagline centered, outward social links right — where a utility standing alone in its zone spells itself out and utilities in company compress to icons.
 
@@ -138,6 +139,8 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **Launch complete** (2026-07-30, ADR-0071): the last two launch items closed together. The methodology page ships as the site's one self-explanation surface, and the directory gains a single line of self-explanation linking it, so a cold visitor learns what the site is without the marquee gaining a deck. The same change made image credits reader-facing: every banner is credited on that page, with an unknown credit stated plainly rather than omitted. The planned roadmap is now complete; what remains is operational, the 2026-27 activation and the first live flip.
 
+**Comparison page** (2026-08-12 → 2026-08-23, ADRs 0073–0079): the first post-launch surface. `/compare` renders two shot profiles side by side — two registered players in one shared season, or one player before and since a split date — over exact comparison windows, one shared league baseline, and URL-owned state. The zone evidence ships as a scoreboard of priced calls (ADR-0078, prototype-chosen from four variants), and player comparisons carry the free-throw line in the same grammar (ADR-0079): season-line cards with Draw edge, Conversion edge, and Reliance lean calls over the transposed trip taxonomy. Free throws needed no data change in players mode — a full-season window is exactly the season-total contract — while the before-and-since mode defers them until a date-grained free-throw contract exists.
+
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
 ## Technology and project docs
@@ -145,7 +148,7 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checkli
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 71 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 79 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
 
 ## License

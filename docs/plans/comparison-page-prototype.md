@@ -1,5 +1,16 @@
 # Comparison Page Prototype Plan
 
+> **Amendment (2026-08-23, ADR-0079):** the prototype shipped as planned
+> (ADRs 0073–0078, with the zone evidence reshaped into the scoreboard of
+> priced calls — ADR-0078), and the free-throw deferral below is now
+> half-superseded. Players-mode free throws shipped WITHOUT the data changes
+> this plan required, because a full-season window IS the season-total
+> free-throw contract — nothing is silently substituted, so ADR-0073 holds
+> as written. The split-mode deferral stands for the original reasons:
+> trips carry no `gameDate`, technical free throws are season scalars, and
+> the FTA-rate denominator (pre-drop season FGA) does not window exactly.
+> ADR-0079 records the shipped section's layout and call vocabulary.
+
 ## Outcome
 
 Build a repository-integrated comparison page for Good Shots that lets a reader compare two shot profiles without reading two HeroPages or receiving an authored verdict.
