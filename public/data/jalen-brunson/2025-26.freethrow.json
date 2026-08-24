@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-10",
     "gamesIncluded": 74,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\jalen-brunson\\2025-26\\2026-07-16.json",
+    "sourceShotPayload": "data/derived/jalen-brunson/2025-26/2026-07-16.json",
     "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
     "leagueTotalsPullDate": "2026-07-23",
     "seasonFga": 1475,

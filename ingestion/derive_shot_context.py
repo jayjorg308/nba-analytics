@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+from derive_payload import repo_relative
+
 AssistStatus = Literal["assisted", "unassisted", "notApplicable", "unknown"]
 AssistEvidence = Literal[
     "descriptionCredit", "validatedAbsence", "notApplicable", "unavailable"
@@ -122,7 +124,15 @@ def parse_game(play_by_play_snapshot: dict, box_score_snapshot: dict) -> ParsedG
     pbp_game, box_game, game_id = validate_game_pair(
         play_by_play_snapshot, box_score_snapshot
     )
+    official_assists = official_team_assists(box_game)
+    actions = pbp_game.get("actions")
+    if not isinstance(actions, list):
+        fail("play-by-play game missing actions")
+    return parse_actions(game_id, actions, official_assists)
 
+
+def official_team_assists(box_game: dict) -> dict[int, int]:
+    """Both teams' official assist totals, keyed by team ID."""
     official_assists: dict[int, int] = {}
     for side in ("homeTeam", "awayTeam"):
         team = box_game.get(side)
@@ -135,12 +145,17 @@ def parse_game(play_by_play_snapshot: dict, box_score_snapshot: dict) -> ParsedG
         if team_id <= 0 or team_id in official_assists:
             fail(f"box score has invalid or duplicated team ID {team_id}")
         official_assists[team_id] = int(stats.get("assists", -1))
+    return official_assists
 
+
+def parse_actions(
+    game_id: str, actions: list, official_assists: dict[int, int]
+) -> ParsedGame:
+    """The field-goal event grammar plus the exact assist reconciliation
+    (ADR-0041/0046) — shared verbatim by the file derive and the record
+    store's shot_context rebuild (ADR-0080)."""
     parsed_assists = {team_id: 0 for team_id in official_assists}
     by_number: dict[int, list[ParsedEvent]] = {}
-    actions = pbp_game.get("actions")
-    if not isinstance(actions, list):
-        fail("play-by-play game missing actions")
 
     for raw in actions:
         if not isinstance(raw, dict) or int(raw.get("isFieldGoal", 0)) != 1:
@@ -245,34 +260,7 @@ def derive(
             )
         parsed_games[game_id] = parsed
     expected_games = sorted({str(shot["gameId"]) for shot in shots})
-    rows: list[dict] = []
-    for shot in shots:
-        game_id = str(shot["gameId"])
-        game = parsed_games.get(game_id)
-        if game is None:
-            rows.append(_failed_row(shot, "missingGame", "missingGame"))
-            continue
-        events = game.events_by_number.get(int(shot["gameEventId"]), ())
-        if not events:
-            rows.append(_failed_row(shot, "missingEvent", "missingEvent"))
-            continue
-        if len(events) != 1:
-            rows.append(_failed_row(shot, "duplicateEvent", "duplicateEvent"))
-            continue
-        event = events[0]
-        if not _event_agrees(shot, event, player_id):
-            rows.append(_failed_row(shot, "contradiction", "identityContradiction"))
-            continue
-        rows.append(
-            {
-                "gameId": game_id,
-                "gameEventId": int(shot["gameEventId"]),
-                "eventMatch": "matched",
-                "assistStatus": event.assist_status,
-                "assistEvidence": event.assist_evidence,
-                "failureReason": None,
-            }
-        )
+    rows = classify_rows(shots, parsed_games, player_id)
 
     match_values = ("matched", "missingGame", "missingEvent", "duplicateEvent", "contradiction")
     assist_values = ("assisted", "unassisted", "notApplicable", "unknown")
@@ -314,6 +302,43 @@ def derive(
         },
         "shots": rows,
     }
+
+
+def classify_rows(
+    shots: list[dict], parsed_games: dict[str, ParsedGame], player_id: int
+) -> list[dict]:
+    """One total normalized context row per sibling shot (ADR-0039), in shot
+    order — shared verbatim by the file derive and the record store's
+    shot_context rebuild (ADR-0080)."""
+    rows: list[dict] = []
+    for shot in shots:
+        game_id = str(shot["gameId"])
+        game = parsed_games.get(game_id)
+        if game is None:
+            rows.append(_failed_row(shot, "missingGame", "missingGame"))
+            continue
+        events = game.events_by_number.get(int(shot["gameEventId"]), ())
+        if not events:
+            rows.append(_failed_row(shot, "missingEvent", "missingEvent"))
+            continue
+        if len(events) != 1:
+            rows.append(_failed_row(shot, "duplicateEvent", "duplicateEvent"))
+            continue
+        event = events[0]
+        if not _event_agrees(shot, event, player_id):
+            rows.append(_failed_row(shot, "contradiction", "identityContradiction"))
+            continue
+        rows.append(
+            {
+                "gameId": game_id,
+                "gameEventId": int(shot["gameEventId"]),
+                "eventMatch": "matched",
+                "assistStatus": event.assist_status,
+                "assistEvidence": event.assist_evidence,
+                "failureReason": None,
+            }
+        )
+    return rows
 
 
 def _load(path: Path) -> dict:
@@ -386,7 +411,10 @@ def main() -> None:
             allow_missing_games=args.allow_missing_games,
         )
 
-    payload = derive(shot, games, source_shot_payload=args.shot_payload_file)
+    # Repo-relative posix whatever form the caller passed (the freethrow
+    # derive's rule): hero_add invokes this with absolute Windows paths,
+    # which once shipped verbatim inside deployed payloads.
+    payload = derive(shot, games, source_shot_payload=repo_relative(shot_path))
     if args.out_file:
         out_path = Path(args.out_file)
     else:

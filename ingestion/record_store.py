@@ -22,10 +22,37 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MIGRATIONS_DIR = REPO_ROOT / "db" / "migrations"
 
 
+def _dotenv_dsn() -> str | None:
+    """Read NBA_DB_URL from the repo-root .env (gitignored; see .env.example).
+
+    A deliberate five-line parser instead of a python-dotenv dependency: one
+    file, one key, KEY=VALUE lines, # comments. Quotes are not stripped —
+    don't quote the value.
+    """
+    env_file = REPO_ROOT / ".env"
+    if not env_file.exists():
+        return None
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line.startswith("NBA_DB_URL="):
+            return line.split("=", 1)[1].strip() or None
+    return None
+
+
 def resolve_dsn(cli_arg: str | None = None) -> str:
-    dsn = cli_arg or os.environ.get("NBA_DB_URL")
+    """--db-url beats the NBA_DB_URL environment variable beats .env."""
+    dsn = cli_arg or os.environ.get("NBA_DB_URL") or _dotenv_dsn()
     if not dsn:
-        sys.exit("record-store: no DSN — pass --db-url or set NBA_DB_URL")
+        sys.exit(
+            "record-store: no DSN — pass --db-url, set NBA_DB_URL, or copy "
+            ".env.example to .env and fill in the Neon connection string"
+        )
+    if "YOUR-NEON-HOST" in dsn:
+        sys.exit(
+            "record-store: the DSN is still the placeholder — replace "
+            "YOUR-NEON-HOST (and USER:PASSWORD) in .env with the real Neon "
+            "connection string from the Neon console"
+        )
     return dsn
 
 

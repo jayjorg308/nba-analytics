@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-03-27",
     "gamesIncluded": 48,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\alex-sarr\\2025-26\\2026-08-08.json",
+    "sourceShotPayload": "data/derived/alex-sarr/2025-26/2026-08-08.json",
     "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
     "leagueTotalsPullDate": "2026-07-23",
     "seasonFga": 656,

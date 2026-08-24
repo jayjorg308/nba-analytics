@@ -12,14 +12,18 @@ from pathlib import Path
 
 import pytest
 
+import export_creation_payload as ecr
 import export_shot_payload as esp
 import load_hero_season as lhs
+import load_tracking as lt
 import record_store as rs
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
 GOLDEN = FIXTURES / "derived.golden.json"
+CREATION_GOLDEN = FIXTURES / "creation.golden.json"
 DEPLOYED = REPO_ROOT / "public" / "data" / "cody-williams" / "2025-26.json"
+DEPLOYED_CREATION = REPO_ROOT / "public" / "data" / "cody-williams" / "2025-26.creation.json"
 
 
 @pytest.fixture()
@@ -45,6 +49,21 @@ def test_golden_roundtrip_through_the_store(store):
     load_fixtures(store)
     payload = esp.export_payload(store, "Cody Williams", "2025-26")
     assert esp.payload_text(payload) == GOLDEN.read_text(encoding="utf-8")
+
+
+def test_creation_golden_roundtrip_through_the_store(store):
+    """The second contract's golden, through loader -> creation_split /
+    league_creation_team -> export: byte-identical, sparse rows zero-filled,
+    the league residual computed by count subtraction."""
+    load_fixtures(store)
+    report = lt.load_tracking(
+        store, "Cody Williams", "2025-26",
+        snapshot_path=FIXTURES / "tracking.truncated.json",
+        league_path=FIXTURES / "tracking.league.truncated.json",
+    )
+    assert report["creation_split"]["inserted"] > 0
+    payload = ecr.export_payload(store, "Cody Williams", "2025-26")
+    assert ecr.payload_text(payload) == CREATION_GOLDEN.read_text(encoding="utf-8")
 
 
 def test_reload_is_a_no_op(store):
@@ -113,3 +132,12 @@ def test_real_data_parity(store):
     lhs.load_hero_season(store, snapshot_path=snapshot, advanced_path=advanced)
     payload = esp.export_payload(store, meta["player"], meta["season"])
     assert esp.payload_text(payload) == DEPLOYED.read_text(encoding="utf-8")
+    # The creation contract over the same store (tracking universe).
+    creation_meta = json.loads(DEPLOYED_CREATION.read_text(encoding="utf-8"))["_meta"]
+    tracking = REPO_ROOT / creation_meta["sourceSnapshot"]
+    league_tracking = REPO_ROOT / creation_meta["leagueSourceSnapshot"]
+    if tracking.exists() and league_tracking.exists():
+        lt.load_tracking(store, meta["player"], meta["season"],
+                         snapshot_path=tracking, league_path=league_tracking)
+        creation = ecr.export_payload(store, meta["player"], meta["season"])
+        assert ecr.payload_text(creation) == DEPLOYED_CREATION.read_text(encoding="utf-8")

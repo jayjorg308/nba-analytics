@@ -115,20 +115,27 @@ class TableUpsert:
                 ],
             )
 
+    # Row-value IN lists parse into nested ORs; past a few hundred tuples
+    # Postgres hits its stack depth limit, so prefetch in chunks.
+    PREFETCH_CHUNK = 200
+
     def _prefetch(self, cur, content_cols: list[str]) -> dict[tuple, tuple]:
-        """Fetch current content for every staged key in one query."""
+        """Fetch current content for every staged key, chunked."""
         keys = list(self.staged)
         key_sql = "(" + ", ".join(self.key_cols) + ")"
         tuple_sql = "(" + ", ".join(["%s"] * len(self.key_cols)) + ")"
-        in_sql = ", ".join([tuple_sql] * len(keys))
-        params = [v for key in keys for v in key]
-        cur.execute(
-            f"SELECT {', '.join(self.key_cols)}, {', '.join(content_cols)} "
-            f"FROM {self.table} WHERE {key_sql} IN ({in_sql})",
-            params,
-        )
         n = len(self.key_cols)
-        return {tuple(row[:n]): tuple(row[n:]) for row in cur.fetchall()}
+        existing: dict[tuple, tuple] = {}
+        for start in range(0, len(keys), self.PREFETCH_CHUNK):
+            chunk = keys[start : start + self.PREFETCH_CHUNK]
+            in_sql = ", ".join([tuple_sql] * len(chunk))
+            cur.execute(
+                f"SELECT {', '.join(self.key_cols)}, {', '.join(content_cols)} "
+                f"FROM {self.table} WHERE {key_sql} IN ({in_sql})",
+                [v for key in chunk for v in key],
+            )
+            existing.update({tuple(row[:n]): tuple(row[n:]) for row in cur.fetchall()})
+        return existing
 
 
 # ---------------------------------------------------------------- snapshots
@@ -155,15 +162,18 @@ def catalog_snapshot(cur, source: str, path: Path, meta: dict) -> int:
         return row[0]
     cur.execute(
         "INSERT INTO snapshot (source, path, pull_date, season, season_type,"
-        " player_id, content_sha256) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        " RETURNING snapshot_id",
+        " player_id, game_id, content_sha256)"
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING snapshot_id",
         (
             source,
             rel,
             str(meta["pull_date"]),
-            str(meta["season"]),
-            str(meta["season_type"]),
+            # Game-scoped artifacts (pbp/box) state game_id and no season;
+            # season-scoped artifacts the reverse (0002_game_corpus.sql).
+            str(meta["season"]) if "season" in meta else None,
+            str(meta["season_type"]) if "season_type" in meta else None,
             int(meta["player_id"]) if "player_id" in meta else None,
+            str(meta["game_id"]) if "game_id" in meta else None,
             sha,
         ),
     )

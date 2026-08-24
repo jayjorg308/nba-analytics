@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-08",
     "gamesIncluded": 70,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\donovan-mitchell\\2025-26\\2026-07-27.json",
+    "sourceShotPayload": "data/derived/donovan-mitchell/2025-26/2026-07-27.json",
     "totalShots": 1403,
     "gamesExpected": 70,
     "gamesLoaded": 70,

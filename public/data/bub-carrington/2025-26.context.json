@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 82,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\bub-carrington\\2025-26\\2026-08-08.json",
+    "sourceShotPayload": "data/derived/bub-carrington/2025-26/2026-08-08.json",
     "totalShots": 741,
     "gamesExpected": 82,
     "gamesLoaded": 82,

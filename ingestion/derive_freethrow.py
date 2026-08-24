@@ -22,6 +22,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from derive_payload import repo_relative
 from derive_shot_context import _load, load_game_snapshots, validate_game_pair
 
 # v2: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
@@ -70,6 +71,11 @@ class Trip:
     ftm: int
     fta: int
     shot_id: int | None
+    # Position of the trip's first free throw in the game's actions list —
+    # the trip's natural identity for the record store (ADR-0080): it always
+    # exists, unlike the causing foul (flagrant/clear-path trips never
+    # resolve one). Not part of the payload contract.
+    first_ft_index: int = -1
 
 
 def _trip_context(
@@ -223,6 +229,7 @@ def reconstruct_game_trips(
                 ftm=ftm,
                 fta=declared,
                 shot_id=shot_id,
+                first_ft_index=first_index,
             )
         )
     return trips, technical_ftm, technical_fta
@@ -547,12 +554,15 @@ def main() -> None:
     )
     league = _load(league_path)
 
+    # Provenance paths are repo-relative posix, whatever form the caller
+    # passed: hero_add invokes this with absolute Windows paths, which once
+    # shipped verbatim (username and all) inside deployed payloads.
     payload = derive(
         shot,
         games,
         league,
-        source_shot_payload=args.shot_payload_file,
-        source_league_totals=str(league_path).replace("\\", "/"),
+        source_shot_payload=repo_relative(Path(args.shot_payload_file)),
+        source_league_totals=repo_relative(league_path),
     )
     if args.out_file:
         out_path = Path(args.out_file)

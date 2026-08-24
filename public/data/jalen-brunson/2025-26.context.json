@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-10",
     "gamesIncluded": 74,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\jalen-brunson\\2025-26\\2026-07-16.json",
+    "sourceShotPayload": "data/derived/jalen-brunson/2025-26/2026-07-16.json",
     "totalShots": 1475,
     "gamesExpected": 74,
     "gamesLoaded": 74,
