@@ -211,7 +211,7 @@ describe('ComparisonPage over the golden fixture', () => {
     }
   })
 
-  it('zone evidence: both panels present, every thin zone in the table, gaps subtract as displayed', async () => {
+  it('zone evidence: both panels present, every thin zone a card, calls price displayed gaps', async () => {
     stubFetch({
       '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Split Golden') },
     })
@@ -223,52 +223,104 @@ describe('ComparisonPage over the golden fixture', () => {
     screen.getByRole('img', { name: /Shot making comparison/ })
     screen.getByRole('heading', { name: 'ZONE BY ZONE' })
 
-    // The accessible twin keeps all six zones — the golden's windows are
-    // uniformly thin, and a flag never deletes a zone (ADR-0075).
-    const table = screen.getByRole('table', { name: /Zone comparison/ })
-    const rows = [...table.querySelectorAll('tbody tr')]
-    expect(rows).toHaveLength(6)
-    for (const zone of [
+    // The scoreboard keeps all six zones as cards — the golden's windows
+    // are uniformly thin, and a flag never deletes a zone (ADR-0075).
+    const zones = [
       'Restricted Area',
       'In The Paint (Non-RA)',
       'Mid-Range',
       'Left Corner 3',
       'Right Corner 3',
       'Above the Break 3',
-    ]) {
-      within(table).getByRole('rowheader', { name: zone })
-    }
+    ]
+    expect(document.querySelectorAll('.comparison-zone-card')).toHaveLength(6)
+    const cards = zones.map((zone) => screen.getByRole('region', { name: zone }))
 
-    // Every explicit Δ subtracts its two displayed anchors exactly
-    // (ADR-0023): share gap vs the displayed shares, making gap vs the
-    // displayed making deltas, in tenths of a point.
-    const parse = (s: string) => Number(s.replace('†', '').replace('%', '').replace('−', '-'))
+    // Chip text -> the call it claims: nothing ('—'), even, or a named
+    // side with a margin in tenths.
+    const parseChip = (text: string) => {
+      if (text === '—') return { kind: 'none' as const }
+      const call = /^(.+) \+(\d+\.\d)†?$/.exec(text)
+      if (call !== null) {
+        return { kind: 'call' as const, name: call[1]!, marginTenths: Math.round(Number(call[2]) * 10) }
+      }
+      expect(text).toMatch(/^even†?$/)
+      return { kind: 'even' as const }
+    }
+    const parseCell = (s: string) =>
+      s.includes('—') ? null : Number(s.replace('†', '').replace('%', '').replace('−', '-'))
     const tenths = (x: number) => Math.round(x * 10)
-    for (const tr of rows) {
-      const cells = [...tr.querySelectorAll('td')].map((td) => td.textContent!)
-      expect(cells).toHaveLength(11)
-      const [, , shareL, shareR, , shareGap, , , mkL, mkR, mkGap] = cells as [
-        string, string, string, string, string, string,
-        string, string, string, string, string,
-      ]
-      expect(tenths(parse(shareR)) - tenths(parse(shareL))).toBe(tenths(parse(shareGap)))
-      if (![mkL, mkR, mkGap].some((c) => c.includes('—'))) {
-        expect(tenths(parse(mkR)) - tenths(parse(mkL))).toBe(tenths(parse(mkGap)))
+
+    for (const card of cards) {
+      // Each card: both windows then the league ruler row, four numeric
+      // cells per row.
+      within(card).getByRole('rowheader', { name: 'Before' })
+      within(card).getByRole('rowheader', { name: 'Since' })
+      within(card).getByRole('rowheader', { name: 'Lg' })
+      const [before, since, lg] = [...card.querySelectorAll('tbody tr')].map((tr) =>
+        [...tr.querySelectorAll('td')].map((td) => td.textContent!),
+      ) as [string[], string[], string[]]
+      expect(before).toHaveLength(4)
+      expect(since).toHaveLength(4)
+      // The Lg row carries only the two ruler values: league-wide FGA and
+      // the zero-point Making Δ are not comparable values.
+      expect(lg[0]).toBe('—')
+      expect(lg[1]).toMatch(/^\d+\.\d%$/)
+      expect(lg[2]).toMatch(/^\d+\.\d%$/)
+      expect(lg[3]).toBe('—')
+
+      // Each window's Making Δ subtracts its two displayed FG% anchors —
+      // the window's and the Lg row's (ADR-0023, the ZoneDetailCard
+      // precedent).
+      for (const row of [before, since]) {
+        const fg = parseCell(row[2]!)
+        const delta = parseCell(row[3]!)
+        if (fg !== null && delta !== null) {
+          expect(tenths(fg) - tenths(parseCell(lg[2]!)!)).toBe(tenths(delta))
+        }
+      }
+      const chips = [...card.querySelectorAll('.comparison-call-chip')].map(
+        (el) => el.textContent!,
+      )
+      expect(chips).toHaveLength(2)
+
+      // Each call decides and prices on the gap of its two DISPLAYED
+      // anchors (ADR-0023): the chip and the numbers beneath it subtract.
+      // Anchor columns: [FGA, Share, FG%, Δ].
+      const check = (chipText: string, l: number | null, r: number | null) => {
+        const chip = parseChip(chipText)
+        if (l === null || r === null) {
+          expect(chip.kind).toBe('none')
+          return
+        }
+        const gap = tenths(r) - tenths(l)
+        if (Math.abs(gap) < 10) {
+          expect(chip.kind).toBe('even')
+        } else {
+          expect(chip).toEqual({
+            kind: 'call',
+            name: gap > 0 ? 'Since' : 'Before',
+            marginTenths: Math.abs(gap),
+          })
+        }
+      }
+      check(chips[0]!, parseCell(before[1]!), parseCell(since[1]!))
+      check(chips[1]!, parseCell(before[3]!), parseCell(since[3]!))
+
+      // A call can never read cleaner than its inputs: every window is
+      // under both bars, so every non-empty chip inherits the flag.
+      for (const chip of chips) {
+        if (chip !== '—') expect(chip).toMatch(/†$/)
       }
     }
 
-    // A Δ can never read cleaner than its inputs: the golden's windows are
-    // all under both bars, so every Δ cell inherits the flag.
-    for (const tr of rows) {
-      const cells = [...tr.querySelectorAll('td')].map((td) => td.textContent!)
-      expect(cells[5], 'share Δ').toMatch(/†$/)
-      expect(cells[10], 'making Δ').toMatch(/†$/)
-    }
-
-    // The gaps' direction is named with the side labels and both units are
-    // named; the flags' meanings are defined where they appear.
-    screen.getByText(/Δ columns: Since minus Before, in share points for Share/)
-    screen.getByText(/A Δ carries † whenever either of its windows does/)
+    // The Δ column's meaning, the calls' meanings, the even threshold, and
+    // the flags' meanings are defined where they appear.
+    screen.getByText(/FG% minus the Lg row's FG% in the same zone/)
+    screen.getByText(/Diet lean: the window taking the larger/)
+    screen.getByText(/Making edge: the window with the higher/)
+    screen.getByText(/margins under 1\.0 read as even/)
+    screen.getByText(/A call carries † whenever either of its windows does/)
     screen.getByText(/fewer than 15 attempts in that window/)
     screen.getByText(/fewer than 50 attempts in that window/)
     // The split header states the completeness invariant (ADR-0077): page 2
@@ -276,9 +328,6 @@ describe('ComparisonPage over the golden fixture', () => {
     screen.getByText(/Complete windows: every game through/)
     // The golden's one backcourt heave stays reported, never hidden.
     screen.getByText(/Backcourt heaves, excluded from evaluation/)
-    expect(screen.getByText(/Swipe horizontally to see every column/).getAttribute('aria-hidden')).toBe(
-      'true',
-    )
   })
 
   it('a fetch failure uses the plain page-error contract', async () => {

@@ -23,7 +23,7 @@ import type { HeroConfig } from '../heroes/types'
 import { compareUrl, payloadUrl } from '../heroes/urls'
 import { ComparisonHeader } from './ComparisonHeader'
 import { ComparisonHeadline } from './ComparisonHeadline'
-import { ComparisonZoneTable } from './ComparisonZoneTable'
+import { ComparisonZoneScoreboard } from './ComparisonZoneScoreboard'
 import { Term } from './Term'
 import type { ComparisonQueryFields, ComparisonRequest } from './comparisonRoute'
 import { parseComparisonQuery, validateComparisonQuery } from './comparisonRoute'
@@ -488,12 +488,10 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
               {setup}
             </details>
             <ComparisonHeadline metrics={computed.metrics} />
-            {/* The zone evidence (plan §4): both axes simultaneously over
-                the same six rows — panels together on desktop, stacked on
-                mobile — with the full-width accessible table twin below.
-                Deliberately NOT the acts' split layout: twelve columns of
-                paired numbers need the whole shell's width to stay a
-                no-scroll desktop table. */}
+            {/* The zone evidence (plan §4, reshaped by ADR-0078): both axes
+                simultaneously over the same six zones — the paired chart
+                panels, then the per-zone scoreboard cards carrying the
+                Leans / Making edge calls over both windows' numbers. */}
             <section className="comparison-zones" aria-labelledby="comparison-zone-caption">
               <header className="section-caption">
                 <h2 id="comparison-zone-caption">ZONE BY ZONE</h2>
@@ -504,7 +502,7 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
                 </p>
               </header>
               <ComparisonZoneChart metrics={computed.metrics} />
-              <ComparisonZoneTable metrics={computed.metrics} />
+              <ComparisonZoneScoreboard metrics={computed.metrics} />
             </section>
           </>
         )}

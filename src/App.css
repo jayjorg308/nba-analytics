@@ -2743,20 +2743,6 @@
     margin-top: 32px;
 }
 
-.comparison-scroll-cue {
-    display: none;
-}
-
-@media (max-width: 1024px) {
-    .comparison-scroll-cue {
-        display: block;
-        margin: 0 0 8px;
-        font-size: 12px;
-        line-height: normal;
-        color: var(--text);
-    }
-}
-
 /* --- Zone evidence (plan §4) ------------------------------------------------ */
 
 /* The act-break rhythm below the headline cards. */
@@ -2816,42 +2802,147 @@
     }
 }
 
-/* The grouped header's top row: quiet metric-group captions over the side
-   columns, centered over their spans. */
-.comparison-zone-table .comparison-group-row th {
-    text-align: center;
-    border-bottom: none;
-    padding-bottom: 0;
+/* --- Zone scoreboard (ADR-0078) --------------------------------------------- */
+
+/* Six per-zone cards under the paired chart panels: three across in the
+   full shell, reflowing to two and one under width pressure — no table
+   ever scrolls, on any device. */
+.comparison-scoreboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-bottom: 16px;
 }
 
-.comparison-zone-table .comparison-group-row td {
-    border-bottom: none;
+.comparison-zone-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
 }
 
-/* Side headers may wrap: player-mode columns repeat full names eight times,
-   and the zone table's usual nowrap headers would push this table's
-   min-content past the shell — a scrolling desktop table, which the house
-   forbids. Wrapped names keep the columns honest at every width. */
-.comparison-zone-table thead th {
-    white-space: normal;
+.comparison-zone-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
 }
 
-.comparison-plain table {
-    margin-top: 8px;
-    border-collapse: collapse;
+.comparison-zone-card-head h3 {
+    margin: 0;
     font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    color: var(--text-h);
+}
+
+/* The calls lead the card (the answer-before-evidence rhythm, ADR-0018,
+   at card scale): label left, chip right. */
+.comparison-card-calls {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.comparison-card-call {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.comparison-card-call-label {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.comparison-call-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font: 400 11px var(--mono);
+    color: var(--text-h);
+    white-space: nowrap;
+}
+
+/* An even (or uncallable) zone stays quiet: dimmed ink, dashed boundary —
+   visibly a non-claim, never an emphasis. */
+.comparison-call-even {
+    color: var(--text);
+    border-style: dashed;
+}
+
+/* Side identity is shape + fill, never color (plan §4): the left window is
+   a solid dot, the right an outlined diamond — the chart panels' marks,
+   repeated wherever a side is named. */
+.comparison-mark-left {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-h);
+    flex: none;
+}
+
+.comparison-mark-right {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border: 1.4px solid var(--text-h);
+    transform: rotate(45deg);
+    flex: none;
+}
+
+.comparison-card-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
     line-height: normal;
 }
 
-.comparison-plain th,
-.comparison-plain td {
-    padding: 4px 12px 4px 0;
+.comparison-card-table th,
+.comparison-card-table td {
+    padding: 4px 0 4px 10px;
     text-align: right;
+    border-top: 1px solid var(--border);
 }
 
-.comparison-plain th[scope='row'],
-.comparison-plain thead th:first-child {
+.comparison-card-table thead th,
+.comparison-card-table thead td {
+    border-top: none;
+    padding-top: 0;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.comparison-card-table tbody th {
     text-align: left;
+    padding-left: 0;
+    font-weight: 500;
+    color: var(--text-h);
+    white-space: nowrap;
+}
+
+.comparison-card-table td {
+    font-family: var(--mono);
+    color: var(--text-h);
+    white-space: nowrap;
+}
+
+/* The league ruler row reads as reference, not as a third contestant —
+   the .lg ink, both header and cells. */
+.comparison-card-row-lg th,
+.comparison-card-row-lg td {
+    color: var(--text);
+    font-weight: 400;
 }
 
 /* --- Comparison discovery links (plan §5) ----------------------------------- */

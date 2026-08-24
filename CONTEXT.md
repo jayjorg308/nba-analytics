@@ -290,6 +290,10 @@ One player in two non-overlapping windows from one season, partitioned at a spli
 **Split date**:
 The first date in the right-side window of a within-season comparison; the left window ends the day before it. The partition is exact: left is `gameDate < split`, right is `gameDate >= split`, both sides non-empty, together reproducing the payload's complete shot set.
 
+**Zone call** (**Diet lean** / **Making edge**):
+The comparison scoreboard's per-zone, per-axis statement of which window a zone favors (ADR-0078). **Diet lean** names the window taking the larger displayed attempt share (a preference); **Making edge** names the window with the higher displayed making Δ (a result against the league) — "edge" is never claimed on the diet axis. A call decides and prices its margin on the gap of the two displayed anchors (ADR-0023), reads as **even** under 1.0 display units, and inherits † from either window's corresponding flag (ADR-0075). Margins render unitless beside the anchors they subtract; the notes name the units (share points, FG percentage points — never "%", which would misstate a point difference as a relative change). Calls are zone-and-axis scoped: no surface aggregates them into an overall grade.
+_Avoid_: "winner", "better", or any whole-comparison framing — the page is a tool, not an argument.
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 

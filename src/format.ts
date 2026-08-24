@@ -33,9 +33,31 @@ export function formatSignedGap(
   subtrahend: number | null,
   decimals: number,
 ): string {
-  if (minuend === null || subtrahend === null) return EM_DASH
-  const units = displayUnits(minuend, decimals) - displayUnits(subtrahend, decimals)
+  const units = displayGapUnits(minuend, subtrahend, decimals)
+  if (units === null) return EM_DASH
   return signedFromUnits(units, decimals)
+}
+
+/**
+ * The ADR-0023 gap of two displayed anchors as its INTEGER count of display
+ * units — for callers that decide on the gap (direction, evenness) rather
+ * than render it, so the decision and the rendered margin can never disagree.
+ * formatSignedGap renders exactly this number.
+ */
+export function displayGapUnits(
+  minuend: number | null,
+  subtrahend: number | null,
+  decimals: number,
+): number | null {
+  if (minuend === null || subtrahend === null) return null
+  return displayUnits(minuend, decimals) - displayUnits(subtrahend, decimals)
+}
+
+/** An integer count of display units rendered unsigned at N decimals: the
+ * call-chip margin form (24 units, 1 dp -> "2.4"). Pure representation of an
+ * already-display-grain integer; no rounding happens here. */
+export function formatUnsignedUnits(units: number, decimals: number): string {
+  return (Math.abs(units) / 10 ** decimals).toFixed(decimals)
 }
 
 /**
