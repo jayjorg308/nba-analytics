@@ -4,8 +4,10 @@
 // validated in Python at derive (ADR-0053) and never re-performed here.
 //
 // A SIBLING of the other aggregations (ADR-0009/0011 extended a fourth
-// time): one production call site (HeroPage adds it with THE LINE act),
-// tooling reuses this function, and the output is never persisted.
+// time): two production call sites (HeroPage's THE LINE act, and the
+// comparison page's players mode via aggregateFreethrowPlayerComparison —
+// ADR-0079), tooling reuses this function, and the output is never
+// persisted.
 
 import { SMALL_SAMPLE_MAKING_ATTEMPTS, ZONE_INCLUSION_MIN_ATTEMPTS } from './constants'
 import { ATTEMPT_EQUIVALENT_CLASSES, TRIP_CLASSES } from './freethrowPayload'

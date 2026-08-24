@@ -18,12 +18,34 @@ const goldenJson = JSON.parse(readFileSync(goldenPath, 'utf-8')) as {
   _meta: Record<string, unknown>
   shots: { gameDate: string; gameId: string }[]
 }
+const ftGoldenPath = path.resolve(process.cwd(), 'tests/fixtures/freethrow.golden.json')
+const ftGoldenJson = JSON.parse(readFileSync(ftGoldenPath, 'utf-8')) as {
+  _meta: Record<string, unknown>
+  trips: { tripClass: string; ftm: number }[]
+}
 
 /** The golden re-badged per side: the fixture is hero-independent, and the
  * payload's own _meta.player is what the header renders. */
 function goldenAs(player: string): unknown {
   const clone = structuredClone(goldenJson) as { _meta: Record<string, unknown> }
   clone._meta.player = player
+  return clone
+}
+
+/** The free-throw golden re-badged per side (ADR-0079). `dropFoulMake`
+ * turns the shooting-foul trip's 1/2 into 0/2 (season 4/6 -> 3/6), keeping
+ * every schema identity, so the two sides can differ where a test needs a
+ * non-zero Δ. */
+function ftGoldenAs(player: string, over: { dropFoulMake?: boolean } = {}): unknown {
+  const clone = structuredClone(ftGoldenJson) as {
+    _meta: Record<string, unknown>
+    trips: { tripClass: string; ftm: number }[]
+  }
+  clone._meta.player = player
+  if (over.dropFoulMake === true) {
+    clone.trips.find((t) => t.tripClass === 'shootingFoul2')!.ftm = 0
+    clone._meta.seasonFtm = (clone._meta.seasonFtm as number) - 1
+  }
   return clone
 }
 
@@ -99,15 +121,23 @@ describe('ComparisonPage setup state', () => {
 })
 
 describe('ComparisonPage over the golden fixture', () => {
-  it('players mode: loads both payloads and renders the compact header', async () => {
+  it('players mode: loads both payload pairs and renders the compact header', async () => {
     stubFetch({
       '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Left Golden') },
       '/data/jalen-brunson/2025-26.json': { ok: true, json: goldenAs('Right Golden') },
+      '/data/donovan-mitchell/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Left Golden'),
+      },
+      '/data/jalen-brunson/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Right Golden'),
+      },
     })
     setUrl('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
     render(<ComparisonPage />)
 
-    screen.getByText('Loading shot data…')
+    screen.getByText('Loading comparison data…')
     await screen.findByRole('heading', { name: 'Left Golden vs Right Golden' })
 
     // Results lead with the comparison itself. Editing stays available in a
@@ -118,8 +148,9 @@ describe('ComparisonPage over the golden fixture', () => {
     expect(change.closest('details')?.hasAttribute('open')).toBe(false)
     expect(document.querySelector('main')?.classList.contains('comparison-page-results')).toBe(true)
 
-    // Two payloads fetched, one per side.
-    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2)
+    // Four payloads fetched: a shot and a free-throw payload per side
+    // (ADR-0079).
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(4)
 
     // The ruler is named beside the season (ADR-0074).
     screen.getByText('2025-26 · vs 2025-26 league average')
@@ -143,6 +174,21 @@ describe('ComparisonPage over the golden fixture', () => {
       .filter((stat) => stat.textContent!.includes('minus'))
       .map((stat) => stat.querySelector('.stat-value')!.textContent)
     expect(gapValues).toEqual(['+0.00', '+0.00'])
+
+    // The free-throw section (ADR-0079, the prototype's winning C variant):
+    // players mode carries THE LINE — three season-line scoreboard cards,
+    // then the transposed taxonomy. Identical payloads on both sides read
+    // as even on every call, the conversion call inheriting the two thin
+    // sides' † (6 FTA, under 50).
+    screen.getByRole('heading', { name: 'THE LINE' })
+    const cardChip = (name: string) =>
+      screen.getByRole('region', { name }).querySelector('.comparison-call-chip')!.textContent
+    expect(cardChip('FTA rate')).toBe('even')
+    expect(cardChip('FT conversion')).toBe('even†')
+    expect(cardChip('FT share of points')).toBe('even')
+    screen.getByRole('table', { name: 'Free-throw trips by class, both sides' })
+    // The calls' meanings are defined where they appear.
+    screen.getByText(/Draw edge: the side drawing more free throws/)
   })
 
   it('split mode: loads one payload, partitions it, and shows one headshot', async () => {
@@ -153,7 +199,11 @@ describe('ComparisonPage over the golden fixture', () => {
     render(<ComparisonPage />)
 
     await screen.findByRole('heading', { name: 'Split Golden, before & since Dec 7' })
+    // One payload, one fetch: split mode has no date-grained free-throw
+    // contract, so no free-throw payload is requested and no free-throw
+    // section renders (ADR-0079).
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('heading', { name: 'THE LINE' })).toBeNull()
 
     const before = goldenJson.shots.filter((s) => s.gameDate < '2025-12-07')
     const since = goldenJson.shots.filter((s) => s.gameDate >= '2025-12-07')
@@ -330,10 +380,96 @@ describe('ComparisonPage over the golden fixture', () => {
     screen.getByText(/Backcourt heaves, excluded from evaluation/)
   })
 
+  it('free-throw calls price the displayed anchors exactly (ADR-0023)', async () => {
+    stubFetch({
+      '/data/donovan-mitchell/2025-26.json': { ok: true, json: goldenAs('Left Golden') },
+      '/data/jalen-brunson/2025-26.json': { ok: true, json: goldenAs('Right Golden') },
+      '/data/donovan-mitchell/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Left Golden'),
+      },
+      // The right side drops one foul make: 3/6 against the left's 4/6, so
+      // the conversion call is a real margin that must reconcile as
+      // displayed.
+      '/data/jalen-brunson/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Right Golden', { dropFoulMake: true }),
+      },
+    })
+    setUrl('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
+    render(<ComparisonPage />)
+    await screen.findByRole('heading', { name: 'THE LINE' })
+
+    const parseChip = (text: string) => {
+      if (text === '—') return { kind: 'none' as const }
+      const call = /^(.+) \+(\d+\.\d)†?$/.exec(text)
+      if (call !== null) {
+        return {
+          kind: 'call' as const,
+          name: call[1]!,
+          marginTenths: Math.round(Number(call[2]) * 10),
+        }
+      }
+      expect(text).toMatch(/^even†?$/)
+      return { kind: 'even' as const }
+    }
+    const parseCell = (s: string) => Number(s.replace('†', '').replace('%', '').replace('−', '-'))
+    const tenths = (x: number) => Math.round(x * 10)
+
+    // Every card's chip decides and prices on the gap of its two displayed
+    // Value cells (ADR-0023): the chip and the numbers beneath it subtract.
+    for (const name of ['FTA rate', 'FT conversion', 'FT share of points']) {
+      const card = screen.getByRole('region', { name })
+      const [left, right] = [...card.querySelectorAll('tbody tr')]
+        .slice(0, 2)
+        .map((tr) => parseCell(tr.querySelector('td')!.textContent!)) as [number, number]
+      const chip = parseChip(card.querySelector('.comparison-call-chip')!.textContent!)
+      const gap = tenths(right) - tenths(left)
+      if (Math.abs(gap) < 10) {
+        expect(chip.kind).toBe('even')
+      } else {
+        expect(chip).toEqual({
+          kind: 'call',
+          name: gap > 0 ? 'Right Golden' : 'Left Golden',
+          marginTenths: Math.abs(gap),
+        })
+      }
+    }
+    // The crafted gaps themselves: 66.7† vs 50.0† prices Left Golden +16.7†
+    // (a call never reads cleaner than its inputs); the identical FTA rates
+    // read as even; the point shares split 19.0 vs 14.3.
+    const cardChip = (name: string) =>
+      screen.getByRole('region', { name }).querySelector('.comparison-call-chip')!.textContent
+    expect(cardChip('FTA rate')).toBe('even')
+    expect(cardChip('FT conversion')).toBe('Left Golden +16.7†')
+    expect(cardChip('FT share of points')).toBe('Left Golden +4.7')
+
+    // The transposed taxonomy: the class name spans two side rows, each
+    // name sitting beside its own numbers.
+    const tripsTable = screen.getByRole('table', { name: 'Free-throw trips by class, both sides' })
+    const classHeader = within(tripsTable).getByRole('rowheader', { name: 'Shooting foul (2 FT)' })
+    const row1 = classHeader.closest('tr')!
+    const row2 = row1.nextElementSibling!
+    const cells = (tr: Element) => [...tr.querySelectorAll('td')].map((td) => td.textContent!)
+    expect(classHeader.getAttribute('rowspan')).toBe('2')
+    expect(cells(row1)[0]).toContain('Left Golden')
+    expect(cells(row1).slice(1)).toEqual(['1', '1/2', '50.0%†'])
+    expect(cells(row2)[0]).toContain('Right Golden')
+    expect(cells(row2).slice(1)).toEqual(['1', '0/2', '0.0%†'])
+  })
+
   it('a fetch failure uses the plain page-error contract', async () => {
     stubFetch({
       '/data/donovan-mitchell/2025-26.json': { ok: false, status: 404 },
       '/data/jalen-brunson/2025-26.json': { ok: true, json: goldenAs('Right Golden') },
+      '/data/donovan-mitchell/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Left Golden'),
+      },
+      '/data/jalen-brunson/2025-26.freethrow.json': {
+        ok: true,
+        json: ftGoldenAs('Right Golden'),
+      },
     })
     setUrl('/compare?mode=players&season=2025-26&left=donovan-mitchell&right=jalen-brunson')
     render(<ComparisonPage />)

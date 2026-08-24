@@ -5,14 +5,22 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { aggregatePlayerComparison, aggregateSplitComparison } from './aggregateComparison'
+import {
+  aggregateFreethrowPlayerComparison,
+  aggregatePlayerComparison,
+  aggregateSplitComparison,
+} from './aggregateComparison'
+import { parseFreethrowPayload, TRIP_CLASSES } from './freethrowPayload'
 import { parseDerivedPayload } from './payload'
 
 const publicData = path.resolve(process.cwd(), 'public/data')
 const mitchellPath = path.join(publicData, 'donovan-mitchell', '2025-26.json')
 const brunsonPath = path.join(publicData, 'jalen-brunson', '2025-26.json')
+const mitchellFtPath = path.join(publicData, 'donovan-mitchell', '2025-26.freethrow.json')
+const brunsonFtPath = path.join(publicData, 'jalen-brunson', '2025-26.freethrow.json')
 
 const load = (p: string) => parseDerivedPayload(JSON.parse(readFileSync(p, 'utf-8')))
+const loadFt = (p: string) => parseFreethrowPayload(JSON.parse(readFileSync(p, 'utf-8')))
 
 describe.skipIf(!existsSync(mitchellPath) || !existsSync(brunsonPath))(
   'player comparison over deployed payloads (Mitchell vs Brunson, 2025-26)',
@@ -44,6 +52,35 @@ describe.skipIf(!existsSync(mitchellPath) || !existsSync(brunsonPath))(
           mk.actualPps!,
           12,
         )
+      }
+    })
+  },
+)
+
+describe.skipIf(!existsSync(mitchellFtPath) || !existsSync(brunsonFtPath))(
+  'free-throw player comparison over deployed payloads (Mitchell vs Brunson, 2025-26; ADR-0079)',
+  () => {
+    it('shares one identical league line and aggregates each side whole', () => {
+      const mitchell = loadFt(mitchellFtPath)
+      const brunson = loadFt(brunsonFtPath)
+      const m = aggregateFreethrowPlayerComparison({
+        season: '2025-26',
+        left: { slug: 'donovan-mitchell', payload: mitchell },
+        right: { slug: 'jalen-brunson', payload: brunson },
+      })
+      expect(m.baselineSeason).toBe('2025-26')
+      expect(m.left.label).toBe('Donovan Mitchell')
+      expect(m.right.label).toBe('Jalen Brunson')
+      // Each side is its payload's complete season line, technicals included
+      // (ADR-0055's parity), through the one free-throw aggregation.
+      expect(m.left.metrics.seasonLine.fta).toBe(mitchell._meta.seasonFta)
+      expect(m.right.metrics.seasonLine.fta).toBe(brunson._meta.seasonFta)
+      expect(m.left.metrics.leagueFreeThrowPct).toBe(m.right.metrics.leagueFreeThrowPct)
+      // The taxonomy pairs whole, by class identity, per-side counts intact.
+      expect(m.tripClasses.map((r) => r.tripClass)).toEqual([...TRIP_CLASSES])
+      for (const row of m.tripClasses) {
+        expect(row.left.trips).toBe(mitchell._meta.tripClassCounts[row.tripClass])
+        expect(row.right.trips).toBe(brunson._meta.tripClassCounts[row.tripClass])
       }
     })
   },

@@ -2945,6 +2945,28 @@
     font-weight: 400;
 }
 
+/* --- Comparison free throws (ADR-0079) -------------------------------------- */
+
+/* The act-break rhythm again below the zone evidence. */
+.comparison-freethrow {
+    margin-top: 48px;
+}
+
+/* The season-line cards lead (the C-variant layout from the THE LINE
+   prototype), then the transposed taxonomy panel below. */
+.comparison-freethrow .comparison-scoreboard {
+    margin-bottom: 32px;
+}
+
+/* The taxonomy's side cells: a name beside its numbers — a label, not a
+   value, so it reads left in the label face, never wrapping apart from its
+   mark. (Qualified to outweigh .zone-table td.) */
+.zone-table td.comparison-side-cell {
+    text-align: left;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
 /* --- Comparison discovery links (plan §5) ----------------------------------- */
 
 /* The hero page's quiet way out, at the footer boundary: the hero-forward

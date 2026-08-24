@@ -4,9 +4,15 @@
 // aggregateComparison.real.test.ts.
 
 import { describe, expect, it } from 'vitest'
-import { aggregatePlayerComparison, aggregateSplitComparison } from './aggregateComparison'
+import {
+  aggregateFreethrowPlayerComparison,
+  aggregatePlayerComparison,
+  aggregateSplitComparison,
+} from './aggregateComparison'
 import type { BasicZone } from './constants'
 import { EVAL_ZONES, ZONE_POINT_VALUE } from './constants'
+import { FREETHROW_SCHEMA_VERSION, TRIP_CLASSES } from './freethrowPayload'
+import type { FreethrowPayload, FreethrowTrip, TripClass } from './freethrowPayload'
 import type { DerivedPayload, EnrichedShot, ZoneBaselineEntry } from './payload'
 import { SCHEMA_VERSION } from './payload'
 
@@ -258,5 +264,161 @@ describe('aggregateSplitComparison', () => {
     expect(m.left.metrics.evalAttempts).toBe(16)
     expect(m.right.metrics.backcourt).toEqual({ attempts: 0, makes: 0 })
     expect(m.zones.map((r) => r.zone)).not.toContain('Backcourt')
+  })
+})
+
+// --- Free throws (ADR-0079) -------------------------------------------------
+
+function trip(
+  tripClass: TripClass,
+  ftm: number,
+  fta: number,
+  over: Partial<FreethrowTrip> = {},
+): FreethrowTrip {
+  return {
+    gameId: 'g1',
+    period: 1,
+    clock: 'PT05M00S',
+    tripClass,
+    ftm,
+    fta,
+    shotId: tripClass === 'andOne' ? 100 : null,
+    ...over,
+  }
+}
+
+const microFtBaseline = { ftm: 800, fta: 1000, fga: 4000, points: 5000 }
+
+function makeFtPayload(
+  trips: FreethrowTrip[],
+  over: {
+    player?: string
+    season?: string
+    baseline?: FreethrowPayload['leagueBaseline']
+    technicalFtm?: number
+    technicalFta?: number
+  } = {},
+): FreethrowPayload {
+  const technicalFtm = over.technicalFtm ?? 0
+  const technicalFta = over.technicalFta ?? 0
+  const tripFtm = trips.reduce((sum, t) => sum + t.ftm, 0)
+  const tripFta = trips.reduce((sum, t) => sum + t.fta, 0)
+  return {
+    _meta: {
+      schemaVersion: FREETHROW_SCHEMA_VERSION,
+      player: over.player ?? 'Test Player',
+      playerId: 1,
+      season: over.season ?? '2025-26',
+      dataThrough: '2026-01-15',
+      gamesIncluded: 3,
+      sourceShotPayload: 'test-shot-payload',
+      sourceLeagueTotals: 'test-league-totals',
+      leagueTotalsPullDate: '2026-08-01',
+      seasonFga: 100,
+      seasonPoints: 200,
+      seasonFtm: tripFtm + technicalFtm,
+      seasonFta: tripFta + technicalFta,
+      technicalFtm,
+      technicalFta,
+      totalTrips: trips.length,
+      tripClassCounts: Object.fromEntries(
+        TRIP_CLASSES.map((c) => [c, trips.filter((t) => t.tripClass === c).length]),
+      ) as FreethrowPayload['_meta']['tripClassCounts'],
+      gamesExpected: 3,
+      gamesLoaded: 1,
+      sourceGames: [
+        { gameId: 'g1', playByPlayPullDate: '2026-08-01', boxScorePullDate: '2026-08-01' },
+      ],
+    },
+    trips,
+    leagueBaseline: over.baseline ?? { ...microFtBaseline },
+  }
+}
+
+describe('aggregateFreethrowPlayerComparison', () => {
+  const left = {
+    slug: 'player-a',
+    payload: makeFtPayload(
+      [trip('shootingFoul2', 2, 2), trip('shootingFoul2', 1, 2), trip('andOne', 1, 1)],
+      { player: 'Player A' },
+    ),
+  }
+  const right = {
+    slug: 'player-b',
+    payload: makeFtPayload([trip('bonus', 1, 2), trip('flagrant', 2, 2)], {
+      player: 'Player B',
+      technicalFtm: 1,
+      technicalFta: 1,
+    }),
+  }
+
+  it('rejects the same player on both sides', () => {
+    expect(() =>
+      aggregateFreethrowPlayerComparison({
+        season: '2025-26',
+        left,
+        right: { ...right, slug: 'player-a' },
+      }),
+    ).toThrow(/two distinct players/)
+  })
+
+  it('rejects a payload describing a different season', () => {
+    const drifted = {
+      slug: 'player-b',
+      payload: makeFtPayload([trip('bonus', 1, 2)], { player: 'Player B', season: '2024-25' }),
+    }
+    expect(() =>
+      aggregateFreethrowPlayerComparison({ season: '2025-26', left, right: drifted }),
+    ).toThrow(/is 2024-25, not the requested 2025-26/)
+  })
+
+  it('rejects non-identical league free-throw lines as a contradiction', () => {
+    const mismatched = {
+      slug: 'player-b',
+      payload: makeFtPayload([trip('bonus', 1, 2)], {
+        player: 'Player B',
+        baseline: { ...microFtBaseline, fta: microFtBaseline.fta + 1 },
+      }),
+    }
+    expect(() =>
+      aggregateFreethrowPlayerComparison({ season: '2025-26', left, right: mismatched }),
+    ).toThrow(/free-throw league baselines contradict at fta/)
+  })
+
+  it('builds both sides with identity and each payload aggregated whole', () => {
+    const m = aggregateFreethrowPlayerComparison({ season: '2025-26', left, right })
+    expect(m.baselineSeason).toBe('2025-26')
+    expect(m.left).toMatchObject({ id: 'left', label: 'Player A', playerSlug: 'player-a' })
+    expect(m.right).toMatchObject({ id: 'right', label: 'Player B', playerSlug: 'player-b' })
+    // Season lines are the payloads' own scalars through the one free-throw
+    // aggregation: 4/5 with no technicals vs 4/5 carrying a 1/1 technical.
+    expect(m.left.metrics.seasonLine.ftm).toBe(4)
+    expect(m.left.metrics.seasonLine.fta).toBe(5)
+    expect(m.left.metrics.seasonLine.conversion.value).toBeCloseTo(4 / 5, 10)
+    expect(m.right.metrics.seasonLine.ftm).toBe(4)
+    expect(m.right.metrics.seasonLine.fta).toBe(5)
+    expect(m.right.metrics.seasonLine.conversion.withoutTechnicals).toBeCloseTo(3 / 4, 10)
+  })
+
+  it('measures both sides against the same league line', () => {
+    const m = aggregateFreethrowPlayerComparison({ season: '2025-26', left, right })
+    expect(m.left.metrics.leagueFreeThrowPct).toBe(m.right.metrics.leagueFreeThrowPct)
+    for (const key of ['conversion', 'ftaRate', 'ftPointsShare'] as const) {
+      expect(m.left.metrics.seasonLine[key].league).toBe(m.right.metrics.seasonLine[key].league)
+    }
+  })
+
+  it('pairs all 8 trip classes by class identity in TRIP_CLASSES order', () => {
+    const m = aggregateFreethrowPlayerComparison({ season: '2025-26', left, right })
+    expect(m.tripClasses.map((r) => r.tripClass)).toEqual([...TRIP_CLASSES])
+    for (const row of m.tripClasses) {
+      expect(row.left.tripClass).toBe(row.tripClass)
+      expect(row.right.tripClass).toBe(row.tripClass)
+    }
+    // One-sided classes keep both rows, the empty side making no claim.
+    const shootingFoul2 = m.tripClasses.find((r) => r.tripClass === 'shootingFoul2')!
+    expect(shootingFoul2.left.trips).toBe(2)
+    expect(shootingFoul2.right.trips).toBe(0)
+    expect(shootingFoul2.right.conversion).toBeNull()
   })
 })

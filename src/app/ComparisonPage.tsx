@@ -12,15 +12,21 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ComparisonZoneChart } from '../chart/ComparisonZoneChart'
-import type { ComparisonMetrics, ComparisonMode } from '../domain/aggregateComparison'
+import type {
+  ComparisonMetrics,
+  ComparisonMode,
+  FreethrowComparisonMetrics,
+} from '../domain/aggregateComparison'
 import {
+  aggregateFreethrowPlayerComparison,
   aggregatePlayerComparison,
   aggregateSplitComparison,
 } from '../domain/aggregateComparison'
 import { formatGameDate } from '../format'
 import { HEROES, heroBySlug } from '../heroes/registry'
 import type { HeroConfig } from '../heroes/types'
-import { compareUrl, payloadUrl } from '../heroes/urls'
+import { compareUrl, freethrowPayloadUrl, payloadUrl } from '../heroes/urls'
+import { ComparisonFreethrows } from './ComparisonFreethrows'
 import { ComparisonHeader } from './ComparisonHeader'
 import { ComparisonHeadline } from './ComparisonHeadline'
 import { ComparisonZoneScoreboard } from './ComparisonZoneScoreboard'
@@ -29,7 +35,10 @@ import type { ComparisonQueryFields, ComparisonRequest } from './comparisonRoute
 import { parseComparisonQuery, validateComparisonQuery } from './comparisonRoute'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
-import { useOptionalComparisonPayload } from './usePayload'
+import {
+  useOptionalComparisonFreethrowPayload,
+  useOptionalComparisonPayload,
+} from './usePayload'
 
 const EXAMPLE_PLAYERS: ComparisonRequest = {
   mode: 'players',
@@ -345,7 +354,12 @@ export function ComparisonSetup({
 type Computed =
   | { status: 'pending' }
   | { status: 'error'; message: string }
-  | { status: 'ready'; metrics: ComparisonMetrics }
+  | {
+      status: 'ready'
+      metrics: ComparisonMetrics
+      /** The free-throw comparison (ADR-0079); null in split mode. */
+      freethrow: FreethrowComparisonMetrics | null
+    }
 
 export function ComparisonPage({ navigate }: { navigate?: (url: string) => void }) {
   // ADR-0076: the URL is the whole comparison state, read once at mount
@@ -365,8 +379,20 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
         )
   const rightUrl =
     request?.mode === 'players' ? payloadUrl(heroBySlug(request.right)!, request.season) : null
+  // The free-throw siblings (ADR-0079): players mode only — split mode has
+  // no date-grained free-throw contract, so both slots stay null there.
+  const leftFtUrl =
+    request?.mode === 'players'
+      ? freethrowPayloadUrl(heroBySlug(request.left)!, request.season)
+      : null
+  const rightFtUrl =
+    request?.mode === 'players'
+      ? freethrowPayloadUrl(heroBySlug(request.right)!, request.season)
+      : null
   const leftState = useOptionalComparisonPayload(leftUrl)
   const rightState = useOptionalComparisonPayload(rightUrl)
+  const leftFtState = useOptionalComparisonFreethrowPayload(leftFtUrl)
+  const rightFtState = useOptionalComparisonFreethrowPayload(rightFtUrl)
 
   // Distinct, descriptive titles per mode; the setup state keeps the
   // wordmark-prefixed static-page form (the methodology pattern, ADR-0071).
@@ -387,13 +413,24 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
     if (request === null || leftState.status !== 'ready') return { status: 'pending' }
     try {
       if (request.mode === 'players') {
-        if (rightState.status !== 'ready') return { status: 'pending' }
+        if (
+          rightState.status !== 'ready' ||
+          leftFtState.status !== 'ready' ||
+          rightFtState.status !== 'ready'
+        ) {
+          return { status: 'pending' }
+        }
         return {
           status: 'ready',
           metrics: aggregatePlayerComparison({
             season: request.season,
             left: { slug: request.left, payload: leftState.payload },
             right: { slug: request.right, payload: rightState.payload },
+          }),
+          freethrow: aggregateFreethrowPlayerComparison({
+            season: request.season,
+            left: { slug: request.left, payload: leftFtState.payload },
+            right: { slug: request.right, payload: rightFtState.payload },
           }),
         }
       }
@@ -405,11 +442,12 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
           splitDate: request.split,
           payload: leftState.payload,
         }),
+        freethrow: null,
       }
     } catch (e) {
       return { status: 'error', message: e instanceof Error ? e.message : String(e) }
     }
-  }, [request, leftState, rightState])
+  }, [request, leftState, rightState, leftFtState, rightFtState])
 
   if (state.kind === 'setup') {
     return (
@@ -463,9 +501,13 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
       ? leftState.message
       : rightState.status === 'error'
         ? rightState.message
-        : computed.status === 'error'
-          ? computed.message
-          : null
+        : leftFtState.status === 'error'
+          ? leftFtState.message
+          : rightFtState.status === 'error'
+            ? rightFtState.message
+            : computed.status === 'error'
+              ? computed.message
+              : null
   return (
     <>
       <main className="comparison-page comparison-page-results">
@@ -478,7 +520,7 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
         ) : computed.status !== 'ready' ? (
           <>
             {setup}
-            <p className="page-status page-loading">Loading shot data…</p>
+            <p className="page-status page-loading">Loading comparison data…</p>
           </>
         ) : (
           <>
@@ -504,6 +546,12 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
               <ComparisonZoneChart metrics={computed.metrics} />
               <ComparisonZoneScoreboard metrics={computed.metrics} />
             </section>
+            {/* Free throws (ADR-0079): players mode only — the full-season
+                windows are exactly the season-total contract; split mode
+                stays deferred until a date-grained contract exists. */}
+            {computed.freethrow !== null && (
+              <ComparisonFreethrows metrics={computed.freethrow} />
+            )}
           </>
         )}
       </main>

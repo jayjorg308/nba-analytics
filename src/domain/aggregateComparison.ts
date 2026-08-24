@@ -10,8 +10,12 @@
 
 import { aggregateShotMetrics } from './aggregate'
 import type { ShotMetrics, ZoneMetricsRow } from './aggregate'
+import { aggregateFreethrowMetrics } from './aggregateFreethrow'
+import type { FreethrowMetrics, TripClassRow } from './aggregateFreethrow'
 import { EVAL_ZONES } from './constants'
 import type { EvalZone } from './constants'
+import { TRIP_CLASSES } from './freethrowPayload'
+import type { FreethrowPayload, TripClass } from './freethrowPayload'
 import type { DerivedPayload, EnrichedShot, ZoneBaselineEntry } from './payload'
 
 export type ComparisonMode = 'players' | 'split'
@@ -243,5 +247,113 @@ export function aggregateSplitComparison(input: SplitComparisonInput): Compariso
     left: leftSide,
     right: rightSide,
     zones: pairZones(leftSide.metrics, rightSide.metrics),
+  }
+}
+
+// --- Free throws (ADR-0079) -------------------------------------------------
+// Players mode only: a full-season window IS the season-total free-throw
+// contract, so the section consumes the exact comparison windows (ADR-0073).
+// Split mode stays deferred — trips carry no gameDate, technicals are season
+// scalars, and the FTA-rate denominator (pre-drop season FGA) does not
+// window exactly.
+
+export interface FreethrowComparisonSide {
+  id: 'left' | 'right'
+  /** The player's name, from the payload's own _meta (the header rule). */
+  label: string
+  playerSlug: string
+  metrics: FreethrowMetrics
+}
+
+/** One trip class's two sides, paired by class identity. */
+export interface FreethrowComparisonRow {
+  tripClass: TripClass
+  left: TripClassRow
+  right: TripClassRow
+}
+
+export interface FreethrowComparisonMetrics {
+  /** The season whose league line both sides are measured against. */
+  baselineSeason: string
+  left: FreethrowComparisonSide
+  right: FreethrowComparisonSide
+  /** Exactly the 8 trip classes, in TRIP_CLASSES order. */
+  tripClasses: readonly FreethrowComparisonRow[]
+}
+
+export interface FreethrowComparisonInput {
+  /** The requested shared season — asserted against both payloads. */
+  season: string
+  left: { slug: string; payload: FreethrowPayload }
+  right: { slug: string; payload: FreethrowPayload }
+}
+
+/** The shot-baseline rule again (ADR-0074's stance): two payloads claiming
+ * the same league season must carry the SAME league free-throw line — a
+ * mismatch is a contradiction, never permission to choose one silently. */
+function assertIdenticalFreethrowBaselines(left: FreethrowPayload, right: FreethrowPayload): void {
+  for (const key of ['ftm', 'fta', 'fga', 'points'] as const) {
+    if (left.leagueBaseline[key] !== right.leagueBaseline[key]) {
+      throw new Error(
+        `free-throw league baselines contradict at ${key}: ` +
+          `${left.leagueBaseline[key]} vs ${right.leagueBaseline[key]}`,
+      )
+    }
+  }
+}
+
+/** Pair the two sides' trip-class rows by class identity, never position. */
+function pairTripClasses(left: FreethrowMetrics, right: FreethrowMetrics): FreethrowComparisonRow[] {
+  const leftByClass = new Map(left.tripClasses.map((r) => [r.tripClass, r]))
+  const rightByClass = new Map(right.tripClasses.map((r) => [r.tripClass, r]))
+  return TRIP_CLASSES.map((tripClass) => {
+    const l = leftByClass.get(tripClass)
+    const r = rightByClass.get(tripClass)
+    if (l === undefined || r === undefined) {
+      throw new Error(`trip class '${tripClass}' missing from a side's aggregation`)
+    }
+    return { tripClass, left: l, right: r }
+  })
+}
+
+/**
+ * Player free-throw comparison: two distinct registered players'
+ * full-season free-throw records in one shared season, each aggregated by
+ * the one free-throw aggregation, over one asserted-identical league line.
+ */
+export function aggregateFreethrowPlayerComparison(
+  input: FreethrowComparisonInput,
+): FreethrowComparisonMetrics {
+  const { season, left, right } = input
+  if (left.slug === right.slug) {
+    throw new Error(`a player comparison needs two distinct players, got '${left.slug}' twice`)
+  }
+  for (const side of [left, right]) {
+    if (side.payload._meta.season !== season) {
+      throw new Error(
+        `free-throw payload for '${side.slug}' is ${side.payload._meta.season}, ` +
+          `not the requested ${season}`,
+      )
+    }
+  }
+  assertIdenticalFreethrowBaselines(left.payload, right.payload)
+
+  const leftMetrics = aggregateFreethrowMetrics(left.payload)
+  const rightMetrics = aggregateFreethrowMetrics(right.payload)
+  return {
+    baselineSeason: season,
+    left: {
+      id: 'left',
+      label: left.payload._meta.player,
+      playerSlug: left.slug,
+      metrics: leftMetrics,
+    },
+    right: {
+      id: 'right',
+      label: right.payload._meta.player,
+      playerSlug: right.slug,
+      metrics: rightMetrics,
+    },
+    tripClasses: pairTripClasses(leftMetrics, rightMetrics),
   }
 }

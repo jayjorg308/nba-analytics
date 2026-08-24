@@ -16,13 +16,10 @@
 
 import type { ComparisonMetrics, ComparisonZoneRow } from '../domain/aggregateComparison'
 import type { ZoneMetricsRow } from '../domain/aggregate'
-import {
-  displayGapUnits,
-  formatPercent1,
-  formatSignedGap,
-  formatUnsignedUnits,
-  withSmallSampleMark,
-} from '../format'
+import { formatPercent1, formatSignedGap, withSmallSampleMark } from '../format'
+import type { ComparisonCall } from './comparisonCalls'
+import { comparisonCall } from './comparisonCalls'
+import { shortLabels } from './comparisonLabels'
 import { Term } from './Term'
 
 /** Anchor rescale for gap arithmetic: shares and FG% display in percentage
@@ -31,32 +28,11 @@ function pp(x: number | null): number | null {
   return x === null ? null : x * 100
 }
 
-/** Margins under 1.0 display units read as even: a call is a claim, and a
- * sub-point gap between two displayed numbers is not evidence of one. */
-const EVEN_UNDER_UNITS = 10
-
-type ZoneCall =
-  | { kind: 'none' }
-  | { kind: 'even'; flagged: boolean }
-  | { kind: 'call'; side: 'left' | 'right'; margin: string; flagged: boolean }
-
-function callFrom(left: number | null, right: number | null, flagged: boolean): ZoneCall {
-  const units = displayGapUnits(right, left, 1)
-  if (units === null) return { kind: 'none' }
-  if (Math.abs(units) < EVEN_UNDER_UNITS) return { kind: 'even', flagged }
-  return {
-    kind: 'call',
-    side: units > 0 ? 'right' : 'left',
-    margin: formatUnsignedUnits(units, 1),
-    flagged,
-  }
-}
-
 /** Diet lean: who takes the larger share of his attempts in the zone.
  * Inherits the selection-stability flag from either window (ADR-0075's 15
  * bar). */
-function dietCall(row: ComparisonZoneRow): ZoneCall {
-  return callFrom(
+function dietCall(row: ComparisonZoneRow): ComparisonCall {
+  return comparisonCall(
     pp(row.left.attemptShare),
     pp(row.right.attemptShare),
     !row.left.included || !row.right.included,
@@ -68,33 +44,21 @@ function dietCall(row: ComparisonZoneRow): ZoneCall {
  * the margin equals the gap of the two displayed Making Δ cells. Inherits
  * the making uncertainty flag from either window (ADR-0075's 50 bar) — a
  * call can never read cleaner than its inputs. */
-function makingCall(row: ComparisonZoneRow): ZoneCall {
-  return callFrom(
+function makingCall(row: ComparisonZoneRow): ComparisonCall {
+  return comparisonCall(
     pp(row.left.fgPct),
     pp(row.right.fgPct),
     row.left.smallSampleMaking || row.right.smallSampleMaking,
   )
 }
 
-/** Chip-length side names: the label's last word ("Donovan Mitchell" ->
- * "Mitchell", "Before" stays "Before"), falling back to the full labels if
- * the short forms collide. */
-function shortLabels(metrics: ComparisonMetrics): { left: string; right: string } {
-  const last = (label: string) => label.split(' ').at(-1) ?? label
-  const left = last(metrics.left.label)
-  const right = last(metrics.right.label)
-  return left === right
-    ? { left: metrics.left.label, right: metrics.right.label }
-    : { left, right }
-}
-
-function SideMark({ side }: { side: 'left' | 'right' }) {
+export function SideMark({ side }: { side: 'left' | 'right' }) {
   // Side identity is shape + fill, never color (plan §4): the left window
   // is a solid dot, the right an outlined diamond — the chart's marks.
   return <span className={`comparison-mark-${side}`} aria-hidden="true" />
 }
 
-function CallChip({ call, metrics }: { call: ZoneCall; metrics: ComparisonMetrics }) {
+function CallChip({ call, metrics }: { call: ComparisonCall; metrics: ComparisonMetrics }) {
   if (call.kind === 'none') return <span className="comparison-call-chip comparison-call-even">—</span>
   if (call.kind === 'even') {
     return (

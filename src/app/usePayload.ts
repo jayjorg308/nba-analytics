@@ -120,3 +120,12 @@ export function useShotContextPayload(url: string): PayloadState<ShotContextPayl
 export function useFreethrowPayload(url: string): PayloadState<FreethrowPayload> {
   return useParsedPayload(url, parseFreethrowPayload, 'free throw data')
 }
+
+/** A comparison side's free-throw payload (ADR-0079): fetched only in
+ * players mode — split mode has no date-grained free-throw contract, so its
+ * two slots stay null and absence is a state, never a skipped hook. */
+export function useOptionalComparisonFreethrowPayload(
+  url: string | null,
+): OptionalPayloadState<FreethrowPayload> {
+  return useOptionalParsedPayload(url, parseFreethrowPayload, 'comparison free throw data')
+}
