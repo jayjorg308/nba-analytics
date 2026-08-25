@@ -297,6 +297,16 @@ _Avoid_: "winner", "better", or any whole-comparison framing — the page is a t
 **Line call** (**Draw edge** / **Conversion edge** / **Reliance lean**):
 The zone call's grammar at the free-throw line (ADR-0079), one call per season-line card in a player comparison. **Draw edge** names the side with the higher FTA rate and **Conversion edge** the side with the higher FT% — both results against the league — while **Reliance lean** names the side with the larger FT share of points, a scoring mix with no better direction, so it never claims an edge. Same mechanics as every call: decided and priced on displayed anchors, even under 1.0 display units, † inherited from either side. Calls live only at the season line, where full-season free-throw samples support them; the trip taxonomy carries no per-class calls (most classes sit under the 50-FTA bar, and flagged chips everywhere would be noise, not answers).
 
+**Game card**:
+A per-game tool page (`/game/<player-slug>/<date>`, ADR-0081) presenting one player's night as priced facts: expected points from his diet (his attempts priced at the season's league zone rates), points scored on those attempts, and their difference as conversion, with THE CREDIT and THE LINE as chips and a drill-in **receipt** itemizing every attempt and trip down to the box total (technical free throws as their own line whenever nonzero, so the receipt always reconciles). A tool, not an argument: computed numbers and structural copy only — no verdict, no grades, and no ability estimate; selection is priced, conversion is what happened. Creation never appears at game grain.
+_Avoid_: "game grade" — no surface grades a game, and no card aggregates its facts into one mark.
+
+**Game-log payload**:
+The fifth typed contract (ADR-0081): one committed file per card-roster player-season carrying each game's shots (zone, point value, made, period, assist status), trips, technical free-throw count, and box-line subset, with the season's league zone-PPS table embedded so every file is self-contained. Born DB-native — exported from the record store with no file derive — and read by heroes and non-hero roster players through the same contract; for registered heroes it must agree at game grain with the three deployed siblings.
+
+**Card roster**:
+The mechanical membership rule for game cards: every player at or above the season FGA bar (300, a named constant moved only by PR) plus every registered hero. A query, never a judgment — "why does X have a card" always has the same answer. Below-bar players have no card; their card URLs fall to the directory's unknown-path note.
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 
