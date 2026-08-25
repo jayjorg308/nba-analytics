@@ -184,6 +184,63 @@ class Halt(Exception):
     """A condition a human must resolve — never published around."""
 
 
+def db_derive(args: argparse.Namespace, player: str, season: str,
+              shot_path: Path, advanced_path: Path, tracking_path: Path,
+              league_tracking_path: Path, totals_path: Path,
+              universe: set[str], derived: Path, out: str,
+              report: list[str]) -> None:
+    """The DB-engine derive phase (ADR-0080): load the session's snapshots
+    into the record store (every reconciliation live; change detection halts
+    on corrections, growth flows), then export the four payloads to the same
+    derived paths the file derives use. A LoadHalt or any loader/export
+    hard-fail is a session Halt."""
+    import derive_payload as dp
+    import export_creation_payload as ecr
+    import export_freethrow_payload as efp
+    import export_shot_context_payload as ecp
+    import export_shot_payload as esp
+    import load_game_corpus as lgc
+    import load_hero_season as lhs
+    import load_tracking as lt
+    import record_store as rs
+
+    with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
+        rs.apply_migrations(conn)
+        try:
+            lhs.load_hero_season(conn, snapshot_path=shot_path,
+                                 advanced_path=advanced_path)
+            lt.load_tracking(conn, player, season,
+                             snapshot_path=tracking_path,
+                             league_path=league_tracking_path)
+            lgc.load_game_corpus(conn, player, season,
+                                 totals_path=totals_path,
+                                 universe_games=universe)
+        except lhs.LoadHalt as halt:
+            raise Halt(f"record-store load halted: {halt}") from halt
+        except SystemExit as exc:
+            raise Halt(f"record-store load failed: {exc}") from exc
+        report.append("record-store loads ok (change-detected, oracles live)")
+
+        shot_out = derived / out
+        exports = [
+            ("shot", esp, shot_out, {}),
+            ("creation", ecr, derived / "creation" / out, {}),
+            ("shot-context", ecp, derived / "shot-context" / out,
+             {"source_shot_payload": dp.repo_relative(shot_out)}),
+            ("freethrow", efp, derived / "freethrow" / out,
+             {"source_shot_payload": dp.repo_relative(shot_out)}),
+        ]
+        for name, mod, path, kwargs in exports:
+            try:
+                payload = mod.export_payload(conn, player, season, **kwargs)
+            except SystemExit as exc:
+                raise Halt(f"{name} export failed: {exc}") from exc
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(mod.payload_text(payload), encoding="utf-8",
+                            newline="\n")
+            report.append(f"{name} export ok (record store)")
+
+
 def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
     slug, player = entry["slug"], entry["player"]
     player_id, season = int(entry["playerId"]), entry["season"]
@@ -331,31 +388,41 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
         date_to=frontier, stamp=stamp, pull_date=pull_date, sleep=args.sleep)
 
     # 5. The four derives — every oracle is live; a failure is a halt.
+    #    --engine files: the production file derives (subprocesses).
+    #    --engine db: load -> check -> export through the record store
+    #    (ADR-0080), writing the SAME derived file paths, so gates, sync,
+    #    and the replay's oracles are engine-blind.
     derived = REPO / "data" / "derived" / slug / season
     out = f"{pull_date}{stamp}.json"
-    steps = [
-        ("shot", f"python ingestion/derive_payload.py "
-                 f"--snapshot-file \"{shot_path}\" "
-                 f"--advanced-file \"{advanced_path}\" "
-                 f"--out-file \"{derived / out}\""),
-        ("creation", f"python ingestion/derive_creation.py "
-                     f"--snapshot-file \"{tracking_path}\" "
-                     f"--league-file \"{league_tracking_path}\" "
-                     f"--shot-payload-file \"{derived / out}\" "
-                     f"--out-file \"{derived / 'creation' / out}\""),
-        ("shot-context", f"python ingestion/derive_shot_context.py "
+    if args.engine == "db":
+        universe = {gid for gid, gd in games.items() if gd <= frontier}
+        db_derive(args, player, season, shot_path, advanced_path,
+                  tracking_path, league_tracking_path, totals_path,
+                  universe, derived, out, report)
+    else:
+        steps = [
+            ("shot", f"python ingestion/derive_payload.py "
+                     f"--snapshot-file \"{shot_path}\" "
+                     f"--advanced-file \"{advanced_path}\" "
+                     f"--out-file \"{derived / out}\""),
+            ("creation", f"python ingestion/derive_creation.py "
+                         f"--snapshot-file \"{tracking_path}\" "
+                         f"--league-file \"{league_tracking_path}\" "
                          f"--shot-payload-file \"{derived / out}\" "
-                         f"--out-file \"{derived / 'shot-context' / out}\""),
-        ("freethrow", f"python ingestion/derive_freethrow.py "
-                      f"--shot-payload-file \"{derived / out}\" "
-                      f"--league-totals-file \"{totals_path}\" "
-                      f"--out-file \"{derived / 'freethrow' / out}\""),
-    ]
-    for name, cmd in steps:
-        result = run(cmd)
-        if result.returncode != 0:
-            raise Halt(f"{name} derive failed:\n{result.stdout}\n{result.stderr}")
-        report.append(f"{name} derive ok")
+                         f"--out-file \"{derived / 'creation' / out}\""),
+            ("shot-context", f"python ingestion/derive_shot_context.py "
+                             f"--shot-payload-file \"{derived / out}\" "
+                             f"--out-file \"{derived / 'shot-context' / out}\""),
+            ("freethrow", f"python ingestion/derive_freethrow.py "
+                          f"--shot-payload-file \"{derived / out}\" "
+                          f"--league-totals-file \"{totals_path}\" "
+                          f"--out-file \"{derived / 'freethrow' / out}\""),
+        ]
+        for name, cmd in steps:
+            result = run(cmd)
+            if result.returncode != 0:
+                raise Halt(f"{name} derive failed:\n{result.stdout}\n{result.stderr}")
+            report.append(f"{name} derive ok")
 
     # 6. Gates (ADR-0059): 1 from the baseline frame, 2 from the rows,
     #    3/4/5 are the derives' own hard-fails, plus Gate 4's corpus check.
@@ -440,6 +507,14 @@ def main() -> None:
                          "re-gate even when upstream looks identical)")
     ap.add_argument("--no-push", action="store_true",
                     help="commit locally but never push")
+    ap.add_argument("--engine", choices=("files", "db"), default="files",
+                    help="derive phase: the production file derives, or "
+                         "load->export through the record store (ADR-0080; "
+                         "the cutover flips this default)")
+    ap.add_argument("--db-url",
+                    help="record-store DSN for --engine db (default: "
+                         "NBA_DB_URL / .env — the production store; the "
+                         "replay passes its own scratch store)")
     ap.add_argument("--sleep", type=float, default=1.5)
     args = ap.parse_args()
 

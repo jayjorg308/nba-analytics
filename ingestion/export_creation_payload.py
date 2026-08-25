@@ -65,7 +65,7 @@ def export_payload(
         games_included = len({r[0] for r in post_drop})
 
         cur.execute(
-            "SELECT family, context, fga, fgm, fg2a, fg2m, fg3a, fg3m, snapshot_id"
+            "SELECT family, context, fga, fgm, fg2a, fg2m, fg3a, fg3m"
             " FROM creation_split"
             " WHERE player_id = %s AND season = %s AND season_type = %s",
             (player_id, season, season_type),
@@ -75,25 +75,18 @@ def export_payload(
             fail(f"no creation_split rows for {player!r} {season} — "
                  f"run load_tracking.py first")
         by_family: dict[str, dict[str, dict]] = {}
-        snapshot_ids = set()
-        for family, context, *stats, snapshot_id in split_rows:
+        for family, context, *stats in split_rows:
             by_family.setdefault(family, {})[context] = dict(zip(STAT_KEYS, stats))
-            snapshot_ids.add(snapshot_id)
-        if len(snapshot_ids) != 1:
-            fail(f"creation_split rows carry {len(snapshot_ids)} snapshot "
-                 f"provenances — mixed load")
-        cur.execute(
-            "SELECT path, pull_date, season_type FROM snapshot WHERE snapshot_id = %s",
-            (snapshot_ids.pop(),),
-        )
-        source_path, pull_date, snap_season_type = cur.fetchone()
+        _, source_path, pull_date, snap_season_type = rs.get_head(
+            cur, rs.scope_key("tracking-player", player_id=player_id,
+                              season=season, season_type=season_type))
         if snap_season_type != season_type:
             fail(f"tracking snapshot season_type {snap_season_type!r} != "
                  f"requested {season_type!r}")
 
         cur.execute(
             "SELECT family, context, sum(fga), sum(fgm), sum(fg2a), sum(fg2m),"
-            " sum(fg3a), sum(fg3m), min(snapshot_id), max(snapshot_id)"
+            " sum(fg3a), sum(fg3m)"
             " FROM league_creation_team"
             " WHERE season = %s AND season_type = %s GROUP BY family, context",
             (season, season_type),
@@ -103,16 +96,11 @@ def export_payload(
             fail(f"no league_creation_team rows for {season} — "
                  f"run load_tracking.py first")
         lg: dict[str, dict[str, dict]] = {}
-        lg_snapshots = set()
-        for family, context, *sums, snap_min, snap_max in league_grouped:
+        for family, context, *sums in league_grouped:
             lg.setdefault(family, {})[context] = dict(zip(STAT_KEYS, sums))
-            lg_snapshots.update((snap_min, snap_max))
-        if len(lg_snapshots) != 1:
-            fail(f"league_creation_team rows carry {len(lg_snapshots)} snapshot "
-                 f"provenances — mixed load")
-        cur.execute("SELECT path FROM snapshot WHERE snapshot_id = %s",
-                    (lg_snapshots.pop(),))
-        league_source_path = cur.fetchone()[0]
+        _, league_source_path, _, _ = rs.get_head(
+            cur, rs.scope_key("tracking-league", season=season,
+                              season_type=season_type))
 
     # Player families: canonical order, zero-filled (the sparse-row rule).
     families = {

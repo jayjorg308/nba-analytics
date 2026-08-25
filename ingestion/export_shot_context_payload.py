@@ -51,7 +51,7 @@ def export_payload(
 
         cur.execute(
             "SELECT s.game_id, s.game_event_id, g.game_date, s.zone_basic,"
-            " s.point_value, s.snapshot_id FROM shot s JOIN game g USING (game_id)"
+            " s.point_value FROM shot s JOIN game g USING (game_id)"
             " WHERE s.player_id = %s AND g.season = %s AND g.season_type = %s"
             " ORDER BY s.source_row",
             (player_id, season, season_type),
@@ -65,12 +65,9 @@ def export_payload(
         expected_games = sorted({r[0] for r in post_drop})
         data_through = max(r[2] for r in post_drop).isoformat()
 
-        snapshot_ids = {r[5] for r in shot_rows}
-        if len(snapshot_ids) != 1:
-            fail(f"shots carry {len(snapshot_ids)} snapshot provenances — mixed load")
-        cur.execute("SELECT pull_date FROM snapshot WHERE snapshot_id = %s",
-                    (snapshot_ids.pop(),))
-        shot_pull_date = cur.fetchone()[0]
+        _, _, shot_pull_date, _ = rs.get_head(
+            cur, rs.scope_key("shotchartdetail", player_id=player_id,
+                              season=season, season_type=season_type))
 
         cur.execute(
             "SELECT c.game_id, c.game_event_id, c.event_match, c.assist_status,"
@@ -90,25 +87,26 @@ def export_payload(
                  f"rebuild the corpus (load_game_corpus.py)")
 
         # Loaded games and their pair provenance: a game counts as loaded
-        # when both its parsed sides are in the store.
+        # when both its parsed sides are in the store; dates from the heads.
         loaded_games: list[str] = []
         source_games: list[dict] = []
         for game_id in expected_games:
             cur.execute(
-                "SELECT DISTINCT sn.source, sn.pull_date FROM snapshot sn WHERE"
-                " sn.snapshot_id IN ("
-                "  SELECT snapshot_id FROM pbp_event WHERE game_id = %s"
-                "  UNION SELECT snapshot_id FROM box_team_line WHERE game_id = %s)",
+                "SELECT EXISTS (SELECT 1 FROM pbp_event WHERE game_id = %s)"
+                " AND EXISTS (SELECT 1 FROM box_team_line WHERE game_id = %s)",
                 (game_id, game_id),
             )
-            dates = dict(cur.fetchall())
-            if set(dates) != {"play-by-play", "box-score"}:
+            if not cur.fetchone()[0]:
                 continue  # not (fully) loaded — its rows classify missingGame
+            _, _, pbp_date, _ = rs.get_head(
+                cur, rs.scope_key("play-by-play", game_id=game_id))
+            _, _, box_date, _ = rs.get_head(
+                cur, rs.scope_key("box-score", game_id=game_id))
             loaded_games.append(game_id)
             source_games.append({
                 "gameId": game_id,
-                "playByPlayPullDate": dates["play-by-play"],
-                "boxScorePullDate": dates["box-score"],
+                "playByPlayPullDate": pbp_date,
+                "boxScorePullDate": box_date,
             })
 
     rows = [

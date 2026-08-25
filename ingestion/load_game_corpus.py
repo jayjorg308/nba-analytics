@@ -80,7 +80,15 @@ def load_game_corpus(
     totals_path: Path | None = None,
     allow_changed: bool = False,
     allow_missing_games: bool = False,
+    universe_games: set[str] | None = None,
 ) -> dict:
+    """universe_games (the season loop's mid-season mode): the caller states
+    the game universe explicitly — discovery games at or before the settled
+    frontier — REPLACING the disk-wide box scan, which is frontier-blind (it
+    would sweep in post-frontier corpus games and fail Gate 5). The scan
+    remains the completed-season default; a living season's shotless
+    free-throw game (the Clifford case) surfaces as ADR-0054's loud
+    season-total gap for a human, exactly as the file pipeline halts."""
     totals_path = totals_path or df._latest_league_totals(raw_root, season)
     totals_artifact = _load(totals_path)
     headers, totals_rows, _ = df._league_totals_rows(totals_artifact, season)
@@ -127,8 +135,12 @@ def load_game_corpus(
             box_lines = lhs.TableUpsert("box_score_line", ("game_id", "player_id"))
             box_team_lines = lhs.TableUpsert("box_team_line", ("game_id", "team_id"))
             totals = lhs.TableUpsert(
-                "league_season_totals", ("player_id", "season", "season_type")
+                "league_season_totals", ("player_id", "season", "season_type"),
+                monotone_cols=("gp", "fgm", "fga", "ftm", "fta", "pts"),
             )
+            full_loaded_games: list[str] = []
+            team_loaded_games: list[str] = []
+            game_heads: list[tuple[str, int, int]] = []  # (game_id, pbp_snap, box_snap)
 
             cur.execute("SELECT player_id FROM player")
             known_players = {row[0] for row in cur.fetchall()}
@@ -194,6 +206,19 @@ def load_game_corpus(
                     if not game_id:
                         sys.exit(f"load-corpus: {pbp_path} has no _meta.game_id")
                     game_pairs.append((game_id, pbp_path, box_path))
+            elif universe_games is not None:
+                stray = shot_games - universe_games
+                if stray:
+                    sys.exit(f"load-corpus: stored shot games outside the stated "
+                             f"universe: {sorted(stray)} — universe incoherent")
+                for game_id in sorted(universe_games):
+                    pair = latest_pair(raw_root, game_id)
+                    if pair is None:
+                        if allow_missing_games:
+                            continue
+                        sys.exit(f"load-corpus: no pbp/box pair for game {game_id} "
+                                 f"(Gate 4) — pull it first")
+                    game_pairs.append((game_id, *pair))
             else:
                 for game_id in sorted(shot_games):
                     pair = latest_pair(raw_root, game_id)
@@ -236,6 +261,17 @@ def load_game_corpus(
                 team_lines_loaded = cur.fetchone() is not None
                 if pbp_loaded and team_lines_loaded:
                     skipped += 1  # shared-corpus game another hero already loaded
+                    # The scope's state still equals this pair: (re)assert the
+                    # heads from the cataloged ids (backfills pre-head stores).
+                    box_rel = dp.repo_relative(box_path)
+                    cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (rel,))
+                    pbp_id = cur.fetchone()
+                    cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (box_rel,))
+                    box_id = cur.fetchone()
+                    if pbp_id is None or box_id is None:
+                        sys.exit(f"load-corpus: game {game_id} loaded but its pair "
+                                 f"is not fully cataloged — store inconsistent")
+                    game_heads.append((game_id, pbp_id[0], box_id[0]))
                     continue
                 box_snapshot = _load(box_path)
                 if pbp_loaded:
@@ -250,6 +286,9 @@ def load_game_corpus(
                     box_snap = lhs.catalog_snapshot(cur, "box-score", box_path,
                                                     box_snapshot["_meta"])
                     stage_team_data(box_game, game_id, box_snap)
+                    team_loaded_games.append(game_id)
+                    cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (rel,))
+                    game_heads.append((game_id, cur.fetchone()[0], box_snap))
                     continue
                 pbp_snapshot = _load(pbp_path)
                 pbp_game, box_game, parsed_id = validate_game_pair(pbp_snapshot, box_snapshot)
@@ -260,6 +299,9 @@ def load_game_corpus(
                 box_snap = lhs.catalog_snapshot(cur, "box-score", box_path,
                                                 box_snapshot["_meta"])
                 stage_team_data(box_game, game_id, box_snap)
+                full_loaded_games.append(game_id)
+                team_loaded_games.append(game_id)
+                game_heads.append((game_id, pbp_snap, box_snap))
                 cur.executemany(
                     "INSERT INTO load_run_snapshot (run_id, snapshot_id) VALUES (%s, %s)"
                     " ON CONFLICT DO NOTHING",
@@ -345,16 +387,36 @@ def load_game_corpus(
 
             report: dict = {}
             changed_detail: list[str] = []
-            for table in (players, teams, games, pbp_events, box_lines,
-                          box_team_lines, totals):
-                table.flush(cur, report, changed_detail)
-            total_changed = sum(c["changed"] for c in report.values())
-            if total_changed and not allow_changed:
+            players.flush(cur, report, changed_detail)
+            teams.flush(cur, report, changed_detail)
+            games.flush(cur, report, changed_detail)
+            game_scope = (("game_id = ANY(%s)", [full_loaded_games])
+                          if full_loaded_games else None)
+            pbp_events.flush(cur, report, changed_detail, scope=game_scope)
+            box_lines.flush(cur, report, changed_detail, scope=game_scope)
+            box_team_lines.flush(
+                cur, report, changed_detail,
+                scope=(("game_id = ANY(%s)", [team_loaded_games])
+                       if team_loaded_games else None),
+            )
+            totals.flush(cur, report, changed_detail,
+                         scope=("season = %s AND season_type = %s",
+                                [season, season_type]))
+            halting = sum(c["changed"] + c["deleted"] for c in report.values())
+            if halting and not allow_changed:
                 raise lhs.LoadHalt(
-                    f"{total_changed} row(s) changed against current state. First diffs:\n  "
-                    + "\n  ".join(changed_detail[:10])
+                    f"{halting} row(s) changed or deleted against current state. "
+                    f"First diffs:\n  " + "\n  ".join(changed_detail[:10])
                     + "\nRe-run with --allow-changed to accept them."
                 )
+            for game_id, pbp_id, box_id in game_heads:
+                rs.set_head(cur, rs.scope_key("play-by-play", game_id=game_id),
+                            pbp_id, run_id)
+                rs.set_head(cur, rs.scope_key("box-score", game_id=game_id),
+                            box_id, run_id)
+            rs.set_head(cur, rs.scope_key("league-totals", season=season,
+                                          season_type=season_type),
+                        totals_snap, run_id)
 
             trip_summary = rebuild_ft_trips(
                 cur, player_id, season, season_type, run_id,
@@ -593,7 +655,8 @@ def main() -> None:
           f"({skipped} shared game(s) already in store)")
     for table, counts in report.items():
         print(f"  {table:<22} inserted={counts['inserted']:<7} "
-              f"unchanged={counts['unchanged']:<7} changed={counts['changed']}")
+              f"unchanged={counts['unchanged']:<7} grown={counts['grown']:<5} "
+              f"changed={counts['changed']:<4} deleted={counts['deleted']}")
     print(f"  ft_trip rebuilt: {trips['rebuilt']} trips over "
           f"{trips['gamesLoaded']}/{trips['gamesInUniverse']} games, "
           f"technicals {trips['technicalFtm']}/{trips['technicalFta']}")

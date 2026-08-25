@@ -48,8 +48,8 @@ def export_payload(
         player_id, player_name = hits[0]
 
         cur.execute(
-            "SELECT s.game_id, g.game_date, s.made, s.zone_basic, s.point_value,"
-            " s.snapshot_id FROM shot s JOIN game g USING (game_id)"
+            "SELECT s.game_id, g.game_date, s.made, s.zone_basic, s.point_value"
+            " FROM shot s JOIN game g USING (game_id)"
             " WHERE s.player_id = %s AND g.season = %s AND g.season_type = %s",
             (player_id, season, season_type),
         )
@@ -64,12 +64,9 @@ def export_payload(
         data_through = max(r[1] for r in post_drop).isoformat()
         games_included = len(shot_games)
 
-        snapshot_ids = {r[5] for r in shot_rows}
-        if len(snapshot_ids) != 1:
-            fail(f"shots carry {len(snapshot_ids)} snapshot provenances — mixed load")
-        cur.execute("SELECT pull_date FROM snapshot WHERE snapshot_id = %s",
-                    (snapshot_ids.pop(),))
-        shot_pull_date = cur.fetchone()[0]
+        _, _, shot_pull_date, _ = rs.get_head(
+            cur, rs.scope_key("shotchartdetail", player_id=player_id,
+                              season=season, season_type=season_type))
 
         cur.execute(
             "SELECT b.game_id, b.ftm, b.fta FROM box_score_line b"
@@ -130,35 +127,31 @@ def export_payload(
             technical_ftm += game_tftm
             technical_fta += game_tfta
 
-        # Source-pair provenance per loaded game, from the rows themselves.
+        # Source-pair provenance per loaded game: the per-game heads.
         source_games: list[dict] = []
         for game_id in loaded_games:
-            cur.execute(
-                "SELECT DISTINCT sn.source, sn.pull_date FROM snapshot sn"
-                " WHERE sn.snapshot_id IN ("
-                "   SELECT snapshot_id FROM pbp_event WHERE game_id = %s"
-                "   UNION SELECT snapshot_id FROM box_score_line WHERE game_id = %s)",
-                (game_id, game_id),
-            )
-            dates = dict(cur.fetchall())
-            if set(dates) != {"play-by-play", "box-score"}:
-                fail(f"game {game_id}: incomplete snapshot provenance {sorted(dates)}")
+            _, _, pbp_date, _ = rs.get_head(
+                cur, rs.scope_key("play-by-play", game_id=game_id))
+            _, _, box_date, _ = rs.get_head(
+                cur, rs.scope_key("box-score", game_id=game_id))
             source_games.append({
                 "gameId": game_id,
-                "playByPlayPullDate": dates["play-by-play"],
-                "boxScorePullDate": dates["box-score"],
+                "playByPlayPullDate": pbp_date,
+                "boxScorePullDate": box_date,
             })
 
         cur.execute(
-            "SELECT ls.ftm, ls.fta, ls.fga, ls.pts, sn.path, sn.pull_date"
-            " FROM league_season_totals ls JOIN snapshot sn USING (snapshot_id)"
-            " WHERE ls.player_id = %s AND ls.season = %s AND ls.season_type = %s",
+            "SELECT ftm, fta, fga, pts FROM league_season_totals"
+            " WHERE player_id = %s AND season = %s AND season_type = %s",
             (player_id, season, season_type),
         )
         hero_totals = cur.fetchone()
         if hero_totals is None:
             fail("no league_season_totals row for the hero (Gate 5 oracle)")
-        season_ftm, season_fta, season_fga, season_points, totals_path, totals_pull = hero_totals
+        season_ftm, season_fta, season_fga, season_points = hero_totals
+        _, totals_path, totals_pull, _ = rs.get_head(
+            cur, rs.scope_key("league-totals", season=season,
+                              season_type=season_type))
 
         cur.execute(
             "SELECT sum(ftm), sum(fta), sum(fga), sum(pts)"

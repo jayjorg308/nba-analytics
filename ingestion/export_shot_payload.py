@@ -46,7 +46,7 @@ def export_payload(
                    g.home_abbrev, g.visitor_abbrev, s.period,
                    s.minutes_remaining, s.seconds_remaining, s.made,
                    s.point_value, s.zone_basic, s.zone_area, s.zone_range,
-                   s.distance_ft, s.loc_x, s.loc_y, s.snapshot_id
+                   s.distance_ft, s.loc_x, s.loc_y
             FROM shot s
             JOIN game g USING (game_id)
             JOIN team t ON t.team_id = s.team_id
@@ -59,31 +59,26 @@ def export_payload(
         if not shot_rows:
             fail(f"no shots for {player!r} {season} — load the season first")
 
-        snapshot_ids = {r[17] for r in shot_rows}
-        if len(snapshot_ids) != 1:
-            # Current-state discipline: one hero-season's rows come from one
-            # loaded snapshot. Mixed provenance means a partial re-load.
-            fail(f"shots carry {len(snapshot_ids)} snapshot provenances — mixed load")
-        cur.execute(
-            "SELECT path, pull_date, season_type FROM snapshot WHERE snapshot_id = %s",
-            (snapshot_ids.pop(),),
-        )
-        source_path, pull_date, snap_season_type = cur.fetchone()
+        # The scope's current-state source, recorded at load (ADR-0080 as
+        # amended) — row provenance is first-asserted lineage, never this.
+        _, source_path, pull_date, snap_season_type = rs.get_head(
+            cur, rs.scope_key("shotchartdetail", player_id=player_id,
+                              season=season, season_type=season_type))
         if snap_season_type != season_type:
             fail(f"snapshot season_type {snap_season_type!r} != requested {season_type!r}")
+        _, usage_path, _, _ = rs.get_head(
+            cur, rs.scope_key("league-advanced", season=season,
+                              season_type=season_type))
 
         cur.execute(
-            """
-            SELECT ps.gp, ps.fga, ps.usg_pct, sn.path
-            FROM player_season ps JOIN snapshot sn USING (snapshot_id)
-            WHERE ps.player_id = %s AND ps.season = %s AND ps.season_type = %s
-            """,
+            "SELECT gp, fga, usg_pct FROM player_season"
+            " WHERE player_id = %s AND season = %s AND season_type = %s",
             (player_id, season, season_type),
         )
         ps = cur.fetchone()
         if ps is None:
             fail(f"no player_season row for {player!r} {season} (ADR-0069)")
-        gp, adv_fga, usage_pct, usage_path = ps
+        gp, adv_fga, usage_pct = ps
 
         cur.execute(
             """
@@ -102,7 +97,7 @@ def export_payload(
     conflicts = 0
     for (game_id, event_id, game_date, team_name, home_abbrev, visitor_abbrev,
          period, minutes, seconds, made, point_value, zone_basic, zone_area,
-         zone_range, distance_ft, loc_x, loc_y, _snap) in shot_rows:
+         zone_range, distance_ft, loc_x, loc_y) in shot_rows:
         if (zone_basic in dp.THREE_POINT_ZONES) != (point_value == 3):
             conflicts += 1
             continue

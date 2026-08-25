@@ -132,8 +132,27 @@ def main() -> None:
     ap.add_argument("--season", default="2025-26")
     ap.add_argument("--dates", nargs="*",
                     help="explicit ISO replay dates (default: auto calendar)")
+    ap.add_argument("--engine", choices=("files", "db"), default="files",
+                    help="drive the loop's file derives or its record-store "
+                         "path (ADR-0080's cutover gate runs --engine db)")
+    ap.add_argument("--db-url",
+                    help="record-store DSN for --engine db; default spins a "
+                         "throwaway Dockerized Postgres so the production "
+                         "store is never touched by historical frontiers")
     ap.add_argument("--sleep", type=float, default=1.5)
     args = ap.parse_args()
+
+    engine_args = ""
+    if args.engine == "db":
+        db_url = args.db_url
+        if not db_url:
+            import atexit
+
+            import ephemeral_pg
+            db_url, container = ephemeral_pg.start()
+            atexit.register(ephemeral_pg.stop, container)
+            print(f"scratch record store: {db_url}")
+        engine_args = f' --engine db --db-url "{db_url}"'
 
     deployed_dir = REPO / "public" / "data" / args.slug
     deployed_shot = read_json(deployed_dir / f"{args.season}.json")
@@ -170,7 +189,8 @@ def main() -> None:
               flush=True)
         result = subprocess.run(
             f'python ingestion/season_update.py --config "{config_path}" '
-            f'--slug {args.slug} --as-of {as_of} --sleep {args.sleep}',
+            f'--slug {args.slug} --as-of {as_of} --sleep {args.sleep}'
+            + engine_args,
             cwd=REPO, shell=True, capture_output=True, text=True, timeout=1800)
         sys.stdout.write(result.stdout)
         check("no halt", result.returncode == 0,

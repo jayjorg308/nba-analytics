@@ -129,14 +129,17 @@ def load_tracking(
                 [(run_id, player_snap), (run_id, league_snap)],
             )
 
+            stat_cols = ("fga", "fgm", "fg2a", "fg2m", "fg3a", "fg3m")
             teams = lhs.TableUpsert("team", ("team_id",))
             splits = lhs.TableUpsert(
                 "creation_split",
                 ("player_id", "season", "season_type", "family", "context"),
+                monotone_cols=stat_cols,
             )
             league_rows = lhs.TableUpsert(
                 "league_creation_team",
                 ("season", "season_type", "family", "context", "team_id"),
+                monotone_cols=stat_cols,
             )
             cur.execute("SELECT team_id FROM team")
             known_teams = {row[0] for row in cur.fetchall()}
@@ -228,15 +231,27 @@ def load_tracking(
 
             report: dict = {}
             changed_detail: list[str] = []
-            for table in (teams, splits, league_rows):
-                table.flush(cur, report, changed_detail)
-            total_changed = sum(c["changed"] for c in report.values())
-            if total_changed and not allow_changed:
+            teams.flush(cur, report, changed_detail)
+            splits.flush(cur, report, changed_detail, scope=(
+                "player_id = %s AND season = %s AND season_type = %s",
+                [player_id, season, season_type],
+            ))
+            league_rows.flush(cur, report, changed_detail, scope=(
+                "season = %s AND season_type = %s", [season, season_type],
+            ))
+            halting = sum(c["changed"] + c["deleted"] for c in report.values())
+            if halting and not allow_changed:
                 raise lhs.LoadHalt(
-                    f"{total_changed} row(s) changed against current state. First diffs:\n  "
-                    + "\n  ".join(changed_detail[:10])
+                    f"{halting} row(s) changed or deleted against current state. "
+                    f"First diffs:\n  " + "\n  ".join(changed_detail[:10])
                     + "\nRe-run with --allow-changed to accept them."
                 )
+            rs.set_head(cur, rs.scope_key("tracking-player", player_id=player_id,
+                                          season=season, season_type=season_type),
+                        player_snap, run_id)
+            rs.set_head(cur, rs.scope_key("tracking-league", season=season,
+                                          season_type=season_type),
+                        league_snap, run_id)
             cur.execute("UPDATE load_run SET report = %s WHERE run_id = %s",
                         (lhs.Jsonb(report), run_id))
         conn.commit()
@@ -278,7 +293,8 @@ def main() -> None:
           f"(tracking shortfall {shortfall})")
     for table, counts in report.items():
         print(f"  {table:<22} inserted={counts['inserted']:<6} "
-              f"unchanged={counts['unchanged']:<6} changed={counts['changed']}")
+              f"unchanged={counts['unchanged']:<6} grown={counts['grown']:<5} "
+              f"changed={counts['changed']:<4} deleted={counts['deleted']}")
 
 
 if __name__ == "__main__":

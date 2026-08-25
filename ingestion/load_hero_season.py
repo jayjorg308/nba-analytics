@@ -48,72 +48,124 @@ class LoadHalt(Exception):
 
 
 class TableUpsert:
-    """Stage rows for one table, then flush with change detection.
+    """Stage rows for one table, then flush with classified change detection.
 
     Rows are dicts of column -> value including the provenance columns
     (snapshot_id, run_id). Content comparison excludes provenance: an
     unchanged row is left entirely untouched, keeping the run that first
-    asserted it; a changed row takes the new content AND the new provenance.
+    asserted it (first-asserted lineage — the snapshot a payload names is
+    the source_head's job, never row provenance; ADR-0080 as amended).
+
+    Classification (living seasons make some change legitimate):
+      inserted   key absent.
+      unchanged  all content equal; row untouched.
+      grown      diffs confined to monotone_cols (each new >= old) and
+                 free_cols — a cumulative source growing, or a free column
+                 (a rate, a row ordinal) moving. Applied; never halts.
+      changed    any other diff — a correction or contradiction. Applied,
+                 but the caller halts (rollback) unless --allow-changed.
+      deleted    scope-complete flush only: an existing scope row absent
+                 from the staged set. Applied; halts like changed.
     """
 
     PROV_COLS = ("snapshot_id", "run_id")
 
-    def __init__(self, table: str, key_cols: tuple[str, ...]):
+    def __init__(self, table: str, key_cols: tuple[str, ...],
+                 monotone_cols: tuple[str, ...] = (),
+                 free_cols: tuple[str, ...] = ()):
         self.table = table
         self.key_cols = key_cols
+        self.monotone_cols = monotone_cols
+        self.free_cols = free_cols
         self.staged: dict[tuple, dict] = {}
 
     def stage(self, row: dict) -> None:
         self.staged[tuple(row[k] for k in self.key_cols)] = row
 
-    def flush(self, cur, report: dict, changed_detail: list) -> None:
-        counts = {"inserted": 0, "unchanged": 0, "changed": 0}
+    def flush(self, cur, report: dict, changed_detail: list,
+              scope: tuple[str, list] | None = None) -> None:
+        """scope, when given, is (where_sql, params) declaring the staged set
+        COMPLETE over that slice of the table — existing scope rows absent
+        from it are deletions."""
+        counts = {"inserted": 0, "unchanged": 0, "grown": 0, "changed": 0,
+                  "deleted": 0}
         report[self.table] = counts
-        if not self.staged:
-            return
-        sample = next(iter(self.staged.values()))
-        content_cols = [
-            c for c in sample if c not in self.key_cols and c not in self.PROV_COLS
-        ]
-        existing = self._prefetch(cur, content_cols)
+        if self.staged:
+            sample = next(iter(self.staged.values()))
+            content_cols = [
+                c for c in sample if c not in self.key_cols and c not in self.PROV_COLS
+            ]
+            existing = self._prefetch(cur, content_cols)
 
-        inserts: list[dict] = []
-        updates: list[dict] = []
-        for key, row in self.staged.items():
-            current = existing.get(key)
-            if current is None:
-                inserts.append(row)
-                counts["inserted"] += 1
-            elif current == tuple(row[c] for c in content_cols):
-                counts["unchanged"] += 1
-            else:
+            inserts: list[dict] = []
+            updates: list[dict] = []
+            for key, row in self.staged.items():
+                current = existing.get(key)
+                if current is None:
+                    inserts.append(row)
+                    counts["inserted"] += 1
+                    continue
+                diffs = [
+                    (col, old) for col, old in zip(content_cols, current)
+                    if old != row[col]
+                ]
+                if not diffs:
+                    counts["unchanged"] += 1
+                    continue
+                grown = all(
+                    col in self.free_cols
+                    or (col in self.monotone_cols and row[col] >= old)
+                    for col, old in diffs
+                )
                 updates.append(row)
-                counts["changed"] += 1
-                for col, old in zip(content_cols, current):
-                    if old != row[col]:
+                if grown:
+                    counts["grown"] += 1
+                else:
+                    counts["changed"] += 1
+                    for col, old in diffs:
                         changed_detail.append(
                             f"{self.table} {dict(zip(self.key_cols, key))}: "
                             f"{col} {old!r} -> {row[col]!r}"
                         )
 
-        all_cols = list(sample)
-        if inserts:
-            placeholders = ", ".join(["%s"] * len(all_cols))
-            cur.executemany(
-                f"INSERT INTO {self.table} ({', '.join(all_cols)}) VALUES ({placeholders})",
-                [tuple(r[c] for c in all_cols) for r in inserts],
+            all_cols = list(sample)
+            if inserts:
+                placeholders = ", ".join(["%s"] * len(all_cols))
+                cur.executemany(
+                    f"INSERT INTO {self.table} ({', '.join(all_cols)}) VALUES ({placeholders})",
+                    [tuple(r[c] for c in all_cols) for r in inserts],
+                )
+            if updates:
+                set_cols = content_cols + list(self.PROV_COLS)
+                set_sql = ", ".join(f"{c} = %s" for c in set_cols)
+                where_sql = " AND ".join(f"{k} = %s" for k in self.key_cols)
+                cur.executemany(
+                    f"UPDATE {self.table} SET {set_sql} WHERE {where_sql}",
+                    [
+                        tuple(r[c] for c in set_cols) + tuple(r[k] for k in self.key_cols)
+                        for r in updates
+                    ],
+                )
+
+        if scope is not None:
+            where_sql, params = scope
+            cur.execute(
+                f"SELECT {', '.join(self.key_cols)} FROM {self.table} WHERE {where_sql}",
+                params,
             )
-        if updates:
-            set_cols = content_cols + list(self.PROV_COLS)
-            set_sql = ", ".join(f"{c} = %s" for c in set_cols)
-            where_sql = " AND ".join(f"{k} = %s" for k in self.key_cols)
-            cur.executemany(
-                f"UPDATE {self.table} SET {set_sql} WHERE {where_sql}",
-                [
-                    tuple(r[c] for c in set_cols) + tuple(r[k] for k in self.key_cols)
-                    for r in updates
-                ],
-            )
+            missing = [tuple(row) for row in cur.fetchall()
+                       if tuple(row) not in self.staged]
+            if missing:
+                counts["deleted"] = len(missing)
+                for key in missing[:10]:
+                    changed_detail.append(
+                        f"{self.table} {dict(zip(self.key_cols, key))}: DELETED "
+                        f"(present in store, absent from the incoming snapshot)"
+                    )
+                key_where = " AND ".join(f"{k} = %s" for k in self.key_cols)
+                cur.executemany(
+                    f"DELETE FROM {self.table} WHERE {key_where}", missing
+                )
 
     # Row-value IN lists parse into nested ORs; past a few hundred tuples
     # Postgres hits its stack depth limit, so prefetch in chunks.
@@ -237,13 +289,18 @@ def load_hero_season(
             players = TableUpsert("player", ("player_id",))
             teams = TableUpsert("team", ("team_id",))
             games = TableUpsert("game", ("game_id",))
-            shot_rows = TableUpsert("shot", ("game_id", "game_event_id"))
+            # source_row free: a cumulative re-pull may reorder rows without
+            # any shot changing; a real content change still halts.
+            shot_rows = TableUpsert("shot", ("game_id", "game_event_id"),
+                                    free_cols=("source_row",))
             baseline = TableUpsert(
                 "league_zone_baseline",
                 ("season", "season_type", "zone_basic", "zone_area", "zone_range"),
+                monotone_cols=("fga", "fgm"),
             )
             player_seasons = TableUpsert(
-                "player_season", ("player_id", "season", "season_type")
+                "player_season", ("player_id", "season", "season_type"),
+                monotone_cols=("gp", "fga"), free_cols=("usg_pct",),
             )
 
             # League-wide roster + sourced season facts from the Advanced
@@ -337,18 +394,39 @@ def load_hero_season(
 
             report: dict = {}
             changed_detail: list[str] = []
-            # Reference rows flush before the event rows that FK them.
-            for table in (players, teams, games, shot_rows, baseline, player_seasons):
-                table.flush(cur, report, changed_detail)
+            # Reference rows flush before the event rows that FK them. The
+            # snapshots assert their scopes COMPLETELY, so scope-complete
+            # flushes detect deletions (a vanished row is a contradiction).
+            season_scope_sql = "season = %s AND season_type = %s"
+            players.flush(cur, report, changed_detail)
+            teams.flush(cur, report, changed_detail)
+            games.flush(cur, report, changed_detail)
+            shot_rows.flush(cur, report, changed_detail, scope=(
+                "player_id = %s AND game_id IN"
+                " (SELECT game_id FROM game WHERE season = %s AND season_type = %s)",
+                [player_id, season, season_type],
+            ))
+            baseline.flush(cur, report, changed_detail,
+                           scope=(season_scope_sql, [season, season_type]))
+            player_seasons.flush(cur, report, changed_detail,
+                                 scope=(season_scope_sql, [season, season_type]))
 
-            total_changed = sum(c["changed"] for c in report.values())
-            if total_changed and not allow_changed:
+            halting = sum(c["changed"] + c["deleted"] for c in report.values())
+            if halting and not allow_changed:
                 raise LoadHalt(
-                    f"{total_changed} row(s) changed against current state — a "
-                    f"correction to already-loaded observations. First diffs:\n  "
+                    f"{halting} row(s) changed or deleted against current state "
+                    f"— a correction to already-loaded observations. First diffs:\n  "
                     + "\n  ".join(changed_detail[:10])
                     + "\nRe-run with --allow-changed to accept them."
                 )
+            # The scopes' current state now equals these snapshots (ADR-0080
+            # as amended): record the heads the exports will name.
+            rs.set_head(cur, rs.scope_key("shotchartdetail", player_id=player_id,
+                                          season=season, season_type=season_type),
+                        shot_snap, run_id)
+            rs.set_head(cur, rs.scope_key("league-advanced", season=season,
+                                          season_type=season_type),
+                        adv_snap, run_id)
             cur.execute(
                 "UPDATE load_run SET report = %s WHERE run_id = %s",
                 (Jsonb(report), run_id),
@@ -396,7 +474,8 @@ def main() -> None:
     print(f"loaded {snapshot_path} + {advanced_path}")
     for table, counts in report.items():
         print(f"  {table:<22} inserted={counts['inserted']:<6} "
-              f"unchanged={counts['unchanged']:<6} changed={counts['changed']}")
+              f"unchanged={counts['unchanged']:<6} grown={counts['grown']:<5} "
+              f"changed={counts['changed']:<4} deleted={counts['deleted']}")
 
 
 if __name__ == "__main__":

@@ -118,6 +118,84 @@ def test_snapshot_recatalog_with_different_bytes_halts(store, tmp_path):
         load_fixtures(store)
 
 
+def _day_two_fixtures(tmp_path, *, drop_last_shot=False, add_shot=False,
+                      baseline_fga_delta=0):
+    """A synthetic next-day pull session: the truncated snapshot mutated and
+    written under a later pull date, plus an advanced artifact whose hero FGA
+    matches (the FGA oracle must hold on both days)."""
+    snap = json.loads((FIXTURES / "snapshot.truncated.json").read_text(encoding="utf-8"))
+    shots = next(r for r in snap["response"]["resultSets"]
+                 if r["name"] == "Shot_Chart_Detail")
+    league = next(r for r in snap["response"]["resultSets"]
+                  if r["name"] == "LeagueAverages")
+    if add_shot:
+        row = list(shots["rowSet"][-1])
+        row[shots["headers"].index("GAME_EVENT_ID")] = 7777  # 999 is taken
+        shots["rowSet"].append(row)
+    if drop_last_shot:
+        shots["rowSet"].pop()
+    if baseline_fga_delta:
+        h = league["headers"]
+        row = league["rowSet"][0]
+        row[h.index("FGA")] += baseline_fga_delta
+        row[h.index("FG_PCT")] = round(row[h.index("FGM")] / row[h.index("FGA")], 3)
+    snap["_meta"]["shot_rows"] = len(shots["rowSet"])
+    snap["_meta"]["pull_date"] = "2026-07-10"
+    snap_path = tmp_path / "2026-07-10.json"
+    snap_path.write_text(json.dumps(snap), encoding="utf-8")
+
+    adv = json.loads((FIXTURES / "league-advanced.truncated.json").read_text(encoding="utf-8"))
+    rows = next(r for r in adv["response"]["resultSets"]
+                if r["name"] == "LeagueDashPlayerStats")
+    idx = rows["headers"].index("PLAYER_ID")
+    fga_idx = rows["headers"].index("FGA")
+    hero_id = int(snap["_meta"]["player_id"])
+    for row in rows["rowSet"]:
+        if int(row[idx]) == hero_id:
+            row[fga_idx] = len(shots["rowSet"])
+    adv["_meta"]["pull_date"] = "2026-07-10"
+    adv_path = tmp_path / "advanced-2026-07-10.json"
+    adv_path.write_text(json.dumps(adv), encoding="utf-8")
+    return snap_path, adv_path
+
+
+def test_living_season_growth_flows_and_head_moves(store, tmp_path):
+    """A next-day cumulative pull (new shot, grown baseline, grown season
+    facts) loads without a halt, and the export names the new snapshot —
+    heads move with the load, row provenance stays first-asserted."""
+    import derive_payload as dp
+
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, add_shot=True,
+                                            baseline_fga_delta=1)
+    report = lhs.load_hero_season(store, snapshot_path=snap_path,
+                                  advanced_path=adv_path)
+    assert report["shot"]["inserted"] == 1
+    assert report["shot"]["changed"] == 0
+    assert report["league_zone_baseline"]["grown"] == 1
+    assert report["player_season"]["grown"] == 1  # the hero's FGA grew
+    payload = esp.export_payload(store, "Cody Williams", "2025-26")
+    assert payload["_meta"]["sourceSnapshot"] == dp.repo_relative(snap_path)
+    assert payload["_meta"]["pullDate"] == "2026-07-10"
+    assert payload["_meta"]["totalShots"] == 16
+
+
+def test_living_season_shrinkage_halts_then_allows(store, tmp_path):
+    """A vanished shot (and the shrunken season FGA that keeps the oracle
+    honest) is a contradiction: deletion + monotone decrease halt; with
+    --allow-changed the correction lands and the export follows."""
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, drop_last_shot=True)
+    with pytest.raises(lhs.LoadHalt, match="changed or deleted"):
+        lhs.load_hero_season(store, snapshot_path=snap_path,
+                             advanced_path=adv_path)
+    report = lhs.load_hero_season(store, snapshot_path=snap_path,
+                                  advanced_path=adv_path, allow_changed=True)
+    assert report["shot"]["deleted"] == 1
+    payload = esp.export_payload(store, "Cody Williams", "2025-26")
+    assert payload["_meta"]["totalShots"] == 14
+
+
 @pytest.mark.skipif(
     not DEPLOYED.exists(), reason="deployed payload absent (clean clone)"
 )
