@@ -4,7 +4,9 @@ import { ComparisonPage } from './app/ComparisonPage'
 import { HeroIndexPage } from './app/HeroIndexPage'
 import { HeroPage } from './app/HeroPage'
 import { MethodologyPage } from './app/MethodologyPage'
-import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseRoute } from './app/routes'
+import { GameCardPage } from './app/GameCardPage'
+import { GameLandingPage } from './app/GameLandingPage'
+import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
 
@@ -34,6 +36,27 @@ function App() {
         return (
             <>
                 <MethodologyPage />
+                <Analytics />
+            </>
+        )
+    }
+    // Game cards (ADR-0081): the third reserved route family — /game is the
+    // landing, /game/<slug>/<date> a card. Resolved before the registry like
+    // every reserved route; a malformed game path falls through to the
+    // directory's unknown-path note.
+    const gameRoute = parseGameRoute(window.location.pathname, import.meta.env.BASE_URL)
+    if (gameRoute?.kind === 'landing') {
+        return (
+            <>
+                <GameLandingPage />
+                <Analytics />
+            </>
+        )
+    }
+    if (gameRoute?.kind === 'card') {
+        return (
+            <>
+                <GameCardPage slug={gameRoute.slug} date={gameRoute.date} />
                 <Analytics />
             </>
         )

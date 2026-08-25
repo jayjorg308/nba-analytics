@@ -8,7 +8,7 @@
 
 import type { ComparisonRequest } from '../app/comparisonRoute'
 import { serializeComparison } from '../app/comparisonRoute'
-import { COMPARE_ROUTE, METHODOLOGY_ROUTE } from '../app/routes'
+import { COMPARE_ROUTE, GAME_ROUTE, METHODOLOGY_ROUTE } from '../app/routes'
 import type { HeroConfig } from './types'
 
 export function payloadUrl(hero: HeroConfig, season: string): string {
@@ -74,6 +74,26 @@ export function compareUrl(request?: ComparisonRequest): string {
   return `${import.meta.env.BASE_URL}${COMPARE_ROUTE}${
     request === undefined ? '' : serializeComparison(request)
   }`
+}
+
+/** The game-card landing (ADR-0081): the roster picker. */
+export function gameLandingUrl(): string {
+  return `${import.meta.env.BASE_URL}${GAME_ROUTE}`
+}
+
+/** One game card: /game/<player-slug>/<date> — state owned by the path. */
+export function gameCardUrl(slug: string, date: string): string {
+  return `${import.meta.env.BASE_URL}${GAME_ROUTE}/${slug}/${date}`
+}
+
+/** A card-roster player-season's game-log payload (contract five). Takes a
+ * slug, not a HeroConfig — the card roster is wider than the registry. */
+export function gameLogUrl(slug: string, season: string): string {
+  return `${import.meta.env.BASE_URL}data/games/${slug}/${season}.json`
+}
+
+export function gameLogIndexUrl(): string {
+  return `${import.meta.env.BASE_URL}data/games/index.json`
 }
 
 /** A HeroPage's discovery link into the comparison (comparison plan §5): a

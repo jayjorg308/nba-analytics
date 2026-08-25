@@ -73,6 +73,14 @@ export const ZONE_POINT_VALUE: Record<BasicZone, 2 | 3> = {
 // both surfaces — "enough attempts to state" means one thing product-wide.
 export const ZONE_INCLUSION_MIN_ATTEMPTS = 15
 
+// The card-roster bar (ADR-0081): a player has game cards iff his season
+// FGA meets this floor (registered heroes are always in regardless). A
+// product-membership rule, not a data-cost rule — the corpus cost is
+// roster-size-insensitive — set at a rotation-regular volume (~3.7 FGA per
+// game over 82; ~284 qualifiers in 2025-26). Mechanical by design: moved
+// only by PR, so "why does X have a card" always has the same answer.
+export const CARD_ROSTER_MIN_FGA = 300
+
 // TUNABLE. Below this many attempts the making delta carries a small-sample
 // uncertainty flag — it is never suppressed (no second hard cutoff, ADR-0008).
 // Rationale: ADR-0008 requires per-corner making at L49/R34 to carry the flag,
