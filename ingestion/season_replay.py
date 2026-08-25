@@ -132,9 +132,12 @@ def main() -> None:
     ap.add_argument("--season", default="2025-26")
     ap.add_argument("--dates", nargs="*",
                     help="explicit ISO replay dates (default: auto calendar)")
-    ap.add_argument("--engine", choices=("files", "db"), default="files",
-                    help="drive the loop's file derives or its record-store "
-                         "path (ADR-0080's cutover gate runs --engine db)")
+    ap.add_argument("--engine", choices=("files", "db"), default="db",
+                    help="drive the loop's record-store path (the production "
+                         "engine since the 2026-08-24 cutover) or the legacy "
+                         "file derives — note the file freethrow scan is "
+                         "frontier-blind, so file-engine replays fail "
+                         "mid-season days by construction")
     ap.add_argument("--db-url",
                     help="record-store DSN for --engine db; default spins a "
                          "throwaway Dockerized Postgres so the production "

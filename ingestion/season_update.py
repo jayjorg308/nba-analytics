@@ -507,10 +507,10 @@ def main() -> None:
                          "re-gate even when upstream looks identical)")
     ap.add_argument("--no-push", action="store_true",
                     help="commit locally but never push")
-    ap.add_argument("--engine", choices=("files", "db"), default="files",
-                    help="derive phase: the production file derives, or "
-                         "load->export through the record store (ADR-0080; "
-                         "the cutover flips this default)")
+    ap.add_argument("--engine", choices=("files", "db"), default="db",
+                    help="derive phase (ADR-0080, cutover 2026-08-24): "
+                         "load->export through the record store (default), "
+                         "or the legacy file derives (fallback)")
     ap.add_argument("--db-url",
                     help="record-store DSN for --engine db (default: "
                          "NBA_DB_URL / .env — the production store; the "
