@@ -53,10 +53,13 @@ The project uses several unofficial stats.nba.com endpoints: `shotchartdetail` f
 ```text
 stats.nba.com
   → append-only shot, tracking, play-by-play, box-score, and league totals/advanced snapshots (gitignored)
-  → validated shot, creation, shot-context, and free-throw payloads (gitignored)
+  → the record store: Postgres (Neon) holding observations at natural NBA identity (ADR-0080)
+  → exported shot, creation, shot-context, and free-throw payloads (gitignored)
   → explicitly synced deployment siblings in public/data/ (committed)
   → static deployment at www.nbagoodshots.com
 ```
+
+Since the 2026-08-24 cutover (ADR-0080), the middle of that pipeline is a relational record store: loaders upsert each snapshot's observations with classified change detection (cumulative growth flows; corrections, deletions, and contradictions halt for a human), derived tables (free-throw trips, shot context) rebuild through the unmodified derive grammars, and the four payload exports were proven byte-identical against the committed corpus for every registered hero before the store became the production path. The raw snapshot files remain the append-only rebuild source, and the file derives remain for golden regeneration and as an explicit fallback engine.
 
 Adding a completed-season hero is one resumable command that runs the whole recipe (the raw pulls, the four derives, completing the shared play-by-play corpus with only the games it is missing, the config scaffold, the headshot and share-card assets, the deploy sync, and the closing authoring report):
 
@@ -74,7 +77,7 @@ For a brand-new hero, or a new season argument on an existing one, `npm run hero
 
 `season.config.json` designates live hero-seasons and carries the tracking-shortfall registry (characterized NBA tracking outages, pinned per game). The season loop (`npm run season:update`, scheduled daily through `scripts/season-update.ps1`) publishes only at the **reconciled frontier**: the latest game date at which every source is exactly coherent. Play-by-play availability fixes the candidate; the cumulative sources are pulled with that date as their ceiling; a tracking gap the pin registry does not explain retreats the frontier (upstream lag defers, it never fails), while a contradiction halts for a human. On green days the loop lands a data-only commit whose message carries the session report; any red morning, including a verdict guard broken by the night's games, halts the publish until a human rewrites copy and claim mapping together. A pre-flip season runs dark: derive and report daily, publish nothing, until all five eligibility gates pass and the flip ships as an authored, reviewed PR.
 
-`python ingestion/season_replay.py` is the pre-activation proof: it drives the real loop over a calendar of historical frontier dates against a completed season and requires per-day frontier exactness, the flip signal on exactly the boundary day, and a terminal frame that reproduces the committed payloads byte-for-byte modulo provenance fields. Its first run (2026-07-23, Cody Williams 2025-26) passed every oracle.
+`python ingestion/season_replay.py` is the pre-activation proof: it drives the real loop over a calendar of historical frontier dates against a completed season and requires per-day frontier exactness, the flip signal on exactly the boundary day, and a terminal frame that reproduces the committed payloads byte-for-byte modulo provenance fields. Its first run (2026-07-23, Cody Williams 2025-26) passed every oracle on the file derives; its second (2026-08-24, same subject) passed every oracle on the record-store engine against a throwaway Dockerized Postgres, living the store's whole lifecycle from empty — the gate that authorized the cutover.
 
 New team marks should be normalized before being assigned to a hero:
 
@@ -86,7 +89,7 @@ The asset guard requires a transparent 1024×1024 canvas with a consistently cen
 
 ## Hosting
 
-The project is a static React/Vite application deployed from the repository to Vercel and served at [www.nbagoodshots.com](https://www.nbagoodshots.com/). There is no production backend or database: the built app and its committed JSON payloads are the complete deployment.
+The project is a static React/Vite application deployed from the repository to Vercel and served at [www.nbagoodshots.com](https://www.nbagoodshots.com/). There is no runtime backend: the built app and its committed JSON payloads are the complete deployment, and the browser never contacts a server-side API or database. The record store (ADR-0080) sits entirely behind the export pipeline on the ingestion side — the deployed site neither knows nor needs it.
 
 Deep hero URLs are served through the rewrite in `vercel.json`, which sends any path to `index.html`; the app then resolves the player slug from the URL against `src/heroes/registry.ts`. Navigation uses ordinary links and full page loads, so each hero remains a self-contained, shareable argument rather than view state in a player switcher. Vercel Analytics is included in the app.
 
@@ -104,7 +107,7 @@ Unknown paths render the directory with a quiet note. Cross-hero navigation is t
 
 ## Running locally
 
-Requires Node.js 22 and Python 3.12 (the versions used by CI).
+Requires Node.js 22 and Python 3.12 (the versions used by CI). Docker is needed only for the record-store tests and the replay proof (they run against a throwaway Postgres container and skip loudly without it); ingestion against the production store reads its DSN from a gitignored `.env` (`.env.example` documents the shape).
 
 ```bash
 npm install
@@ -141,6 +144,8 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **Comparison page** (2026-08-12 → 2026-08-23, ADRs 0073–0079): the first post-launch surface. `/compare` renders two shot profiles side by side — two registered players in one shared season, or one player before and since a split date — over exact comparison windows, one shared league baseline, and URL-owned state. The zone evidence ships as a scoreboard of priced calls (ADR-0078, prototype-chosen from four variants), and player comparisons carry the free-throw line in the same grammar (ADR-0079): season-line cards with Draw edge, Conversion edge, and Reliance lean calls over the transposed trip taxonomy. Free throws needed no data change in players mode — a full-season window is exactly the season-total contract — while the before-and-since mode defers them until a date-grained free-throw contract exists.
 
+**Database migration** (2026-08-24, ADR-0080): the storage story gained a relational middle in one day-long push, grilled decision-by-decision beforehand. A Neon-hosted Postgres record store now holds every observation at natural NBA identity — shots, all-player play-by-play events, box lines, tracking splits, league oracles — product-blind and rebuildable from the raw layer, with derived trips and shot context rebuilt through the unmodified derive grammars. The migration was held to a byte-identical parity oracle (all four contracts, all registered heroes) and closed with the season loop cut over to the record-store engine after a second replay proof passed every oracle on it. The committed payloads and the static site are unchanged by design; the migration also flushed real defects the oracle caught — collapsed duplicate play-by-play events, absolute local paths shipped in deployed payload provenance — and unlocked the date-grained free-throw contract the comparison page's split mode is waiting on.
+
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 
 ## Technology and project docs
@@ -148,7 +153,7 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checkli
 Built with React 19, TypeScript, Vite, Zod, Python, and hand-rolled SVG. The app is dark-only, uses self-hosted webfonts, and has no charting or client-side router dependency.
 
 - [CONTEXT.md](CONTEXT.md) defines the project language and analytical model.
-- [docs/adr/](docs/adr/) contains the 79 architectural decision records behind the product, data, presentation, and deployment choices.
+- [docs/adr/](docs/adr/) contains the 80 architectural decision records behind the product, data, presentation, and deployment choices.
 - [docs/ROADMAP.md](docs/ROADMAP.md) tracks shipped phases and upcoming work.
 
 ## License

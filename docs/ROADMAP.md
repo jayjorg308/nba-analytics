@@ -492,7 +492,10 @@ untouched._
 **Activation (October 2026, post-v3):** everything is pre-positioned —
 `season.config.json` already carries Ace's 2026-27 in dark mode and the
 loop already no-ops cleanly on the unstarted season. The checklist: rerun
-the replay proof (`python ingestion/season_replay.py`), register
+the replay proof (`python ingestion/season_replay.py`) — ✅ done
+2026-08-24 on the record-store engine, every oracle exact, which was also
+ADR-0080's cutover gate: the loop now runs the record store by default,
+so activation runs the migrated pipeline from day one — then register
 `scripts/season-update.ps1` with Task Scheduler (command in its header),
 watch the dark reports, and ship Ace's flip PR the day the loop says
 GATES PASS. The flip PR's recipe grew with season-over-season (ADR-0059

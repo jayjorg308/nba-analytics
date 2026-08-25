@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 72,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\nique-clifford\\2025-26\\2026-07-29.json",
+    "sourceShotPayload": "data/derived/nique-clifford/2025-26/2026-07-29.json",
     "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
     "leagueTotalsPullDate": "2026-07-23",
     "seasonFga": 596,

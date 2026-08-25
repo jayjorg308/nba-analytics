@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 74,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\maxime-raynaud\\2025-26\\2026-07-29.json",
+    "sourceShotPayload": "data/derived/maxime-raynaud/2025-26/2026-07-29.json",
     "totalShots": 671,
     "gamesExpected": 74,
     "gamesLoaded": 74,

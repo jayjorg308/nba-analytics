@@ -321,6 +321,22 @@ Whether a season is **completed** (immutable — pulled once, one snapshot; the 
 **Append-only raw layer**:
 The raw storage layer is append-only from day one: new snapshots are added, never overwritten. Derived data recomputes from the latest snapshot for a (player, season). v1 does *not* build snapshot-selection, re-pull scheduling, or diff/merge logic — with one completed-season snapshot, "latest" is trivial. The key carries pull-date so the later live-season demo needs no storage refactor; the machinery that consumes multiple snapshots is deferred until that demo needs it.
 
+**Record store** (a.k.a. **the database**):
+The relational system of record between the raw layer and the deployed layer (ADR-0080): observed facts at natural NBA identity, current state only, rebuildable from the raw layer. It stores what is observed and computes what is derived, and it is product-blind — it knows players, never heroes; product configuration and authored judgment stay in the repo.
+_Avoid_: treating the record store as the app's read source — the app reads deployed payloads only.
+
+**Export step**:
+The derivation that assembles deployed payloads from the record store plus the hero registry — the one place the product-blind record meets product configuration. Publishing is unchanged: an export lands as the committed deployed copy, so the export changes how payloads are produced, never what the app reads.
+
+**Snapshot catalog**:
+The record store's index of raw artifacts (source, key, pull date, content identity). It points at the raw layer's files, which remain the artifacts themselves — cataloged, never replaced.
+
+**Load run**:
+One recorded execution of loading raw snapshots into the record store: which snapshots it consumed, when, and its change-detection report. Every derived row in the record store carries the run that produced it.
+
+**Change detection**:
+The per-load classification of each observed row as inserted, unchanged, or changed against the record store's current state. A changed row at or inside a published reconciled frontier is a contradiction and halts for a human — never a silent overwrite.
+
 **Source universe**:
 The record system a measurement belongs to. **Official** sources are the scorer's record and agree with each other exactly (shot rows, the `LeagueAverages` frame, league season totals, box scores); **tracking** sources are the optical-tracking dashboards behind the creation contexts, which league-wide run slightly under the official record (~0.4% of 2025-26 FGA — real tracking gaps, present in the shipped artifacts). Every comparison stays within one universe: creation is tracking vs tracking; shots, free throws, and their baselines are official vs official; league-wide aggregates are never reconciled across universes. The one deliberate cross-universe seam is the hero-grain General identity — the hero's tracking total reconciles against his official pre-drop shot count: any shortfall is measured, persisted, and reported (the tracking shortfall), while tracking *exceeding* the official record is contradiction and hard-fails — which is what keeps a hero-side tracking gap loud instead of silent (ADR-0030/0058).
 
@@ -334,7 +350,7 @@ A living-season pull of a cumulative source (shots, tracking, league totals) iss
 One dated local run of the season loop's acquisitions: play-by-play/box pairs first (their availability fixes the reconciled frontier), then frontier-anchored pulls of the cumulative sources. Append-only; a same-day retry appends a timestamped snapshot, never overwrites.
 
 **Season loop**:
-The scheduled daily pipeline that keeps a living season fresh: pull session → the four derives → `hero:sync` → the full repository gate, and on green a data commit pushed for deployment (ADR-0057). Its roster — which hero-seasons are live, and whether each runs dark or publishes — lives in `season.config.json`, changed only by PR. Runs on a dev machine (pulls are local-only; `npm run season:update`); any failure halts the publish loudly and notifies. For a pre-flip season it runs dark: pull, derive, report, publish nothing. An off-day session ends at the no-change early exit after one discovery pull.
+The scheduled daily pipeline that keeps a living season fresh: pull session → the derive phase (since the 2026-08-24 cutover, loads into the record store then the four exports — the file derives remain the explicit fallback engine; ADR-0080) → `hero:sync` → the full repository gate, and on green a data commit pushed for deployment (ADR-0057). Its roster — which hero-seasons are live, and whether each runs dark or publishes — lives in `season.config.json`, changed only by PR. Runs on a dev machine (pulls are local-only; `npm run season:update`); any failure halts the publish loudly and notifies. For a pre-flip season it runs dark: pull, derive, report, publish nothing. An off-day session ends at the no-change early exit after one discovery pull.
 
 **Data commit**:
 The one automated commit class (ADR-0057): deployed payloads plus their freshness metadata, landed by the season loop on a green day, with the day's report (new games, headline deltas, gate results) in the commit message. Never code, copy, or configuration — everything else still travels by PR.
@@ -343,7 +359,7 @@ The one automated commit class (ADR-0057): deployed payloads plus their freshnes
 The human copy event that makes a living season the hero's canonical season: triggered the first day all five eligibility gates pass on the live data (Gate 2 read mechanically: every evaluation zone at or above the inclusion bar — the loop's "GATES PASS" report line is the starting gun), shipped as one reviewed PR carrying the new season argument's registry entry + authored verdict + guard claim mapping + the `canonicalSeason` move + the season's dark→live mode flip in `season.config.json` (ADR-0059/0060). A hero with no prior argument is born live at the flip; a prior season argument survives its hero's flip at its own season permalink, verdict frozen verbatim, gaining only the structural forward link — and the flip PR may author the first growth-sentence (ADR-0061).
 
 **Replay proof**:
-The season loop's pre-activation ritual (`ingestion/season_replay.py`): drive the real loop over a calendar of historical frontier dates against a completed season and hold it to oracles computed from the committed payloads — per-day frontier exactness and gate truth, the flip signal firing on exactly the boundary day, and the terminal frame reproducing the committed deployment byte-equal modulo the six provenance fields (pull dates and source paths; ADR-0058, closure). Real data through real endpoints; the calendar is the only fiction. First run 2026-07-23 (Cody 2025-26, every oracle exact — v3's exit); rerun before each season's activation.
+The season loop's pre-activation ritual (`ingestion/season_replay.py`): drive the real loop over a calendar of historical frontier dates against a completed season and hold it to oracles computed from the committed payloads — per-day frontier exactness and gate truth, the flip signal firing on exactly the boundary day, and the terminal frame reproducing the committed deployment byte-equal modulo the six provenance fields (pull dates and source paths; ADR-0058, closure). Real data through real endpoints; the calendar is the only fiction. First run 2026-07-23 (Cody 2025-26, every oracle exact — v3's exit); second run 2026-08-24 on the record-store engine against a scratch store (every oracle exact — ADR-0080's cutover gate); rerun before each season's activation.
 
 **Claim headroom**:
 The distance between a verdict-grade quantity and the house threshold bars (the verdict ladder's neutral/material/strong/far PPS vocabulary, diet-share ratios, both-cuts free-throw gaps, growth movements — ADR-0061), reported by `hero:report`'s closing CLAIM HEADROOM section. The authoring aid for living-season verdicts (write claims with deliberate margin, since the payload moves daily) — an authoring input only, never a guard input; each hero's guard still declares its own claim mapping with its own rationale, and guards stay exact (ADR-0059).

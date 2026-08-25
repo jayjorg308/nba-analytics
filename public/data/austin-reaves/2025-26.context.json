@@ -6,7 +6,7 @@
     "season": "2025-26",
     "dataThrough": "2026-04-02",
     "gamesIncluded": 51,
-    "sourceShotPayload": "C:\\Users\\JaysonJorgensen\\Sources\\repos\\nba-analytics\\data\\derived\\austin-reaves\\2025-26\\2026-08-10.json",
+    "sourceShotPayload": "data/derived/austin-reaves/2025-26/2026-08-10.json",
     "totalShots": 762,
     "gamesExpected": 51,
     "gamesLoaded": 51,
