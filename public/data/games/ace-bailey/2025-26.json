@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Ace Bailey",
     "playerId": 1642846,
     "season": "2025-26",
@@ -103,7 +103,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500098",
@@ -162,7 +164,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500120",
@@ -253,7 +257,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500135",
@@ -320,7 +326,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500025",
@@ -411,7 +419,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500150",
@@ -494,7 +504,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500158",
@@ -545,7 +557,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500172",
@@ -627,7 +641,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500036",
@@ -726,7 +742,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500205",
@@ -825,7 +843,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500211",
@@ -956,7 +976,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500227",
@@ -1094,7 +1116,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500240",
@@ -1153,7 +1177,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500253",
@@ -1268,7 +1294,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500055",
@@ -1359,7 +1387,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500282",
@@ -1458,7 +1488,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500291",
@@ -1605,7 +1637,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500077",
@@ -1664,7 +1698,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500301",
@@ -1779,7 +1815,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500316",
@@ -1886,7 +1924,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500335",
@@ -1953,7 +1993,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500343",
@@ -2084,7 +2126,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500363",
@@ -2215,7 +2259,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501213",
@@ -2330,7 +2376,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501224",
@@ -2421,7 +2469,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500379",
@@ -2566,7 +2616,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500393",
@@ -2697,7 +2749,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500405",
@@ -2828,7 +2882,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500419",
@@ -2943,7 +2999,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500430",
@@ -2978,7 +3036,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500525",
@@ -3021,7 +3081,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500558",
@@ -3072,7 +3134,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500573",
@@ -3171,7 +3235,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500583",
@@ -3318,7 +3384,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500593",
@@ -3465,7 +3533,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500611",
@@ -3532,7 +3602,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500616",
@@ -3695,7 +3767,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500632",
@@ -3850,7 +3924,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500649",
@@ -3989,7 +4065,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500670",
@@ -4136,7 +4214,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500678",
@@ -4275,7 +4355,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500694",
@@ -4374,7 +4456,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500706",
@@ -4481,7 +4565,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500717",
@@ -4602,7 +4688,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500735",
@@ -4829,7 +4917,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500750",
@@ -4944,7 +5034,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500763",
@@ -5083,7 +5175,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500786",
@@ -5174,7 +5268,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500790",
@@ -5313,7 +5409,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500804",
@@ -5492,7 +5590,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500830",
@@ -5583,7 +5683,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500856",
@@ -5753,7 +5855,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500867",
@@ -5908,7 +6012,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500881",
@@ -6054,7 +6160,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500895",
@@ -6201,7 +6309,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500900",
@@ -6380,7 +6490,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500919",
@@ -6503,7 +6615,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500949",
@@ -6650,7 +6764,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022500967",
@@ -6693,7 +6809,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501004",
@@ -6816,7 +6934,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501014",
@@ -7051,7 +7171,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501030",
@@ -7259,7 +7381,9 @@
         }
       ],
       "technicalFtm": 1,
-      "technicalFta": 1
+      "technicalFta": 1,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501043",
@@ -7475,7 +7599,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501057",
@@ -7646,7 +7772,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501072",
@@ -7777,7 +7905,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501081",
@@ -7924,7 +8054,9 @@
         }
       ],
       "technicalFtm": 1,
-      "technicalFta": 1
+      "technicalFta": 1,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501096",
@@ -8063,7 +8195,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501112",
@@ -8226,7 +8360,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501124",
@@ -8396,7 +8532,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501139",
@@ -8527,7 +8665,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501181",
@@ -8698,7 +8838,9 @@
       ],
       "trips": [],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     },
     {
       "gameId": "0022501198",
@@ -8893,7 +9035,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 0
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
     }
   ]
 }

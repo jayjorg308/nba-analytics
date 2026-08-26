@@ -1,0 +1,4810 @@
+{
+  "_meta": {
+    "schemaVersion": 2,
+    "player": "Jalen Smith",
+    "playerId": 1630188,
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "dataThrough": "2026-03-25",
+    "totalGames": 53,
+    "seasonFga": 404
+  },
+  "leagueBaseline": [
+    {
+      "zone": "Restricted Area",
+      "fga": 62253,
+      "fgm": 41768
+    },
+    {
+      "zone": "In The Paint (Non-RA)",
+      "fga": 43908,
+      "fgm": 19565
+    },
+    {
+      "zone": "Mid-Range",
+      "fga": 22025,
+      "fgm": 9179
+    },
+    {
+      "zone": "Left Corner 3",
+      "fga": 12210,
+      "fgm": 4729
+    },
+    {
+      "zone": "Right Corner 3",
+      "fga": 11360,
+      "fgm": 4386
+    },
+    {
+      "zone": "Above the Break 3",
+      "fga": 67375,
+      "fgm": 23585
+    }
+  ],
+  "leagueFreeThrows": {
+    "ftm": 45224,
+    "fta": 57768
+  },
+  "games": [
+    {
+      "gameId": "0022500084",
+      "date": "2025-10-22",
+      "opponent": "DET",
+      "home": true,
+      "box": {
+        "min": "13:38",
+        "pts": 2,
+        "reb": 5,
+        "ast": 1,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:03",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "0:43",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "0:01",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "9:56",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "9:09",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "0:56",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "11:46",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 1,
+          "clock": "2:00",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500100",
+      "date": "2025-10-25",
+      "opponent": "ORL",
+      "home": false,
+      "box": {
+        "min": "16:45",
+        "pts": 16,
+        "reb": 3,
+        "ast": 1,
+        "ftm": 2,
+        "fta": 4
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "1:35",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "0:40",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "11:35",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "10:44",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "10:19",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "9:00",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "2:14",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "8:11",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 1,
+          "clock": "0:40",
+          "ftm": 0,
+          "fta": 1
+        },
+        {
+          "tripClass": "andOne",
+          "period": 2,
+          "clock": "10:19",
+          "ftm": 0,
+          "fta": 1
+        },
+        {
+          "tripClass": "bonus",
+          "period": 3,
+          "clock": "0:48",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500115",
+      "date": "2025-10-27",
+      "opponent": "ATL",
+      "home": true,
+      "box": {
+        "min": "7:13",
+        "pts": 0,
+        "reb": 3,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:57",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "2:16",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "2:37",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "2:34",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500132",
+      "date": "2025-10-29",
+      "opponent": "SAC",
+      "home": true,
+      "box": {
+        "min": "15:25",
+        "pts": 10,
+        "reb": 5,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 1
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:12",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "10:44",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "10:18",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "9:27",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "3:50",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "3:16",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "2:24",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "1:25",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "9:12",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 2,
+          "clock": "9:27",
+          "ftm": 0,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500023",
+      "date": "2025-10-31",
+      "opponent": "NYK",
+      "home": true,
+      "box": {
+        "min": "17:08",
+        "pts": 10,
+        "reb": 9,
+        "ast": 2,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "1:23",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "10:54",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "7:42",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "2:47",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "8:36",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 3,
+          "clock": "3:56",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500153",
+      "date": "2025-11-02",
+      "opponent": "NYK",
+      "home": false,
+      "box": {
+        "min": "16:00",
+        "pts": 12,
+        "reb": 5,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 1
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "3:06",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "0:54",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "11:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "9:20",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "8:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "8:33",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "8:11",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 2,
+          "clock": "8:48",
+          "ftm": 0,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500167",
+      "date": "2025-11-04",
+      "opponent": "PHI",
+      "home": true,
+      "box": {
+        "min": "16:56",
+        "pts": 14,
+        "reb": 4,
+        "ast": 0,
+        "ftm": 3,
+        "fta": 4
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "3:19",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "2:36",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:57",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "10:33",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "9:24",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "8:21",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "10:36",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "9:49",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 1,
+          "clock": "1:13",
+          "ftm": 1,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "9:18",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500035",
+      "date": "2025-11-07",
+      "opponent": "MIL",
+      "home": false,
+      "box": {
+        "min": "16:48",
+        "pts": 7,
+        "reb": 5,
+        "ast": 3,
+        "ftm": 1,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "2:37",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:03",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "7:43",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "7:20",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "0:24",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "10:29",
+          "assist": "unassisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "10:52",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500186",
+      "date": "2025-11-08",
+      "opponent": "CLE",
+      "home": false,
+      "box": {
+        "min": "18:34",
+        "pts": 18,
+        "reb": 11,
+        "ast": 4,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "3:07",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "7:46",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "7:21",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "3:41",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "0:52",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "0:31",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "11:29",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500202",
+      "date": "2025-11-10",
+      "opponent": "SAS",
+      "home": true,
+      "box": {
+        "min": "21:21",
+        "pts": 11,
+        "reb": 12,
+        "ast": 2,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "2:30",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:05",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "11:31",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "9:40",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "9:36",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "8:39",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "5:32",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "5:07",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "1:51",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "9:49",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "9:24",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "9:07",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "8:34",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500214",
+      "date": "2025-11-12",
+      "opponent": "DET",
+      "home": false,
+      "box": {
+        "min": "13:54",
+        "pts": 9,
+        "reb": 4,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "4:15",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:39",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "1:11",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "0:37",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "2:46",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "1:49",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "3:43",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "1:01",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500240",
+      "date": "2025-11-16",
+      "opponent": "UTA",
+      "home": false,
+      "box": {
+        "min": "16:36",
+        "pts": 8,
+        "reb": 8,
+        "ast": 3,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:07",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "10:20",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "2:29",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "1:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "0:56",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "11:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "8:41",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "6:53",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500248",
+      "date": "2025-11-17",
+      "opponent": "DEN",
+      "home": false,
+      "box": {
+        "min": "17:57",
+        "pts": 16,
+        "reb": 8,
+        "ast": 2,
+        "ftm": 1,
+        "fta": 1
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "0:02",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "11:04",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "9:29",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "7:58",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "6:53",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "1:23",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "0:28",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "0:01",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "3:36",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "2:40",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "5:16",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 3,
+          "clock": "2:40",
+          "ftm": 1,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500263",
+      "date": "2025-11-19",
+      "opponent": "POR",
+      "home": false,
+      "box": {
+        "min": "11:49",
+        "pts": 5,
+        "reb": 1,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:48",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "2:25",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:43",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "2:29",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "9:38",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "8:24",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500051",
+      "date": "2025-11-21",
+      "opponent": "MIA",
+      "home": true,
+      "box": {
+        "min": "24:03",
+        "pts": 14,
+        "reb": 2,
+        "ast": 2,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "5:01",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:56",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "1:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "1:04",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "0:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "8:22",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "1:23",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "0:00",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 3,
+          "clock": "1:52",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500271",
+      "date": "2025-11-22",
+      "opponent": "WAS",
+      "home": true,
+      "box": {
+        "min": "19:10",
+        "pts": 9,
+        "reb": 9,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "3:38",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "0:49",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "10:07",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "5:08",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "3:58",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "2:46",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "2:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "0:49",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "11:23",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "9:32",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "8:49",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "7:59",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "7:31",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500289",
+      "date": "2025-11-24",
+      "opponent": "NOP",
+      "home": false,
+      "box": {
+        "min": "26:22",
+        "pts": 13,
+        "reb": 6,
+        "ast": 1,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "3:29",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "6:13",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "2:57",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "11:23",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "5:01",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "4:29",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "8:20",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500071",
+      "date": "2025-11-28",
+      "opponent": "CHA",
+      "home": false,
+      "box": {
+        "min": "17:27",
+        "pts": 6,
+        "reb": 5,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "4:53",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:25",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "0:56",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "11:28",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "10:20",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022501209",
+      "date": "2025-12-12",
+      "opponent": "CHA",
+      "home": false,
+      "box": {
+        "min": "16:48",
+        "pts": 5,
+        "reb": 10,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "8:54",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "4:32",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "3:53",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "3:26",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "1:01",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "11:45",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "11:45",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "9:15",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "5:09",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022501223",
+      "date": "2025-12-14",
+      "opponent": "NOP",
+      "home": true,
+      "box": {
+        "min": "12:20",
+        "pts": 6,
+        "reb": 0,
+        "ast": 1,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:17",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "10:12",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "10:36",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 2,
+          "clock": "6:57",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500367",
+      "date": "2025-12-17",
+      "opponent": "CLE",
+      "home": true,
+      "box": {
+        "min": "15:54",
+        "pts": 4,
+        "reb": 7,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "0:31",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "11:11",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "4:35",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500384",
+      "date": "2025-12-19",
+      "opponent": "CLE",
+      "home": false,
+      "box": {
+        "min": "15:08",
+        "pts": 4,
+        "reb": 4,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "2:25",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "8:56",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "4:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "0:19",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500396",
+      "date": "2025-12-21",
+      "opponent": "ATL",
+      "home": false,
+      "box": {
+        "min": "13:12",
+        "pts": 3,
+        "reb": 5,
+        "ast": 3,
+        "ftm": 3,
+        "fta": 4
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "3:00",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "11:41",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 3,
+          "clock": "1:54",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500411",
+      "date": "2025-12-23",
+      "opponent": "ATL",
+      "home": false,
+      "box": {
+        "min": "11:44",
+        "pts": 5,
+        "reb": 4,
+        "ast": 3,
+        "ftm": 2,
+        "fta": 3
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:42",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:05",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "4:02",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 1,
+          "clock": "2:51",
+          "ftm": 1,
+          "fta": 2
+        },
+        {
+          "tripClass": "andOne",
+          "period": 3,
+          "clock": "4:02",
+          "ftm": 1,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500427",
+      "date": "2025-12-26",
+      "opponent": "PHI",
+      "home": true,
+      "box": {
+        "min": "22:21",
+        "pts": 12,
+        "reb": 8,
+        "ast": 3,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "5:30",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "2:46",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:24",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "11:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "5:33",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "1:23",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "2:31",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 1,
+          "clock": "0:22",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500437",
+      "date": "2025-12-27",
+      "opponent": "MIL",
+      "home": true,
+      "box": {
+        "min": "22:21",
+        "pts": 6,
+        "reb": 10,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "4:14",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "2:52",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "1:02",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "1:01",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "2:54",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "1:17",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "9:50",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "0:58",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500452",
+      "date": "2025-12-29",
+      "opponent": "MIN",
+      "home": true,
+      "box": {
+        "min": "25:31",
+        "pts": 12,
+        "reb": 6,
+        "ast": 1,
+        "ftm": 1,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "11:12",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "7:28",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "6:41",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "5:19",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "11:02",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "7:03",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 3,
+          "clock": "8:10",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500466",
+      "date": "2025-12-31",
+      "opponent": "NOP",
+      "home": true,
+      "box": {
+        "min": "26:20",
+        "pts": 14,
+        "reb": 14,
+        "ast": 1,
+        "ftm": 3,
+        "fta": 3
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "11:25",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "10:46",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "10:21",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "6:15",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "4:58",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "7:18",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "5:49",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "6:18",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "4:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "9:44",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "7:23",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 3,
+          "clock": "6:02",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "andOne",
+          "period": 3,
+          "clock": "4:48",
+          "ftm": 1,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500480",
+      "date": "2026-01-02",
+      "opponent": "ORL",
+      "home": true,
+      "box": {
+        "min": "26:57",
+        "pts": 11,
+        "reb": 10,
+        "ast": 1,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "11:14",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "10:59",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "5:49",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "5:25",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "5:33",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "5:09",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "11:41",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "9:53",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "8:17",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "1:46",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "3:52",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500489",
+      "date": "2026-01-03",
+      "opponent": "CHA",
+      "home": true,
+      "box": {
+        "min": "15:01",
+        "pts": 9,
+        "reb": 5,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "10:43",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "7:18",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "6:05",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "6:41",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "11:40",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500546",
+      "date": "2026-01-10",
+      "opponent": "DAL",
+      "home": true,
+      "box": {
+        "min": "16:18",
+        "pts": 7,
+        "reb": 9,
+        "ast": 0,
+        "ftm": 1,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "6:33",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "6:02",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "4:04",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "5:59",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "3:16",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "5:17",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "5:07",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "4:43",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "2:38",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "2:08",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "0:45",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 1,
+          "clock": "5:04",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500565",
+      "date": "2026-01-13",
+      "opponent": "HOU",
+      "home": false,
+      "box": {
+        "min": "36:18",
+        "pts": 14,
+        "reb": 9,
+        "ast": 1,
+        "ftm": 4,
+        "fta": 5
+      },
+      "shots": [
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "11:01",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "9:02",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "6:40",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "6:39",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "5:37",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "5:03",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "0:41",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "11:08",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "7:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "6:02",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "1:22",
+          "assist": null
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "8:47",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "8:16",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 1,
+          "clock": "6:39",
+          "ftm": 0,
+          "fta": 1
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "0:07",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "9:14",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500573",
+      "date": "2026-01-14",
+      "opponent": "UTA",
+      "home": true,
+      "box": {
+        "min": "17:05",
+        "pts": 12,
+        "reb": 10,
+        "ast": 1,
+        "ftm": 4,
+        "fta": 6
+      },
+      "shots": [
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "5:19",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "0:26",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "0:42",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "0:39",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "0:02",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "4:50",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "4:49",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 1,
+          "clock": "4:58",
+          "ftm": 1,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "1:12",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "7:04",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500587",
+      "date": "2026-01-16",
+      "opponent": "BKN",
+      "home": false,
+      "box": {
+        "min": "35:05",
+        "pts": 14,
+        "reb": 13,
+        "ast": 4,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "6:20",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "11:47",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "5:48",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "2:06",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "11:12",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "11:03",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "9:24",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "8:15",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "6:31",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "6:00",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "0:54",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 3,
+          "clock": "0:33",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500603",
+      "date": "2026-01-18",
+      "opponent": "BKN",
+      "home": true,
+      "box": {
+        "min": "30:37",
+        "pts": 12,
+        "reb": 10,
+        "ast": 3,
+        "ftm": 0,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "7:51",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "6:04",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "5:47",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "8:01",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "9:04",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "9:03",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "7:08",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "6:42",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 1,
+          "clock": "5:47",
+          "ftm": 0,
+          "fta": 1
+        },
+        {
+          "tripClass": "andOne",
+          "period": 2,
+          "clock": "8:01",
+          "ftm": 0,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500614",
+      "date": "2026-01-20",
+      "opponent": "LAC",
+      "home": true,
+      "box": {
+        "min": "23:35",
+        "pts": 10,
+        "reb": 9,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 1
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "10:08",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "7:46",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "2:15",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "2:10",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "9:08",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "4:41",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "8:56",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "8:43",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "4:21",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "1:15",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 3,
+          "clock": "4:21",
+          "ftm": 0,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500631",
+      "date": "2026-01-22",
+      "opponent": "MIN",
+      "home": false,
+      "box": {
+        "min": "26:53",
+        "pts": 17,
+        "reb": 4,
+        "ast": 0,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "10:47",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "7:09",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "4:55",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "8:33",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "3:03",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "11:04",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "8:48",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "1:37",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "0:45",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 4,
+          "clock": "0:11",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500647",
+      "date": "2026-01-24",
+      "opponent": "BOS",
+      "home": true,
+      "box": {
+        "min": "27:24",
+        "pts": 14,
+        "reb": 9,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "10:34",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "8:51",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "8:18",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "5:58",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "5:10",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "11:28",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "10:17",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "9:47",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "4:42",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "0:20",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500661",
+      "date": "2026-01-26",
+      "opponent": "LAL",
+      "home": true,
+      "box": {
+        "min": "36:44",
+        "pts": 13,
+        "reb": 7,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "10:23",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "7:53",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "4:42",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "3:02",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "11:40",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "11:25",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "8:20",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "7:10",
+          "ftm": 0,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500672",
+      "date": "2026-01-28",
+      "opponent": "IND",
+      "home": false,
+      "box": {
+        "min": "27:40",
+        "pts": 13,
+        "reb": 11,
+        "ast": 3,
+        "ftm": 0,
+        "fta": 1
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "0:53",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "11:03",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "4:38",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "3:11",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "1:22",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "0:05",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "10:18",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "7:14",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "6:43",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 1,
+          "clock": "0:53",
+          "ftm": 0,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500529",
+      "date": "2026-01-29",
+      "opponent": "MIA",
+      "home": true,
+      "box": {
+        "min": "15:19",
+        "pts": 11,
+        "reb": 5,
+        "ast": 0,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "11:17",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "10:58",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "9:30",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "3:12",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "1:50",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "7:21",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "7:20",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "5:05",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500722",
+      "date": "2026-02-03",
+      "opponent": "MIL",
+      "home": false,
+      "box": {
+        "min": "20:06",
+        "pts": 16,
+        "reb": 5,
+        "ast": 1,
+        "ftm": 3,
+        "fta": 3
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "11:38",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "8:38",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "6:13",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "8:18",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "10:52",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "10:22",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "9:04",
+          "assist": "unassisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 1,
+          "clock": "6:57",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "andOne",
+          "period": 3,
+          "clock": "10:22",
+          "ftm": 1,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500736",
+      "date": "2026-02-05",
+      "opponent": "TOR",
+      "home": false,
+      "box": {
+        "min": "24:17",
+        "pts": 13,
+        "reb": 9,
+        "ast": 1,
+        "ftm": 1,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "10:02",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "6:37",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "6:09",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "10:33",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "7:09",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "4:51",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "0:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "7:15",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "6:32",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "5:43",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "5:32",
+          "assist": "unassisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 3,
+          "clock": "10:15",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500797",
+      "date": "2026-02-19",
+      "opponent": "TOR",
+      "home": true,
+      "box": {
+        "min": "24:20",
+        "pts": 9,
+        "reb": 10,
+        "ast": 2,
+        "ftm": 4,
+        "fta": 4
+      },
+      "shots": [
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "0:43",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "9:58",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "0:10",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "11:31",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "10:45",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "0:53",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "2:05",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "3:09",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500814",
+      "date": "2026-02-21",
+      "opponent": "DET",
+      "home": true,
+      "box": {
+        "min": "24:46",
+        "pts": 15,
+        "reb": 7,
+        "ast": 2,
+        "ftm": 2,
+        "fta": 3
+      },
+      "shots": [
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "7:13",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "6:50",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "0:26",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "11:25",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "11:26",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "9:53",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 1,
+          "clock": "0:49",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "andOne",
+          "period": 4,
+          "clock": "9:53",
+          "ftm": 0,
+          "fta": 1
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500825",
+      "date": "2026-02-22",
+      "opponent": "NYK",
+      "home": true,
+      "box": {
+        "min": "18:13",
+        "pts": 12,
+        "reb": 5,
+        "ast": 1,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "10:02",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "9:27",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "9:13",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "8:05",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "11:21",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "10:56",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "9:29",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "8:59",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "8:43",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "1:37",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "11:22",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500930",
+      "date": "2026-03-08",
+      "opponent": "SAC",
+      "home": false,
+      "box": {
+        "min": "19:53",
+        "pts": 4,
+        "reb": 3,
+        "ast": 0,
+        "ftm": 1,
+        "fta": 4
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "7:05",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "3:20",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "3:59",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": false,
+          "period": 3,
+          "clock": "0:54",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "0:21",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "3:15",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "7:25",
+          "ftm": 0,
+          "fta": 2
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 4,
+          "clock": "4:21",
+          "ftm": 1,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500943",
+      "date": "2026-03-10",
+      "opponent": "GSW",
+      "home": false,
+      "box": {
+        "min": "33:53",
+        "pts": 12,
+        "reb": 12,
+        "ast": 3,
+        "ftm": 4,
+        "fta": 4
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "10:20",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "9:12",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "7:04",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "7:01",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 2,
+          "clock": "9:13",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "7:11",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "1:05",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "11:40",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "10:47",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "8:47",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "3:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 4,
+          "clock": "1:57",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 5,
+          "clock": "2:56",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 4,
+          "clock": "0:09",
+          "ftm": 2,
+          "fta": 2
+        },
+        {
+          "tripClass": "bonus",
+          "period": 4,
+          "clock": "0:01",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500960",
+      "date": "2026-03-12",
+      "opponent": "LAL",
+      "home": false,
+      "box": {
+        "min": "30:21",
+        "pts": 14,
+        "reb": 4,
+        "ast": 0,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "9:26",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "2:03",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "2:00",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "1:13",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "1:01",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "5:15",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "4:53",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "3:34",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "8:50",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "3:38",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": false,
+          "period": 4,
+          "clock": "6:36",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "bonus",
+          "period": 4,
+          "clock": "6:34",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022500987",
+      "date": "2026-03-16",
+      "opponent": "MEM",
+      "home": true,
+      "box": {
+        "min": "26:46",
+        "pts": 13,
+        "reb": 5,
+        "ast": 0,
+        "ftm": 3,
+        "fta": 3
+      },
+      "shots": [
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "11:14",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "8:16",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Mid-Range",
+          "value": 2,
+          "made": false,
+          "period": 1,
+          "clock": "7:37",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "6:36",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Left Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "9:34",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "8:27",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "2:55",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "0:04",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "7:30",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "5:53",
+          "assist": "unassisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "andOne",
+          "period": 2,
+          "clock": "2:55",
+          "ftm": 1,
+          "fta": 1
+        },
+        {
+          "tripClass": "shootingFoul2",
+          "period": 2,
+          "clock": "0:36",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022501002",
+      "date": "2026-03-18",
+      "opponent": "TOR",
+      "home": true,
+      "box": {
+        "min": "17:18",
+        "pts": 10,
+        "reb": 4,
+        "ast": 1,
+        "ftm": 2,
+        "fta": 2
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "11:34",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "11:47",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 3,
+          "clock": "10:49",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 3,
+          "clock": "9:08",
+          "assist": "unassisted"
+        }
+      ],
+      "trips": [
+        {
+          "tripClass": "shootingFoul2",
+          "period": 1,
+          "clock": "9:06",
+          "ftm": 2,
+          "fta": 2
+        }
+      ],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022501042",
+      "date": "2026-03-23",
+      "opponent": "HOU",
+      "home": true,
+      "box": {
+        "min": "25:47",
+        "pts": 15,
+        "reb": 6,
+        "ast": 2,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 1,
+          "clock": "9:40",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 1,
+          "clock": "1:06",
+          "assist": "assisted"
+        },
+        {
+          "zone": "In The Paint (Non-RA)",
+          "value": 2,
+          "made": true,
+          "period": 2,
+          "clock": "11:45",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 2,
+          "clock": "9:51",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": true,
+          "period": 2,
+          "clock": "9:14",
+          "assist": "assisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": false,
+          "period": 3,
+          "clock": "2:46",
+          "assist": "notApplicable"
+        },
+        {
+          "zone": "Restricted Area",
+          "value": 2,
+          "made": true,
+          "period": 4,
+          "clock": "5:43",
+          "assist": "unassisted"
+        },
+        {
+          "zone": "Right Corner 3",
+          "value": 3,
+          "made": true,
+          "period": 4,
+          "clock": "0:37",
+          "assist": "assisted"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    },
+    {
+      "gameId": "0022501053",
+      "date": "2026-03-25",
+      "opponent": "PHI",
+      "home": false,
+      "box": {
+        "min": "6:03",
+        "pts": 0,
+        "reb": 1,
+        "ast": 0,
+        "ftm": 0,
+        "fta": 0
+      },
+      "shots": [
+        {
+          "zone": "Above the Break 3",
+          "value": 3,
+          "made": false,
+          "period": 1,
+          "clock": "7:26",
+          "assist": "notApplicable"
+        }
+      ],
+      "trips": [],
+      "technicalFtm": 0,
+      "technicalFta": 0,
+      "splitFtm": 0,
+      "splitFta": 0
+    }
+  ]
+}
