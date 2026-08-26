@@ -85,6 +85,8 @@ describe('deployed game-log payloads', () => {
 
         let technicalFtm = 0
         let technicalFta = 0
+        let splitFtm = 0
+        let splitFta = 0
         const seenShotGames = new Set<string>()
         for (const game of games.games) {
           const glabel = `${label} ${game.gameId}`
@@ -103,6 +105,8 @@ describe('deployed game-log payloads', () => {
           ).toBe(sortedJoin(ftByGame.get(game.gameId) ?? []))
           technicalFtm += game.technicalFtm
           technicalFta += game.technicalFta
+          splitFtm += game.splitFtm
+          splitFta += game.splitFta
           if (shotByGame.has(game.gameId)) seenShotGames.add(game.gameId)
         }
         // Totality both ways: every shot-payload game is on the card
@@ -110,6 +114,8 @@ describe('deployed game-log payloads', () => {
         expect(seenShotGames.size, label).toBe(shotByGame.size)
         expect(technicalFtm, label).toBe(freethrow._meta.technicalFtm)
         expect(technicalFta, label).toBe(freethrow._meta.technicalFta)
+        expect(splitFtm, label).toBe(freethrow._meta.splitFtm)
+        expect(splitFta, label).toBe(freethrow._meta.splitFta)
 
         // The embedded pricing table is the sibling baseline, verbatim.
         for (const zone of EVAL_ZONES) {

@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Austin Reaves",
     "playerId": 1630559,
     "season": "2025-26",
     "dataThrough": "2026-04-02",
     "gamesIncluded": 51,
     "sourceShotPayload": "data/derived/austin-reaves/2025-26/2026-08-10.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 762,
     "seasonPoints": 1187,
     "seasonFtm": 323,
     "seasonFta": 371,
     "technicalFtm": 19,
     "technicalFta": 22,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 182,
     "tripClassCounts": {
       "shootingFoul2": 93,
@@ -24,7 +26,8 @@
       "flagrant": 1,
       "awayFromPlay": 4,
       "transitionTake": 0,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 51,
     "gamesLoaded": 51,

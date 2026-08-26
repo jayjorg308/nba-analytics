@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Bub Carrington",
     "playerId": 1642267,
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 82,
     "sourceShotPayload": "data/derived/bub-carrington/2025-26/2026-08-08.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 741,
     "seasonPoints": 878,
     "seasonFtm": 81,
     "seasonFta": 111,
     "technicalFtm": 7,
     "technicalFta": 10,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 51,
     "tripClassCounts": {
       "shootingFoul2": 18,
@@ -24,7 +26,8 @@
       "flagrant": 2,
       "awayFromPlay": 1,
       "transitionTake": 1,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 82,
     "gamesLoaded": 82,

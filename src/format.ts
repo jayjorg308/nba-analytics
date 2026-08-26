@@ -154,6 +154,7 @@ const TRIP_CLASS_LABEL: Record<string, string> = {
   awayFromPlay: 'Away from play',
   transitionTake: 'Transition take',
   clearPath: 'Clear path',
+  fouledDuringMake: 'Fouled during a make',
 }
 
 export function formatTripClass(tripClass: string): string {

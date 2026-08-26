@@ -42,6 +42,7 @@ const TRIP_LABEL: Record<string, string> = {
   awayFromPlay: 'away from play',
   transitionTake: 'transition take',
   clearPath: 'clear path',
+  fouledDuringMake: 'fouled during a make',
 }
 
 const signed = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1))
@@ -127,6 +128,19 @@ function Receipt({ game, numbers }: { game: CardGame; numbers: GameCardNumbers }
               </tr>
             )
           })}
+          {game.splitFta > 0 && (
+            <tr>
+              <td />
+              <td>
+                <Term id="split-trip">split trip</Term> free throws · {game.splitFtm}/
+                {game.splitFta} FT
+              </td>
+              <td className="gamecard-price">—</td>
+              <td className={game.splitFtm > 0 ? 'gamecard-made' : 'gamecard-miss'}>
+                {game.splitFtm > 0 ? `+${game.splitFtm}` : '0'}
+              </td>
+            </tr>
+          )}
           {game.technicalFta > 0 && (
             <tr>
               <td />
@@ -190,7 +204,10 @@ export function GameCardPage({ slug, date }: { slug: string; date: string }) {
   const conversion = numbers.scoredPts - numbers.expectedPts
   const ftaRate = game.box.fta / game.shots.length
   const receiptLines =
-    game.shots.length + game.trips.length + (game.technicalFta > 0 ? 1 : 0)
+    game.shots.length +
+    game.trips.length +
+    (game.splitFta > 0 ? 1 : 0) +
+    (game.technicalFta > 0 ? 1 : 0)
   const prev = payload.games[index - 1]
   const next = payload.games[index + 1]
   const hero = heroBySlug(slug)

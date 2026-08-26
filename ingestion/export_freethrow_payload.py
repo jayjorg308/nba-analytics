@@ -24,6 +24,7 @@ from pathlib import Path
 
 import derive_freethrow as df
 import derive_payload as dp
+import load_game_corpus as lgc
 import record_store as rs
 
 
@@ -48,7 +49,8 @@ def export_payload(
         player_id, player_name = hits[0]
 
         cur.execute(
-            "SELECT s.game_id, g.game_date, s.made, s.zone_basic, s.point_value"
+            "SELECT s.game_id, g.game_date, s.made, s.zone_basic, s.point_value,"
+            " s.game_event_id"
             " FROM shot s JOIN game g USING (game_id)"
             " WHERE s.player_id = %s AND g.season = %s AND g.season_type = %s",
             (player_id, season, season_type),
@@ -63,6 +65,10 @@ def export_payload(
         shot_games = sorted({r[0] for r in post_drop})
         data_through = max(r[1] for r in post_drop).isoformat()
         games_included = len(shot_games)
+        made_ids: dict[str, set[int]] = {}
+        for game_id, _, made, _, _, event_id in post_drop:
+            if made:
+                made_ids.setdefault(game_id, set()).add(event_id)
 
         _, _, shot_pull_date, _ = rs.get_head(
             cur, rs.scope_key("shotchartdetail", player_id=player_id,
@@ -88,44 +94,42 @@ def export_payload(
         )
         trip_rows = cur.fetchall()
 
-        # Technical free throws and per-game reconciliation, from pbp_event
-        # by the derive's own grammar (the store's copy of the same fence).
+        # Technicals, splits, and the per-game reconciliation, by running the
+        # derive's own grammar over the stored events (the store's copy of
+        # the same fence) — and cross-checking the ft_trip table against the
+        # reconstruction, so a stale table (a grammar change without a
+        # corpus rebuild) fails loudly instead of exporting around it.
         technical_ftm = technical_fta = 0
+        split_ftm = split_fta = 0
         loaded_games: list[str] = []
         trips_by_game: dict[str, list] = {}
         for row in trip_rows:
             trips_by_game.setdefault(row[0], []).append(row)
         for game_id in universe:
-            cur.execute(
-                "SELECT sub_type, description FROM pbp_event"
-                " WHERE game_id = %s AND action_type = 'Free Throw'"
-                " AND person_id = %s ORDER BY source_row",
-                (game_id, player_id),
-            )
-            ft_events = cur.fetchall()
-            cur.execute("SELECT count(*) FROM pbp_event WHERE game_id = %s", (game_id,))
-            if cur.fetchone()[0] == 0:
+            actions = lgc.fetch_game_actions(cur, game_id)
+            if not actions:
                 if allow_missing_games:
                     continue
                 fail(f"no pbp events for game {game_id} (Gate 4) — load the corpus")
             loaded_games.append(game_id)
-            game_tftm = game_tfta = 0
-            for sub_type, description in ft_events:
-                match = df.FT_SUBTYPE.fullmatch(sub_type or "")
-                if not match:
-                    fail(f"game {game_id}: unknown free-throw subtype {sub_type!r}")
-                if (match.group("kind") or "regular") == "Technical":
-                    game_tfta += 1
-                    game_tftm += int(not (description or "").startswith("MISS"))
+            (g_trips, game_tftm, game_tfta,
+             game_sftm, game_sfta) = df.reconstruct_game_trips(
+                game_id, actions, player_id, made_ids.get(game_id, set()))
             game_trips = trips_by_game.get(game_id, [])
-            game_ftm = sum(t[5] for t in game_trips) + game_tftm
-            game_fta = sum(t[6] for t in game_trips) + game_tfta
+            if len(g_trips) != len(game_trips):
+                fail(f"game {game_id}: ft_trip table disagrees with the grammar "
+                     f"({len(game_trips)} rows vs {len(g_trips)} reconstructed) — "
+                     f"rebuild the corpus (load_game_corpus.py)")
+            game_ftm = sum(t[5] for t in game_trips) + game_tftm + game_sftm
+            game_fta = sum(t[6] for t in game_trips) + game_tfta + game_sfta
             box_ftm, box_fta = box_by_game.get(game_id, (0, 0))
             if (game_ftm, game_fta) != (box_ftm, box_fta):
                 fail(f"game {game_id}: stored line {game_ftm}/{game_fta} != "
                      f"box-score line {box_ftm}/{box_fta}")
             technical_ftm += game_tftm
             technical_fta += game_tfta
+            split_ftm += game_sftm
+            split_fta += game_sfta
 
         # Source-pair provenance per loaded game: the per-game heads.
         source_games: list[dict] = []
@@ -160,8 +164,8 @@ def export_payload(
         )
         league_ftm, league_fta, league_fga, league_points = cur.fetchone()
 
-    total_ftm = sum(t[5] for t in trip_rows) + technical_ftm
-    total_fta = sum(t[6] for t in trip_rows) + technical_fta
+    total_ftm = sum(t[5] for t in trip_rows) + technical_ftm + split_ftm
+    total_fta = sum(t[6] for t in trip_rows) + technical_fta + split_fta
     if not allow_missing_games and (total_ftm, total_fta) != (season_ftm, season_fta):
         fail(f"Gate 5: stored season line {total_ftm}/{total_fta} != league "
              f"artifact {season_ftm}/{season_fta}")
@@ -189,6 +193,8 @@ def export_payload(
             "seasonFta": total_fta,
             "technicalFtm": technical_ftm,
             "technicalFta": technical_fta,
+            "splitFtm": split_ftm,
+            "splitFta": split_fta,
             "totalTrips": len(trip_rows),
             "tripClassCounts": {
                 trip_class: sum(1 for t in trip_rows if t[4] == trip_class)

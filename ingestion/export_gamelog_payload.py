@@ -25,9 +25,12 @@ from pathlib import Path
 import derive_freethrow as df
 import derive_payload as dp
 import derive_shot_context as dsc
+import load_game_corpus as lgc
 import record_store as rs
 
-SCHEMA_VERSION = 1
+# v2: per-game splitFtm/splitFta (ADR-0053 as amended) in the receipt
+# identity, beside the technicals.
+SCHEMA_VERSION = 2
 THREE = dp.THREE_POINT_ZONES
 
 
@@ -55,7 +58,8 @@ def export_payload(
         cur.execute(
             "SELECT s.game_id, g.game_date, g.home_abbrev, g.visitor_abbrev,"
             " s.zone_basic, s.point_value, s.made, s.period,"
-            " s.minutes_remaining, s.seconds_remaining, c.assist_status"
+            " s.minutes_remaining, s.seconds_remaining, c.assist_status,"
+            " s.game_event_id"
             " FROM shot s JOIN game g USING (game_id)"
             " LEFT JOIN shot_context c USING (game_id, game_event_id)"
             " WHERE s.player_id = %s AND g.season = %s AND g.season_type = %s"
@@ -66,6 +70,10 @@ def export_payload(
         if not shot_rows:
             fail(f"no shots for {player!r} {season} — load the season first")
         season_fga = len(shot_rows)
+        made_ids: dict[str, set[int]] = {}
+        for r in shot_rows:
+            if r[6] and (r[4] in THREE) == (r[5] == 3):
+                made_ids.setdefault(r[0], set()).add(r[11])
 
         cur.execute(
             "SELECT b.game_id, g.game_date, g.home_abbrev, g.visitor_abbrev,"
@@ -114,26 +122,17 @@ def export_payload(
             if home_ab is None or vis_ab is None:
                 fail(f"game {gid}: no observed home/visitor abbreviations")
 
-            # Technicals by the derive's own grammar (the freethrow export's
-            # fence, per game).
-            cur.execute(
-                "SELECT sub_type, description FROM pbp_event"
-                " WHERE game_id = %s AND action_type = 'Free Throw'"
-                " AND person_id = %s ORDER BY source_row",
-                (gid, player_id),
-            )
-            tech_ftm = tech_fta = 0
-            for sub_type, description in cur.fetchall():
-                match = df.FT_SUBTYPE.fullmatch(sub_type or "")
-                if not match:
-                    fail(f"game {gid}: unknown free-throw subtype {sub_type!r}")
-                if (match.group("kind") or "regular") == "Technical":
-                    tech_fta += 1
-                    tech_ftm += int(not (description or "").startswith("MISS"))
+            # Technicals and splits by the derive's own grammar over the
+            # stored events, with the ft_trip table cross-checked against
+            # the reconstruction (a stale table fails, never exports).
+            actions = lgc.fetch_game_actions(cur, gid)
+            (g_trips, tech_ftm, tech_fta,
+             split_ftm, split_fta) = df.reconstruct_game_trips(
+                gid, actions, player_id, made_ids.get(gid, set()))
 
             shots = []
             for (sgid, _, _, _, zone, value, made, period, clock_min, clock_sec,
-                 assist) in shot_rows:
+                 assist, _event_id) in shot_rows:
                 if sgid != gid:
                     continue
                 conflict = (zone in THREE) != (value == 3)
@@ -146,13 +145,19 @@ def export_payload(
                               "assist": None if conflict else assist})
 
             trips = trips_by_game.get(gid, [])
+            if len(trips) != len(g_trips):
+                fail(f"game {gid}: ft_trip table disagrees with the grammar "
+                     f"({len(trips)} rows vs {len(g_trips)} reconstructed) — "
+                     f"rebuild the corpus (load_game_corpus.py)")
             fg_points = sum(s["value"] for s in shots if s["made"])
             trip_ftm = sum(t["ftm"] for t in trips)
             trip_fta = sum(t["fta"] for t in trips)
-            if fg_points + trip_ftm + tech_ftm != points:
+            if fg_points + trip_ftm + tech_ftm + split_ftm != points:
                 fail(f"game {gid}: receipt identity broken — FG {fg_points} + trip "
-                     f"FTM {trip_ftm} + technical FTM {tech_ftm} != box points {points}")
-            if trip_ftm + tech_ftm != box_ftm or trip_fta + tech_fta != box_fta:
+                     f"FTM {trip_ftm} + technical {tech_ftm} + split {split_ftm} "
+                     f"!= box points {points}")
+            if (trip_ftm + tech_ftm + split_ftm != box_ftm
+                    or trip_fta + tech_fta + split_fta != box_fta):
                 fail(f"game {gid}: free-throw line does not reconcile with the box")
 
             games.append({
@@ -166,6 +171,8 @@ def export_payload(
                 "trips": trips,
                 "technicalFtm": tech_ftm,
                 "technicalFta": tech_fta,
+                "splitFtm": split_ftm,
+                "splitFta": split_fta,
             })
         if not games:
             fail("no complete games to export")
@@ -229,14 +236,35 @@ def payload_text(payload: dict) -> str:
     return json.dumps(payload, indent=2)
 
 
+def rebuild_index(games_root: Path) -> int:
+    """Rewrite the roster index from the games files ON DISK — the /game
+    landing's picker and the index guard both read what this writes, so the
+    index can never name a file that does not exist (nor miss one that
+    does). Shared by --all-deployed and the mass-import driver."""
+    index: list[dict] = []
+    for slug_dir in sorted(p for p in games_root.iterdir() if p.is_dir()):
+        for file in sorted(slug_dir.glob("*.json")):
+            meta = json.loads(file.read_text(encoding="utf-8"))["_meta"]
+            index.append({
+                "slug": slug_dir.name,
+                "player": meta["player"],
+                "season": meta["season"],
+                "totalGames": meta["totalGames"],
+                "dataThrough": meta["dataThrough"],
+            })
+    index.sort(key=lambda e: (e["player"], e["season"]))
+    index_path = games_root / "index.json"
+    index_path.write_text(json.dumps({"rosters": index}, indent=2),
+                          encoding="utf-8", newline="\n")
+    print(f"index -> {index_path} ({len(index)} player-season(s))")
+    return len(index)
+
+
 def export_all_deployed(args: argparse.Namespace) -> None:
     """The heroes-first tranche (ADR-0081 rollout): one games file per
-    deployed hero-season, plus the roster index (`public/data/games/
-    index.json`) the /game landing's picker reads — regenerated whole on
-    every run so the index can never name a file that was not written."""
+    deployed hero-season, then the on-disk index rebuild."""
     repo = Path(__file__).resolve().parents[1]
     games_root = repo / "public" / "data" / "games"
-    index: list[dict] = []
     with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
         for shot_file in sorted((repo / "public" / "data").glob("*/*.json")):
             if shot_file.parent.name == "games" or "." in shot_file.stem:
@@ -246,20 +274,9 @@ def export_all_deployed(args: argparse.Namespace) -> None:
             out = games_root / shot_file.parent.name / f"{meta['season']}.json"
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(payload_text(payload), encoding="utf-8", newline="\n")
-            index.append({
-                "slug": shot_file.parent.name,
-                "player": payload["_meta"]["player"],
-                "season": meta["season"],
-                "totalGames": payload["_meta"]["totalGames"],
-                "dataThrough": payload["_meta"]["dataThrough"],
-            })
             print(f"  {payload['_meta']['player']:<26} "
                   f"{payload['_meta']['totalGames']} games -> {out.name}")
-    index.sort(key=lambda e: (e["player"], e["season"]))
-    index_path = games_root / "index.json"
-    index_path.write_text(json.dumps({"rosters": index}, indent=2),
-                          encoding="utf-8", newline="\n")
-    print(f"index -> {index_path} ({len(index)} player-season(s))")
+    rebuild_index(games_root)
 
 
 def main() -> None:

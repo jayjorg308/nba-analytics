@@ -26,7 +26,9 @@ describe('computeGameCard', () => {
     expect(n.expectedPts).toBeLessThanOrEqual(n.pricedAttempts * Math.max(...ppsValues))
     // Scored + unpriced points + trip and technical free throws is the box
     // line (the receipt identity, from the computed side).
-    expect(n.scoredPts + n.unpricedPts + n.tripPts + game.technicalFtm).toBe(game.box.pts)
+    expect(
+      n.scoredPts + n.unpricedPts + n.tripPts + game.technicalFtm + game.splitFtm,
+    ).toBe(game.box.pts)
     expect(n.tripCount).toBe(game.trips.length)
   })
 

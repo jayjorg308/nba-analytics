@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
@@ -141,7 +141,9 @@
         }
       ],
       "technicalFtm": 0,
-      "technicalFta": 1
+      "technicalFta": 1,
+      "splitFtm": 0,
+      "splitFta": 0
     }
   ]
 }

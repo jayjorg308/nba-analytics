@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Ace Bailey",
     "playerId": 1642846,
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 72,
     "sourceShotPayload": "data/derived/ace-bailey/2025-26/2026-07-23.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 892,
     "seasonPoints": 993,
     "seasonFtm": 66,
     "seasonFta": 88,
     "technicalFtm": 2,
     "technicalFta": 2,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 45,
     "tripClassCounts": {
       "shootingFoul2": 32,
@@ -24,7 +26,8 @@
       "flagrant": 0,
       "awayFromPlay": 0,
       "transitionTake": 0,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 72,
     "gamesLoaded": 72,

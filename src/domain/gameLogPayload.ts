@@ -12,7 +12,10 @@ import { z } from 'zod'
 import { BASIC_ZONES, EVAL_ZONES, ZONE_POINT_VALUE } from './constants'
 import { TRIP_CLASSES } from './freethrowPayload'
 
-export const GAMELOG_SCHEMA_VERSION = 1
+// v2: per-game splitFtm/splitFta (ADR-0053 as amended): split free throws
+//     — one foul's award divided between players — counted on the receipt
+//     beside technicals, never trips; the receipt identity includes them.
+export const GAMELOG_SCHEMA_VERSION = 2
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
 
@@ -72,6 +75,8 @@ const cardGameSchema = z
     trips: z.array(cardTripSchema),
     technicalFtm: z.number().int().min(0),
     technicalFta: z.number().int().min(0),
+    splitFtm: z.number().int().min(0),
+    splitFta: z.number().int().min(0),
   })
   .superRefine((game, ctx) => {
     // The receipt identity (ADR-0081): every point on the card's receipt —
@@ -80,20 +85,23 @@ const cardGameSchema = z
     const fgPoints = game.shots.reduce((s, shot) => s + (shot.made ? shot.value : 0), 0)
     const tripFtm = game.trips.reduce((s, t) => s + t.ftm, 0)
     const tripFta = game.trips.reduce((s, t) => s + t.fta, 0)
-    if (fgPoints + tripFtm + game.technicalFtm !== game.box.pts) {
+    if (fgPoints + tripFtm + game.technicalFtm + game.splitFtm !== game.box.pts) {
       ctx.addIssue({
         code: 'custom',
-        message: `game ${game.gameId}: FG points + trip FTM + technical FTM != box points`,
+        message: `game ${game.gameId}: FG points + trip, technical, and split FTM != box points`,
       })
     }
-    if (tripFtm + game.technicalFtm !== game.box.ftm) {
+    if (tripFtm + game.technicalFtm + game.splitFtm !== game.box.ftm) {
       ctx.addIssue({ code: 'custom', message: `game ${game.gameId}: FTM does not reconcile` })
     }
-    if (tripFta + game.technicalFta !== game.box.fta) {
+    if (tripFta + game.technicalFta + game.splitFta !== game.box.fta) {
       ctx.addIssue({ code: 'custom', message: `game ${game.gameId}: FTA does not reconcile` })
     }
     if (game.technicalFtm > game.technicalFta) {
       ctx.addIssue({ code: 'custom', message: `game ${game.gameId}: technical FTM exceeds FTA` })
+    }
+    if (game.splitFtm > game.splitFta) {
+      ctx.addIssue({ code: 'custom', message: `game ${game.gameId}: split FTM exceeds FTA` })
     }
     for (const shot of game.shots) {
       // Null assist iff the row is a zone-point conflict: the context

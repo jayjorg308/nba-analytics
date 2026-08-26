@@ -297,6 +297,13 @@ _Avoid_: "winner", "better", or any whole-comparison framing — the page is a t
 **Line call** (**Draw edge** / **Conversion edge** / **Reliance lean**):
 The zone call's grammar at the free-throw line (ADR-0079), one call per season-line card in a player comparison. **Draw edge** names the side with the higher FTA rate and **Conversion edge** the side with the higher FT% — both results against the league — while **Reliance lean** names the side with the larger FT share of points, a scoring mix with no better direction, so it never claims an edge. Same mechanics as every call: decided and priced on displayed anchors, even under 1.0 display units, † inherited from either side. Calls live only at the season line, where full-season free-throw samples support them; the trip taxonomy carries no per-class calls (most classes sit under the 50-FTA bar, and flagged chips everywhere would be noise, not answers).
 
+**Split trip**:
+A single foul's free throws divided between players — injury or ejection mid-trip, or a substitute shooting for a hurt teammate (ADR-0053 as amended). Neither fragment is a trip: a fragment is not a complete visit, and a substitute's free throws are not earned by his own play, so split free throws are counted and reported beside technicals and never price into points per trip or foul generation.
+_Avoid_: calling a fragment a trip, or labeling substitute free throws technical.
+
+**Fouled during a make**:
+The earned one-free-throw trip class (ADR-0053 as amended): a player fouled by a common foul during a teammate's successful field goal shoots one free throw. Add-on tier — its point lands on a possession that already scored — and never linked to a shot: the make belongs to the teammate.
+
 **Game card**:
 A per-game tool page (`/game/<player-slug>/<date>`, ADR-0081) presenting one player's night as priced facts: expected points from his diet (his attempts priced at the season's league zone rates), points scored on those attempts, and their difference as conversion, with THE CREDIT and THE LINE as chips and a drill-in **receipt** itemizing every attempt and trip down to the box total (technical free throws as their own line whenever nonzero, so the receipt always reconciles). A tool, not an argument: computed numbers and structural copy only — no verdict, no grades, and no ability estimate; selection is priced, conversion is what happened. Creation never appears at game grain.
 _Avoid_: "game grade" — no surface grades a game, and no card aggregates its facts into one mark.

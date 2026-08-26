@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Donovan Mitchell",
     "playerId": 1628378,
     "season": "2025-26",
     "dataThrough": "2026-04-08",
     "gamesIncluded": 70,
     "sourceShotPayload": "data/derived/donovan-mitchell/2025-26/2026-07-27.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 1403,
     "seasonPoints": 1952,
     "seasonFtm": 372,
     "seasonFta": 430,
     "technicalFtm": 12,
     "technicalFta": 19,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 220,
     "tripClassCounts": {
       "shootingFoul2": 115,
@@ -24,7 +26,8 @@
       "flagrant": 1,
       "awayFromPlay": 2,
       "transitionTake": 0,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 70,
     "gamesLoaded": 70,

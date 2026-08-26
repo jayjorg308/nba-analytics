@@ -320,6 +320,8 @@ function makeFtPayload(
       seasonFta: tripFta + technicalFta,
       technicalFtm,
       technicalFta,
+      splitFtm: 0,
+      splitFta: 0,
       totalTrips: trips.length,
       tripClassCounts: Object.fromEntries(
         TRIP_CLASSES.map((c) => [c, trips.filter((t) => t.tripClass === c).length]),

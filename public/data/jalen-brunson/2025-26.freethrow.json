@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Jalen Brunson",
     "playerId": 1628973,
     "season": "2025-26",
     "dataThrough": "2026-04-10",
     "gamesIncluded": 74,
     "sourceShotPayload": "data/derived/jalen-brunson/2025-26/2026-07-16.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 1475,
     "seasonPoints": 1927,
     "seasonFtm": 354,
     "seasonFta": 421,
     "technicalFtm": 10,
     "technicalFta": 13,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 224,
     "tripClassCounts": {
       "shootingFoul2": 117,
@@ -24,7 +26,8 @@
       "flagrant": 7,
       "awayFromPlay": 2,
       "transitionTake": 1,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 74,
     "gamesLoaded": 74,
