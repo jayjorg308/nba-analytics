@@ -1,0 +1,134 @@
+{
+  "_meta": {
+    "team": "Utah Jazz",
+    "team_id": 1610612762,
+    "season": "2025-26",
+    "season_type": "Regular Season",
+    "pull_date": "2026-09-22",
+    "source": "stats.nba.com commonteamroster (unofficial)",
+    "fixture_note": "hand-trimmed from the real 2026-09-22 roster snapshot to five players (three who shot in the fixture game, two who did not)"
+  },
+  "response": {
+    "resource": "commonteamroster",
+    "parameters": {
+      "TeamID": 1610612762,
+      "LeagueID": "00",
+      "Season": "2025-26"
+    },
+    "resultSets": [
+      {
+        "name": "CommonTeamRoster",
+        "headers": [
+          "TeamID",
+          "SEASON",
+          "LeagueID",
+          "PLAYER",
+          "NICKNAME",
+          "PLAYER_SLUG",
+          "NUM",
+          "POSITION",
+          "HEIGHT",
+          "WEIGHT",
+          "BIRTH_DATE",
+          "AGE",
+          "EXP",
+          "SCHOOL",
+          "PLAYER_ID",
+          "HOW_ACQUIRED"
+        ],
+        "rowSet": [
+          [
+            1610612762,
+            "2025",
+            "00",
+            "Keyonte George",
+            "Keyonte",
+            "keyonte-george",
+            "3",
+            "G",
+            "6-4",
+            "185",
+            "NOV 08, 2003",
+            22.0,
+            "2",
+            "Baylor",
+            1641718,
+            "#16 Pick in 2023 Draft"
+          ],
+          [
+            1610612762,
+            "2025",
+            "00",
+            "Cody Williams",
+            "Cody",
+            "cody-williams",
+            "5",
+            "F",
+            "6-8",
+            "190",
+            "NOV 20, 2004",
+            21.0,
+            "1",
+            "Colorado",
+            1642262,
+            "#10 Pick in 2024 Draft"
+          ],
+          [
+            1610612762,
+            "2025",
+            "00",
+            "Svi Mykhailiuk",
+            "Svi",
+            "svi-mykhailiuk",
+            "10",
+            "G-F",
+            "6-7",
+            "205",
+            "JUN 10, 1997",
+            29.0,
+            "7",
+            "Kansas",
+            1629004,
+            "Signed on 08/10/24"
+          ],
+          [
+            1610612762,
+            "2025",
+            "00",
+            "Hayden Gray",
+            "Hayden",
+            "hayden-gray",
+            null,
+            "G",
+            "6-4",
+            "190",
+            "MAY 11, 2003",
+            23.0,
+            "R",
+            "California-San Diego",
+            1643060,
+            "Signed on 04/11/26"
+          ],
+          [
+            1610612762,
+            "2025",
+            "00",
+            "Blake Hinson",
+            "Blake",
+            "blake-hinson",
+            "2",
+            "F",
+            "6-8",
+            "230",
+            "DEC 26, 1999",
+            26.0,
+            "R",
+            "Pittsburgh",
+            1642396,
+            "Signed on 02/09/26"
+          ]
+        ]
+      }
+    ]
+  }
+}

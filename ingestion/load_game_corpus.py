@@ -69,6 +69,294 @@ def _int_or_none(value) -> int | None:
     return None if value is None or value == "" else int(value)
 
 
+class PairStager:
+    """Stage raw pbp/box pairs into the game-owned tables (ADR-0045): every
+    action into pbp_event, every box line into box_score_line, both team
+    lines into box_team_line, plus the players, teams, and games those
+    observe. Shared by the hero corpus load and the hero-less
+    load_game_pairs (the team session, ADR-0082): one staging grammar, so a
+    Jazz game loaded for the team surface is byte-for-byte the game a hero's
+    corpus load would have produced.
+
+    A game already fully loaded is skipped (its heads re-asserted); a game
+    whose events are loaded but whose team lines are not gets the 0003
+    team-line backfill. Call flush() once, then set_heads() after the halt
+    check, inside the caller's transaction.
+    """
+
+    def __init__(self, cur, run_id: int):
+        self.cur = cur
+        self.run_id = run_id
+        self.players = lhs.TableUpsert("player", ("player_id",))
+        self.teams = lhs.TableUpsert("team", ("team_id",))
+        self.games = lhs.TableUpsert("game", ("game_id",))
+        # Keyed by list position (0004): actionNumbers repeat in real
+        # games, and collapsing them loses observed events.
+        self.pbp_events = lhs.TableUpsert("pbp_event", ("game_id", "source_row"))
+        self.box_lines = lhs.TableUpsert("box_score_line", ("game_id", "player_id"))
+        self.box_team_lines = lhs.TableUpsert("box_team_line", ("game_id", "team_id"))
+        self.full_loaded_games: list[str] = []
+        self.team_loaded_games: list[str] = []
+        self.game_heads: list[tuple[str, int, int]] = []  # (game_id, pbp_snap, box_snap)
+        self.skipped = 0
+        cur.execute("SELECT player_id FROM player")
+        self.known_players = {row[0] for row in cur.fetchall()}
+        cur.execute("SELECT game_id FROM game")
+        self.known_games = {row[0] for row in cur.fetchall()}
+        cur.execute("SELECT team_id FROM team")
+        self.known_teams = {row[0] for row in cur.fetchall()}
+
+    def stage_team_data(self, box_game: dict, game_id: str, box_snap: int) -> None:
+        """box_team_line rows for both sides, plus any team the team table
+        has never named (a team no hero shoots for is observed only here;
+        the composed city+name matches stats.nba.com's TEAM_NAME form, and
+        change detection arbitrates if a shot snapshot ever disagrees)."""
+        for side, home in (("homeTeam", True), ("awayTeam", False)):
+            team = box_game.get(side)
+            if not isinstance(team, dict):
+                sys.exit(f"load-corpus: game {game_id} box missing {side}")
+            stats = team.get("statistics")
+            if not isinstance(stats, dict):
+                sys.exit(f"load-corpus: game {game_id} box {side} missing statistics")
+            team_id = int(team["teamId"])
+            city = str(team.get("teamCity", "")).strip()
+            name = str(team.get("teamName", "")).strip()
+            composed = f"{city} {name}".strip()
+            # A truncated fixture can state no name; a team row is only
+            # created when a name is actually observed.
+            if team_id not in self.known_teams and composed:
+                self.teams.stage({"team_id": team_id, "name": composed,
+                                  "snapshot_id": box_snap, "run_id": self.run_id})
+                self.known_teams.add(team_id)
+            self.box_team_lines.stage({
+                "game_id": game_id, "team_id": team_id, "home": home,
+                "city": city, "name": name,
+                "tricode": str(team.get("teamTricode", "")),
+                # -1 default so an absent assist total fails the CHECK
+                # loudly instead of loading as a silent zero.
+                "assists": int(stats.get("assists", -1)),
+                "points": _int_or_none(stats.get("points")),
+                "snapshot_id": box_snap, "run_id": self.run_id,
+            })
+
+    def stage_pair(self, game_id: str, pbp_path: Path, box_path: Path) -> None:
+        cur, run_id = self.cur, self.run_id
+        rel = dp.repo_relative(pbp_path)
+        cur.execute(
+            "SELECT s.snapshot_id FROM snapshot s WHERE s.path = %s AND EXISTS"
+            " (SELECT 1 FROM pbp_event e WHERE e.snapshot_id = s.snapshot_id)",
+            (rel,),
+        )
+        pbp_loaded = cur.fetchone() is not None
+        cur.execute("SELECT 1 FROM box_team_line WHERE game_id = %s LIMIT 1", (game_id,))
+        team_lines_loaded = cur.fetchone() is not None
+        if pbp_loaded and team_lines_loaded:
+            self.skipped += 1  # shared-corpus game another load already did
+            # The scope's state still equals this pair: (re)assert the heads
+            # from the cataloged ids (backfills pre-head stores).
+            box_rel = dp.repo_relative(box_path)
+            cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (rel,))
+            pbp_id = cur.fetchone()
+            cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (box_rel,))
+            box_id = cur.fetchone()
+            if pbp_id is None or box_id is None:
+                sys.exit(f"load-corpus: game {game_id} loaded but its pair "
+                         f"is not fully cataloged — store inconsistent")
+            self.game_heads.append((game_id, pbp_id[0], box_id[0]))
+            return
+        box_snapshot = _load(box_path)
+        if pbp_loaded:
+            # Team-line backfill (0003): events and player lines are already
+            # in the store — only the team grain is new.
+            box_game = box_snapshot.get("response", {}).get("boxScoreTraditional")
+            if not isinstance(box_game, dict):
+                sys.exit(f"load-corpus: game {game_id} box snapshot has "
+                         f"no boxScoreTraditional")
+            if str(box_game.get("gameId", "")) != game_id:
+                sys.exit(f"load-corpus: directory {game_id} != box game ID")
+            box_snap = lhs.catalog_snapshot(cur, "box-score", box_path,
+                                            box_snapshot["_meta"])
+            self.stage_team_data(box_game, game_id, box_snap)
+            self.team_loaded_games.append(game_id)
+            cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (rel,))
+            self.game_heads.append((game_id, cur.fetchone()[0], box_snap))
+            return
+        pbp_snapshot = _load(pbp_path)
+        pbp_game, box_game, parsed_id = validate_game_pair(pbp_snapshot, box_snapshot)
+        if parsed_id != game_id:
+            sys.exit(f"load-corpus: directory {game_id} != parsed game ID {parsed_id}")
+        pbp_snap = lhs.catalog_snapshot(cur, "play-by-play", pbp_path,
+                                        pbp_snapshot["_meta"])
+        box_snap = lhs.catalog_snapshot(cur, "box-score", box_path,
+                                        box_snapshot["_meta"])
+        self.stage_team_data(box_game, game_id, box_snap)
+        self.full_loaded_games.append(game_id)
+        self.team_loaded_games.append(game_id)
+        self.game_heads.append((game_id, pbp_snap, box_snap))
+        cur.executemany(
+            "INSERT INTO load_run_snapshot (run_id, snapshot_id) VALUES (%s, %s)"
+            " ON CONFLICT DO NOTHING",
+            [(run_id, pbp_snap), (run_id, box_snap)],
+        )
+
+        if game_id not in self.known_games:
+            game_season, game_season_type = season_of_game_id(game_id)
+            self.games.stage({
+                "game_id": game_id,
+                "game_date": None,  # no source here states it
+                "season": game_season,
+                "season_type": game_season_type,
+                "home_abbrev": str(box_game["homeTeam"]["teamTricode"]),
+                "visitor_abbrev": str(box_game["awayTeam"]["teamTricode"]),
+                "snapshot_id": box_snap, "run_id": run_id,
+            })
+            self.known_games.add(game_id)
+
+        actions = pbp_game.get("actions")
+        if not isinstance(actions, list):
+            sys.exit(f"load-corpus: game {game_id} has no actions list")
+        for idx, action in enumerate(actions):
+            if not isinstance(action, dict):
+                sys.exit(f"load-corpus: game {game_id} action {idx} not an object")
+            self.pbp_events.stage({
+                "game_id": game_id,
+                "action_number": int(action["actionNumber"]),
+                "source_row": idx,
+                "action_id": _int_or_none(action.get("actionId")),
+                "period": _int_or_none(action.get("period")),
+                "clock": action.get("clock"),
+                "action_type": action.get("actionType"),
+                "sub_type": action.get("subType"),
+                "description": action.get("description"),
+                "person_id": _int_or_none(action.get("personId")),
+                "team_id": _int_or_none(action.get("teamId")),
+                "is_field_goal": _int_or_none(action.get("isFieldGoal")),
+                "shot_result": action.get("shotResult"),
+                "shot_value": _int_or_none(action.get("shotValue")),
+                "shot_distance": (None if action.get("shotDistance") is None
+                                  else float(action["shotDistance"])),
+                "x_legacy": _int_or_none(action.get("xLegacy")),
+                "y_legacy": _int_or_none(action.get("yLegacy")),
+                "location": action.get("location"),
+                "score_home": action.get("scoreHome"),
+                "score_away": action.get("scoreAway"),
+                "points_total": _int_or_none(action.get("pointsTotal")),
+                "snapshot_id": pbp_snap, "run_id": run_id,
+            })
+
+        for side, home in (("homeTeam", True), ("awayTeam", False)):
+            team = box_game.get(side)
+            if not isinstance(team, dict):
+                sys.exit(f"load-corpus: game {game_id} box missing {side}")
+            team_id = int(team["teamId"])
+            for box_player in team.get("players", []) or []:
+                stats = box_player.get("statistics")
+                if not isinstance(stats, dict):
+                    continue
+                pid = int(box_player["personId"])
+                if pid not in self.known_players:
+                    name = (f"{box_player.get('firstName', '')} "
+                            f"{box_player.get('familyName', '')}").strip()
+                    self.players.stage({"player_id": pid, "name": name or f"#{pid}",
+                                        "snapshot_id": box_snap, "run_id": run_id})
+                    self.known_players.add(pid)
+                self.box_lines.stage({
+                    "game_id": game_id, "player_id": pid,
+                    "team_id": team_id, "home": home,
+                    "minutes": str(stats.get("minutes") or ""),
+                    "points": int(stats.get("points") or 0),
+                    "fgm": int(stats.get("fieldGoalsMade") or 0),
+                    "fga": int(stats.get("fieldGoalsAttempted") or 0),
+                    "tpm": int(stats.get("threePointersMade") or 0),
+                    "tpa": int(stats.get("threePointersAttempted") or 0),
+                    "ftm": int(stats.get("freeThrowsMade") or 0),
+                    "fta": int(stats.get("freeThrowsAttempted") or 0),
+                    "reb": int(stats.get("reboundsTotal") or 0),
+                    "ast": int(stats.get("assists") or 0),
+                    "snapshot_id": box_snap, "run_id": run_id,
+                })
+
+    def flush(self, report: dict, changed_detail: list[str]) -> None:
+        """Reference rows before the event rows that FK them; the fully
+        loaded games' scopes are asserted COMPLETE (deletion detection)."""
+        cur = self.cur
+        self.players.flush(cur, report, changed_detail)
+        self.teams.flush(cur, report, changed_detail)
+        self.games.flush(cur, report, changed_detail)
+        game_scope = (("game_id = ANY(%s)", [self.full_loaded_games])
+                      if self.full_loaded_games else None)
+        self.pbp_events.flush(cur, report, changed_detail, scope=game_scope)
+        self.box_lines.flush(cur, report, changed_detail, scope=game_scope)
+        self.box_team_lines.flush(
+            cur, report, changed_detail,
+            scope=(("game_id = ANY(%s)", [self.team_loaded_games])
+                   if self.team_loaded_games else None),
+        )
+
+    def set_heads(self) -> None:
+        for game_id, pbp_id, box_id in self.game_heads:
+            rs.set_head(self.cur, rs.scope_key("play-by-play", game_id=game_id),
+                        pbp_id, self.run_id)
+            rs.set_head(self.cur, rs.scope_key("box-score", game_id=game_id),
+                        box_id, self.run_id)
+
+
+def load_game_pairs(
+    conn,
+    game_ids: set[str] | list[str],
+    *,
+    raw_root: Path = Path("data/raw"),
+    pairs: list[tuple[Path, Path]] | None = None,
+    allow_changed: bool = False,
+) -> dict:
+    """Load the named games' latest pbp/box pairs into the game-owned tables
+    with no hero in the picture — the team session's corpus step (ADR-0082).
+    Explicit fixture pairs replace the raw-corpus lookup. A game without a
+    pair is a hard failure: the pair is what the frontier is made of."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO load_run (kind) VALUES ('game-pairs') RETURNING run_id")
+            run_id = cur.fetchone()[0]
+            stager = PairStager(cur, run_id)
+            game_pairs: list[tuple[str, Path, Path]] = []
+            if pairs is not None:
+                for pbp_path, box_path in pairs:
+                    game_id = str(_load(pbp_path).get("_meta", {}).get("game_id", ""))
+                    if not game_id:
+                        sys.exit(f"load-pairs: {pbp_path} has no _meta.game_id")
+                    game_pairs.append((game_id, pbp_path, box_path))
+            else:
+                for game_id in sorted(game_ids):
+                    pair = latest_pair(raw_root, game_id)
+                    if pair is None:
+                        sys.exit(f"load-pairs: no pbp/box pair for game {game_id} — "
+                                 f"pull it first (ingestion/pull_play_by_play.py "
+                                 f"--game-ids)")
+                    game_pairs.append((game_id, *pair))
+            for game_id, pbp_path, box_path in game_pairs:
+                stager.stage_pair(game_id, pbp_path, box_path)
+            report: dict = {}
+            changed_detail: list[str] = []
+            stager.flush(report, changed_detail)
+            halting = sum(c["changed"] + c["deleted"] for c in report.values())
+            if halting and not allow_changed:
+                raise lhs.LoadHalt(
+                    f"{halting} row(s) changed or deleted against current state. "
+                    f"First diffs:\n  " + "\n  ".join(changed_detail[:10])
+                    + "\nRe-run with --allow-changed to accept them."
+                )
+            stager.set_heads()
+            cur.execute("UPDATE load_run SET report = %s WHERE run_id = %s",
+                        (lhs.Jsonb(report), run_id))
+        conn.commit()
+        report["_skipped_games"] = stager.skipped
+        report["_games"] = [g for g, _, _ in game_pairs]
+        return report
+    except BaseException:
+        conn.rollback()
+        raise
+
+
 def load_game_corpus(
     conn,
     player: str,
@@ -126,69 +414,19 @@ def load_game_corpus(
                 " ON CONFLICT DO NOTHING", (run_id, totals_snap),
             )
 
-            players = lhs.TableUpsert("player", ("player_id",))
-            teams = lhs.TableUpsert("team", ("team_id",))
-            games = lhs.TableUpsert("game", ("game_id",))
-            # Keyed by list position (0004): actionNumbers repeat in real
-            # games, and collapsing them loses observed events.
-            pbp_events = lhs.TableUpsert("pbp_event", ("game_id", "source_row"))
-            box_lines = lhs.TableUpsert("box_score_line", ("game_id", "player_id"))
-            box_team_lines = lhs.TableUpsert("box_team_line", ("game_id", "team_id"))
+            stager = PairStager(cur, run_id)
             totals = lhs.TableUpsert(
                 "league_season_totals", ("player_id", "season", "season_type"),
                 monotone_cols=("gp", "fgm", "fga", "ftm", "fta", "pts"),
             )
-            full_loaded_games: list[str] = []
-            team_loaded_games: list[str] = []
-            game_heads: list[tuple[str, int, int]] = []  # (game_id, pbp_snap, box_snap)
-
-            cur.execute("SELECT player_id FROM player")
-            known_players = {row[0] for row in cur.fetchall()}
-            cur.execute("SELECT game_id FROM game")
-            known_games = {row[0] for row in cur.fetchall()}
-            cur.execute("SELECT team_id FROM team")
-            known_teams = {row[0] for row in cur.fetchall()}
-
-            def stage_team_data(box_game: dict, game_id: str, box_snap: int) -> None:
-                """box_team_line rows for both sides, plus any team the team
-                table has never named (a team no hero shoots for is observed
-                only here; the composed city+name matches stats.nba.com's
-                TEAM_NAME form, and change detection arbitrates if a shot
-                snapshot ever disagrees)."""
-                for side, home in (("homeTeam", True), ("awayTeam", False)):
-                    team = box_game.get(side)
-                    if not isinstance(team, dict):
-                        sys.exit(f"load-corpus: game {game_id} box missing {side}")
-                    stats = team.get("statistics")
-                    if not isinstance(stats, dict):
-                        sys.exit(f"load-corpus: game {game_id} box {side} missing statistics")
-                    team_id = int(team["teamId"])
-                    city = str(team.get("teamCity", "")).strip()
-                    name = str(team.get("teamName", "")).strip()
-                    composed = f"{city} {name}".strip()
-                    # A truncated fixture can state no name; a team row is
-                    # only created when a name is actually observed.
-                    if team_id not in known_teams and composed:
-                        teams.stage({"team_id": team_id, "name": composed,
-                                     "snapshot_id": box_snap, "run_id": run_id})
-                        known_teams.add(team_id)
-                    box_team_lines.stage({
-                        "game_id": game_id, "team_id": team_id, "home": home,
-                        "city": city, "name": name,
-                        "tricode": str(team.get("teamTricode", "")),
-                        # -1 default so an absent assist total fails the
-                        # CHECK loudly instead of loading as a silent zero.
-                        "assists": int(stats.get("assists", -1)),
-                        "points": _int_or_none(stats.get("points")),
-                        "snapshot_id": box_snap, "run_id": run_id,
-                    })
 
             for row in totals_rows:
                 pid = int(row[col["PLAYER_ID"]])
-                if pid not in known_players:
-                    players.stage({"player_id": pid, "name": str(row[col["PLAYER_NAME"]]),
-                                   "snapshot_id": totals_snap, "run_id": run_id})
-                    known_players.add(pid)
+                if pid not in stager.known_players:
+                    stager.players.stage({
+                        "player_id": pid, "name": str(row[col["PLAYER_NAME"]]),
+                        "snapshot_id": totals_snap, "run_id": run_id})
+                    stager.known_players.add(pid)
                 totals.stage({
                     "player_id": pid, "season": season, "season_type": season_type,
                     "gp": int(row[col["GP"]]), "fgm": int(row[col["FGM"]]),
@@ -247,158 +485,12 @@ def load_game_corpus(
                         if fta > 0:
                             game_pairs.append((game_id, *pair))
 
-            skipped = 0
             for game_id, pbp_path, box_path in game_pairs:
-                rel = dp.repo_relative(pbp_path)
-                cur.execute(
-                    "SELECT s.snapshot_id FROM snapshot s WHERE s.path = %s AND EXISTS"
-                    " (SELECT 1 FROM pbp_event e WHERE e.snapshot_id = s.snapshot_id)",
-                    (rel,),
-                )
-                pbp_loaded = cur.fetchone() is not None
-                cur.execute("SELECT 1 FROM box_team_line WHERE game_id = %s LIMIT 1",
-                            (game_id,))
-                team_lines_loaded = cur.fetchone() is not None
-                if pbp_loaded and team_lines_loaded:
-                    skipped += 1  # shared-corpus game another hero already loaded
-                    # The scope's state still equals this pair: (re)assert the
-                    # heads from the cataloged ids (backfills pre-head stores).
-                    box_rel = dp.repo_relative(box_path)
-                    cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (rel,))
-                    pbp_id = cur.fetchone()
-                    cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (box_rel,))
-                    box_id = cur.fetchone()
-                    if pbp_id is None or box_id is None:
-                        sys.exit(f"load-corpus: game {game_id} loaded but its pair "
-                                 f"is not fully cataloged — store inconsistent")
-                    game_heads.append((game_id, pbp_id[0], box_id[0]))
-                    continue
-                box_snapshot = _load(box_path)
-                if pbp_loaded:
-                    # Team-line backfill (0003): events and player lines are
-                    # already in the store — only the team grain is new.
-                    box_game = box_snapshot.get("response", {}).get("boxScoreTraditional")
-                    if not isinstance(box_game, dict):
-                        sys.exit(f"load-corpus: game {game_id} box snapshot has "
-                                 f"no boxScoreTraditional")
-                    if str(box_game.get("gameId", "")) != game_id:
-                        sys.exit(f"load-corpus: directory {game_id} != box game ID")
-                    box_snap = lhs.catalog_snapshot(cur, "box-score", box_path,
-                                                    box_snapshot["_meta"])
-                    stage_team_data(box_game, game_id, box_snap)
-                    team_loaded_games.append(game_id)
-                    cur.execute("SELECT snapshot_id FROM snapshot WHERE path = %s", (rel,))
-                    game_heads.append((game_id, cur.fetchone()[0], box_snap))
-                    continue
-                pbp_snapshot = _load(pbp_path)
-                pbp_game, box_game, parsed_id = validate_game_pair(pbp_snapshot, box_snapshot)
-                if parsed_id != game_id:
-                    sys.exit(f"load-corpus: directory {game_id} != parsed game ID {parsed_id}")
-                pbp_snap = lhs.catalog_snapshot(cur, "play-by-play", pbp_path,
-                                                pbp_snapshot["_meta"])
-                box_snap = lhs.catalog_snapshot(cur, "box-score", box_path,
-                                                box_snapshot["_meta"])
-                stage_team_data(box_game, game_id, box_snap)
-                full_loaded_games.append(game_id)
-                team_loaded_games.append(game_id)
-                game_heads.append((game_id, pbp_snap, box_snap))
-                cur.executemany(
-                    "INSERT INTO load_run_snapshot (run_id, snapshot_id) VALUES (%s, %s)"
-                    " ON CONFLICT DO NOTHING",
-                    [(run_id, pbp_snap), (run_id, box_snap)],
-                )
-
-                if game_id not in known_games:
-                    game_season, game_season_type = season_of_game_id(game_id)
-                    games.stage({
-                        "game_id": game_id,
-                        "game_date": None,  # no source here states it
-                        "season": game_season,
-                        "season_type": game_season_type,
-                        "home_abbrev": str(box_game["homeTeam"]["teamTricode"]),
-                        "visitor_abbrev": str(box_game["awayTeam"]["teamTricode"]),
-                        "snapshot_id": box_snap, "run_id": run_id,
-                    })
-                    known_games.add(game_id)
-
-                actions = pbp_game.get("actions")
-                if not isinstance(actions, list):
-                    sys.exit(f"load-corpus: game {game_id} has no actions list")
-                for idx, action in enumerate(actions):
-                    if not isinstance(action, dict):
-                        sys.exit(f"load-corpus: game {game_id} action {idx} not an object")
-                    pbp_events.stage({
-                        "game_id": game_id,
-                        "action_number": int(action["actionNumber"]),
-                        "source_row": idx,
-                        "action_id": _int_or_none(action.get("actionId")),
-                        "period": _int_or_none(action.get("period")),
-                        "clock": action.get("clock"),
-                        "action_type": action.get("actionType"),
-                        "sub_type": action.get("subType"),
-                        "description": action.get("description"),
-                        "person_id": _int_or_none(action.get("personId")),
-                        "team_id": _int_or_none(action.get("teamId")),
-                        "is_field_goal": _int_or_none(action.get("isFieldGoal")),
-                        "shot_result": action.get("shotResult"),
-                        "shot_value": _int_or_none(action.get("shotValue")),
-                        "shot_distance": (None if action.get("shotDistance") is None
-                                          else float(action["shotDistance"])),
-                        "x_legacy": _int_or_none(action.get("xLegacy")),
-                        "y_legacy": _int_or_none(action.get("yLegacy")),
-                        "location": action.get("location"),
-                        "score_home": action.get("scoreHome"),
-                        "score_away": action.get("scoreAway"),
-                        "points_total": _int_or_none(action.get("pointsTotal")),
-                        "snapshot_id": pbp_snap, "run_id": run_id,
-                    })
-
-                for side, home in (("homeTeam", True), ("awayTeam", False)):
-                    team = box_game.get(side)
-                    if not isinstance(team, dict):
-                        sys.exit(f"load-corpus: game {game_id} box missing {side}")
-                    team_id = int(team["teamId"])
-                    for box_player in team.get("players", []) or []:
-                        stats = box_player.get("statistics")
-                        if not isinstance(stats, dict):
-                            continue
-                        pid = int(box_player["personId"])
-                        if pid not in known_players:
-                            name = (f"{box_player.get('firstName', '')} "
-                                    f"{box_player.get('familyName', '')}").strip()
-                            players.stage({"player_id": pid, "name": name or f"#{pid}",
-                                           "snapshot_id": box_snap, "run_id": run_id})
-                            known_players.add(pid)
-                        box_lines.stage({
-                            "game_id": game_id, "player_id": pid,
-                            "team_id": team_id, "home": home,
-                            "minutes": str(stats.get("minutes") or ""),
-                            "points": int(stats.get("points") or 0),
-                            "fgm": int(stats.get("fieldGoalsMade") or 0),
-                            "fga": int(stats.get("fieldGoalsAttempted") or 0),
-                            "tpm": int(stats.get("threePointersMade") or 0),
-                            "tpa": int(stats.get("threePointersAttempted") or 0),
-                            "ftm": int(stats.get("freeThrowsMade") or 0),
-                            "fta": int(stats.get("freeThrowsAttempted") or 0),
-                            "reb": int(stats.get("reboundsTotal") or 0),
-                            "ast": int(stats.get("assists") or 0),
-                            "snapshot_id": box_snap, "run_id": run_id,
-                        })
+                stager.stage_pair(game_id, pbp_path, box_path)
 
             report: dict = {}
             changed_detail: list[str] = []
-            players.flush(cur, report, changed_detail)
-            teams.flush(cur, report, changed_detail)
-            games.flush(cur, report, changed_detail)
-            game_scope = (("game_id = ANY(%s)", [full_loaded_games])
-                          if full_loaded_games else None)
-            pbp_events.flush(cur, report, changed_detail, scope=game_scope)
-            box_lines.flush(cur, report, changed_detail, scope=game_scope)
-            box_team_lines.flush(
-                cur, report, changed_detail,
-                scope=(("game_id = ANY(%s)", [team_loaded_games])
-                       if team_loaded_games else None),
-            )
+            stager.flush(report, changed_detail)
             totals.flush(cur, report, changed_detail,
                          scope=("season = %s AND season_type = %s",
                                 [season, season_type]))
@@ -409,11 +501,7 @@ def load_game_corpus(
                     f"First diffs:\n  " + "\n  ".join(changed_detail[:10])
                     + "\nRe-run with --allow-changed to accept them."
                 )
-            for game_id, pbp_id, box_id in game_heads:
-                rs.set_head(cur, rs.scope_key("play-by-play", game_id=game_id),
-                            pbp_id, run_id)
-                rs.set_head(cur, rs.scope_key("box-score", game_id=game_id),
-                            box_id, run_id)
+            stager.set_heads()
             rs.set_head(cur, rs.scope_key("league-totals", season=season,
                                           season_type=season_type),
                         totals_snap, run_id)
@@ -430,7 +518,7 @@ def load_game_corpus(
             cur.execute("UPDATE load_run SET report = %s WHERE run_id = %s",
                         (lhs.Jsonb(report), run_id))
         conn.commit()
-        report["_skipped_games"] = skipped
+        report["_skipped_games"] = stager.skipped
         return report
     except BaseException:
         conn.rollback()

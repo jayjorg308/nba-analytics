@@ -66,17 +66,23 @@ class TableUpsert:
                  but the caller halts (rollback) unless --allow-changed.
       deleted    scope-complete flush only: an existing scope row absent
                  from the staged set. Applied; halts like changed.
+
+    fill_cols: a column whose stored value is NULL becoming observed is
+    growth, not correction (a corpus-only game row learns its date from the
+    team shot pull); a non-NULL value changing still halts.
     """
 
     PROV_COLS = ("snapshot_id", "run_id")
 
     def __init__(self, table: str, key_cols: tuple[str, ...],
                  monotone_cols: tuple[str, ...] = (),
-                 free_cols: tuple[str, ...] = ()):
+                 free_cols: tuple[str, ...] = (),
+                 fill_cols: tuple[str, ...] = ()):
         self.table = table
         self.key_cols = key_cols
         self.monotone_cols = monotone_cols
         self.free_cols = free_cols
+        self.fill_cols = fill_cols
         self.staged: dict[tuple, dict] = {}
 
     def stage(self, row: dict) -> None:
@@ -115,6 +121,7 @@ class TableUpsert:
                 grown = all(
                     col in self.free_cols
                     or (col in self.monotone_cols and row[col] >= old)
+                    or (col in self.fill_cols and old is None)
                     for col, old in diffs
                 )
                 updates.append(row)
@@ -214,18 +221,20 @@ def catalog_snapshot(cur, source: str, path: Path, meta: dict) -> int:
         return row[0]
     cur.execute(
         "INSERT INTO snapshot (source, path, pull_date, season, season_type,"
-        " player_id, game_id, content_sha256)"
-        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING snapshot_id",
+        " player_id, game_id, team_id, content_sha256)"
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING snapshot_id",
         (
             source,
             rel,
             str(meta["pull_date"]),
             # Game-scoped artifacts (pbp/box) state game_id and no season;
-            # season-scoped artifacts the reverse (0002_game_corpus.sql).
+            # season-scoped artifacts the reverse (0002_game_corpus.sql);
+            # team-scoped artifacts state team_id (0007_team_shots.sql).
             str(meta["season"]) if "season" in meta else None,
             str(meta["season_type"]) if "season_type" in meta else None,
             int(meta["player_id"]) if "player_id" in meta else None,
             str(meta["game_id"]) if "game_id" in meta else None,
+            int(meta["team_id"]) if "team_id" in meta else None,
             sha,
         ),
     )

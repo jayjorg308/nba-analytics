@@ -33,6 +33,7 @@ from datetime import datetime
 from pathlib import Path
 
 from nba_api.stats.endpoints import (
+    commonteamroster,
     leaguedashplayerstats,
     leaguedashteamptshot,
     playerdashptshots,
@@ -298,5 +299,87 @@ def pull_league_tracking_snapshot(
         "general": general,
         "shot_clock": shot_clock,
         "closest_defender": closest_defender,
+    }
+    return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
+
+
+# ------------------------------------------------- team-scoped sources (ADR-0082)
+
+
+def pull_team_shot_snapshot(
+    team: str,
+    team_id: int,
+    season: str,
+    out_dir: Path,
+    *,
+    date_to: str | None = None,
+    stamp: str = "",
+    pull_date: str,
+    timeout: int = 90,
+) -> Path:
+    """One TEAM-WIDE shotchartdetail pull (team ID set, player ID zero): every
+    shot every player took for the team, with the LeagueAverages frame —
+    unfiltered (discovery) or frontier-anchored (date_to set). The team shot
+    payload's source (ADR-0082); stored under data/raw/_teams/<tricode>/."""
+    raw = shotchartdetail.ShotChartDetail(
+        team_id=team_id,
+        player_id=0,
+        season_nullable=season,
+        season_type_all_star=SEASON_TYPE,
+        context_measure_simple="FGA",  # ALL attempts — never the PTS default
+        date_to_nullable=nba_date(date_to) if date_to else "",
+        timeout=timeout,
+    ).get_dict()
+    headers, rows = result_rows(raw, "Shot_Chart_Detail")
+    dates = sorted(str(r[headers.index("GAME_DATE")]) for r in rows) if rows else []
+    games = {str(r[headers.index("GAME_ID")]) for r in rows} if rows else set()
+    snapshot = {
+        "_meta": {
+            "team": team,
+            "team_id": team_id,
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "pull_date": pull_date,
+            "pull_unit": "season",
+            "date_to": date_to,
+            "games_included": len(games),
+            "date_range": [dates[0], dates[-1]] if dates else None,
+            "shot_rows": len(rows),
+            "context_measure": "FGA",
+            "source": "stats.nba.com shotchartdetail team-wide (unofficial)",
+        },
+        "response": raw,
+    }
+    return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
+
+
+def pull_roster_snapshot(
+    team: str,
+    team_id: int,
+    season: str,
+    out_dir: Path,
+    *,
+    stamp: str = "",
+    pull_date: str,
+    timeout: int = 60,
+) -> Path:
+    """One commonteamroster pull — the roster as observed today (no DateTo
+    exists for it; the roster is current state, ADR-0082). Stored beside the
+    team shot snapshots under .../roster/."""
+    raw = commonteamroster.CommonTeamRoster(
+        team_id=team_id,
+        season=season,
+        timeout=timeout,
+    ).get_dict()
+    snapshot = {
+        "_meta": {
+            "team": team,
+            "team_id": team_id,
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "pull_date": pull_date,
+            "source": "stats.nba.com commonteamroster (unofficial)",
+        },
+        "response": raw,
     }
     return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)

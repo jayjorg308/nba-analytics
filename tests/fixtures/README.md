@@ -92,6 +92,37 @@ creation, shot-context, and free-throw payloads version on different clocks
   the fixture game pair, and the league totals fixture. **Never edit by
   hand**; regenerate via `npm run golden:regen`.
 
+## Team shot payload (ADR-0082; schema v1 — the Jazz surface's fifth contract)
+
+- **`team-snapshot.truncated.json`** — a hand-trimmed copy of the real raw
+  TEAM-WIDE snapshot `data/raw/_teams/uta/2025-26/2026-09-22.json`
+  (shotchartdetail with the team ID set and player ID zero), cut to one
+  game: 0022500025, UTA @ PHX, 2025-10-31 — every Jazz shot in it, 80 real
+  rows across 14 shooters, plus the `LeagueAverages` frame verbatim. Two
+  synthetic rows: the hero fixture's Backcourt row (`GAME_EVENT_ID: 999`,
+  Cody Williams) so the hero and team fixtures describe the SAME game and
+  the store test can prove hero rows load unchanged from the team pull, and
+  one zone-point-conflict row (`GAME_EVENT_ID: 9999`, a 2PT scored in a
+  3PT zone) so the drop-and-count path is exercised.
+
+- **`team-roster.truncated.json`** — the real 2025-26 `commonteamroster`
+  snapshot trimmed to five players: three who shot in the fixture game and
+  two who did not (one with no jersey number assigned — the empty `number`
+  path).
+
+- **`team-boxscore.truncated.json`** — the real `BoxScoreTraditionalV3` for
+  the fixture game with every Jazz player line in full (the ADR-0082
+  per-player per-game FGA oracle) and one Suns line. The two synthetic
+  shooters' FGA are raised by one each so the oracle reconciles exactly;
+  `_meta.fixture_note` says so.
+
+- **`team-shot.golden.json`** — the file derive's output over the three
+  fixtures (`derive_team_payload.py`). **Never edit by hand**; regenerate via
+  `npm run golden:regen`. The record-store test (`test_team_season.py`)
+  loads the same fixtures through `load_team_season` + `load_game_pairs`
+  and holds the export to this file byte-for-byte — one grammar
+  (`team_payload.build_team_payload`), two sources.
+
 ## How the handshake works
 
 - `ingestion/test_derive_payload.py` asserts `derive(truncated) == golden`;
