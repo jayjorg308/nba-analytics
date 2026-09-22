@@ -5,8 +5,11 @@ import { HeroIndexPage } from './app/HeroIndexPage'
 import { HeroPage } from './app/HeroPage'
 import { MethodologyPage } from './app/MethodologyPage'
 import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseRoute } from './app/routes'
+import { TeamGamePage } from './app/TeamGamePage'
+import { TeamPage } from './app/TeamPage'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
+import { GAME_ID, teamBySlug } from './teams/registry'
 
 function App() {
     // Read once at render: navigation between pages is full page loads
@@ -46,6 +49,44 @@ function App() {
         return (
             <>
                 <ComparisonPage />
+                <Analytics />
+            </>
+        )
+    }
+    // The team surface (ADR-0081/0082): a reserved team slug resolved before
+    // the registry. /jazz renders the canonical team season in place,
+    // /jazz/<season> a season with deployed payloads, /jazz/<gameId> one
+    // game row expanded (a ten-digit id, never confusable with a season).
+    // Anything else under the slug is nobody's page.
+    const team = teamBySlug(route.slug)
+    if (team !== undefined) {
+        if (route.season === undefined) {
+            return (
+                <>
+                    <TeamPage team={team} season={team.canonicalSeason} />
+                    <Analytics />
+                </>
+            )
+        }
+        if (GAME_ID.test(route.season)) {
+            return (
+                <>
+                    <TeamGamePage team={team} gameId={route.season} />
+                    <Analytics />
+                </>
+            )
+        }
+        if (team.seasons.includes(route.season)) {
+            return (
+                <>
+                    <TeamPage team={team} season={route.season} />
+                    <Analytics />
+                </>
+            )
+        }
+        return (
+            <>
+                <HeroIndexPage unknownPath={`${route.slug}/${route.season}`} />
                 <Analytics />
             </>
         )

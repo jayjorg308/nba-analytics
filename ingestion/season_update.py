@@ -590,7 +590,9 @@ def db_derive_team(args: argparse.Namespace, team: str, season: str,
     shot + roster snapshots, load the universe's game pairs hero-free, then
     export the team shot payload with every oracle live (the per-player
     per-game box oracle refuses a game without its pair)."""
+    import export_ledger_facts as elf
     import export_team_shot_payload as etp
+    import ledger_facts as lf
     import load_game_corpus as lgc
     import load_hero_season as lhs
     import load_team_season as lts
@@ -613,6 +615,12 @@ def db_derive_team(args: argparse.Namespace, team: str, season: str,
             raise Halt(f"team shot export failed: {exc}") from exc
         tp.write_payload(out_path, payload)
         report.append("team shot export ok (record store)")
+        try:
+            ledger = elf.export_ledger(conn, team, season, out_path)
+        except SystemExit as exc:
+            raise Halt(f"ledger export failed: {exc}") from exc
+        lf.write_payload(out_path.parent / "ledger" / out_path.name, ledger)
+        report.append("ledger export ok (record store)")
 
 
 def run_team(entry: dict, args: argparse.Namespace) -> dict:
@@ -727,6 +735,12 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
         if result.returncode != 0:
             raise Halt(f"team derive failed:\n{result.stdout}\n{result.stderr}")
         report.append("team shot derive ok (files)")
+        result = run("python ingestion/derive_ledger_facts.py "
+                     f"--team-payload-file \"{out_path}\" "
+                     f"--out-file \"{out_path.parent / 'ledger' / out_path.name}\"")
+        if result.returncode != 0:
+            raise Halt(f"ledger derive failed:\n{result.stdout}\n{result.stderr}")
+        report.append("ledger derive ok (files)")
 
     # 7. The frontier gate: the payload states exactly the settled frontier.
     meta = read_json(out_path)["_meta"]

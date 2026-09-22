@@ -6,6 +6,17 @@ comparison-page precedent: a tool surface beside the hero arguments, built in
 vertical increments that each leave the suite green. The decisions it proposes
 for ADRs are listed under "Decisions to record" and are not yet written._
 
+> **Amendment (2026-09-22, increments 1 and 2).** Two departures from the
+> text below, both recorded in the ADRs. The team shot payload's FGA oracle
+> reconciles against the per-player box-score lines, per game, rather than a
+> league team-totals artifact (ADR-0082): stronger, already in the store, no new
+> endpoint. And the `/jazz/<season>` form shipped with increment 2 instead of
+> waiting: the surface opens on the completed 2025-26 season so it renders
+> before opening night, so the team registry carries `seasons[]` and a
+> `canonicalSeason` exactly like a hero, and 2026-27 joins the list and becomes
+> canonical by config change the day its payloads deploy. Game pages keep
+> `/jazz/<gameId>`; a ten-digit id is never confusable with a season.
+
 ## Outcome
 
 Build a Utah Jazz team surface inside Good Shots: one reserved route that

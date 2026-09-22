@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pytest
 
+import export_ledger_facts as elf
 import export_shot_payload as esp
 import export_team_shot_payload as etp
 import load_game_corpus as lgc
@@ -23,6 +24,7 @@ import team_payload as tp
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
 GOLDEN = FIXTURES / "team-shot.golden.json"
+LEDGER_GOLDEN = FIXTURES / "team-ledger.golden.json"
 HERO_GOLDEN = FIXTURES / "derived.golden.json"
 PAIR = (FIXTURES / "playbyplay.truncated.json", FIXTURES / "team-boxscore.truncated.json")
 
@@ -55,6 +57,10 @@ def test_team_golden_roundtrip_through_the_store(store):
     assert pairs["box_score_line"]["inserted"] > 0
     payload = etp.export_payload(store, "Utah Jazz", "2025-26")
     assert etp.payload_text(payload) == GOLDEN.read_text(encoding="utf-8")
+    # The ledger (ADR-0084) over the same store, keyed to the golden payload
+    # the file derive produced: byte-identical to its own golden.
+    ledger = elf.export_ledger(store, "Utah Jazz", "2025-26", GOLDEN)
+    assert elf.payload_text(ledger) == LEDGER_GOLDEN.read_text(encoding="utf-8")
 
 
 def test_export_refuses_a_game_without_its_box(store):

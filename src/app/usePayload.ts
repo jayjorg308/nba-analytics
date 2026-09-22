@@ -7,6 +7,10 @@ import type { DerivedPayload } from '../domain/payload'
 import { parseDerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { parseShotContextPayload } from '../domain/shotContextPayload'
+import type { LedgerFacts } from '../domain/ledgerFacts'
+import { parseLedgerFacts } from '../domain/ledgerFacts'
+import type { TeamShotPayload } from '../domain/teamShotPayload'
+import { parseTeamShotPayload } from '../domain/teamShotPayload'
 
 export type PayloadState<T> =
   | { status: 'loading' }
@@ -128,4 +132,15 @@ export function useOptionalComparisonFreethrowPayload(
   url: string | null,
 ): OptionalPayloadState<FreethrowPayload> {
   return useOptionalParsedPayload(url, parseFreethrowPayload, 'comparison free throw data')
+}
+
+/** The team shot payload (ADR-0082) behind the team surface. */
+export function useTeamShotPayload(url: string): PayloadState<TeamShotPayload> {
+  return useParsedPayload(url, parseTeamShotPayload, 'team shot data')
+}
+
+/** The game ledger facts (ADR-0084) beside it — both required, one class of
+ * team page. */
+export function useLedgerFacts(url: string): PayloadState<LedgerFacts> {
+  return useParsedPayload(url, parseLedgerFacts, 'game ledger data')
 }

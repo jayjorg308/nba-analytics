@@ -3001,3 +3001,84 @@
 .index-page .index-compare a:focus-visible {
     color: var(--text-h);
 }
+
+/* --- The team surface (ADR-0081/0082/0084): a tool page in the hero page's
+   register, minus the poster banner and the verdict. The header is the
+   compact identity the comparison page uses; the sections reuse the acts'
+   caption recipe and the zone table's type. ------------------------------ */
+
+.team-header {
+    max-width: 960px;
+    margin: 96px auto 32px;
+}
+
+.team-title {
+    font-family: var(--font-display, inherit);
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 0.95;
+    margin: 4px 0 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
+
+.team-seasons,
+.team-note {
+    line-height: normal;
+    margin: 16px 0 0;
+    color: var(--ink-muted, #b3b3b3);
+    max-width: 62ch;
+}
+
+.team-note a,
+.team-seasons a,
+.team-ledger-table a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 3px;
+}
+
+.team-note a:hover,
+.team-note a:focus-visible,
+.team-seasons a:hover,
+.team-seasons a:focus-visible,
+.team-ledger-table a:hover,
+.team-ledger-table a:focus-visible {
+    color: #fff;
+    text-decoration-color: currentColor;
+}
+
+.team-ledger-section,
+.team-game-section {
+    max-width: 960px;
+    margin: 48px auto 0;
+}
+
+.team-ledger-panel .zone-scroll {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.team-ledger-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--panel, #111);
+}
+
+.team-ledger-table tbody th {
+    white-space: nowrap;
+}
+
+.table-note {
+    line-height: normal;
+    margin: 12px 0 0;
+    color: var(--ink-muted, #b3b3b3);
+    font-size: 0.875rem;
+    max-width: 72ch;
+}
+
+@media (max-width: 1024px) {
+    .team-header {
+        margin-top: 80px;
+    }
+}

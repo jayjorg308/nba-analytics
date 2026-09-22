@@ -1,5 +1,7 @@
 import type { ShotMetrics } from '../domain/aggregate'
 import { formatPps2, formatSignedGap } from '../format'
+import type { HeadlineSubject } from './headlineSubject'
+import { HERO_SUBJECT } from './headlineSubject'
 import { Term } from './Term'
 
 /**
@@ -23,9 +25,11 @@ import { Term } from './Term'
 export function HeadlineBanner({
     selection,
     making,
+    subject = HERO_SUBJECT,
 }: {
     selection: ShotMetrics['selection']
     making: ShotMetrics['making']
+    subject?: HeadlineSubject
 }) {
     return (
         <div className="headline-pair">
@@ -39,8 +43,8 @@ export function HeadlineBanner({
                         {/* The two load-bearing terms are dictionary entries
                             (ADR-0052) — this subtitle is where a reader first
                             meets them. */}
-                        <Term id="expected-pps">expected points per shot</Term>:
-                        his <Term id="shot-diet">shot diet</Term> vs the
+                        <Term id="expected-pps">expected points per shot</Term>:{' '}
+                        {subject.possessive} <Term id="shot-diet">shot diet</Term> vs the
                         league&apos;s
                     </span>
                 </h2>
@@ -50,7 +54,7 @@ export function HeadlineBanner({
                             {formatPps2(selection.playerDietExpectedPps)}
                         </span>
                         <span className="stat-label">
-                            expected from his diet
+                            expected from {subject.possessive} diet
                         </span>
                     </div>
                     <div className="headline-stat">
@@ -72,12 +76,12 @@ export function HeadlineBanner({
                                 2,
                             )}
                         </span>
-                        <span className="stat-label">his choices</span>
+                        <span className="stat-label">{subject.possessive} choices</span>
                     </div>
                 </div>
                 <p className="headline-note">
                     Expected PPS prices every shot at league-average shooting.
-                    His shot selection moves this number, not whether they go
+                    {' '}{subject.Possessive} shot selection moves this number, not whether they go
                     in.
                 </p>
             </section>
@@ -99,14 +103,14 @@ export function HeadlineBanner({
                         <span className="stat-value">
                             {formatPps2(making.actualPps)}
                         </span>
-                        <span className="stat-label">he scored</span>
+                        <span className="stat-label">{subject.scored}</span>
                     </div>
                     <div className="headline-stat">
                         <span className="stat-value">
                             {formatPps2(selection.playerDietExpectedPps)}
                         </span>
                         <span className="stat-label">
-                            expected from his diet
+                            expected from {subject.possessive} diet
                         </span>
                     </div>
                     <div className="headline-stat">
@@ -117,11 +121,11 @@ export function HeadlineBanner({
                                 2,
                             )}
                         </span>
-                        <span className="stat-label">his conversion</span>
+                        <span className="stat-label">{subject.possessive} conversion</span>
                     </div>
                 </div>
                 <p className="headline-note">
-                    Comparing his actual PPS vs what league-average shooting
+                    Comparing {subject.possessive} actual PPS vs what league-average shooting
                     yields from the same shots.
                 </p>
             </section>

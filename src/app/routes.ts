@@ -24,7 +24,12 @@ export const COMPARE_ROUTE = 'compare'
 /** Single-segment paths owned by static pages. A hero slug may never
  * collide with one — guarded by the registry coherence tests, so a future
  * hero:add for a colliding name fails loudly instead of shadowing a page. */
-export const RESERVED_ROUTES: readonly string[] = [METHODOLOGY_ROUTE, COMPARE_ROUTE]
+/** The team surface (ADR-0081/0082): /jazz renders the canonical team
+ * season, /jazz/<season> a season, /jazz/<gameId> one game row expanded.
+ * Team slugs are reserved like the static routes. */
+export const TEAM_ROUTES: readonly string[] = ['jazz']
+
+export const RESERVED_ROUTES: readonly string[] = [METHODOLOGY_ROUTE, COMPARE_ROUTE, ...TEAM_ROUTES]
 
 /**
  * The route after BASE_URL: { slug: '' } for the index, { slug } for a

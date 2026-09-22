@@ -56,10 +56,22 @@ if (targets.length === 0) {
   process.exit(1)
 }
 
-const resolved = targets.map((t) => ({
-  source: latestSource(join('data', 'derived', '_teams', t.tricode, t.season)),
-  dest: join('public', 'data', '_teams', t.tricode, `${t.season}.json`),
-}))
+// Both team contracts sync together (shot payload + ledger facts, ADR-0082/
+// 0084): a target with either missing fails before anything is copied, so a
+// one-sided deployment update can never ship.
+const resolved = targets.flatMap((t) => {
+  const derivedDir = join('data', 'derived', '_teams', t.tricode, t.season)
+  return [
+    {
+      source: latestSource(derivedDir),
+      dest: join('public', 'data', '_teams', t.tricode, `${t.season}.json`),
+    },
+    {
+      source: latestSource(join(derivedDir, 'ledger')),
+      dest: join('public', 'data', '_teams', t.tricode, `${t.season}.ledger.json`),
+    },
+  ]
+})
 if (resolved.some((r) => r.source === null)) process.exit(1)
 for (const { source, dest } of resolved) {
   mkdirSync(dirname(dest), { recursive: true })

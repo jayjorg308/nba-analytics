@@ -123,6 +123,17 @@ creation, shot-context, and free-throw payloads version on different clocks
   and holds the export to this file byte-for-byte — one grammar
   (`team_payload.build_team_payload`), two sources.
 
+## Game ledger facts (ADR-0084; schema v1 — the team surface's sibling contract)
+
+- **`team-ledger.golden.json`** — the ledger derive's output over
+  `team-shot.golden.json` (the game set and matchups) and
+  `team-boxscore.truncated.json` (both scores and the Jazz player lines):
+  one game row with the box facts and the twelve shooters, highest scorers
+  first, player IDENTITY only (names live in the team payload). **Never edit
+  by hand**; regenerate via `npm run golden:regen`. The store test holds
+  `export_ledger_facts` to this file byte-for-byte after the team golden's
+  own round trip.
+
 ## How the handshake works
 
 - `ingestion/test_derive_payload.py` asserts `derive(truncated) == golden`;
