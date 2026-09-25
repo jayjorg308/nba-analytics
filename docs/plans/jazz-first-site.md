@@ -124,7 +124,11 @@ Standing decisions that continue to apply:
   result `0x800710E0`. The task is registered "Interactive only" with "No
   Start On Batteries" and "Stop On Battery Mode", so the likeliest cause is
   the laptop running on battery. A missed day in the season is a missing
-  report card.
+  report card. After the task settings changed, the 2026-09-25 run still
+  started at 8:53, when the laptop was opened, not at 06:30: the laptop sat
+  in Modern Standby from 23:33 to 08:53 on AC power (no power-source change
+  since the afternoon before), so the task's wake timer does not wake this
+  machine. The catch-up setting is what ran it.
 
 ## Decisions to record
 
@@ -179,8 +183,9 @@ ADR lands with the increment that needs it.
 ### Included
 
 - Integrating both prototype branches into one line of history.
-- Loop operations: its own clone on main, pull-first, a branch guard, a
-  wake timer, a game-night window, the raw backup.
+- Loop operations: its own clone on main, pull-first, a branch guard,
+  task power settings, no sleep on AC during the season, a game-night
+  window, the raw backup.
 - The game payload, the pre-game ruler, per-game share cards and emitted
   share pages.
 - The team report card, the player's night, the player season page, the
@@ -262,10 +267,11 @@ Each of these is small, and all of them land before opening night.
   unless it is on main with no staged or unstaged changes outside
   `public/data/` and `data/`. The separate clone is the fix; the guard is
   the backstop.
-- **Wake timer and power.** _Applied 2026-09-24 to the current task; repeat
+- **Task settings.** _Applied 2026-09-24 to the current task; repeat
   for any task registered later (the loop clone's, the game-night
   trigger)._ In the Conditions tab, tick "Wake the computer to run this
-  task" and untick "Start the task only if the computer is on AC power". In
+  task" (harmless, though it does not work on this laptop, below) and
+  untick "Start the task only if the computer is on AC power". In
   the Settings tab, tick "Run task as soon as possible after a scheduled
   start is missed" (without it, a morning the laptop sleeps through is
   skipped, not caught up) and cap "Stop the task if it runs longer than" at
@@ -284,17 +290,36 @@ Each of these is small, and all of them land before opening night.
   (Get-ScheduledTask -TaskName "nba-analytics season loop").Settings | Select-Object DisallowStartIfOnBatteries, StopIfGoingOnBatteries, WakeToRun, StartWhenAvailable, ExecutionTimeLimit
   ```
 
-  **This laptop uses Modern Standby** (`powercfg /a` reports S0 Low Power
-  Idle), and its power plan allows wake timers plugged in only. Leave them
-  off on battery (a laptop that wakes in a closed bag overheats) and keep it
-  plugged in overnight during the season; a run missed on battery catches
-  up when the lid opens. The first 06:30 run log after the change is the
-  real test that the wake works. If missed runs still pile up in November,
-  a small always-on machine at home is the upgrade (a residential IP, so
-  stats.nba.com still answers); the loop would then need a shell wrapper
-  and a push notifier instead of the WinRT toast.
+- **Stay awake on AC during the season.** This laptop uses Modern Standby
+  (`powercfg /a` reports S0 Low Power Idle), and tested on 2026-09-25 its
+  wake timer does not bring it out of standby even plugged in (see "Where
+  things stand"). A sleeping laptop still catches the morning run up when it
+  is opened, but it misses the 23:45 game-night run entirely, which is the
+  run the report card depends on. So during the season (set it now,
+  opening night at the latest), the laptop does not sleep while plugged
+  in; the screen may still turn off:
+
+  ```powershell
+  powercfg /change standby-timeout-ac 0
+  powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 0; powercfg /setactive SCHEME_CURRENT
+  ```
+
+  The first line is "put my device to sleep after: Never" when plugged in
+  (Settings, System, Power & battery); the second is "When I close the lid:
+  Do nothing" when plugged in (Control Panel, Power Options). Battery
+  behavior is unchanged: it still sleeps, and wake timers stay off on
+  battery (a laptop that wakes in a closed bag overheats). The cost is a
+  few watts overnight, plus one habit: unplugged with the lid already
+  closed, it stays awake, so put it to sleep from the Start menu before
+  packing it. The proof is a game-night run log stamped 23:45. If that
+  proves unreliable, or the habit gets old, a small always-on machine at
+  home is the upgrade (a residential IP, so stats.nba.com still answers);
+  the loop would then need a shell wrapper and a push notifier instead of
+  the WinRT toast.
 - **Game-night window.** A second daily trigger at 23:45 MT running
-  `npm run season:update -- --team UTA`. On a night without a Jazz game the
+  `npm run season:update -- --team UTA` (the wrapper passes arguments
+  through, so the task runs `season-update.ps1 --team UTA`; it depends on
+  the stay-awake setting above). On a night without a Jazz game the
   no-change early exit ends it after one discovery pull. If a source lags
   (a late West Coast finish, pbp not yet posted), the game defers to the
   06:30 run, which also runs the hero sessions and their tracking.
@@ -555,7 +580,7 @@ slips can be backfilled over games already played.
 ### Phase 0: Sloan week (through October 1)
 
 No build work. The abstract is due October 1. Human chores only: create the
-backup bucket, set the wake timer.
+backup bucket, set the task's power settings (done 2026-09-24).
 
 ### Phase 1: integration and operations (October 2 to 7)
 
