@@ -1,5 +1,10 @@
 # Jazz Surface Plan
 
+> **Superseded in part (2026-09-24)** by `docs/plans/jazz-first-site.md`,
+> which widens this surface into a Jazz-first site and wins wherever the
+> two disagree. Its migration `0007_team_shots.sql` is now
+> `0009_team_surface.sql`.
+
 _Drafted 2026-09-22 from a design conversation (placement, MVP content, voice,
 and roster scope decided; see "Decisions already made"). The plan follows the
 comparison-page precedent: a tool surface beside the hero arguments, built in

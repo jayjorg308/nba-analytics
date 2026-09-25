@@ -6,6 +6,22 @@ wherever the two disagree; everything that plan decided and this one does not
 mention still stands. Decisions to record are listed under "Decisions to
 record" and each lands as an ADR with the increment that needs it._
 
+> **Progress (2026-09-24, Phase 1 on `feature_JazzSite`).** Integration
+> steps 1 to 5 and 7 are done: the game-card ADR is 0086 (`31f5bcd`), the
+> merge through `316ef12` is in (`f864904`; the eleven hero game-log files
+> came from `ccbe994` because `316ef12` alone was red, and the game-log
+> contract dropped its "fifth" ordinal), the spectrum doc is cherry-picked,
+> the Jazz migration is `0009_team_surface.sql`, and the team replay held
+> all three days to their frontiers with the final day equal to the
+> deployed team payload and ledger modulo provenance. The local
+> `freethrowPayload.real.test.ts` failures cleared with the merge, as
+> predicted. Operations landed in code: the branch guard, pull-first, and
+> argument passthrough (`01b72f1`), and Keyonte George and Darryn Peterson
+> as dark 2026-27 seasons (`2034cb4`). Step 6 is reordered below: `0009`
+> reaches production from main, after the merge. Still open: step 8 and
+> the operations that need main or a human (the loop clone, the game-night
+> task, the raw backup bucket).
+
 ## Outcome
 
 Good Shots becomes a Utah Jazz site for the 2026-27 season. The root opens
@@ -208,11 +224,16 @@ Do this first, on an integration branch, before any new build.
    The production store never applied it (verified), so the rename is safe;
    `0007_twelve_minute_clock.sql` and `0008_split_trip_families.sql` keep
    their names because the store has them recorded.
-6. Apply `0009` to the production store, then run the full gate: pytest
-   with Docker running (the record-store tests skip silently without it, so
-   check the count ran, not just that it passed), `npm test`,
-   `npm run lint`, `npm run build`. The two auto-merged loaders are the ones
-   to watch.
+6. Run the full gate: pytest with Docker running (the record-store tests
+   skip silently without it, so check the count ran, not just that it
+   passed), `npm test`, `npm run lint`, `npm run build`. The two
+   auto-merged loaders are the ones to watch. Apply `0009` to the
+   production store only after step 8, from main: the branch guard makes
+   production-store writes a main-only action, and a migration applied from
+   a branch is exactly what it prevents. Pre-flight (read-only, 2026-09-24):
+   every existing `snapshot.source` satisfies the widened check, the
+   `team_id` column and `roster_entry` table do not exist yet, and all
+   pending migrations run in one transaction, so a failure rolls back.
 7. Re-run the team replay from the Jazz plan (three 2025-26 `--as-of`
    dates) on the merged code.
 8. Update `jazz-surface.md` with a pointer to this plan and merge
