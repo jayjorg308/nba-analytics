@@ -125,12 +125,30 @@ def test_taxonomy_totality_rejects_an_unclassifiable_trip():
         run_derive(shot, pbp, box, league)
 
 
-def test_partial_trip_sequences_hard_fail_instead_of_absorbing():
+def test_partial_trip_sequences_count_as_splits_and_still_reconcile():
+    # ADR-0053 as amended: a duplicate-free partial sequence is a SPLIT
+    # fragment — the visit's other throws belong to a teammate — counted in
+    # splitFtm/splitFta, never a trip. The per-game box identity still
+    # bites: dropping "1 of 2" (a make) without adjusting the box line must
+    # fail the reconciliation, because the box still credits both throws.
     shot, pbp, box, league = fixture_inputs()
     actions = pbp["response"]["game"]["actions"]
     actions.remove(find_action(pbp, 302))  # drop "1 of 2", keep "2 of 2"
 
-    with pytest.raises(SystemExit, match="partial or duplicated trip sequence"):
+    with pytest.raises(SystemExit, match="!= box-score line"):
+        run_derive(shot, pbp, box, league)
+
+
+def test_duplicated_trip_sequences_still_hard_fail():
+    # Duplicates are data anomalies, not splits: never absorbed.
+    shot, pbp, box, league = fixture_inputs()
+    action = find_action(pbp, 302)  # "1 of 2"
+    dupe = dict(action)
+    pbp["response"]["game"]["actions"].insert(
+        pbp["response"]["game"]["actions"].index(action) + 1, dupe
+    )
+
+    with pytest.raises(SystemExit, match="duplicated trip sequence"):
         run_derive(shot, pbp, box, league)
 
 

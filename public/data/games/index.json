@@ -1,0 +1,81 @@
+{
+  "rosters": [
+    {
+      "slug": "ace-bailey",
+      "player": "Ace Bailey",
+      "season": "2025-26",
+      "totalGames": 72,
+      "dataThrough": "2026-04-12"
+    },
+    {
+      "slug": "alex-sarr",
+      "player": "Alex Sarr",
+      "season": "2025-26",
+      "totalGames": 48,
+      "dataThrough": "2026-03-27"
+    },
+    {
+      "slug": "austin-reaves",
+      "player": "Austin Reaves",
+      "season": "2025-26",
+      "totalGames": 51,
+      "dataThrough": "2026-04-02"
+    },
+    {
+      "slug": "bub-carrington",
+      "player": "Bub Carrington",
+      "season": "2025-26",
+      "totalGames": 82,
+      "dataThrough": "2026-04-12"
+    },
+    {
+      "slug": "cody-williams",
+      "player": "Cody Williams",
+      "season": "2025-26",
+      "totalGames": 62,
+      "dataThrough": "2026-04-12"
+    },
+    {
+      "slug": "donovan-mitchell",
+      "player": "Donovan Mitchell",
+      "season": "2025-26",
+      "totalGames": 70,
+      "dataThrough": "2026-04-08"
+    },
+    {
+      "slug": "jalen-brunson",
+      "player": "Jalen Brunson",
+      "season": "2025-26",
+      "totalGames": 74,
+      "dataThrough": "2026-04-10"
+    },
+    {
+      "slug": "keyonte-george",
+      "player": "Keyonte George",
+      "season": "2025-26",
+      "totalGames": 54,
+      "dataThrough": "2026-03-11"
+    },
+    {
+      "slug": "maxime-raynaud",
+      "player": "Maxime Raynaud",
+      "season": "2025-26",
+      "totalGames": 74,
+      "dataThrough": "2026-04-12"
+    },
+    {
+      "slug": "nique-clifford",
+      "player": "Nique Clifford",
+      "season": "2025-26",
+      "totalGames": 73,
+      "dataThrough": "2026-04-12"
+    },
+    {
+      "slug": "shai-gilgeous-alexander",
+      "player": "Shai Gilgeous-Alexander",
+      "season": "2025-26",
+      "totalGames": 68,
+      "dataThrough": "2026-04-08"
+    }
+  ]
+}

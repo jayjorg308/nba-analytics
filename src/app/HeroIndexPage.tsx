@@ -1,7 +1,13 @@
 import { useEffect } from 'react'
 import { HEROES } from '../heroes/registry'
 import { indexMetaOf } from '../heroes/types'
-import { compareUrl, headshotUrl, heroPageUrl, methodologyUrl } from '../heroes/urls'
+import {
+  compareUrl,
+  gameLandingUrl,
+  headshotUrl,
+  heroPageUrl,
+  methodologyUrl,
+} from '../heroes/urls'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 
@@ -94,6 +100,8 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
             index to links only). */}
         <p className="index-compare">
           <a href={compareUrl()}>Compare players →</a>
+          {' · '}
+          <a href={gameLandingUrl()}>Game cards →</a>
         </p>
       </main>
       {/* The shared sign-off (a sibling of main — a real contentinfo

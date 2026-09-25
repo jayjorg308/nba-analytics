@@ -27,7 +27,13 @@ from derive_shot_context import _load, load_game_snapshots, validate_game_pair
 
 # v2: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
 #     the sibling shot payload (ADR-0058; v3 Phase 2).
-SCHEMA_VERSION = 2
+# v3: the split-trip families (ADR-0053 as amended): fouledDuringMake joins
+#     the trip classes (an earned one-FT add-on: fouled by a common foul
+#     during a TEAMMATE'S make), and split free throws (one foul's award
+#     divided between players — injury/ejection substitutions) are counted
+#     in _meta.splitFtm/splitFta beside technicals, never trips. Surfaced by
+#     the league-wide card-roster import; no hero has either case.
+SCHEMA_VERSION = 3
 LEAGUE_TOTALS_SOURCE = "stats.nba.com leaguedashplayerstats (unofficial)"
 
 # Pinned on both sides like the schema version: src/domain/freethrowPayload.ts
@@ -40,6 +46,7 @@ TRIP_CLASSES = (
     "awayFromPlay",
     "transitionTake",
     "clearPath",
+    "fouledDuringMake",
 )
 
 # The versioned free-throw grammar (ADR-0053). The closed subtype vocabulary
@@ -78,46 +85,96 @@ class Trip:
     first_ft_index: int = -1
 
 
+def _same_second(a: str, b: str) -> bool:
+    """Clocks agree at whole-second grain. Raw string equality missed a real
+    and-one whose make and foul differ by a tenth (PT00M19.40S vs
+    PT00M19.30S — the census's fifth flagged case)."""
+    from derive_shot_context import _clock_parts
+
+    pa, pb = _clock_parts(a), _clock_parts(b)
+    return pa is not None and pa == pb
+
+
+@dataclass(frozen=True)
+class TripContext:
+    """The events around a trip's first free throw (ADR-0053 as amended)."""
+
+    and_one_shot: dict | None
+    foul_subtype: str | None
+    foul_penalty: bool  # the causing foul carries the '.PN)' penalty marker
+    teammate_make: bool  # a same-second made shot by a TEAMMATE
+    substitution: bool  # a same-second substitution (split-family signal)
+    ft_violation: bool  # a same-second free-throw violation turnover voided
+    #                     the remainder of the visit (lane / 10-second)
+
+
 def _trip_context(
     actions: list, first_index: int, period: int, clock: str, player_id: int, hero_team: int
-) -> tuple[dict | None, str | None]:
-    """Find the trip's same-clock and-one made shot and causing opponent foul.
+) -> TripContext:
+    """Read the trip's neighborhood: backward for the causing opponent foul,
+    the own and-one make, the teammate make, and substitutions; forward for
+    the free-throw violation that truncates a visit (the feed renumbers the
+    shortened sequence, so the violation lands AFTER the surviving throws).
 
     Technical-family fouls and flopping never cause a trip's free throws, so
     they are skipped rather than accepted as the causing foul.
     """
     and_one_shot: dict | None = None
     foul_subtype: str | None = None
+    foul_penalty = False
+    teammate_make = False
+    substitution = False
+    ft_violation = False
     for j in range(first_index - 1, max(-1, first_index - 1 - FOUL_SEARCH_WINDOW), -1):
         action = actions[j]
         if not isinstance(action, dict) or int(action.get("period", 0)) != period:
             break
         action_type = action.get("actionType")
+        same = _same_second(str(action.get("clock", "")), clock)
         if (
-            and_one_shot is None
-            and action_type == "Made Shot"
-            and int(action.get("personId", 0)) == player_id
-            and str(action.get("clock", "")) == clock
+            action_type == "Made Shot"
+            and same
+            and int(action.get("teamId", 0)) == hero_team
         ):
-            and_one_shot = action
+            if int(action.get("personId", 0)) == player_id:
+                and_one_shot = and_one_shot or action
+            else:
+                teammate_make = True
+        if action_type == "Substitution" and same:
+            substitution = True
         if (
             foul_subtype is None
             and action_type == "Foul"
-            and str(action.get("clock", "")) == clock
+            and same
             and int(action.get("teamId", 0)) != hero_team
         ):
             subtype = str(action.get("subType", ""))
             if "Technical" not in subtype and subtype != "Flopping":
                 foul_subtype = subtype
-        if and_one_shot is not None and foul_subtype is not None:
+                foul_penalty = ".PN)" in str(action.get("description", ""))
+    for j in range(first_index + 1, min(len(actions), first_index + 1 + FOUL_SEARCH_WINDOW)):
+        action = actions[j]
+        if not isinstance(action, dict) or int(action.get("period", 0)) != period:
             break
-    return and_one_shot, foul_subtype
+        if not _same_second(str(action.get("clock", "")), clock):
+            break
+        if action.get("actionType") == "Substitution":
+            substitution = True
+        # The feed's violation spellings drift ('10 Second Violaton'), so
+        # match the stem; corroboration-only, never a classifier by itself.
+        if action.get("actionType") == "Turnover" and "Violat" in str(action.get("subType", "")):
+            ft_violation = True
+    return TripContext(and_one_shot, foul_subtype, foul_penalty,
+                       teammate_make, substitution, ft_violation)
 
 
 def reconstruct_game_trips(
     game_id: str, actions: list, player_id: int, made_shot_ids: set[int]
-) -> tuple[list[Trip], int, int]:
-    """Reconstruct one game's hero trips plus its technical free-throw line."""
+) -> tuple[list[Trip], int, int, int, int]:
+    """Reconstruct one game's hero trips plus its technical and split
+    free-throw lines: (trips, technical_ftm, technical_fta, split_ftm,
+    split_fta). Split free throws (ADR-0053 as amended) are one foul's award
+    divided between players — counted and reported, never trips."""
     hero_team = 0
     for action in actions:
         if (
@@ -170,6 +227,7 @@ def reconstruct_game_trips(
         fail(f"game {game_id}: hero has free throws but no team identity")
 
     trips: list[Trip] = []
+    split_ftm = split_fta = 0
     for key in sorted(groups, key=lambda k: groups[k][0][0]):
         period, clock, kind = key
         events = groups[key]
@@ -178,13 +236,24 @@ def reconstruct_game_trips(
             fail(f"game {game_id} P{period} {clock}: trip mixes declared sizes {sorted(declared_sizes)}")
         declared = declared_sizes.pop()
         numbers = sorted(number for (_, _, number, _) in events)
-        if numbers != list(range(1, declared + 1)):
-            fail(
-                f"game {game_id} P{period} {clock}: partial or duplicated trip "
-                f"sequence {numbers} of {declared} — investigate before persisting"
-            )
         ftm = sum(1 for (_, made, _, _) in events if made)
         first_index = events[0][0]
+
+        if numbers != list(range(1, declared + 1)):
+            # A strict, duplicate-free subset of the sequence is a SPLIT
+            # fragment (ADR-0053 as amended): the visit's other throws
+            # belong to a teammate (injury/ejection mid-trip). Counted and
+            # reported, never a trip. Anything else is still drift.
+            if len(set(numbers)) == len(numbers) and set(numbers) < set(
+                range(1, declared + 1)
+            ):
+                split_fta += len(events)
+                split_ftm += ftm
+                continue
+            fail(
+                f"game {game_id} P{period} {clock}: duplicated trip "
+                f"sequence {numbers} of {declared} — investigate before persisting"
+            )
 
         shot_id: int | None = None
         if kind == "Flagrant":
@@ -192,32 +261,70 @@ def reconstruct_game_trips(
         elif kind == "Clear Path":
             trip_class = "clearPath"
         else:
-            and_one_shot, foul_subtype = _trip_context(
+            ctx = _trip_context(
                 actions, first_index, period, clock, player_id, hero_team
             )
-            if declared == 1 and and_one_shot is not None:
+            if declared == 1 and ctx.and_one_shot is not None:
                 trip_class = "andOne"
-                shot_id = int(and_one_shot.get("actionNumber", -1))
+                shot_id = int(ctx.and_one_shot.get("actionNumber", -1))
                 if shot_id not in made_shot_ids:
                     fail(
                         f"game {game_id}: and-one linkage failed — made shot "
                         f"{shot_id} absent from the sibling shot payload "
                         f"(zone-conflict drop?)"
                     )
-            elif foul_subtype in SHOOTING_FOULS and declared == 2:
+            elif (
+                declared == 1
+                and ctx.foul_subtype in SHOOTING_FOULS
+                and ctx.ft_violation
+            ):
+                # A violation-truncated shooting-foul visit: the feed voids
+                # the remaining throw(s) and renumbers to the shortened
+                # sequence. Same visit, observed FTA.
                 trip_class = "shootingFoul2"
-            elif foul_subtype in SHOOTING_FOULS and declared == 3:
-                trip_class = "shootingFoul3"
-            elif foul_subtype in BONUS_FOULS and declared == 2:
-                trip_class = "bonus"
-            elif foul_subtype == "Away From Play" and declared == 1:
+            elif (
+                declared == 1
+                and ctx.foul_subtype in SHOOTING_FOULS
+                and ctx.teammate_make
+                and ctx.substitution
+            ):
+                # The substitute and-one (the Nesmith case): the maker left
+                # injured and this shooter took his free throw. A split, not
+                # a trip — not earned by the shooter's own play.
+                split_fta += len(events)
+                split_ftm += ftm
+                continue
+            elif (
+                declared == 1
+                and ctx.foul_subtype in BONUS_FOULS
+                and ctx.teammate_make
+            ):
+                # Fouled by a common foul during a TEAMMATE'S make: an
+                # earned one-throw add-on trip (ADR-0053 as amended).
+                trip_class = "fouledDuringMake"
+            elif (
+                declared == 1
+                and ctx.foul_subtype in BONUS_FOULS
+                and ctx.foul_penalty
+            ):
+                # A dead-ball common foul in the penalty awards one throw —
+                # rule-equivalent to away-from-play, classified with it.
                 trip_class = "awayFromPlay"
-            elif foul_subtype == "Transition Take" and declared == 1:
+            elif ctx.foul_subtype in SHOOTING_FOULS and declared == 2:
+                trip_class = "shootingFoul2"
+            elif ctx.foul_subtype in SHOOTING_FOULS and declared == 3:
+                trip_class = "shootingFoul3"
+            elif ctx.foul_subtype in BONUS_FOULS and declared == 2:
+                trip_class = "bonus"
+            elif ctx.foul_subtype == "Away From Play" and declared in (1, 2):
+                # 2 in the penalty (the '.PN' variant), 1 otherwise.
+                trip_class = "awayFromPlay"
+            elif ctx.foul_subtype == "Transition Take" and declared == 1:
                 trip_class = "transitionTake"
             else:
                 fail(
                     f"game {game_id} P{period} {clock}: unclassifiable trip "
-                    f"(M={declared}, causing foul {foul_subtype!r}) — "
+                    f"(M={declared}, causing foul {ctx.foul_subtype!r}) — "
                     f"taxonomy totality (ADR-0053)"
                 )
         trips.append(
@@ -232,7 +339,7 @@ def reconstruct_game_trips(
                 first_ft_index=first_index,
             )
         )
-    return trips, technical_ftm, technical_fta
+    return trips, technical_ftm, technical_fta, split_ftm, split_fta
 
 
 def _hero_box_line(box_game: dict, player_id: int, game_id: str) -> tuple[int, int]:
@@ -321,6 +428,7 @@ def derive(
 
     all_trips: list[Trip] = []
     technical_ftm = technical_fta = 0
+    split_ftm = split_fta = 0
     source_games: list[dict] = []
     for game_id, (pbp_snapshot, box_snapshot) in sorted(game_snapshots.items()):
         pbp_game, box_game, parsed_id = validate_game_pair(pbp_snapshot, box_snapshot)
@@ -329,12 +437,13 @@ def derive(
         actions = pbp_game.get("actions")
         if not isinstance(actions, list):
             fail(f"game {game_id}: play-by-play game missing actions")
-        trips, game_technical_ftm, game_technical_fta = reconstruct_game_trips(
+        (trips, game_technical_ftm, game_technical_fta,
+         game_split_ftm, game_split_fta) = reconstruct_game_trips(
             game_id, actions, player_id, made_ids_by_game.get(game_id, set())
         )
         box_ftm, box_fta = _hero_box_line(box_game, player_id, game_id)
-        game_ftm = sum(trip.ftm for trip in trips) + game_technical_ftm
-        game_fta = sum(trip.fta for trip in trips) + game_technical_fta
+        game_ftm = sum(trip.ftm for trip in trips) + game_technical_ftm + game_split_ftm
+        game_fta = sum(trip.fta for trip in trips) + game_technical_fta + game_split_fta
         if (game_ftm, game_fta) != (box_ftm, box_fta):
             fail(
                 f"game {game_id}: reconstructed free-throw line {game_ftm}/{game_fta} "
@@ -343,6 +452,8 @@ def derive(
         all_trips.extend(trips)
         technical_ftm += game_technical_ftm
         technical_fta += game_technical_fta
+        split_ftm += game_split_ftm
+        split_fta += game_split_fta
         source_games.append(
             {
                 "gameId": game_id,
@@ -367,8 +478,8 @@ def derive(
     season_fga = int(hero_row[column["FGA"]])
     season_points = int(hero_row[column["PTS"]])
 
-    total_ftm = sum(trip.ftm for trip in all_trips) + technical_ftm
-    total_fta = sum(trip.fta for trip in all_trips) + technical_fta
+    total_ftm = sum(trip.ftm for trip in all_trips) + technical_ftm + split_ftm
+    total_fta = sum(trip.fta for trip in all_trips) + technical_fta + split_fta
     if (total_ftm, total_fta) != (season_ftm, season_fta):
         fail(
             f"free-throw gate (Gate 5): reconstructed season line "
@@ -406,6 +517,8 @@ def derive(
             "seasonFta": total_fta,
             "technicalFtm": technical_ftm,
             "technicalFta": technical_fta,
+            "splitFtm": split_ftm,
+            "splitFta": split_fta,
             "totalTrips": len(all_trips),
             "tripClassCounts": {
                 trip_class: sum(1 for trip in all_trips if trip.trip_class == trip_class)

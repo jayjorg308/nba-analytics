@@ -521,8 +521,31 @@ def load_game_corpus(
         report["_skipped_games"] = stager.skipped
         return report
     except BaseException:
-        conn.rollback()
+        try:
+            conn.rollback()
+        except Exception:  # noqa: BLE001 — a dead connection cannot roll
+            pass  # back (the server already did); never mask the original
         raise
+
+
+def fetch_game_actions(cur, game_id: str) -> list[dict]:
+    """The game's actions as the trip grammar reads them, in source order —
+    shared by the ft_trip rebuild and the freethrow/game-log exports so
+    every consumer runs the identical grammar over identical rows."""
+    cur.execute(
+        "SELECT action_number, period, clock, action_type, sub_type,"
+        " description, person_id, team_id FROM pbp_event"
+        " WHERE game_id = %s ORDER BY source_row",
+        (game_id,),
+    )
+    return [
+        {"actionNumber": an, "period": period or 0, "clock": clock or "",
+         "actionType": action_type, "subType": sub_type or "",
+         "description": description or "", "personId": person_id or 0,
+         "teamId": team_id or 0}
+        for an, period, clock, action_type, sub_type, description,
+            person_id, team_id in cur.fetchall()
+    ]
 
 
 def rebuild_ft_trips(
@@ -560,40 +583,30 @@ def rebuild_ft_trips(
     universe = sorted(post_drop_games | ft_games)
     all_trips: list[tuple] = []
     technical_ftm = technical_fta = 0
+    split_ftm = split_fta = 0
     games_loaded = 0
     for game_id in universe:
-        cur.execute(
-            "SELECT action_number, period, clock, action_type, sub_type,"
-            " description, person_id, team_id FROM pbp_event"
-            " WHERE game_id = %s ORDER BY source_row",
-            (game_id,),
-        )
-        rows = cur.fetchall()
-        if not rows:
+        actions = fetch_game_actions(cur, game_id)
+        if not actions:
             if allow_missing_games:
                 continue
             sys.exit(f"trips: no pbp events for game {game_id} (Gate 4) — "
                      f"load the corpus first")
         games_loaded += 1
-        actions = [
-            {"actionNumber": an, "period": period or 0, "clock": clock or "",
-             "actionType": action_type, "subType": sub_type or "",
-             "description": description or "", "personId": person_id or 0,
-             "teamId": team_id or 0}
-            for an, period, clock, action_type, sub_type, description,
-                person_id, team_id in rows
-        ]
-        trips, game_tftm, game_tfta = df.reconstruct_game_trips(
+        (trips, game_tftm, game_tfta,
+         game_sftm, game_sfta) = df.reconstruct_game_trips(
             game_id, actions, player_id, made_ids.get(game_id, set())
         )
         box_ftm, box_fta = box_by_game.get(game_id, (0, 0))
-        game_ftm = sum(t.ftm for t in trips) + game_tftm
-        game_fta = sum(t.fta for t in trips) + game_tfta
+        game_ftm = sum(t.ftm for t in trips) + game_tftm + game_sftm
+        game_fta = sum(t.fta for t in trips) + game_tfta + game_sfta
         if (game_ftm, game_fta) != (box_ftm, box_fta):
             sys.exit(f"trips: game {game_id} reconstructed line {game_ftm}/{game_fta}"
                      f" != box-score line {box_ftm}/{box_fta}")
         technical_ftm += game_tftm
         technical_fta += game_tfta
+        split_ftm += game_sftm
+        split_fta += game_sfta
         for t in trips:
             all_trips.append((
                 t.game_id, actions[t.first_ft_index]["actionNumber"],
@@ -610,8 +623,8 @@ def rebuild_ft_trips(
     if totals_row is None:
         sys.exit("trips: no league_season_totals row for the hero (Gate 5 oracle)")
     season_ftm, season_fta, season_fga = totals_row
-    total_ftm = sum(t[7] for t in all_trips) + technical_ftm
-    total_fta = sum(t[8] for t in all_trips) + technical_fta
+    total_ftm = sum(t[7] for t in all_trips) + technical_ftm + split_ftm
+    total_fta = sum(t[8] for t in all_trips) + technical_fta + split_fta
     if not allow_missing_games and (total_ftm, total_fta) != (season_ftm, season_fta):
         sys.exit(f"trips: Gate 5 — reconstructed season line {total_ftm}/{total_fta}"
                  f" != league artifact {season_ftm}/{season_fta}")

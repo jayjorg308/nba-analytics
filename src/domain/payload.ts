@@ -41,7 +41,9 @@ export const enrichedShotShape = {
     opponent: z.string().regex(/^[A-Z]{2,3}$/), // team abbreviation (e.g. PHX)
     home: z.boolean(),
     period: z.number().int().min(1), // >4 legal (overtime)
-    minutesRemaining: z.number().int().min(0).max(11),
+    // 12 is real: a make straight off the opening tip is stamped at 12:00,
+    // before the clock ticks (league-wide evidence, migration 0007).
+    minutesRemaining: z.number().int().min(0).max(12),
     secondsRemaining: z.number().int().min(0).max(59),
     made: z.boolean(),
     pointValue: z.union([z.literal(2), z.literal(3)]),

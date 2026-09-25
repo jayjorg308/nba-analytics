@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Cody Williams",
     "playerId": 1642262,
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 62,
     "sourceShotPayload": "data/derived/cody-williams/2025-26/2026-07-23.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 509,
     "seasonPoints": 588,
     "seasonFtm": 84,
     "seasonFta": 119,
     "technicalFtm": 0,
     "technicalFta": 1,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 64,
     "tripClassCounts": {
       "shootingFoul2": 45,
@@ -24,7 +26,8 @@
       "flagrant": 0,
       "awayFromPlay": 0,
       "transitionTake": 0,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 62,
     "gamesLoaded": 62,

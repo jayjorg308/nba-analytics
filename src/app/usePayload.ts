@@ -3,6 +3,8 @@ import type { CreationPayload } from '../domain/creationPayload'
 import { parseCreationPayload } from '../domain/creationPayload'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import { parseFreethrowPayload } from '../domain/freethrowPayload'
+import type { GameLogIndex, GameLogPayload } from '../domain/gameLogPayload'
+import { parseGameLogIndex, parseGameLogPayload } from '../domain/gameLogPayload'
 import type { DerivedPayload } from '../domain/payload'
 import { parseDerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
@@ -123,6 +125,17 @@ export function useShotContextPayload(url: string): PayloadState<ShotContextPayl
 /** The fourth required sibling (ADR-0053): free-throw trips at trip grain. */
 export function useFreethrowPayload(url: string): PayloadState<FreethrowPayload> {
   return useParsedPayload(url, parseFreethrowPayload, 'free throw data')
+}
+
+/** A game-log payload (ADR-0086): the whole data need of a
+ * game card — the poster, the receipt, and prev/next all read one file. */
+export function useGameLogPayload(url: string): PayloadState<GameLogPayload> {
+  return useParsedPayload(url, parseGameLogPayload, 'game log data')
+}
+
+/** The /game landing's roster index (ADR-0086). */
+export function useGameLogIndex(url: string): PayloadState<GameLogIndex> {
+  return useParsedPayload(url, parseGameLogIndex, 'game roster index')
 }
 
 /** A comparison side's free-throw payload (ADR-0079): fetched only in
