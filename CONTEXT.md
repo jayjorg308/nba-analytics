@@ -297,6 +297,23 @@ _Avoid_: "winner", "better", or any whole-comparison framing — the page is a t
 **Line call** (**Draw edge** / **Conversion edge** / **Reliance lean**):
 The zone call's grammar at the free-throw line (ADR-0079), one call per season-line card in a player comparison. **Draw edge** names the side with the higher FTA rate and **Conversion edge** the side with the higher FT% — both results against the league — while **Reliance lean** names the side with the larger FT share of points, a scoring mix with no better direction, so it never claims an edge. Same mechanics as every call: decided and priced on displayed anchors, even under 1.0 display units, † inherited from either side. Calls live only at the season line, where full-season free-throw samples support them; the trip taxonomy carries no per-class calls (most classes sit under the 50-FTA bar, and flagged chips everywhere would be noise, not answers).
 
+**Split trip**:
+A single foul's free throws divided between players — injury or ejection mid-trip, or a substitute shooting for a hurt teammate (ADR-0053 as amended). Neither fragment is a trip: a fragment is not a complete visit, and a substitute's free throws are not earned by his own play, so split free throws are counted and reported beside technicals and never price into points per trip or foul generation.
+_Avoid_: calling a fragment a trip, or labeling substitute free throws technical.
+
+**Fouled during a make**:
+The earned one-free-throw trip class (ADR-0053 as amended): a player fouled by a common foul during a teammate's successful field goal shoots one free throw. Add-on tier — its point lands on a possession that already scored — and never linked to a shot: the make belongs to the teammate.
+
+**Game card**:
+A per-game tool page (`/game/<player-slug>/<date>`, ADR-0086) presenting one player's night as priced facts: expected points from his diet (his attempts priced at the season's league zone rates), points scored on those attempts, and their difference as conversion, with THE CREDIT and THE LINE as chips and a drill-in **receipt** itemizing every attempt and trip down to the box total (technical free throws as their own line whenever nonzero, so the receipt always reconciles). A tool, not an argument: computed numbers and structural copy only — no verdict, no grades, and no ability estimate; selection is priced, conversion is what happened. Creation never appears at game grain.
+_Avoid_: "game grade" — no surface grades a game, and no card aggregates its facts into one mark.
+
+**Game-log payload**:
+The game cards' typed contract (ADR-0086): one committed file per card-roster player-season carrying each game's shots (zone, point value, made, period, assist status), trips, technical free-throw count, and box-line subset, with the season's league zone-PPS table embedded so every file is self-contained. Born DB-native — exported from the record store with no file derive — and read by heroes and non-hero roster players through the same contract; for registered heroes it must agree at game grain with the three deployed siblings.
+
+**Card roster**:
+The mechanical membership rule for game cards: every player at or above the season FGA bar (300, a named constant moved only by PR) plus every registered hero. A query, never a judgment — "why does X have a card" always has the same answer. Below-bar players have no card; their card URLs fall to the directory's unknown-path note.
+
 **Shot spine**:
 The v1 build increment: pull `shotchartdetail` for one player/one season, validate and enrich each shot into a typed shape, render it on a half-court. Descriptive only. Ships combined with the zone-baseline evaluation layer — the bare descriptive version is an internal checkpoint, not a shipped product. **Shipped (2026-07-09):** the chart landed together with the headline selection banner and per-zone making table (`src/chart/`, `src/app/`) — never bare; the zone-shading evaluation overlay (the **Zones view**) followed on `feature_ZoneShadingEval`.
 
@@ -320,6 +337,23 @@ Whether a season is **completed** (immutable — pulled once, one snapshot; the 
 
 **Append-only raw layer**:
 The raw storage layer is append-only from day one: new snapshots are added, never overwritten. Derived data recomputes from the latest snapshot for a (player, season). v1 does *not* build snapshot-selection, re-pull scheduling, or diff/merge logic — with one completed-season snapshot, "latest" is trivial. The key carries pull-date so the later live-season demo needs no storage refactor; the machinery that consumes multiple snapshots is deferred until that demo needs it.
+
+**Team surface**:
+The `/jazz` page family (docs/plans/jazz-surface.md): the Utah Jazz's season-to-date shot profile, game ledger, and roster rail, inside Good Shots. A **tool**, the class ADR-0075 opened for the comparison page, never an argument: structural copy only, no verdict, honesty carried by visible counts and local flags, rendering from the first game of the season (ADR-0081). Hero pages for Jazz players stay complete arguments at their own URLs and are linked, never duplicated.
+_Avoid_: "team verdict", "team grade", or any whole-team claim.
+
+**Team shot payload**:
+The fifth typed contract (ADR-0082; `public/data/_teams/<tricode>/<season>.json`, `src/domain/teamShotPayload.ts`): every shot every player took for the team in the season, from one team-wide `shotchartdetail` pull, as the hero contract's enriched shot row plus player identity, in chronological order, with the rolled-up league baseline and the session's roster. No usage field. Fenced by the **box oracle**: per game, per player, pre-drop rows equal the box-score FGA, so a game without its pbp/box pair can never be in the payload. One grammar (`ingestion/team_payload.py`) behind two sources, the file derive (`derive_team_payload.py`, the golden path) and the record-store export, held to byte parity. Team rows live in the store's existing `shot` table; a hero's rows arrive from both his pull and the team pull and must agree.
+
+**Game ledger** (a.k.a. **ledger facts**):
+The team surface's per-game record (ADR-0084; `public/data/_teams/<tricode>/<season>.ledger.json`, `src/domain/ledgerFacts.ts`): one **game row** per game, chronological, carrying exact box facts only. Matchup and date from the team shot payload's own rows, both scores, the team's field-goal and free-throw lines summed from its player lines, and the line of every player who attempted a field goal, by player id (names live in the team shot payload, where the box oracle guarantees every such player rows). The headline decomposition per game is never persisted: the page computes it by the unchanged aggregation over that game's slice of the team shot payload. Oracles: the ledger's game set is the payload's, the box FGA summed over the games equals the payload's pre-drop total, and every game has its box. One grammar (`ingestion/ledger_facts.py`) behind a file derive and a record-store export.
+_Avoid_: per-game zone shading or any per-game vs-league zone reading (counts only; no zone clears the 15-attempt bar in one game), running averages, streaks.
+
+**Roster snapshot**:
+A dated verbatim `commonteamroster` pull, current state only (the roster has no `DateTo`). Observed nightly by the team session and loaded scope-complete into `roster_entry`: a departed player leaves the roster and keeps his shot rows, and roster deletions are the one change class the loader reports without halting. The payload's `roster[]` is this snapshot's rows in response order with the source's own labels (number may be empty; experience is 'R' or a count).
+
+**Team session**:
+The season loop's per-`liveTeams` pass (ADR-0081/0082): roster + team-wide discovery pulls, missing pbp/box pairs, the pair frontier (no tracking coherence, since no team tracking contract exists), the anchored team pull, the team shot derive, the frontier gate, and in live mode `team:sync` → full gate → a data-only commit under `public/data/_teams/`. Dark mode pulls and derives daily and publishes nothing; there is no volume gate, because a tool surface renders from game one.
 
 **Record store** (a.k.a. **the database**):
 The relational system of record between the raw layer and the deployed layer (ADR-0080): observed facts at natural NBA identity, current state only, rebuildable from the raw layer. It stores what is observed and computes what is derived, and it is product-blind — it knows players, never heroes; product configuration and authored judgment stay in the repo.

@@ -2,12 +2,20 @@
   "_readme": [
     "The season loop's operational config (ADR-0057/0058/0059) and the",
     "tracking-shortfall pin registry (ADR-0030 as amended). Changes travel",
-    "by PR — the loop's automated data commits never touch this file.",
+    "by PR \u2014 the loop's automated data commits never touch this file.",
     "",
     "liveSeasons: the hero-seasons the season loop runs for. mode 'dark' =",
     "pull/derive/report daily, publish nothing (pre-flip, ADR-0059); mode",
     "'live' = sync + full gate + data commit on green (ADR-0057). The live",
     "flip PR moves a season dark->live alongside the authored verdict.",
+    "",
+    "liveTeams: the team surfaces the season loop runs a TEAM SESSION for",
+    "(ADR-0081/0082, docs/plans/jazz-surface.md): roster + team-wide shot",
+    "pulls, every game's pbp/box pair, the team shot payload under",
+    "public/data/_teams/<tricode>/. mode 'dark' = pull/derive/report daily,",
+    "publish nothing; mode 'live' = team:sync + full gate + data commit on",
+    "green. A tool surface has no volume gate (ADR-0081): the live flip is",
+    "the config change that lands with the /jazz page (increment 2).",
     "",
     "trackingShortfalls: characterized outage games per hero-season, keyed",
     "'<slug>/<season>' -> { gameId: missing attempts }. Absent = 0. An",
@@ -28,13 +36,13 @@
     "dates (ingestion/localize_shortfall.py, ADR-0072; snapshots retained",
     "in tracking/investigation/). This CORRECTED",
     "an earlier circumstantial pin of Carrington's 1 to the 0022500900",
-    "meltdown night — he played that game AND 0022500938, but the bisection",
+    "meltdown night \u2014 he played that game AND 0022500938, but the bisection",
     "put his missing attempt on 2025-11-07, a night no other pin covers.",
     "Proximity to a characterized outage is not characterization.",
     "austin-reaves/2025-26: 0022500906 = 2026-03-05 league-wide meltdown",
     "night (1 of his 11 attempts). Localized 2026-08-10 by the same",
     "bisection, in 7 pulls. The date independently corroborates",
-    "ace-bailey's 0022500900 pin on that night — corroboration arriving",
+    "ace-bailey's 0022500900 pin on that night \u2014 corroboration arriving",
     "after the bisection, never the reasoning that produced the pin."
   ],
   "liveSeasons": [
@@ -42,6 +50,29 @@
       "slug": "ace-bailey",
       "player": "Ace Bailey",
       "playerId": 1642846,
+      "season": "2026-27",
+      "mode": "dark"
+    },
+    {
+      "slug": "keyonte-george",
+      "player": "Keyonte George",
+      "playerId": 1641718,
+      "season": "2026-27",
+      "mode": "dark"
+    },
+    {
+      "slug": "darryn-peterson",
+      "player": "Darryn Peterson",
+      "playerId": 1643408,
+      "season": "2026-27",
+      "mode": "dark"
+    }
+  ],
+  "liveTeams": [
+    {
+      "tricode": "UTA",
+      "teamId": 1610612762,
+      "team": "Utah Jazz",
       "season": "2026-27",
       "mode": "dark"
     }

@@ -16,7 +16,11 @@ import type { FreethrowPayload, TripClass } from './freethrowPayload'
 export type TripTier = 'attemptEquivalent' | 'addOn'
 
 /** Free throws per trip for every fixed-size class; flagrant varies (1–3 by
- * where and how the foul occurred), so it prices no league trip. */
+ * where and how the foul occurred), so it prices no league trip. Since the
+ * split-trip amendment, shooting-foul and bonus visits can be truncated by
+ * a free-throw violation and awayFromPlay is 2 in the penalty — nominal
+ * sizes stay here for pricing; a truncated visit prices at its class's
+ * nominal award, the award the foul earned. */
 const FIXED_TRIP_SIZE: Record<TripClass, number | null> = {
   shootingFoul2: 2,
   shootingFoul3: 3,
@@ -26,13 +30,17 @@ const FIXED_TRIP_SIZE: Record<TripClass, number | null> = {
   awayFromPlay: 1,
   transitionTake: 1,
   clearPath: 2,
+  fouledDuringMake: 1,
 }
 
 /** A league-baselined season metric with its without-technicals cut: an
  * authored claim must hold on BOTH hero cuts against the league value
  * (ADR-0055's both-cuts discipline — the league side cannot exclude
  * technicals, so parity puts them in the headline value and the clean cut
- * rides alongside for the guard). Null only on a zero denominator. */
+ * rides alongside for the guard). The clean cut excludes technicals AND
+ * split free throws (ADR-0053 as amended) — both are free throws the
+ * shooter did not earn as a complete visit of his own. Null only on a zero
+ * denominator. */
 export interface BothCutsMetric {
   value: number | null
   withoutTechnicals: number | null
@@ -125,20 +133,20 @@ export function aggregateFreethrowMetrics(payload: FreethrowPayload): FreethrowM
     conversion: {
       value: ratio(meta.seasonFtm, meta.seasonFta),
       withoutTechnicals: ratio(
-        meta.seasonFtm - meta.technicalFtm,
-        meta.seasonFta - meta.technicalFta,
+        meta.seasonFtm - meta.technicalFtm - meta.splitFtm,
+        meta.seasonFta - meta.technicalFta - meta.splitFta,
       ),
       league: leagueFreeThrowPct,
     },
     smallSampleConversion: meta.seasonFta < SMALL_SAMPLE_MAKING_ATTEMPTS,
     ftaRate: {
       value: ratio(meta.seasonFta, meta.seasonFga),
-      withoutTechnicals: ratio(meta.seasonFta - meta.technicalFta, meta.seasonFga),
+      withoutTechnicals: ratio(meta.seasonFta - meta.technicalFta - meta.splitFta, meta.seasonFga),
       league: league.fta / league.fga,
     },
     ftPointsShare: {
       value: ratio(meta.seasonFtm, meta.seasonPoints),
-      withoutTechnicals: ratio(meta.seasonFtm - meta.technicalFtm, meta.seasonPoints),
+      withoutTechnicals: ratio(meta.seasonFtm - meta.technicalFtm - meta.splitFtm, meta.seasonPoints),
       league: league.ftm / league.points,
     },
   }

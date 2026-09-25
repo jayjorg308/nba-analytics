@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Keyonte George",
     "playerId": 1641718,
     "season": "2025-26",
     "dataThrough": "2026-03-11",
     "gamesIncluded": 54,
     "sourceShotPayload": "data/derived/keyonte-george/2025-26/2026-07-09.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 881,
     "seasonPoints": 1275,
     "seasonFtm": 337,
     "seasonFta": 378,
     "technicalFtm": 8,
     "technicalFta": 10,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 198,
     "tripClassCounts": {
       "shootingFoul2": 123,
@@ -24,7 +26,8 @@
       "flagrant": 2,
       "awayFromPlay": 3,
       "transitionTake": 0,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 54,
     "gamesLoaded": 54,

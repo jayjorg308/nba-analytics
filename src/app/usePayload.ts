@@ -3,10 +3,16 @@ import type { CreationPayload } from '../domain/creationPayload'
 import { parseCreationPayload } from '../domain/creationPayload'
 import type { FreethrowPayload } from '../domain/freethrowPayload'
 import { parseFreethrowPayload } from '../domain/freethrowPayload'
+import type { GameLogIndex, GameLogPayload } from '../domain/gameLogPayload'
+import { parseGameLogIndex, parseGameLogPayload } from '../domain/gameLogPayload'
 import type { DerivedPayload } from '../domain/payload'
 import { parseDerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { parseShotContextPayload } from '../domain/shotContextPayload'
+import type { LedgerFacts } from '../domain/ledgerFacts'
+import { parseLedgerFacts } from '../domain/ledgerFacts'
+import type { TeamShotPayload } from '../domain/teamShotPayload'
+import { parseTeamShotPayload } from '../domain/teamShotPayload'
 
 export type PayloadState<T> =
   | { status: 'loading' }
@@ -121,6 +127,17 @@ export function useFreethrowPayload(url: string): PayloadState<FreethrowPayload>
   return useParsedPayload(url, parseFreethrowPayload, 'free throw data')
 }
 
+/** A game-log payload (ADR-0086): the whole data need of a
+ * game card — the poster, the receipt, and prev/next all read one file. */
+export function useGameLogPayload(url: string): PayloadState<GameLogPayload> {
+  return useParsedPayload(url, parseGameLogPayload, 'game log data')
+}
+
+/** The /game landing's roster index (ADR-0086). */
+export function useGameLogIndex(url: string): PayloadState<GameLogIndex> {
+  return useParsedPayload(url, parseGameLogIndex, 'game roster index')
+}
+
 /** A comparison side's free-throw payload (ADR-0079): fetched only in
  * players mode — split mode has no date-grained free-throw contract, so its
  * two slots stay null and absence is a state, never a skipped hook. */
@@ -128,4 +145,15 @@ export function useOptionalComparisonFreethrowPayload(
   url: string | null,
 ): OptionalPayloadState<FreethrowPayload> {
   return useOptionalParsedPayload(url, parseFreethrowPayload, 'comparison free throw data')
+}
+
+/** The team shot payload (ADR-0082) behind the team surface. */
+export function useTeamShotPayload(url: string): PayloadState<TeamShotPayload> {
+  return useParsedPayload(url, parseTeamShotPayload, 'team shot data')
+}
+
+/** The game ledger facts (ADR-0084) beside it — both required, one class of
+ * team page. */
+export function useLedgerFacts(url: string): PayloadState<LedgerFacts> {
+  return useParsedPayload(url, parseLedgerFacts, 'game ledger data')
 }

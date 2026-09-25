@@ -258,7 +258,10 @@ def load_tracking(
         report["_trackingShortfall"] = tracking_shortfall
         return report
     except BaseException:
-        conn.rollback()
+        try:
+            conn.rollback()
+        except Exception:  # noqa: BLE001 — a dead connection cannot roll
+            pass  # back (the server already did); never mask the original
         raise
 
 

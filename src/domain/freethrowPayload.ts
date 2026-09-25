@@ -8,7 +8,12 @@ import { z } from 'zod'
 
 // v2: _meta.dataThrough/gamesIncluded — the reconciled frontier, copied from
 //     the sibling shot payload at derive (ADR-0058; v3 Phase 2).
-export const FREETHROW_SCHEMA_VERSION = 2
+// v3: the split-trip families (ADR-0053 as amended): fouledDuringMake joins
+//     the classes (an earned one-throw add-on — fouled by a common foul
+//     during a TEAMMATE'S make), and _meta.splitFtm/splitFta count split
+//     free throws (one foul's award divided between players) beside the
+//     technicals — reported, never trips, never priced.
+export const FREETHROW_SCHEMA_VERSION = 3
 
 export const TRIP_CLASSES = [
   'shootingFoul2',
@@ -19,6 +24,7 @@ export const TRIP_CLASSES = [
   'awayFromPlay',
   'transitionTake',
   'clearPath',
+  'fouledDuringMake',
 ] as const
 export type TripClass = (typeof TRIP_CLASSES)[number]
 
@@ -32,18 +38,22 @@ export const ATTEMPT_EQUIVALENT_CLASSES = [
   'bonus',
 ] as const satisfies readonly TripClass[]
 
-/** Free throws awarded per class — exact bounds, because the derive
- * hard-fails on partial trip sequences rather than absorbing them. Flagrant
- * is the one variable-size class (1–3 by where and how the foul occurred). */
+/** Free throws awarded per class — exact bounds. The lower bounds on the
+ * shooting-foul classes admit violation-truncated visits (a lane or
+ * 10-second violation voids the remaining throws and the feed renumbers the
+ * shortened sequence — ADR-0053 as amended); awayFromPlay is 2 in the
+ * penalty ('.PN'), 1 otherwise; flagrant varies by where and how the foul
+ * occurred; fouledDuringMake is always the single awarded throw. */
 const FTA_BY_CLASS: Record<TripClass, readonly [number, number]> = {
-  shootingFoul2: [2, 2],
-  shootingFoul3: [3, 3],
-  bonus: [2, 2],
+  shootingFoul2: [1, 2],
+  shootingFoul3: [1, 3],
+  bonus: [1, 2],
   andOne: [1, 1],
   flagrant: [1, 3],
-  awayFromPlay: [1, 1],
+  awayFromPlay: [1, 2],
   transitionTake: [1, 1],
   clearPath: [2, 2],
+  fouledDuringMake: [1, 1],
 }
 
 const countShape = <T extends readonly [string, ...string[]]>(values: T) =>
@@ -97,6 +107,10 @@ export const freethrowPayloadSchema = z
       seasonFta: z.number().int().min(0),
       technicalFtm: z.number().int().min(0),
       technicalFta: z.number().int().min(0),
+      /** Split free throws (ADR-0053 as amended): one foul's award divided
+       * between players. Counted beside technicals, never trips. */
+      splitFtm: z.number().int().min(0),
+      splitFta: z.number().int().min(0),
       totalTrips: z.number().int().min(0),
       tripClassCounts: countShape(TRIP_CLASSES),
       gamesExpected: z.number().int().min(0),
@@ -138,14 +152,29 @@ export const freethrowPayloadSchema = z
     }
     const tripFtm = payload.trips.reduce((sum, trip) => sum + trip.ftm, 0)
     const tripFta = payload.trips.reduce((sum, trip) => sum + trip.fta, 0)
-    if (payload._meta.seasonFtm !== tripFtm + payload._meta.technicalFtm) {
-      ctx.addIssue({ code: 'custom', message: 'seasonFtm must equal trip ftm plus technicals' })
+    if (
+      payload._meta.seasonFtm !==
+      tripFtm + payload._meta.technicalFtm + payload._meta.splitFtm
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'seasonFtm must equal trip ftm plus technicals plus splits',
+      })
     }
-    if (payload._meta.seasonFta !== tripFta + payload._meta.technicalFta) {
-      ctx.addIssue({ code: 'custom', message: 'seasonFta must equal trip fta plus technicals' })
+    if (
+      payload._meta.seasonFta !==
+      tripFta + payload._meta.technicalFta + payload._meta.splitFta
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'seasonFta must equal trip fta plus technicals plus splits',
+      })
     }
     if (payload._meta.technicalFtm > payload._meta.technicalFta) {
       ctx.addIssue({ code: 'custom', message: 'technicalFtm exceeds technicalFta' })
+    }
+    if (payload._meta.splitFtm > payload._meta.splitFta) {
+      ctx.addIssue({ code: 'custom', message: 'splitFtm exceeds splitFta' })
     }
     if (payload._meta.seasonFtm > payload._meta.seasonPoints) {
       ctx.addIssue({ code: 'custom', message: 'seasonFtm exceeds seasonPoints' })

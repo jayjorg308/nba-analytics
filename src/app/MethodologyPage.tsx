@@ -232,6 +232,38 @@ export function MethodologyPage() {
           </p>
         </section>
 
+        <section className="methodology-section" aria-labelledby="methodology-team">
+          <header className="section-caption">
+            <h2 id="methodology-team">THE TEAM PAGE</h2>
+            <p className="section-caption-desc">the same arithmetic, over a team’s shots, with no verdict</p>
+          </header>
+          {/* Structural copy (ADR-0081), verified against the code, not a
+              description of it: the /jazz surface is TeamPage over
+              aggregateTeam; every number is aggregateShotMetrics over a slice
+              of the team shot payload (season, game); the box oracle is
+              team_payload.reconcile_box (per player, per game, at derive/load
+              and export); the ledger is ledger_facts.build_ledger; the
+              per-game zone view is counts only (TeamGamePage.ZoneCounts). */}
+          <p>
+            The team page is a tool, not an argument. It takes every shot a team’s players took,
+            runs the same two-axis arithmetic the player pages run, and shows the result with no
+            verdict on top. The season view is that arithmetic over the whole season. Each game
+            row is the same arithmetic over that game’s shots alone, beside the box score.
+          </p>
+          {/* "Every game" is load-bearing: a game whose box score is missing
+              cannot be in the payload at all (reconcile_box fails the
+              derive and the export), so the frontier and the ledger agree by
+              construction. */}
+          <p>
+            The team record is held to the box score before it is published. In every game,
+            every shooter’s attempts in the shot record must equal his attempts in the box
+            score, and a game without its box score is not published. Nothing on the page is
+            hidden while a sample is small. A game with few attempts shows its count and a
+            mark, and zones in a single game show counts only, because no zone reaches the
+            fifteen attempts the shading needs in one night.
+          </p>
+        </section>
+
         <section className="methodology-section" aria-labelledby="methodology-vocabulary">
           <header className="section-caption">
             <h2 id="methodology-vocabulary">THE VOCABULARY</h2>

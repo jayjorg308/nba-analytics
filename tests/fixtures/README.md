@@ -92,6 +92,48 @@ creation, shot-context, and free-throw payloads version on different clocks
   the fixture game pair, and the league totals fixture. **Never edit by
   hand**; regenerate via `npm run golden:regen`.
 
+## Team shot payload (ADR-0082; schema v1 — the Jazz surface's fifth contract)
+
+- **`team-snapshot.truncated.json`** — a hand-trimmed copy of the real raw
+  TEAM-WIDE snapshot `data/raw/_teams/uta/2025-26/2026-09-22.json`
+  (shotchartdetail with the team ID set and player ID zero), cut to one
+  game: 0022500025, UTA @ PHX, 2025-10-31 — every Jazz shot in it, 80 real
+  rows across 14 shooters, plus the `LeagueAverages` frame verbatim. Two
+  synthetic rows: the hero fixture's Backcourt row (`GAME_EVENT_ID: 999`,
+  Cody Williams) so the hero and team fixtures describe the SAME game and
+  the store test can prove hero rows load unchanged from the team pull, and
+  one zone-point-conflict row (`GAME_EVENT_ID: 9999`, a 2PT scored in a
+  3PT zone) so the drop-and-count path is exercised.
+
+- **`team-roster.truncated.json`** — the real 2025-26 `commonteamroster`
+  snapshot trimmed to five players: three who shot in the fixture game and
+  two who did not (one with no jersey number assigned — the empty `number`
+  path).
+
+- **`team-boxscore.truncated.json`** — the real `BoxScoreTraditionalV3` for
+  the fixture game with every Jazz player line in full (the ADR-0082
+  per-player per-game FGA oracle) and one Suns line. The two synthetic
+  shooters' FGA are raised by one each so the oracle reconciles exactly;
+  `_meta.fixture_note` says so.
+
+- **`team-shot.golden.json`** — the file derive's output over the three
+  fixtures (`derive_team_payload.py`). **Never edit by hand**; regenerate via
+  `npm run golden:regen`. The record-store test (`test_team_season.py`)
+  loads the same fixtures through `load_team_season` + `load_game_pairs`
+  and holds the export to this file byte-for-byte — one grammar
+  (`team_payload.build_team_payload`), two sources.
+
+## Game ledger facts (ADR-0084; schema v1 — the team surface's sibling contract)
+
+- **`team-ledger.golden.json`** — the ledger derive's output over
+  `team-shot.golden.json` (the game set and matchups) and
+  `team-boxscore.truncated.json` (both scores and the Jazz player lines):
+  one game row with the box facts and the twelve shooters, highest scorers
+  first, player IDENTITY only (names live in the team payload). **Never edit
+  by hand**; regenerate via `npm run golden:regen`. The store test holds
+  `export_ledger_facts` to this file byte-for-byte after the team golden's
+  own round trip.
+
 ## How the handshake works
 
 - `ingestion/test_derive_payload.py` asserts `derive(truncated) == golden`;
@@ -110,3 +152,14 @@ payload out. Bump the schema version on any breaking change (shot:
 `ingestion/derive_creation.py` + `src/domain/creationPayload.ts`; context:
 `ingestion/derive_shot_context.py` + `src/domain/shotContextPayload.ts`;
 free throw: `ingestion/derive_freethrow.py` + `src/domain/freethrowPayload.ts`).
+
+- **`gamelog.golden.json`** — the game-log contract (ADR-0086), the game-log payload
+  over the fixture store: the truncated snapshot + advanced artifact loaded
+  through the real record-store loaders, the one fixture game pair through
+  the corpus loader, exported with --allow-missing-games (one complete game
+  of six; a deployed export is always total). DB-native: regenerate via
+  `python ingestion/regen_gamelog_golden.py` (needs Docker), never
+  `golden:regen`. `ingestion/test_gamelog.py` asserts the byte-identical
+  roundtrip and that a doctored box line hard-fails the export;
+  `src/domain/gameLogPayload.test.ts` strict-parses it and proves the
+  receipt identity bites.

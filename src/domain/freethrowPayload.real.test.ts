@@ -108,10 +108,10 @@ describe('deployed free-throw payloads', () => {
         // summed, never rates averaged, so the rollup must reassemble.
         expect(m.attemptEquivalent.trips + m.addOn.trips).toBe(freethrow._meta.totalTrips)
         expect(m.attemptEquivalent.fta + m.addOn.fta).toBe(
-          freethrow._meta.seasonFta - freethrow._meta.technicalFta,
+          freethrow._meta.seasonFta - freethrow._meta.technicalFta - freethrow._meta.splitFta,
         )
         expect(m.attemptEquivalent.ftm + m.addOn.ftm).toBe(
-          freethrow._meta.seasonFtm - freethrow._meta.technicalFtm,
+          freethrow._meta.seasonFtm - freethrow._meta.technicalFtm - freethrow._meta.splitFtm,
         )
       })
 

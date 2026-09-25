@@ -32,15 +32,18 @@ export const SCHEMA_VERSION = 5
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/
 
-const enrichedShotSchema = z
-  .strictObject({
+// The per-shot shape, exported so the team shot contract (ADR-0082) can
+// extend it with player identity instead of duplicating the field list.
+export const enrichedShotShape = {
     gameId: z.string().min(1),
     gameEventId: z.number().int(),
     gameDate: z.string().regex(isoDate),
     opponent: z.string().regex(/^[A-Z]{2,3}$/), // team abbreviation (e.g. PHX)
     home: z.boolean(),
     period: z.number().int().min(1), // >4 legal (overtime)
-    minutesRemaining: z.number().int().min(0).max(11),
+    // 12 is real: a make straight off the opening tip is stamped at 12:00,
+    // before the clock ticks (league-wide evidence, migration 0007).
+    minutesRemaining: z.number().int().min(0).max(12),
     secondsRemaining: z.number().int().min(0).max(59),
     made: z.boolean(),
     pointValue: z.union([z.literal(2), z.literal(3)]),
@@ -50,7 +53,10 @@ const enrichedShotSchema = z
     distanceFt: z.number().int().min(0),
     locX: z.number().int(),
     locY: z.number().int(),
-  })
+}
+
+const enrichedShotSchema = z
+  .strictObject(enrichedShotShape)
   .refine((s) => s.pointValue === ZONE_POINT_VALUE[s.zoneBasic], {
     message: 'pointValue inconsistent with zoneBasic',
   })
@@ -68,7 +74,7 @@ const midRangeBandEntrySchema = z
   .strictObject({ grain: z.literal('midRangeBand'), band: z.enum(MID_RANGE_BANDS), fga, fgm })
   .refine((e) => e.fgm <= e.fga, { message: 'fgm exceeds fga' })
 
-const zoneBaselineEntrySchema = z.union([basicEntrySchema, midRangeBandEntrySchema])
+export const zoneBaselineEntrySchema = z.union([basicEntrySchema, midRangeBandEntrySchema])
 
 export const derivedPayloadSchema = z
   .strictObject({

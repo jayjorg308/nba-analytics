@@ -81,7 +81,12 @@ export const GLOSSARY = {
   trip: {
     term: 'Trip',
     definition:
-      'One visit to the free-throw line: the free throws awarded from a single foul, counted as one unit. A two-shot trip at league conversion is worth more points than a shot from anywhere on the floor. Technical free throws are not trips.',
+      'One visit to the free-throw line: the free throws awarded from a single foul, counted as one unit. A two-shot trip at league conversion is worth more points than a shot from anywhere on the floor. Technical and split free throws are not trips.',
+  },
+  'split-trip': {
+    term: 'Split trip',
+    definition:
+      "A single foul's free throws divided between players, when the fouled player leaves injured or ejected and a teammate shoots in his place. Neither fragment is a trip: a fragment is not a complete visit, and a substitute's free throws are not earned by his own play. Counted and reported beside technicals, never priced.",
   },
   'fta-rate': {
     term: 'FTA rate',

@@ -23,6 +23,7 @@ flags, authored-and-guarded copy — on a new axis._
 | Directory + navbar redesign | ✅ shipped 2026-07-24 (ADR-0065): the index becomes a headshot marquee over a name-only rail (faces answer "who is on file"; action posters stay the hero pages' argument), and the site gains the **Good Shots** wordmark navbar as the persistent way home. Prototype-chosen from four layouts at roster sizes 4/2/1, for the August launch. |
 | Launch (August 2026) | ✅ closed 2026-07-30 — the social card MVP shipped 2026-07-27 (product-wide `og:`/`twitter:` card from the new wordmark), and the per-hero upgrade shipped the same day (ADR-0067: generated marquee cards + build-time emitted share pages with per-page `og:url`). The marquee heading outline (item 3) closed 2026-07-27. The pre-launch polish round (items 4–7, 9) closed 2026-07-28 — usage rate (item 7, ADR-0069) was its last build — and the verdict voice pass (item 10, ADR-0070) landed 2026-07-29. Items 2 and 8 closed together 2026-07-30 (ADR-0071): the `/methodology` page (model, honesty rules, data story, verdict stance, the glossary re-rendered, image SOURCES) plus the directory blurb and the shared-footer link. Banner credits closed the same day (two recovered by the credit hunt, five author-supplied team-site sources; SGA's "generated artwork" record corrected — it was always a real Jimmy Do photograph), so every launch item is now closed. See [Launch (August 2026)](#launch-august-2026--open-items). |
 | Comparison page | ✅ shipped 2026-08-23 (ADRs 0073–0079): the first post-launch surface, a tool and not an argument. Planned 2026-08-12 ([the plan doc](plans/comparison-page-prototype.md) + the five window/baseline/URL decisions, ADRs 0073–0077); increments 1–5 built 2026-08-13 (`/compare`: Players and Before & since modes over exact windows, URL-owned state, registry-derived setup); the zone evidence reshaped 2026-08-14 into the scoreboard of priced calls (ADR-0078, prototype-chosen from four variants). Players-mode free throws closed it 2026-08-23 (ADR-0079): no data change needed — a full-season window IS the season-total contract — rendered as season-line cards with the line-call vocabulary (Draw edge / Conversion edge / Reliance lean, the C variant of a second four-variant prototype) over the transposed trip taxonomy; split mode defers free throws until a date-grained contract exists (trip `gameDate`, dated technicals, a windowable FTA-rate denominator) |
+| Jazz surface | 🔨 in progress — planned 2026-09-22 ([the plan doc](plans/jazz-surface.md); ADRs 0081–0085 drafted). Increment 1 (the team data spine) built 2026-09-22: team-wide shot + roster pulls, `roster_entry` + the catalog's team dimension (0007), `load_team_season` + hero-less `load_game_pairs`, the shared `team_payload` grammar behind `derive_team_payload.py` and `export_team_shot_payload.py` (byte parity through the store), the fifth golden pair + Zod contract, `team:sync`, and the season loop's team session (`liveTeams`, dark). Increment 2 (the `/jazz` page) built the same day: the ledger facts contract (ADR-0084; `ledger_facts.py` behind a file derive and a store export, sixth golden), `aggregateTeam` (one aggregation over slices: season profile, per-game rows), the team registry with `canonicalSeason`, the reserved `/jazz` route family (`/jazz`, `/jazz/<season>`, `/jazz/<gameId>`), `TeamPage` (tool header + frontier byline, the headline pair in the team's voice, ZONE BY ZONE, the GAME LEDGER newest first) and `TeamGamePage` (box facts, the pair with its sample, zone counts, shooters), the methodology page's THE TEAM PAGE section, the team copy guard, and the 2025-26 Jazz season deployed under `public/data/_teams/uta/` (82 games, 7,468 shots) as the season the surface opens on; 2026-27 joins and becomes canonical when its payloads deploy. **Direction widened 2026-09-24** to a Jazz-first site ([the Jazz-first site plan](plans/jazz-first-site.md), which supersedes this plan where they disagree): Phase 1 merged the game-card work (its ADR renumbered 0086), renamed the team migration to `0009_team_surface.sql`, added the season loop's branch guard and pull-first, and put Keyonte George and Darryn Peterson 2026-27 in dark mode beside Ace. Next: Phase 2, the report card on 2025-26 |
 
 > **The directory is live (since v3 Phase 1, 2026-07-21).** This note used to
 > record the opposite — a deliberately hidden index, the root serving Cody
@@ -1035,16 +1036,15 @@ rediscovered._
 - **Never guess a zone for a shooting-foul trip.** The denied attempt's point
   class is knowable (2 FT vs 3 FT); its location is not (ADR-0012/0019 ethos,
   ADR-0053).
-- **No database in the product architecture.** The storage story is files:
-  append-only verbatim raw blobs, regenerable derived JSON, committed
-  deployed payloads fetched by a static app (ADR-0006/0010). No layer has
-  the query, concurrency, or scale pressure a database solves — a live
-  season adds ~250MB of local gitignored raw per year and four small
-  committed files a day. If a league-scale corpus (archetype baselines, a
-  league-wide play-by-play pull) ever needs real queries, the answer is a
-  disposable derive-side index (DuckDB/SQLite over the raw layer) as a
-  Python implementation detail — never the contracts, the deployment story,
-  or the frontend seam.
+- **No database in front of the product.** The record store (Postgres,
+  ADR-0080) sits BEHIND the committed export: raw stays append-only
+  verbatim blobs, the store is rebuildable from them, and the deployed
+  layer stays committed JSON fetched by a static app (ADR-0006/0010). The
+  app never queries a database; a live query path is deferred until some
+  surface needs queries that cannot be enumerated at export time, and it
+  would then front only that surface — never the contracts, the deployment
+  story, or the frontend seam. (This line used to say "no database in the
+  product architecture"; ADR-0080 moved the line, not the principle.)
 - **No frontier tolerances.** "Within one game" is still a tolerance
   (ADR-0058): a living season publishes exactly reconciled through its
   frontier or not at all; lag defers, contradiction halts.

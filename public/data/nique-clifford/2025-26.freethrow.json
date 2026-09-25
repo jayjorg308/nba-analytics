@@ -1,20 +1,22 @@
 {
   "_meta": {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "player": "Nique Clifford",
     "playerId": 1642363,
     "season": "2025-26",
     "dataThrough": "2026-04-12",
     "gamesIncluded": 72,
     "sourceShotPayload": "data/derived/nique-clifford/2025-26/2026-07-29.json",
-    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-07-23T155832.json",
-    "leagueTotalsPullDate": "2026-07-23",
+    "sourceLeagueTotals": "data/raw/_league/2025-26/totals/2026-08-24T150131.json",
+    "leagueTotalsPullDate": "2026-08-24",
     "seasonFga": 596,
     "seasonPoints": 645,
     "seasonFtm": 70,
     "seasonFta": 97,
     "technicalFtm": 1,
     "technicalFta": 1,
+    "splitFtm": 0,
+    "splitFta": 0,
     "totalTrips": 51,
     "tripClassCounts": {
       "shootingFoul2": 41,
@@ -24,7 +26,8 @@
       "flagrant": 0,
       "awayFromPlay": 0,
       "transitionTake": 0,
-      "clearPath": 0
+      "clearPath": 0,
+      "fouledDuringMake": 0
     },
     "gamesExpected": 73,
     "gamesLoaded": 73,

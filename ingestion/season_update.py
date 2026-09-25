@@ -35,6 +35,14 @@ REPLAY HOOK (Phase 4): --as-of <date> anchors the discovery pull too, so
 the whole session runs against a completed season as if the calendar read
 <date>. Same code path end to end; --no-commit/--no-push contain effects.
 
+THE TEAM SESSION (ADR-0081/0082, per liveTeams entry, after the heroes):
+  roster + team-wide discovery pulls, missing pairs, the pair frontier (no
+  tracking coherence — no team tracking contract), the anchored team pull,
+  the team shot derive (record store or files), the frontier gate, and in
+  live mode team:sync -> full gate -> a data-only commit under
+  public/data/_teams/<tricode>/. A tool surface renders from game one, so
+  there is no volume gate; dark mode still pulls and derives daily.
+
 LOCAL-ONLY: stats.nba.com blocks cloud IPs. Run on the dev machine, via
 scripts/season-update.ps1 under Task Scheduler for the daily cadence.
 """
@@ -184,6 +192,67 @@ class Halt(Exception):
     """A condition a human must resolve — never published around."""
 
 
+# --- The branch guard (docs/plans/jazz-first-site.md, operations) --------------
+#
+# Two actions are only safe from main. Loading into the PRODUCTION record
+# store: every loader applies every migration file on the checked-out
+# branch, so a feature branch's unmerged migration would land in production
+# under a name main may later change (the 0007_team_shots -> 0009 rename is
+# the case that made this rule — a recorded migration renamed runs again).
+# And a DATA COMMIT: it must land on main's history, gated by code that is
+# committed there, so the tree may carry no tracked change outside the paths
+# the loop itself writes. A scratch store (--db-url) and --no-commit runs
+# are unaffected — which is what keeps replays and dry runs usable from any
+# branch. The scheduled wrapper pulls main before the session; this guard is
+# the backstop for a checkout left on the wrong branch.
+
+LOOP_OWNED_PATHS = ("public/data/", "data/")
+
+
+def current_branch() -> str:
+    return run("git rev-parse --abbrev-ref HEAD").stdout.strip()
+
+
+def require_main(action: str, remedy: str) -> None:
+    branch = current_branch()
+    if branch != "main":
+        raise Halt(f"branch guard: {action} runs only from main, and this "
+                   f"checkout is on {branch!r} — {remedy}")
+
+
+def guard_production_store(args: argparse.Namespace) -> None:
+    """Loading without --db-url means the production store (DSN from
+    NBA_DB_URL or .env): main only."""
+    if args.db_url is None:
+        require_main("loading into the production record store",
+                     "switch to main, or pass --db-url for a scratch store")
+
+
+def tracked_changes_outside_loop_paths() -> list[str]:
+    """Porcelain v1 lines for tracked changes the loop did not make."""
+    dirty = []
+    for line in run("git status --porcelain --untracked-files=no").stdout.splitlines():
+        path = line[3:]
+        if " -> " in path:
+            path = path.split(" -> ", 1)[1]
+        path = path.strip().strip('"').replace("\\", "/")
+        if path and not path.startswith(LOOP_OWNED_PATHS):
+            dirty.append(line)
+    return dirty
+
+
+def guard_publish() -> None:
+    """A data commit: main only, with no tracked change outside the data the
+    loop writes (the gate must have run on committed code)."""
+    require_main("a data commit",
+                 "switch to main (or run the loop from its own clone)")
+    dirty = tracked_changes_outside_loop_paths()
+    if dirty:
+        raise Halt("branch guard: a data commit needs a clean tree, but "
+                   "tracked files outside the loop's paths are modified:\n"
+                   + "\n".join(dirty))
+
+
 def db_derive(args: argparse.Namespace, player: str, season: str,
               shot_path: Path, advanced_path: Path, tracking_path: Path,
               league_tracking_path: Path, totals_path: Path,
@@ -194,6 +263,7 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
     on corrections, growth flows), then export the four payloads to the same
     derived paths the file derives use. A LoadHalt or any loader/export
     hard-fail is a session Halt."""
+    guard_production_store(args)
     import derive_payload as dp
     import export_creation_payload as ecr
     import export_freethrow_payload as efp
@@ -447,6 +517,8 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
         return status
 
     # 7. Publish (live mode): sync -> full gate -> data commit on green.
+    if not args.no_commit:
+        guard_publish()
     result = run(f"npm run hero:sync -- {slug} {season}")
     if result.returncode != 0:
         raise Halt(f"hero:sync failed:\n{result.stdout}\n{result.stderr}")
@@ -496,7 +568,9 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="The season loop (ADR-0057/0058/0059).")
     ap.add_argument("--config", default=str(REPO / "season.config.json"))
-    ap.add_argument("--slug", help="run one live season only")
+    ap.add_argument("--slug", help="run one live hero season only")
+    ap.add_argument("--team", help="run one live team only (tricode, e.g. UTA — "
+                                   "ADR-0081/0082)")
     ap.add_argument("--as-of", dest="as_of",
                     help="replay hook (Phase 4): anchor the whole session at "
                          "this ISO date as if the calendar read it")
@@ -519,10 +593,18 @@ def main() -> None:
     args = ap.parse_args()
 
     config = json.loads(Path(args.config).read_text(encoding="utf-8"))
-    entries = [e for e in config["liveSeasons"]
-               if args.slug is None or e["slug"] == args.slug]
-    if not entries:
-        sys.exit(f"no live seasons matched (slug={args.slug!r}) in {args.config}")
+    # Selection: --slug runs one hero, --team one team; either alone skips
+    # the other class; neither runs every live season and every live team.
+    only_teams = args.team is not None and args.slug is None
+    only_heroes = args.slug is not None and args.team is None
+    entries = [] if only_teams else [
+        e for e in config["liveSeasons"] if args.slug is None or e["slug"] == args.slug]
+    team_entries = [] if only_heroes else [
+        e for e in config.get("liveTeams", [])
+        if args.team is None or e["tricode"].lower() == args.team.lower()]
+    if not entries and not team_entries:
+        sys.exit(f"no live seasons or teams matched (slug={args.slug!r}, "
+                 f"team={args.team!r}) in {args.config}")
     pins_all = config.get("trackingShortfalls", {})
 
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
@@ -541,7 +623,248 @@ def main() -> None:
                        / f"{session}-{entry['slug']}-{entry['season']}.json")
         status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
         log(f"  status -> {status_path}")
+    for entry in team_entries:
+        slug = team_slug(entry)
+        try:
+            status = run_team(entry, args)
+        except Halt as halt:
+            status = {"slug": slug, "team": entry["team"], "season": entry["season"],
+                      "mode": entry.get("mode", "dark"), "outcome": "halt",
+                      "error": str(halt)}
+            log(f"  HALT: {halt}")
+            halted = True
+        status_path = STATUS_DIR / f"{session}-{slug}-{entry['season']}.json"
+        status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
+        log(f"  status -> {status_path}")
     sys.exit(1 if halted else 0)
+
+
+
+# --- The team session (ADR-0081/0082, the Jazz surface plan) -------------------
+
+def team_slug(entry: dict) -> str:
+    """The status-file and commit-subject key for a team entry."""
+    return f"team-{entry['tricode'].lower()}"
+
+
+def db_derive_team(args: argparse.Namespace, team: str, season: str,
+                   shot_path: Path, roster_path: Path, universe: set[str],
+                   out_path: Path, report: list[str]) -> None:
+    """The team session's DB-engine derive (ADR-0080/0082): load the team
+    shot + roster snapshots, load the universe's game pairs hero-free, then
+    export the team shot payload with every oracle live (the per-player
+    per-game box oracle refuses a game without its pair)."""
+    guard_production_store(args)
+    import export_ledger_facts as elf
+    import export_team_shot_payload as etp
+    import ledger_facts as lf
+    import load_game_corpus as lgc
+    import load_hero_season as lhs
+    import load_team_season as lts
+    import record_store as rs
+    import team_payload as tp
+
+    with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
+        rs.apply_migrations(conn)
+        try:
+            lts.load_team_season(conn, shot_path, roster_path)
+            lgc.load_game_pairs(conn, universe, raw_root=REPO / "data" / "raw")
+        except lhs.LoadHalt as halt:
+            raise Halt(f"record-store load halted: {halt}") from halt
+        except SystemExit as exc:
+            raise Halt(f"record-store load failed: {exc}") from exc
+        report.append("record-store team loads ok (change-detected, box oracle live)")
+        try:
+            payload = etp.export_payload(conn, team, season)
+        except SystemExit as exc:
+            raise Halt(f"team shot export failed: {exc}") from exc
+        tp.write_payload(out_path, payload)
+        report.append("team shot export ok (record store)")
+        try:
+            ledger = elf.export_ledger(conn, team, season, out_path)
+        except SystemExit as exc:
+            raise Halt(f"ledger export failed: {exc}") from exc
+        lf.write_payload(out_path.parent / "ledger" / out_path.name, ledger)
+        report.append("ledger export ok (record store)")
+
+
+def run_team(entry: dict, args: argparse.Namespace) -> dict:
+    """One team session: roster + discovery pulls, missing pairs, the pair
+    frontier (no tracking coherence — no team tracking contract), the
+    anchored team pull, the derive, the frontier gate, and in live mode the
+    sync -> full gate -> data commit. A tool surface renders from game one
+    (ADR-0081), so 'gates' here means frontier exactness, never volume."""
+    team, team_id, season = entry["team"], int(entry["teamId"]), entry["season"]
+    tricode = entry["tricode"].lower()
+    mode = entry.get("mode", "dark")
+    slug = team_slug(entry)
+    pull_date = date.today().isoformat()
+    stamp = live_pulls.stamp_now()
+    raw_root = REPO / "data" / "raw"
+    team_root = raw_root / "_teams" / tricode / season
+    report: list[str] = []
+    status: dict = {"slug": slug, "team": team, "season": season, "mode": mode,
+                    "session": f"{pull_date}{stamp}", "asOf": args.as_of}
+
+    log(f"\n=== season loop (team): {team} {season} [{mode}]"
+        f"{' as-of ' + args.as_of if args.as_of else ''} ===")
+
+    # 1. Roster (current state — the roster has no DateTo; under --as-of the
+    #    replay still observes today's roster, and the payload says so).
+    roster_path = live_pulls.pull_roster_snapshot(
+        team, team_id, season, team_root / "roster", stamp=stamp, pull_date=pull_date)
+    log(f"  roster -> {roster_path.name}")
+    time.sleep(args.sleep)
+
+    # 2. Discovery.
+    discovery_path = live_pulls.pull_team_shot_snapshot(
+        team, team_id, season, team_root,
+        date_to=args.as_of, stamp=f"{stamp}-discovery", pull_date=pull_date)
+    log(f"  discovery -> {discovery_path.name}")
+    headers, rows = shot_rows(read_json(discovery_path))
+    if not rows:
+        status.update(outcome="no-data", note="season has no shots yet — nothing to derive")
+        log("  no shots yet — clean no-op")
+        return status
+    gid_i, gd_i = headers.index("GAME_ID"), headers.index("GAME_DATE")
+    games: dict[str, str] = {}
+    for r in rows:
+        d = str(r[gd_i])
+        games[str(r[gid_i])] = f"{d[:4]}-{d[4:6]}-{d[6:]}"
+
+    # 3. Fill missing pbp/box pairs — the one hard opening-night requirement.
+    missing = sorted(g for g in games if not paired_game_exists(raw_root, g))
+    if missing:
+        log(f"  pulling {len(missing)} missing game pair(s)")
+        run("python ingestion/pull_play_by_play.py --game-ids " + " ".join(missing),
+            timeout=3600)
+    paired = {g for g in games if paired_game_exists(raw_root, g)}
+    new_games = len([g for g in missing if g in paired])
+
+    # 4. Frontier: pair availability alone (ADR-0058; no tracking to reconcile).
+    candidate = candidate_frontier(games, paired)
+    if candidate is None:
+        status.update(outcome="deferred", deferred=True,
+                      note="no game has a complete pair yet — frontier unset")
+        log("  DEFERRED: no publishable frontier yet")
+        return status
+
+    deployed = REPO / "public" / "data" / "_teams" / tricode / f"{season}.json"
+    prior_discoveries = sorted(p for p in team_root.glob("*-discovery.json")
+                               if p != discovery_path)
+    if (mode == "live" and not args.force and deployed.exists() and prior_discoveries):
+        deployed_meta = read_json(deployed)["_meta"]
+        _, prior_rows = shot_rows(read_json(prior_discoveries[-1]))
+        pre_drop = deployed_meta["totalShots"] + deployed_meta["zoneConflictsDropped"]
+        if (deployed_meta["dataThrough"] == candidate and pre_drop == len(rows)
+                and prior_rows == rows):
+            status.update(outcome="no-change", frontier=candidate,
+                          note="upstream identical to previous session; "
+                               "deployed already at the candidate frontier")
+            log("  no change upstream — session ends before anchored pulls")
+            return status
+
+    frontier = candidate
+    deferred = len(paired) < len(games)
+    status.update(frontier=frontier, candidate=candidate, deferred=deferred)
+    report.append(f"frontier {frontier}"
+                  + (" — deferred games pending upstream pairs" if deferred else ""))
+    if deferred:
+        prior = consecutive_deferrals(STATUS_DIR, slug, season)
+        if prior + 1 >= STUCK_SESSIONS:
+            status["stuckAlarm"] = True
+            report.append(f"!! STALENESS ALARM: pairs missing behind the candidate for "
+                          f"{prior + 1} consecutive sessions (ADR-0058)")
+
+    # 5. The anchored team pull at the settled frontier.
+    max_disc_date = max(games.values())
+    if frontier == max_disc_date and (args.as_of is None or args.as_of == frontier):
+        shot_path = discovery_path
+    else:
+        time.sleep(args.sleep)
+        shot_path = live_pulls.pull_team_shot_snapshot(
+            team, team_id, season, team_root,
+            date_to=frontier, stamp=f"{stamp}-frontier", pull_date=pull_date)
+
+    # 6. Derive — the record store (production) or the file derive (fallback);
+    #    same derived path either way, so sync and gates are engine-blind.
+    derived = REPO / "data" / "derived" / "_teams" / tricode / season
+    out_path = derived / f"{pull_date}{stamp}.json"
+    universe = {gid for gid, gd in games.items() if gd <= frontier}
+    if args.engine == "db":
+        db_derive_team(args, team, season, shot_path, roster_path, universe, out_path, report)
+    else:
+        result = run("python ingestion/derive_team_payload.py "
+                     f"--snapshot-file \"{shot_path}\" --roster-file \"{roster_path}\" "
+                     f"--out-file \"{out_path}\"")
+        if result.returncode != 0:
+            raise Halt(f"team derive failed:\n{result.stdout}\n{result.stderr}")
+        report.append("team shot derive ok (files)")
+        result = run("python ingestion/derive_ledger_facts.py "
+                     f"--team-payload-file \"{out_path}\" "
+                     f"--out-file \"{out_path.parent / 'ledger' / out_path.name}\"")
+        if result.returncode != 0:
+            raise Halt(f"ledger derive failed:\n{result.stdout}\n{result.stderr}")
+        report.append("ledger derive ok (files)")
+
+    # 7. The frontier gate: the payload states exactly the settled frontier.
+    meta = read_json(out_path)["_meta"]
+    frontier_ok = (meta["dataThrough"] == frontier
+                   and meta["gamesIncluded"] == len(universe))
+    if not frontier_ok:
+        raise Halt(f"team payload frontier {meta['dataThrough']} / "
+                   f"{meta['gamesIncluded']} games != settled {frontier} / "
+                   f"{len(universe)} games — contradiction")
+    status["gates"] = {"frontierExact": True, "pass": not deferred}
+    report.append(f"team payload: {meta['totalShots']} shots, {meta['gamesIncluded']} "
+                  f"games through {meta['dataThrough']}, "
+                  f"{meta['zoneConflictsDropped']} conflict(s) dropped")
+
+    if mode == "dark":
+        status.update(outcome="dark")
+        log("  dark mode: derived + reported, publishing nothing")
+        return status
+
+    # 8. Publish (live mode): sync -> full gate -> data commit on green.
+    if not args.no_commit:
+        guard_publish()
+    result = run(f"npm run team:sync -- {tricode} {season}")
+    if result.returncode != 0:
+        raise Halt(f"team:sync failed:\n{result.stdout}\n{result.stderr}")
+    for cmd in ["python -m pytest ingestion -q", "npm test", "npm run lint",
+                "npm run build"]:
+        result = run(cmd)
+        if result.returncode != 0:
+            raise Halt(f"gate red — publish halted:\n[{cmd}]\n"
+                       f"{result.stdout[-4000:]}\n{result.stderr[-4000:]}")
+    report.append("full gate green")
+
+    deployed_dir = f"public/data/_teams/{tricode}/"
+    if not run(f"git status --porcelain {deployed_dir}").stdout.strip():
+        status.update(outcome="no-change")
+        report.append("deployed team payload unchanged — nothing to commit")
+        log("  no change — nothing to commit")
+        return status
+    if args.no_commit:
+        status.update(outcome="dry-run", wouldCommit=True)
+        log("  --no-commit: gate green, commit skipped")
+        return status
+    msg_file = STATUS_DIR / f"commit-msg-{slug}.txt"
+    msg_file.parent.mkdir(parents=True, exist_ok=True)
+    msg_file.write_text(
+        build_commit_message(slug, season, frontier, len(universe), new_games, report),
+        encoding="utf-8")
+    for cmd in (f"git add {deployed_dir}", f"git commit -F \"{msg_file}\""):
+        result = run(cmd)
+        if result.returncode != 0:
+            raise Halt(f"git step failed:\n[{cmd}]\n{result.stderr}")
+    if not args.no_push:
+        result = run("git push")
+        if result.returncode != 0:
+            raise Halt(f"git push failed (commit is local):\n{result.stderr}")
+    status.update(outcome="published", pushed=not args.no_push)
+    log(f"  published through {frontier}")
+    return status
 
 
 if __name__ == "__main__":

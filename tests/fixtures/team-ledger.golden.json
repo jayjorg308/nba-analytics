@@ -1,0 +1,125 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "team": "Utah Jazz",
+    "teamId": 1610612762,
+    "tricode": "UTA",
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "dataThrough": "2025-10-31",
+    "gamesIncluded": 1,
+    "sourceTeamPayload": "tests/fixtures/team-shot.golden.json"
+  },
+  "games": [
+    {
+      "gameId": "0022500025",
+      "gameDate": "2025-10-31",
+      "opponent": "PHX",
+      "home": false,
+      "teamScore": 96,
+      "opponentScore": 118,
+      "fgm": 30,
+      "fga": 82,
+      "ftm": 24,
+      "fta": 32,
+      "players": [
+        {
+          "playerId": 1628374,
+          "fgm": 10,
+          "fga": 21,
+          "ftm": 9,
+          "fta": 12,
+          "points": 33
+        },
+        {
+          "playerId": 1641718,
+          "fgm": 3,
+          "fga": 10,
+          "ftm": 9,
+          "fta": 11,
+          "points": 17
+        },
+        {
+          "playerId": 1642262,
+          "fgm": 3,
+          "fga": 7,
+          "ftm": 0,
+          "fta": 0,
+          "points": 8
+        },
+        {
+          "playerId": 203937,
+          "fgm": 3,
+          "fga": 6,
+          "ftm": 2,
+          "fta": 3,
+          "points": 8
+        },
+        {
+          "playerId": 203994,
+          "fgm": 2,
+          "fga": 3,
+          "ftm": 2,
+          "fta": 4,
+          "points": 7
+        },
+        {
+          "playerId": 1642846,
+          "fgm": 2,
+          "fga": 8,
+          "ftm": 2,
+          "fta": 2,
+          "points": 6
+        },
+        {
+          "playerId": 1641989,
+          "fgm": 2,
+          "fga": 5,
+          "ftm": 0,
+          "fta": 0,
+          "points": 5
+        },
+        {
+          "playerId": 1631117,
+          "fgm": 2,
+          "fga": 5,
+          "ftm": 0,
+          "fta": 0,
+          "points": 4
+        },
+        {
+          "playerId": 1641729,
+          "fgm": 1,
+          "fga": 4,
+          "ftm": 0,
+          "fta": 0,
+          "points": 3
+        },
+        {
+          "playerId": 1642383,
+          "fgm": 1,
+          "fga": 3,
+          "ftm": 0,
+          "fta": 0,
+          "points": 3
+        },
+        {
+          "playerId": 1642271,
+          "fgm": 1,
+          "fga": 5,
+          "ftm": 0,
+          "fta": 0,
+          "points": 2
+        },
+        {
+          "playerId": 1629004,
+          "fgm": 0,
+          "fga": 5,
+          "ftm": 0,
+          "fta": 0,
+          "points": 0
+        }
+      ]
+    }
+  ]
+}

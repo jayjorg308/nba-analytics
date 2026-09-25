@@ -12,19 +12,39 @@
 #
 # UNREGISTER:  schtasks /delete /tn "nba-analytics season loop"
 #
+# Arguments after the file pass through to the loop: the game-night trigger
+# (docs/plans/jazz-first-site.md) is a second task running this file with
+# `--team UTA` at 23:45. Every task running this file needs the plan's
+# Task Scheduler power and wake settings (its Operations section).
+#
 # Pulls are LOCAL-ONLY (stats.nba.com blocks cloud IPs) — this task belongs
 # on the dev machine and nowhere else. Logs land in data\season-loop\.
 
 $ErrorActionPreference = "Continue"
 $repo = Split-Path -Parent $PSScriptRoot
 Set-Location $repo
+$loopArgs = $args
 
 $logDir = Join-Path $repo "data\season-loop"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 $log = Join-Path $logDir ("run-" + (Get-Date -Format "yyyy-MM-ddTHHmmss") + ".log")
 
-npm run season:update *>&1 | Tee-Object -FilePath $log
-$exitCode = $LASTEXITCODE
+# Pull first: on main the session starts from origin's main, or a PR merged
+# on GitHub would make the data commit's push fail. Fast-forward only; a pull
+# that cannot fast-forward halts like any session. On any other branch
+# nothing is pulled, and the loop's branch guard (season_update.py) refuses
+# the production store and the data commit there.
+$exitCode = 0
+$branch = (git rev-parse --abbrev-ref HEAD | Out-String).Trim()
+if ($branch -eq "main") {
+    git pull --ff-only *>&1 | Tee-Object -FilePath $log
+    $exitCode = $LASTEXITCODE
+}
+
+if ($exitCode -eq 0) {
+    npm run season:update -- @loopArgs *>&1 | Tee-Object -FilePath $log -Append
+    $exitCode = $LASTEXITCODE
+}
 
 if ($exitCode -ne 0) {
     # Best-effort toast via WinRT — the halt is already durable in the log

@@ -4,9 +4,14 @@ import { ComparisonPage } from './app/ComparisonPage'
 import { HeroIndexPage } from './app/HeroIndexPage'
 import { HeroPage } from './app/HeroPage'
 import { MethodologyPage } from './app/MethodologyPage'
-import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseRoute } from './app/routes'
+import { GameCardPage } from './app/GameCardPage'
+import { GameLandingPage } from './app/GameLandingPage'
+import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
+import { TeamGamePage } from './app/TeamGamePage'
+import { TeamPage } from './app/TeamPage'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
+import { GAME_ID, teamBySlug } from './teams/registry'
 
 function App() {
     // Read once at render: navigation between pages is full page loads
@@ -38,6 +43,30 @@ function App() {
             </>
         )
     }
+    // Game cards (ADR-0086): the third reserved route family — /game is the
+    // landing, /game/<slug>/<date> a card. Resolved before the registry like
+    // every reserved route; a malformed game path falls through to the
+    // directory's unknown-path note. Deliberately UNLINKED from the directory
+    // since the Jazz-site integration: the family retires in phase 3 of
+    // docs/plans/jazz-first-site.md (the Jazz player's night replaces it), so
+    // no page advertises URLs that are about to go. Reachable by URL only.
+    const gameRoute = parseGameRoute(window.location.pathname, import.meta.env.BASE_URL)
+    if (gameRoute?.kind === 'landing') {
+        return (
+            <>
+                <GameLandingPage />
+                <Analytics />
+            </>
+        )
+    }
+    if (gameRoute?.kind === 'card') {
+        return (
+            <>
+                <GameCardPage slug={gameRoute.slug} date={gameRoute.date} />
+                <Analytics />
+            </>
+        )
+    }
     // The comparison page (ADR-0076): the second reserved static route,
     // resolved before the registry like the methodology page. Its state
     // lives entirely in the query string — comparisonRoute.ts reads it; the
@@ -46,6 +75,44 @@ function App() {
         return (
             <>
                 <ComparisonPage />
+                <Analytics />
+            </>
+        )
+    }
+    // The team surface (ADR-0081/0082): a reserved team slug resolved before
+    // the registry. /jazz renders the canonical team season in place,
+    // /jazz/<season> a season with deployed payloads, /jazz/<gameId> one
+    // game row expanded (a ten-digit id, never confusable with a season).
+    // Anything else under the slug is nobody's page.
+    const team = teamBySlug(route.slug)
+    if (team !== undefined) {
+        if (route.season === undefined) {
+            return (
+                <>
+                    <TeamPage team={team} season={team.canonicalSeason} />
+                    <Analytics />
+                </>
+            )
+        }
+        if (GAME_ID.test(route.season)) {
+            return (
+                <>
+                    <TeamGamePage team={team} gameId={route.season} />
+                    <Analytics />
+                </>
+            )
+        }
+        if (team.seasons.includes(route.season)) {
+            return (
+                <>
+                    <TeamPage team={team} season={route.season} />
+                    <Analytics />
+                </>
+            )
+        }
+        return (
+            <>
+                <HeroIndexPage unknownPath={`${route.slug}/${route.season}`} />
                 <Analytics />
             </>
         )

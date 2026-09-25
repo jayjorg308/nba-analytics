@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "golden:regen": "python ingestion/derive_payload.py --snapshot-file tests/fixtures/snapshot.truncated.json --advanced-file tests/fixtures/league-advanced.truncated.json --out-file tests/fixtures/derived.golden.json && python ingestion/derive_creation.py --snapshot-file tests/fixtures/tracking.truncated.json --league-file tests/fixtures/tracking.league.truncated.json --shot-payload-file tests/fixtures/derived.golden.json --out-file tests/fixtures/creation.golden.json && python ingestion/derive_shot_context.py --shot-payload-file tests/fixtures/derived.golden.json --play-by-play-file tests/fixtures/playbyplay.truncated.json --box-score-file tests/fixtures/boxscore.truncated.json --allow-missing-games --out-file tests/fixtures/shot-context.golden.json && python ingestion/derive_freethrow.py --shot-payload-file tests/fixtures/derived.golden.json --league-totals-file tests/fixtures/league-totals.truncated.json --play-by-play-file tests/fixtures/playbyplay.truncated.json --box-score-file tests/fixtures/boxscore.truncated.json --allow-missing-games --out-file tests/fixtures/freethrow.golden.json",
+    "golden:regen": "python ingestion/derive_payload.py --snapshot-file tests/fixtures/snapshot.truncated.json --advanced-file tests/fixtures/league-advanced.truncated.json --out-file tests/fixtures/derived.golden.json && python ingestion/derive_creation.py --snapshot-file tests/fixtures/tracking.truncated.json --league-file tests/fixtures/tracking.league.truncated.json --shot-payload-file tests/fixtures/derived.golden.json --out-file tests/fixtures/creation.golden.json && python ingestion/derive_shot_context.py --shot-payload-file tests/fixtures/derived.golden.json --play-by-play-file tests/fixtures/playbyplay.truncated.json --box-score-file tests/fixtures/boxscore.truncated.json --allow-missing-games --out-file tests/fixtures/shot-context.golden.json && python ingestion/derive_freethrow.py --shot-payload-file tests/fixtures/derived.golden.json --league-totals-file tests/fixtures/league-totals.truncated.json --play-by-play-file tests/fixtures/playbyplay.truncated.json --box-score-file tests/fixtures/boxscore.truncated.json --allow-missing-games --out-file tests/fixtures/freethrow.golden.json && python ingestion/derive_team_payload.py --snapshot-file tests/fixtures/team-snapshot.truncated.json --roster-file tests/fixtures/team-roster.truncated.json --box-files tests/fixtures/team-boxscore.truncated.json --out-file tests/fixtures/team-shot.golden.json && python ingestion/derive_ledger_facts.py --team-payload-file tests/fixtures/team-shot.golden.json --box-files tests/fixtures/team-boxscore.truncated.json --out-file tests/fixtures/team-ledger.golden.json",
     "cards:generate": "tsx scripts/generate-social-cards.ts",
     "cards:vertical": "tsx scripts/generate-vertical-cards.ts",
     "cards:panels": "tsx scripts/generate-panel-cards.ts",
@@ -18,6 +18,8 @@
     "hero:sync": "tsx scripts/sync-hero-payload.ts",
     "hero:report": "tsx scripts/hero-report.ts",
     "hero:scaffold": "tsx scripts/hero-scaffold.ts",
+    "team:sync": "tsx scripts/sync-team-payload.ts",
+    "team:derive": "python ingestion/derive_team_payload.py",
     "season:update": "python ingestion/season_update.py",
     "logo:normalize": "python scripts/normalize_team_logo.py"
   },
