@@ -241,20 +241,37 @@ Each of these is small, and all of them land before opening night.
   unless it is on main with no staged or unstaged changes outside
   `public/data/` and `data/`. The separate clone is the fix; the guard is
   the backstop.
-- **Wake timer and power.** In the scheduled task's Conditions tab, tick
-  "Wake the computer to run this task" and untick both "Start the task only
-  if the computer is on AC power" and "Stop if the computer switches to
-  battery power" (the task is set to the opposite today, see "Where things
-  stand"; a session is a few minutes of network and CPU, so battery drain is
-  not the concern). In the Settings tab, make sure "Run task as soon as
-  possible after a scheduled start is missed" is ticked. Leave it running
-  only when you are logged on (a toast needs a logged-in session, and sleep
-  keeps you logged in). Free, and enough to start. After the change, the
-  status files should show a run every day; if missed runs pile up in
-  November,
+- **Wake timer and power.** _Applied 2026-09-24 to the current task; repeat
+  for any task registered later (the loop clone's, the game-night
+  trigger)._ In the Conditions tab, tick "Wake the computer to run this
+  task" and untick "Start the task only if the computer is on AC power". In
+  the Settings tab, tick "Run task as soon as possible after a scheduled
+  start is missed" (without it, a morning the laptop sleeps through is
+  skipped, not caught up) and cap "Stop the task if it runs longer than" at
+  2 hours (a hung run blocks the next day's until the cap; the default is 3
+  days). Leave it running only when you are logged on (a toast needs a
+  logged-in session, and sleep keeps you logged in). A session is a few
+  minutes of network and CPU, so battery drain is not the concern.
+
+  **The grayed-out box trap.** Unticking the AC-power box grays out "Stop if
+  the computer switches to battery power" but leaves it set, and the dialog
+  cannot clear it. Clear it from PowerShell, then read the settings back to
+  confirm all five:
+
+  ```powershell
+  $t = Get-ScheduledTask -TaskName "nba-analytics season loop"; $t.Settings.StopIfGoingOnBatteries = $false; Set-ScheduledTask -InputObject $t
+  (Get-ScheduledTask -TaskName "nba-analytics season loop").Settings | Select-Object DisallowStartIfOnBatteries, StopIfGoingOnBatteries, WakeToRun, StartWhenAvailable, ExecutionTimeLimit
+  ```
+
+  **This laptop uses Modern Standby** (`powercfg /a` reports S0 Low Power
+  Idle), and its power plan allows wake timers plugged in only. Leave them
+  off on battery (a laptop that wakes in a closed bag overheats) and keep it
+  plugged in overnight during the season; a run missed on battery catches
+  up when the lid opens. The first 06:30 run log after the change is the
+  real test that the wake works. If missed runs still pile up in November,
   a small always-on machine at home is the upgrade (a residential IP, so
-  stats.nba.com still answers); the loop would then need a shell wrapper and
-  a push notifier instead of the WinRT toast.
+  stats.nba.com still answers); the loop would then need a shell wrapper
+  and a push notifier instead of the WinRT toast.
 - **Game-night window.** A second daily trigger at 23:45 MT running
   `npm run season:update -- --team UTA`. On a night without a Jazz game the
   no-change early exit ends it after one discovery pull. If a source lags
