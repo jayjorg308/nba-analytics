@@ -102,6 +102,13 @@ Standing decisions that continue to apply:
   Task Scheduler job (`scripts/season-update.ps1`). A Vercel cron cannot
   replace it: stats.nba.com blocks cloud IPs, which is why the loop is local
   in the first place.
+- **The scheduled task misses days.** Twelve run logs since 2026-08-25, with
+  gaps of September 7 to 14, 21, 23, and 24, and start times drifting from
+  06:30 to mid-afternoon. The 2026-09-24 attempt was refused at 8:40 with
+  result `0x800710E0`. The task is registered "Interactive only" with "No
+  Start On Batteries" and "Stop On Battery Mode", so the likeliest cause is
+  the laptop running on battery. A missed day in the season is a missing
+  report card.
 
 ## Decisions to record
 
@@ -234,10 +241,17 @@ Each of these is small, and all of them land before opening night.
   unless it is on main with no staged or unstaged changes outside
   `public/data/` and `data/`. The separate clone is the fix; the guard is
   the backstop.
-- **Wake timer.** Tick the scheduled task's "Wake the computer to run this
-  task", leave it running only when you are logged on (a toast needs a
-  logged-in session, and sleep keeps you logged in), and keep the laptop
-  plugged in. Free, and enough to start. If missed runs pile up in November,
+- **Wake timer and power.** In the scheduled task's Conditions tab, tick
+  "Wake the computer to run this task" and untick both "Start the task only
+  if the computer is on AC power" and "Stop if the computer switches to
+  battery power" (the task is set to the opposite today, see "Where things
+  stand"; a session is a few minutes of network and CPU, so battery drain is
+  not the concern). In the Settings tab, make sure "Run task as soon as
+  possible after a scheduled start is missed" is ticked. Leave it running
+  only when you are logged on (a toast needs a logged-in session, and sleep
+  keeps you logged in). Free, and enough to start. After the change, the
+  status files should show a run every day; if missed runs pile up in
+  November,
   a small always-on machine at home is the upgrade (a residential IP, so
   stats.nba.com still answers); the loop would then need a shell wrapper and
   a push notifier instead of the WinRT toast.
