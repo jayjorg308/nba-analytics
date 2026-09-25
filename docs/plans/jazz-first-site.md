@@ -21,6 +21,19 @@ record" and each lands as an ADR with the increment that needs it._
 > reaches production from main, after the merge. Still open: step 8 and
 > the operations that need main or a human (the loop clone, the game-night
 > task, the raw backup bucket).
+>
+> **Progress (2026-09-25, after the merge of PR #61).** `0009` is applied
+> to production from main (read-only pre-flight first; all 2,759 snapshot
+> rows untouched). The loop clone exists at `..\nba-analytics-loop` on
+> main, and both scheduled tasks run it: the 06:30 task was repointed and
+> the 23:45 game-night task registered, each proven by an on-demand run
+> (the pull over SSH succeeded under Task Scheduler, every session exited
+> clean). Setting up the clone surfaced a real bug: `repo_relative` followed
+> the data junction and would have written absolute paths into production's
+> snapshot catalog and every payload's `_meta`; fixed and tested on
+> `task_Phase1Wrapup`, which must merge before opening night (the clone
+> picks it up through pull-first). Still open: the stay-awake power
+> setting and the raw backup bucket, both yours.
 
 ## Outcome
 
@@ -259,7 +272,14 @@ Each of these is small, and all of them land before opening night.
   too.) Junction its `data\` to the dev checkout's `data\` so both share the
   one raw layer (gitignored, so a fresh clone has none), copy `.env`,
   `npm ci`. Re-register the scheduled task to run that clone's
-  `season-update.ps1`.
+  `season-update.ps1`. Two traps found doing it (2026-09-25): the repo's
+  commit identity is set locally (the personal address) while the global
+  one is the work address, so the clone needs `git config user.name` and
+  `user.email` set locally or its data commits carry the wrong author; and
+  anything that resolves paths through the junction leaves the repo (the
+  `repo_relative` fix, `test_repo_relative.py`). Clone it from the local
+  checkout, then point `origin` at the GitHub remote. npm's install-script
+  approval skips esbuild's postinstall; the gate passes without it.
 - **Pull before the session.** The loop never pulls today, so a PR merged
   on GitHub makes its next push fail. The wrapper runs
   `git pull --ff-only` first; a failed pull halts with the toast.
@@ -323,6 +343,11 @@ Each of these is small, and all of them land before opening night.
   no-change early exit ends it after one discovery pull. If a source lags
   (a late West Coast finish, pbp not yet posted), the game defers to the
   06:30 run, which also runs the hero sessions and their tracking.
+  Registered 2026-09-25 as "nba-analytics game night" with the morning
+  task's power settings except one: it does **not** run a missed start as
+  soon as possible. If the laptop sleeps through 23:45, a catch-up would
+  fire at wake beside the 06:30 task's own catch-up, and two loop runs in
+  one clone could both try to commit. The morning run covers the night.
 - **Raw backup.** You create a private bucket (Cloudflare R2 or S3) and
   credentials; the loop's last step syncs `data/raw` to it. The first sync
   uploads all 648 MB; after that, each night adds only the new snapshots.
@@ -600,6 +625,19 @@ backup bucket, set the task's power settings (done 2026-09-24).
 - ADR-0087: the root becomes the Jazz home, `/arguments` the directory.
 - Deploy with 2025-26 as the canonical team season. The site has 82 real
   report cards before the season starts.
+- **The live gate requires the record-store tests** (added 2026-09-25).
+  Today, when Docker is down, `ingestion/conftest.py` skips the record-store
+  tests and the loop's live gate passes without them (seen in the loop clone
+  on 2026-09-25: 23 skipped, the rest green). A publish must never ride on
+  checks that did not run. An environment variable,
+  `NBA_REQUIRE_RECORD_STORE=1`, turns each of the conftest's four skips (no
+  psycopg, no docker, daemon down, container failed to start) into a
+  failure; the loop sets it for its gate runs, so a publish halts with the
+  toast instead of shipping. The wrapper also starts Docker Desktop when the
+  daemon is down and waits a bounded minute before the session, so a stopped
+  daemon costs nothing on a normal morning. Unset, behavior is unchanged
+  (clean clones and CI still skip loudly). Must land before opening night,
+  when the team session first publishes.
 
 ### Opening night (week of October 19)
 
@@ -636,7 +674,8 @@ gates pass. Nobody can schedule these, so the phases above leave slack.
 
 - ADR-0093: retire the file derive engine. Confirm the record-store tests
   run (not skip) in CI first, adding a Postgres service container if they
-  skip; move `golden:regen` to the record-store path; drop `--engine files`
+  skip, then set `NBA_REQUIRE_RECORD_STORE=1` in CI so they cannot quietly
+  stop running there either; move `golden:regen` to the record-store path; drop `--engine files`
   from the loop and the replay; point `hero:add` at load and export; keep
   the grammar modules the loaders import.
 - Rewrite the not-to-do list and CLAUDE.md commands.
@@ -654,6 +693,8 @@ gates pass. Nobody can schedule these, so the phases above leave slack.
 - A published game file is never rewritten by the loop; a changed row
   halts.
 - The branch guard halts off main and on a dirty tree.
+- With `NBA_REQUIRE_RECORD_STORE=1` and Docker unavailable, the record-store
+  tests fail instead of skipping; unset, they still skip.
 - The team replay over 2025-26 dates reproduces the committed game payloads.
 
 ### TypeScript

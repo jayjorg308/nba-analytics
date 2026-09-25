@@ -50,6 +50,9 @@ describe('TeamPage', () => {
     // No verdict, no thesis question, no banner cue.
     expect(screen.queryByText(/The verdict/)).toBeNull()
     expect(screen.queryByText(/taking good shots/)).toBeNull()
+    // A team season's Shots view has no per-shot tooltips, so no hover cue
+    // (player pages keep both; ChartPanel.test covers the mechanics).
+    expect(screen.queryByText(/Hover over any shot/)).toBeNull()
     const ledger = screen.getByRole('table', { name: 'Game ledger, newest first' })
     const rows = within(ledger).getAllByRole('row')
     expect(rows).toHaveLength(2) // header + one game

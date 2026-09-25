@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -328,9 +329,14 @@ def locate_shot_payload(slug: str, season: str) -> Path:
 
 def repo_relative(path: Path) -> str:
     """Repo-relative, forward-slash form (deterministic across machines as
-    long as the derive runs from the repo root)."""
+    long as the derive runs from the repo root).
+
+    Links are never followed (os.path.abspath, not Path.resolve): the season
+    loop's clone reaches the shared raw layer through a directory junction,
+    and resolving it would leave the repo and turn the path absolute
+    (test_repo_relative.py; docs/plans/jazz-first-site.md, operations)."""
     try:
-        return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
+        return Path(os.path.abspath(path)).relative_to(os.path.abspath(Path.cwd())).as_posix()
     except ValueError:
         return path.as_posix()
 
