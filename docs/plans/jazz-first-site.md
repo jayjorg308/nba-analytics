@@ -33,7 +33,10 @@ record" and each lands as an ADR with the increment that needs it._
 > snapshot catalog and every payload's `_meta`; fixed and tested on
 > `task_Phase1Wrapup`, which must merge before opening night (the clone
 > picks it up through pull-first). Still open: the stay-awake power
-> setting and the raw backup bucket, both yours.
+> setting and the raw backup bucket, both yours. Both done the same day:
+> the power settings read back correctly (sleep never and lid does nothing
+> on AC; battery unchanged), and the raw layer is backed up to R2 (see
+> "Raw backup" under Operations).
 
 ## Outcome
 
@@ -190,6 +193,7 @@ ADR lands with the increment that needs it.
    "No database in the product architecture" line.
 9. **ADR-0006 amendment: the raw layer is mirrored off-machine** nightly.
    The layer's semantics (append-only, verbatim, local pulls) are unchanged.
+   _Recorded 2026-09-25 with the backup itself._
 
 ## Scope
 
@@ -348,9 +352,20 @@ Each of these is small, and all of them land before opening night.
   soon as possible. If the laptop sleeps through 23:45, a catch-up would
   fire at wake beside the 06:30 task's own catch-up, and two loop runs in
   one clone could both try to commit. The morning run covers the night.
-- **Raw backup.** You create a private bucket (Cloudflare R2 or S3) and
-  credentials; the loop's last step syncs `data/raw` to it. The first sync
-  uploads all 648 MB; after that, each night adds only the new snapshots.
+- **Raw backup.** _Set up 2026-09-25._ A private Cloudflare R2 bucket,
+  `goodshots-raw` (free plan; no public r2.dev URL, custom domain, CORS, or
+  lifecycle rule, since an expiry rule would delete backups), and an account
+  API token scoped to object read and write on that bucket only, with no IP
+  filter (a residential IP changes) and no expiry (an expiring token breaks
+  the job). The credentials live in rclone's own config as the remote
+  `goodshots-r2` (with `no_check_bucket = true`, which a bucket-scoped token
+  needs), never in the repo. The wrapper's last step, after every session
+  halted or not, is `rclone copy data\raw goodshots-r2:goodshots-raw/raw
+  --immutable`: `copy`, never `sync`, so a local loss cannot propagate into
+  the backup, and `--immutable`, so an existing object that differs is an
+  error rather than an overwrite (append-only). A failed copy after a good
+  session raises its own toast. The first full copy was run by hand; after
+  that each run adds only new snapshots.
 - **Store headroom.** The store is 269 MB. Check the Neon plan's storage
   cap before phase 4 adds a season of league-wide shots.
 - **Config.** `liveSeasons` gains `keyonte-george` and `darryn-peterson`
