@@ -625,6 +625,19 @@ backup bucket, set the task's power settings (done 2026-09-24).
 - ADR-0087: the root becomes the Jazz home, `/arguments` the directory.
 - Deploy with 2025-26 as the canonical team season. The site has 82 real
   report cards before the season starts.
+- **The live gate requires the record-store tests** (added 2026-09-25).
+  Today, when Docker is down, `ingestion/conftest.py` skips the record-store
+  tests and the loop's live gate passes without them (seen in the loop clone
+  on 2026-09-25: 23 skipped, the rest green). A publish must never ride on
+  checks that did not run. An environment variable,
+  `NBA_REQUIRE_RECORD_STORE=1`, turns each of the conftest's four skips (no
+  psycopg, no docker, daemon down, container failed to start) into a
+  failure; the loop sets it for its gate runs, so a publish halts with the
+  toast instead of shipping. The wrapper also starts Docker Desktop when the
+  daemon is down and waits a bounded minute before the session, so a stopped
+  daemon costs nothing on a normal morning. Unset, behavior is unchanged
+  (clean clones and CI still skip loudly). Must land before opening night,
+  when the team session first publishes.
 
 ### Opening night (week of October 19)
 
@@ -661,7 +674,8 @@ gates pass. Nobody can schedule these, so the phases above leave slack.
 
 - ADR-0093: retire the file derive engine. Confirm the record-store tests
   run (not skip) in CI first, adding a Postgres service container if they
-  skip; move `golden:regen` to the record-store path; drop `--engine files`
+  skip, then set `NBA_REQUIRE_RECORD_STORE=1` in CI so they cannot quietly
+  stop running there either; move `golden:regen` to the record-store path; drop `--engine files`
   from the loop and the replay; point `hero:add` at load and export; keep
   the grammar modules the loaders import.
 - Rewrite the not-to-do list and CLAUDE.md commands.
@@ -679,6 +693,8 @@ gates pass. Nobody can schedule these, so the phases above leave slack.
 - A published game file is never rewritten by the loop; a changed row
   halts.
 - The branch guard halts off main and on a dirty tree.
+- With `NBA_REQUIRE_RECORD_STORE=1` and Docker unavailable, the record-store
+  tests fail instead of skipping; unset, they still skip.
 - The team replay over 2025-26 dates reproduces the committed game payloads.
 
 ### TypeScript
