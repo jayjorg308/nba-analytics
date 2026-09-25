@@ -21,7 +21,7 @@ export const METHODOLOGY_ROUTE = 'methodology'
  * in comparisonRoute.ts, not here. */
 export const COMPARE_ROUTE = 'compare'
 
-/** Game cards (ADR-0081): /game is the landing with the roster picker,
+/** Game cards (ADR-0086): /game is the landing with the roster picker,
  * /game/<player-slug>/<date> a card — the season-permalink ordering (player,
  * then time qualifier). Card state is owned entirely by the path. */
 export const GAME_ROUTE = 'game'
@@ -59,7 +59,7 @@ export type GameRoute =
   | { kind: 'card'; slug: string; date: string }
 
 /**
- * The game routes (ADR-0081), resolved before the registry like every
+ * The game routes (ADR-0086), resolved before the registry like every
  * reserved route: /game is the landing, /game/<slug>/<date> a card.
  * Undefined for anything else — including a malformed date or a deeper
  * path, which fall to the directory's unknown-path note like any bad URL.

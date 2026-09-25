@@ -1,4 +1,4 @@
-"""The card-roster mass import (ADR-0081, phase 2). LOCAL ONLY.
+"""The card-roster mass import (ADR-0086, phase 2). LOCAL ONLY.
 
 Resumable end to end — every phase skips what exists, so a crashed or
 interrupted run continues with the same command:
@@ -61,7 +61,7 @@ RAW = REPO / "data" / "raw"
 GAMES_ROOT = REPO / "public" / "data" / "games"
 SEASON_TYPE = "Regular Season"
 # Mirrors CARD_ROSTER_MIN_FGA (src/domain/constants.ts) — the mechanical
-# card-roster bar (ADR-0081); the deployed guard enforces it on every
+# card-roster bar (ADR-0086); the deployed guard enforces it on every
 # committed non-registry games file.
 MIN_FGA = 300
 
@@ -135,7 +135,7 @@ def re_export_all(dsn: str, roster: list, season: str) -> None:
 def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    ap = argparse.ArgumentParser(description="Mass-import the card roster (ADR-0081).")
+    ap = argparse.ArgumentParser(description="Mass-import the card roster (ADR-0086).")
     ap.add_argument("--season", default="2025-26")
     ap.add_argument("--min-fga", type=int, default=MIN_FGA)
     ap.add_argument("--limit", type=int, help="process at most N pending players")

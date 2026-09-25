@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-// The game card and landing components (ADR-0081): the poster's three
+// The game card and landing components (ADR-0086): the poster's three
 // numbers and chips from a fetched game-log payload, the receipt drill-in
 // (technical line included), the unknown-date and plain error contracts,
 // and the landing's roster list.

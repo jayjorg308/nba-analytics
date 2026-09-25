@@ -1,4 +1,4 @@
-// Guards the committed game-log deployment copies (ADR-0081): every
+// Guards the committed game-log deployment copies (ADR-0086): every
 // registered hero-season must have a games file that strict-parses and
 // agrees AT GAME GRAIN with all three deployed siblings — shots with the
 // shot payload, assist statuses with the context payload, trips and
@@ -139,7 +139,7 @@ describe('deployed game-log payloads', () => {
         const payload = parseGameLogPayload(readJson(path.join(dir, file)))
         expect(
           payload._meta.seasonFga,
-          `${slug}/${file} is below the card-roster bar (ADR-0081)`,
+          `${slug}/${file} is below the card-roster bar (ADR-0086)`,
         ).toBeGreaterThanOrEqual(CARD_ROSTER_MIN_FGA)
       }
     }

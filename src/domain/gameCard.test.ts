@@ -1,4 +1,4 @@
-// The game card's pure computation (ADR-0081): pricing at league rates by
+// The game card's pure computation (ADR-0086): pricing at league rates by
 // zone (pairs, never rates), the ADR-0019 boundary (heaves and conflicts
 // never price, made unpriced points stay real), and the credit counts.
 

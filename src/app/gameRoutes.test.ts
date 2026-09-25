@@ -1,4 +1,4 @@
-// The game route family (ADR-0081): /game resolves to the landing,
+// The game route family (ADR-0086): /game resolves to the landing,
 // /game/<slug>/<date> to a card, and everything malformed to nobody's page.
 // 'game' is reserved beside methodology and compare (registry.test.ts holds
 // hero slugs away from RESERVED_ROUTES).

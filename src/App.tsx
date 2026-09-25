@@ -40,7 +40,7 @@ function App() {
             </>
         )
     }
-    // Game cards (ADR-0081): the third reserved route family — /game is the
+    // Game cards (ADR-0086): the third reserved route family — /game is the
     // landing, /game/<slug>/<date> a card. Resolved before the registry like
     // every reserved route; a malformed game path falls through to the
     // directory's unknown-path note.

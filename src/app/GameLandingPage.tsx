@@ -1,4 +1,4 @@
-// The /game landing (ADR-0081): the card roster's picker, in the compare
+// The /game landing (ADR-0086): the card roster's picker, in the compare
 // pattern — the directory links here, each roster entry links its player's
 // latest card, and prev/next on the card browses the season from there.
 // Reads the committed roster index; heroes and (phase 2) non-hero roster

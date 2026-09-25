@@ -3002,7 +3002,7 @@
     color: var(--text-h);
 }
 
-/* --- Game cards (ADR-0081): a tool page — the poster over the receipt
+/* --- Game cards (ADR-0086): a tool page — the poster over the receipt
    drill-in. Dense UI text opts into line-height normal per the house
    companion rule. --- */
 .gamecard-page {

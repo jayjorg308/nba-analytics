@@ -76,7 +76,7 @@ export function compareUrl(request?: ComparisonRequest): string {
   }`
 }
 
-/** The game-card landing (ADR-0081): the roster picker. */
+/** The game-card landing (ADR-0086): the roster picker. */
 export function gameLandingUrl(): string {
   return `${import.meta.env.BASE_URL}${GAME_ROUTE}`
 }

@@ -111,7 +111,7 @@ payload out. Bump the schema version on any breaking change (shot:
 `ingestion/derive_shot_context.py` + `src/domain/shotContextPayload.ts`;
 free throw: `ingestion/derive_freethrow.py` + `src/domain/freethrowPayload.ts`).
 
-- **`gamelog.golden.json`** — contract five (ADR-0081), the game-log payload
+- **`gamelog.golden.json`** — contract five (ADR-0086), the game-log payload
   over the fixture store: the truncated snapshot + advanced artifact loaded
   through the real record-store loaders, the one fixture game pair through
   the corpus loader, exported with --allow-missing-games (one complete game

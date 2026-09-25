@@ -1,4 +1,4 @@
-// The game card's numbers (ADR-0081), computed from a game-log payload —
+// The game card's numbers (ADR-0086), computed from a game-log payload —
 // the aggregation-function pattern (ADR-0009): pure, tested, presentation
 // formats and never computes (ADR-0011). Pricing follows the house rules:
 // league PPS per zone from summed pairs, never averaged rates (ADR-0004);

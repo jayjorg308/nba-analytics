@@ -1,4 +1,4 @@
-"""Regenerate the game-log golden (contract five, ADR-0081).
+"""Regenerate the game-log golden (contract five, ADR-0086).
 
 The game-log payload is born DB-native — no file derive exists — so its
 golden cannot come from `npm run golden:regen`'s derive commands. This

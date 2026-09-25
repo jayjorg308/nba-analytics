@@ -1,4 +1,4 @@
-"""Export the game-log payload — contract five (ADR-0081) — from the record
+"""Export the game-log payload — contract five (ADR-0086) — from the record
 store. The first born-DB-native contract: no file derive exists.
 
 One compact file per card-roster player-season: per game, the box-line
@@ -261,7 +261,7 @@ def rebuild_index(games_root: Path) -> int:
 
 
 def export_all_deployed(args: argparse.Namespace) -> None:
-    """The heroes-first tranche (ADR-0081 rollout): one games file per
+    """The heroes-first tranche (ADR-0086 rollout): one games file per
     deployed hero-season, then the on-disk index rebuild."""
     repo = Path(__file__).resolve().parents[1]
     games_root = repo / "public" / "data" / "games"

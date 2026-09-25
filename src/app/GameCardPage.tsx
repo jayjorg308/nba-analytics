@@ -1,4 +1,4 @@
-// A game card (ADR-0081): one player's night as priced facts — the poster
+// A game card (ADR-0086): one player's night as priced facts — the poster
 // (expected from his diet, scored, conversion) over LINE and CREDIT chips,
 // with the receipt as a drill-in itemizing the night in game order: shots
 // and trips interleaved by period and clock, each priced at league rates

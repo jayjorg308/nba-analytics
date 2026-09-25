@@ -1,4 +1,4 @@
-// The fifth typed contract (ADR-0081): the game-log payload behind game
+// The fifth typed contract (ADR-0086): the game-log payload behind game
 // cards — one committed file per card-roster player-season, per-game shots,
 // trips, technical free throws, and a box-line subset, with the season's
 // league zone pairs embedded (every payload carries its baseline). Born
@@ -79,7 +79,7 @@ const cardGameSchema = z
     splitFta: z.number().int().min(0),
   })
   .superRefine((game, ctx) => {
-    // The receipt identity (ADR-0081): every point on the card's receipt —
+    // The receipt identity (ADR-0086): every point on the card's receipt —
     // field goals (priced or not), trip free throws, technicals — sums to
     // the official box line, per game, or the payload never parses.
     const fgPoints = game.shots.reduce((s, shot) => s + (shot.made ? shot.value : 0), 0)

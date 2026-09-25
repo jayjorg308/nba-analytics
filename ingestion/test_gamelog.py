@@ -1,4 +1,4 @@
-"""Contract five's Python side of the golden handshake (ADR-0081): the
+"""Contract five's Python side of the golden handshake (ADR-0086): the
 game-log export over the fixture store must reproduce the committed golden
 byte-for-byte. DB-native — the golden regenerates via
 regen_gamelog_golden.py, never golden:regen.

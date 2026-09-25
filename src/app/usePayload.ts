@@ -123,13 +123,13 @@ export function useFreethrowPayload(url: string): PayloadState<FreethrowPayload>
   return useParsedPayload(url, parseFreethrowPayload, 'free throw data')
 }
 
-/** A game-log payload (contract five, ADR-0081): the whole data need of a
+/** A game-log payload (contract five, ADR-0086): the whole data need of a
  * game card — the poster, the receipt, and prev/next all read one file. */
 export function useGameLogPayload(url: string): PayloadState<GameLogPayload> {
   return useParsedPayload(url, parseGameLogPayload, 'game log data')
 }
 
-/** The /game landing's roster index (ADR-0081). */
+/** The /game landing's roster index (ADR-0086). */
 export function useGameLogIndex(url: string): PayloadState<GameLogIndex> {
   return useParsedPayload(url, parseGameLogIndex, 'game roster index')
 }
