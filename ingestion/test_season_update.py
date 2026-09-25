@@ -3,12 +3,15 @@
 The subprocess plumbing is exercised by the loop's own dry runs; what must
 never regress silently is the decision layer: frontier candidacy, the
 retreat-vs-halt coherence rule, pinned-shortfall arithmetic at mid-season
-frontiers, the Gate 2 mechanical reading, and stuck detection.
+frontiers, the Gate 2 mechanical reading, stuck detection, and the branch
+guard's decisions (git itself is faked).
 """
 
 from __future__ import annotations
 
+import argparse
 import json
+import subprocess
 
 import pytest
 
@@ -141,3 +144,60 @@ def test_consecutive_deferrals_scopes_by_hero_season(status_dir):
     d, write = status_dir
     write("2026-11-02T060000-someone-else-2026-27.json", True)
     assert su.consecutive_deferrals(d, "ace-bailey", "2026-27") == 0
+
+
+# --- The branch guard (docs/plans/jazz-first-site.md, operations) ---------------
+
+def fake_git(monkeypatch, *, branch: str = "main", porcelain: str = "") -> list[str]:
+    """Replace the loop's subprocess seam: rev-parse answers `branch`, status
+    answers `porcelain`. Returns the commands the guard issued."""
+    calls: list[str] = []
+
+    def fake_run(cmd, **_kw):
+        calls.append(cmd)
+        out = branch + "\n" if "rev-parse" in cmd else porcelain
+        return subprocess.CompletedProcess(cmd, 0, stdout=out, stderr="")
+
+    monkeypatch.setattr(su, "run", fake_run)
+    return calls
+
+
+def test_production_store_requires_main(monkeypatch):
+    fake_git(monkeypatch, branch="feature_JazzSite")
+    with pytest.raises(su.Halt, match="production record store"):
+        su.guard_production_store(argparse.Namespace(db_url=None))
+
+
+def test_production_store_from_main_passes(monkeypatch):
+    fake_git(monkeypatch, branch="main")
+    su.guard_production_store(argparse.Namespace(db_url=None))
+
+
+def test_scratch_store_runs_from_any_branch(monkeypatch):
+    # Replays pass --db-url; the guard never even asks git.
+    calls = fake_git(monkeypatch, branch="feature_JazzSite")
+    su.guard_production_store(argparse.Namespace(db_url="postgresql://scratch"))
+    assert calls == []
+
+
+def test_publish_requires_main(monkeypatch):
+    fake_git(monkeypatch, branch="task_Anything")
+    with pytest.raises(su.Halt, match="data commit"):
+        su.guard_publish()
+
+
+def test_publish_ignores_the_loops_own_paths(monkeypatch):
+    fake_git(monkeypatch, porcelain=(" M public/data/ace-bailey/2026-27.json\n"
+                                     " M data/season-loop/status.json\n"))
+    su.guard_publish()
+
+
+def test_publish_halts_on_tracked_changes_elsewhere(monkeypatch):
+    fake_git(monkeypatch, porcelain=(" M public/data/ace-bailey/2026-27.json\n"
+                                     " M src/App.tsx\n"
+                                     "R  db/migrations/a.sql -> db/migrations/b.sql\n"))
+    with pytest.raises(su.Halt, match="clean tree") as exc:
+        su.guard_publish()
+    assert "src/App.tsx" in str(exc.value)
+    assert "b.sql" in str(exc.value)
+    assert "ace-bailey" not in str(exc.value)

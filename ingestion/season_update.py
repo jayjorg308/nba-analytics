@@ -192,6 +192,67 @@ class Halt(Exception):
     """A condition a human must resolve — never published around."""
 
 
+# --- The branch guard (docs/plans/jazz-first-site.md, operations) --------------
+#
+# Two actions are only safe from main. Loading into the PRODUCTION record
+# store: every loader applies every migration file on the checked-out
+# branch, so a feature branch's unmerged migration would land in production
+# under a name main may later change (the 0007_team_shots -> 0009 rename is
+# the case that made this rule — a recorded migration renamed runs again).
+# And a DATA COMMIT: it must land on main's history, gated by code that is
+# committed there, so the tree may carry no tracked change outside the paths
+# the loop itself writes. A scratch store (--db-url) and --no-commit runs
+# are unaffected — which is what keeps replays and dry runs usable from any
+# branch. The scheduled wrapper pulls main before the session; this guard is
+# the backstop for a checkout left on the wrong branch.
+
+LOOP_OWNED_PATHS = ("public/data/", "data/")
+
+
+def current_branch() -> str:
+    return run("git rev-parse --abbrev-ref HEAD").stdout.strip()
+
+
+def require_main(action: str, remedy: str) -> None:
+    branch = current_branch()
+    if branch != "main":
+        raise Halt(f"branch guard: {action} runs only from main, and this "
+                   f"checkout is on {branch!r} — {remedy}")
+
+
+def guard_production_store(args: argparse.Namespace) -> None:
+    """Loading without --db-url means the production store (DSN from
+    NBA_DB_URL or .env): main only."""
+    if args.db_url is None:
+        require_main("loading into the production record store",
+                     "switch to main, or pass --db-url for a scratch store")
+
+
+def tracked_changes_outside_loop_paths() -> list[str]:
+    """Porcelain v1 lines for tracked changes the loop did not make."""
+    dirty = []
+    for line in run("git status --porcelain --untracked-files=no").stdout.splitlines():
+        path = line[3:]
+        if " -> " in path:
+            path = path.split(" -> ", 1)[1]
+        path = path.strip().strip('"').replace("\\", "/")
+        if path and not path.startswith(LOOP_OWNED_PATHS):
+            dirty.append(line)
+    return dirty
+
+
+def guard_publish() -> None:
+    """A data commit: main only, with no tracked change outside the data the
+    loop writes (the gate must have run on committed code)."""
+    require_main("a data commit",
+                 "switch to main (or run the loop from its own clone)")
+    dirty = tracked_changes_outside_loop_paths()
+    if dirty:
+        raise Halt("branch guard: a data commit needs a clean tree, but "
+                   "tracked files outside the loop's paths are modified:\n"
+                   + "\n".join(dirty))
+
+
 def db_derive(args: argparse.Namespace, player: str, season: str,
               shot_path: Path, advanced_path: Path, tracking_path: Path,
               league_tracking_path: Path, totals_path: Path,
@@ -202,6 +263,7 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
     on corrections, growth flows), then export the four payloads to the same
     derived paths the file derives use. A LoadHalt or any loader/export
     hard-fail is a session Halt."""
+    guard_production_store(args)
     import derive_payload as dp
     import export_creation_payload as ecr
     import export_freethrow_payload as efp
@@ -455,6 +517,8 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
         return status
 
     # 7. Publish (live mode): sync -> full gate -> data commit on green.
+    if not args.no_commit:
+        guard_publish()
     result = run(f"npm run hero:sync -- {slug} {season}")
     if result.returncode != 0:
         raise Halt(f"hero:sync failed:\n{result.stdout}\n{result.stderr}")
@@ -590,6 +654,7 @@ def db_derive_team(args: argparse.Namespace, team: str, season: str,
     shot + roster snapshots, load the universe's game pairs hero-free, then
     export the team shot payload with every oracle live (the per-player
     per-game box oracle refuses a game without its pair)."""
+    guard_production_store(args)
     import export_ledger_facts as elf
     import export_team_shot_payload as etp
     import ledger_facts as lf
@@ -761,6 +826,8 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
         return status
 
     # 8. Publish (live mode): sync -> full gate -> data commit on green.
+    if not args.no_commit:
+        guard_publish()
     result = run(f"npm run team:sync -- {tricode} {season}")
     if result.returncode != 0:
         raise Halt(f"team:sync failed:\n{result.stdout}\n{result.stderr}")
