@@ -158,11 +158,17 @@ export function ChartPanel({
   zones,
   ariaLabel,
   assistStatusByShotKey,
+  shotTooltips = true,
 }: {
   shots: EnrichedShot[]
   zones: ZoneMetricsRow[]
   ariaLabel: string
   assistStatusByShotKey: ReadonlyMap<string, AssistStatus>
+  /** Per-shot hover details in the Shots view (default on). A player's
+   * page keeps them; a team season turns them off, because one shot among
+   * thousands is noise there and the hover targets double the dot count.
+   * Off means no hover targets and no hover cue under the court. */
+  shotTooltips?: boolean
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   // Zones is the DEFAULT view: the zone-shaded court is the argument (the
@@ -244,11 +250,15 @@ export function ChartPanel({
           <ShotChart
             shots={shots}
             ariaLabel={ariaLabel}
-            onShotEnter={(shot, clientAnchor) => {
-              const pos = anchorInWrapper(clientAnchor)
-              if (pos) setHovered({ shot, ...pos })
-            }}
-            onShotLeave={() => setHovered(null)}
+            onShotEnter={
+              shotTooltips
+                ? (shot, clientAnchor) => {
+                    const pos = anchorInWrapper(clientAnchor)
+                    if (pos) setHovered({ shot, ...pos })
+                  }
+                : undefined
+            }
+            onShotLeave={shotTooltips ? () => setHovered(null) : undefined}
           />
         ) : (
           <ZoneOverlay
@@ -294,9 +304,14 @@ export function ChartPanel({
           <span className="hint-verb-click">Click</span>
           <span className="hint-verb-tap">Tap</span> any zone for its full numbers
         </p>
-        <p className={`chart-hint chart-hint-hover${view === 'shots' ? '' : ' hint-inactive'}`}>
-          Hover over any shot for its date, distance, and result
-        </p>
+        {/* No tooltips, no cue. The zones cue stays mounted either way, so
+            the slot keeps its height and the toggle still never shifts
+            layout; the Shots view just shows an empty caption line. */}
+        {shotTooltips && (
+          <p className={`chart-hint chart-hint-hover${view === 'shots' ? '' : ' hint-inactive'}`}>
+            Hover over any shot for its date, distance, and result
+          </p>
+        )}
       </div>
     </div>
   )

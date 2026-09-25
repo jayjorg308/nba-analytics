@@ -135,10 +135,14 @@ function TeamReady({
             </p>
           </header>
           <div className="section-layout">
+            {/* No per-shot tooltips on a team season: thousands of dots are
+                a pattern, not individual shots, and the hover targets made
+                the Shots view slow. Player pages keep them. */}
             <ChartPanel
               shots={payload.shots}
               zones={metrics.profile.zones}
               assistStatusByShotKey={noAssists}
+              shotTooltips={false}
               ariaLabel={`Half-court shot chart: ${metrics.profile.totalAttempts} shots by the ${team.name}, ${season}`}
             />
             <ZoneTable metrics={metrics.profile} zoneConflictsDropped={metrics.zoneConflictsDropped} />

@@ -25,6 +25,10 @@ export interface ShotChartProps {
  * tap and pointerleave never follows, so a tooltip would stick — non-mouse
  * pointers are ignored and touch/keyboard users get every number in the
  * table.
+ *
+ * The invisible hit circles exist only for the tooltip, so they render only
+ * when an onShotEnter handler is given. A chart without tooltips (the team
+ * page's season of ~7,500 shots) draws one circle per shot instead of two.
  */
 export function ShotChart({ shots, ariaLabel, onShotEnter, onShotLeave }: ShotChartProps) {
   const visible = shots.filter(isOnCourt)
@@ -48,21 +52,23 @@ export function ShotChart({ shots, ariaLabel, onShotEnter, onShotLeave }: ShotCh
                   cy={p.y}
                   r={DOT_R}
                 />
-                <circle
-                  className="dot-hit"
-                  cx={p.x}
-                  cy={p.y}
-                  r={HIT_R}
-                  onPointerEnter={(e) => {
-                    if (e.pointerType !== 'mouse') return
-                    const r = e.currentTarget.getBoundingClientRect()
-                    onShotEnter?.(shot, { x: r.x + r.width / 2, y: r.y + r.height / 2 })
-                  }}
-                  onPointerLeave={(e) => {
-                    if (e.pointerType !== 'mouse') return
-                    onShotLeave?.()
-                  }}
-                />
+                {onShotEnter && (
+                  <circle
+                    className="dot-hit"
+                    cx={p.x}
+                    cy={p.y}
+                    r={HIT_R}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType !== 'mouse') return
+                      const r = e.currentTarget.getBoundingClientRect()
+                      onShotEnter(shot, { x: r.x + r.width / 2, y: r.y + r.height / 2 })
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType !== 'mouse') return
+                      onShotLeave?.()
+                    }}
+                  />
+                )}
               </g>
             )
           })}

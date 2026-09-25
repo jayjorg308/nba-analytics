@@ -70,6 +70,8 @@ describe('ChartPanel view toggle', () => {
     const { container } = renderPanel()
     fireEvent.click(screen.getByLabelText('Shots'))
     expect(container.querySelectorAll('.shot-dot')).toHaveLength(14)
+    // tooltips on by default: every dot carries its invisible hover target
+    expect(container.querySelectorAll('.dot-hit')).toHaveLength(14)
     expect(container.querySelectorAll('.zone-fill')).toHaveLength(0)
     screen.getByText('Made')
     screen.getByText('Missed')
@@ -80,6 +82,31 @@ describe('ChartPanel view toggle', () => {
     const [zonesLayer, shotsLayer] = [...container.querySelectorAll('.chart-legend-layer')]
     expect(zonesLayer!.className).toContain('legend-inactive')
     expect(shotsLayer!.className).not.toContain('legend-inactive')
+  })
+
+  it('without shot tooltips: no hover targets and no hover cue, the zones cue still holds the slot', () => {
+    // The team page's opt-out: a season of team shots is a pattern, and the
+    // hover targets doubled the circles it had to draw.
+    const { container } = render(
+      <ChartPanel
+        shots={golden.shots}
+        zones={metrics.zones}
+        ariaLabel="test chart"
+        assistStatusByShotKey={new Map()}
+        shotTooltips={false}
+      />,
+    )
+    fireEvent.click(screen.getByLabelText('Shots'))
+    expect(container.querySelectorAll('.shot-dot')).toHaveLength(14)
+    expect(container.querySelectorAll('.dot-hit')).toHaveLength(0)
+    expect(screen.queryByText(/Hover over any shot/)).toBeNull()
+    fireEvent.pointerEnter(container.querySelector('.shot-dot circle')!, { pointerType: 'mouse' })
+    expect(container.querySelector('.shot-tooltip')).toBeNull()
+    // The zones cue stays mounted, hidden, so the slot keeps its height and
+    // the toggle still never shifts layout.
+    const hints = [...container.querySelectorAll('.chart-hint')]
+    expect(hints).toHaveLength(1)
+    expect(hints[0]!.className).toContain('hint-inactive')
   })
 
   it('hovering a zone renders no tooltip — zone details are click-opened (ADR-0027)', () => {
