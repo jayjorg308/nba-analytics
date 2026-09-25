@@ -42,6 +42,14 @@ $logDir = Join-Path $repo "data\season-loop"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 $log = Join-Path $logDir ("run-" + (Get-Date -Format "yyyy-MM-ddTHHmmss") + ".log")
 
+# Every native command below is piped as `<command> 2>&1 | ForEach-Object { "$_" }`.
+# Windows PowerShell 5.1 wraps a redirected native command's stderr lines in
+# NativeCommandError records, which print as a red error block in the task's
+# window and in this log even when the command succeeded, and git and rclone
+# write routine progress to stderr ("Copied (new)" looked like a failure on
+# 2026-09-25). Stringifying each line prints it as plain text. Success and
+# failure are read from $LASTEXITCODE, which survives the pipeline, and a
+# failure raises the toast below; red text is never the signal.
 # Pull first: on main the session starts from origin's main, or a PR merged
 # on GitHub would make the data commit's push fail. Fast-forward only; a pull
 # that cannot fast-forward halts like any session. On any other branch
@@ -50,12 +58,12 @@ $log = Join-Path $logDir ("run-" + (Get-Date -Format "yyyy-MM-ddTHHmmss") + ".lo
 $exitCode = 0
 $branch = (git rev-parse --abbrev-ref HEAD | Out-String).Trim()
 if ($branch -eq "main") {
-    git pull --ff-only *>&1 | Tee-Object -FilePath $log
+    git pull --ff-only 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log -Append
     $exitCode = $LASTEXITCODE
 }
 
 if ($exitCode -eq 0) {
-    npm run season:update -- @loopArgs *>&1 | Tee-Object -FilePath $log -Append
+    npm run season:update -- @loopArgs 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log -Append
     $exitCode = $LASTEXITCODE
 }
 
@@ -76,8 +84,8 @@ $backupExit = 0
 if (Get-Command rclone -ErrorAction SilentlyContinue) {
     "raw backup -> $backupTarget" | Tee-Object -FilePath $log -Append
     # -v: the run log lists each snapshot uploaded plus a closing summary.
-    rclone copy (Join-Path $repo "data\raw") $backupTarget --immutable --fast-list --transfers 8 --checkers 16 -v *>&1 |
-        Tee-Object -FilePath $log -Append
+    rclone copy (Join-Path $repo "data\raw") $backupTarget --immutable --fast-list --transfers 8 --checkers 16 -v 2>&1 |
+        ForEach-Object { "$_" } | Tee-Object -FilePath $log -Append
     $backupExit = $LASTEXITCODE
 } else {
     "raw backup FAILED: rclone not found on PATH" | Tee-Object -FilePath $log -Append
