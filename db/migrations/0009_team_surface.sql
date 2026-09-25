@@ -1,4 +1,4 @@
--- 0007_team_shots.sql — the team shot payload's observations (ADR-0082,
+-- 0009_team_surface.sql — the team shot payload's observations (ADR-0082,
 -- the Jazz surface's first increment).
 --
 -- Team shot rows load into the EXISTING shot table at natural identity: a
@@ -8,6 +8,13 @@
 -- scope-complete per (team, season) so a departed player leaves the roster
 -- and keeps his shot rows — and the catalog's team dimension for the two
 -- team-scoped sources.
+--
+-- Written as 0007_team_shots.sql on proto_VideoAnalysis; renamed 0009 at
+-- the Jazz-site integration (2026-09-24) to sort after the two migrations
+-- the production store had already applied from the game-card branch
+-- (0007_twelve_minute_clock, 0008_split_trip_families). It was never
+-- applied to production under the old name. Never rename a migration a
+-- store has recorded in schema_migration: it would run again.
 
 ALTER TABLE snapshot ADD COLUMN team_id bigint;
 ALTER TABLE snapshot DROP CONSTRAINT snapshot_source_check;

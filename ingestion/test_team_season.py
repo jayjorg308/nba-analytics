@@ -33,7 +33,7 @@ PAIR = (FIXTURES / "playbyplay.truncated.json", FIXTURES / "team-boxscore.trunca
 def store(pg_dsn):
     with rs.connect(pg_dsn) as conn:
         ran = rs.apply_migrations(conn)
-        assert "0007_team_shots.sql" in ran
+        assert "0009_team_surface.sql" in ran
         yield conn
 
 

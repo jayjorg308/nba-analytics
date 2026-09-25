@@ -229,7 +229,7 @@ def catalog_snapshot(cur, source: str, path: Path, meta: dict) -> int:
             str(meta["pull_date"]),
             # Game-scoped artifacts (pbp/box) state game_id and no season;
             # season-scoped artifacts the reverse (0002_game_corpus.sql);
-            # team-scoped artifacts state team_id (0007_team_shots.sql).
+            # team-scoped artifacts state team_id (0009_team_surface.sql).
             str(meta["season"]) if "season" in meta else None,
             str(meta["season_type"]) if "season_type" in meta else None,
             int(meta["player_id"]) if "player_id" in meta else None,
