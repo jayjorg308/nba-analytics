@@ -52,6 +52,20 @@
       "playerId": 1642846,
       "season": "2026-27",
       "mode": "dark"
+    },
+    {
+      "slug": "keyonte-george",
+      "player": "Keyonte George",
+      "playerId": 1641718,
+      "season": "2026-27",
+      "mode": "dark"
+    },
+    {
+      "slug": "darryn-peterson",
+      "player": "Darryn Peterson",
+      "playerId": 1643408,
+      "season": "2026-27",
+      "mode": "dark"
     }
   ],
   "liveTeams": [
