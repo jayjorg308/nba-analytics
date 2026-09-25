@@ -189,8 +189,13 @@ ADR lands with the increment that needs it.
    the season.
 8. **ADR-0093, one derive engine** (phase 5). The file derive engine
    retires; derive grammars stay as libraries the loaders import; goldens
-   regenerate through the record store. Rewrites the not-to-do list's stale
-   "No database in the product architecture" line.
+   regenerate through the record store. Rewrites the docs that still name
+   the file derives as the fallback engine and the golden generator
+   (CLAUDE.md's commands, CONTEXT's season-loop and export entries). The
+   not-to-do list's database line needs nothing: ADR-0080 already rewrote
+   it to "No database in front of the product" (corrected 2026-09-25; the
+   first draft of this plan, and the 2026-09-22 plan before it, called it
+   stale).
 9. **ADR-0006 amendment: the raw layer is mirrored off-machine** nightly.
    The layer's semantics (append-only, verbatim, local pulls) are unchanged.
    _Recorded 2026-09-25 with the backup itself._
@@ -638,6 +643,8 @@ backup bucket, set the task's power settings (done 2026-09-24).
 - The report card page, the season page with ledger and quadrant, share
   cards and emitted pages.
 - ADR-0087: the root becomes the Jazz home, `/arguments` the directory.
+  The README's intro, its "Live at" line, and its route list follow in the
+  same PR; they still describe the directory at the root.
 - Deploy with 2025-26 as the canonical team season. The site has 82 real
   report cards before the season starts.
 - **The live gate requires the record-store tests** (added 2026-09-25).
@@ -693,7 +700,8 @@ gates pass. Nobody can schedule these, so the phases above leave slack.
   stop running there either; move `golden:regen` to the record-store path; drop `--engine files`
   from the loop and the replay; point `hero:add` at load and export; keep
   the grammar modules the loaders import.
-- Rewrite the not-to-do list and CLAUDE.md commands.
+- Rewrite CLAUDE.md's commands and the CONTEXT entries that still name
+  the file derives.
 - Decide on a read API with the season's real traffic in hand.
 - The Stars spike. Revisit the foul record.
 

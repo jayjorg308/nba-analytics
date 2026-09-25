@@ -4,19 +4,31 @@
 # in ingestion/season_update.py — this file only pulls main first, runs the
 # session, copies the raw layer to the R2 backup, and notifies.
 #
-# REGISTER (run once, from an elevated prompt, adjusting the start time to
-# a morning hour after West Coast games have settled):
+# WHERE IT RUNS: the loop's own clone, ..\nba-analytics-loop, kept on main
+# (its data\ is a junction to the dev checkout's data\), never the dev
+# checkout, so the branch checked out for development never decides what
+# publishes. docs/plans/jazz-first-site.md (Operations) records the clone
+# setup and every Task Scheduler setting below, with the reasons.
+#
+# THE TWO TASKS, both running this file from the clone:
+#   "nba-analytics season loop"  daily 06:30, every live session
+#   "nba-analytics game night"   daily 23:45, with `--team UTA`
+# Arguments after the file pass through to the loop. Both tasks: interactive
+# logon (the toast needs a session), allowed on battery, wake-to-run set, a
+# 2-hour cap. Only the 06:30 task catches up a missed start; the game-night
+# task must not, or at wake two runs in one clone could both try to commit.
+#
+# REGISTER the morning task (the game-night task is the same with its own
+# name, `--team UTA` after the file path, and /st 23:45):
 #
 #   schtasks /create /tn "nba-analytics season loop" ^
-#     /tr "powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\JaysonJorgensen\Sources\repos\nba-analytics\scripts\season-update.ps1" ^
+#     /tr "powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\JaysonJorgensen\Sources\repos\nba-analytics-loop\scripts\season-update.ps1" ^
 #     /sc daily /st 06:30
 #
-# UNREGISTER:  schtasks /delete /tn "nba-analytics season loop"
+# then apply the power settings (schtasks cannot set them; the plan has the
+# PowerShell lines, including the grayed-out stop-on-battery trap).
 #
-# Arguments after the file pass through to the loop: the game-night trigger
-# (docs/plans/jazz-first-site.md) is a second task running this file with
-# `--team UTA` at 23:45. Every task running this file needs the plan's
-# Task Scheduler power and wake settings (its Operations section).
+# UNREGISTER:  schtasks /delete /tn "nba-analytics season loop"
 #
 # Pulls are LOCAL-ONLY (stats.nba.com blocks cloud IPs) — this task belongs
 # on the dev machine and nowhere else. Logs land in data\season-loop\.
