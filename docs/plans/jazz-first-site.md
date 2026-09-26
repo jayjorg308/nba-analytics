@@ -659,7 +659,11 @@ backup bucket, set the task's power settings (done 2026-09-24).
   daemon is down and waits a bounded minute before the session, so a stopped
   daemon costs nothing on a normal morning. Unset, behavior is unchanged
   (clean clones and CI still skip loudly). Must land before opening night,
-  when the team session first publishes.
+  when the team session first publishes. _Built 2026-09-26: both sessions
+  share one `run_gate()` that sets the variable; with docker hidden the 23
+  record-store tests error instead of skipping; Docker Desktop, stopped,
+  came up in 11s under the wrapper's start logic. The same change set the
+  wrapper's console to UTF-8 (the garbled em dash in run logs)._
 
 ### Opening night (week of October 19)
 
