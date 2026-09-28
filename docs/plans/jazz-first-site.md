@@ -73,7 +73,15 @@ Chosen 2026-09-24 (the defaults of the direction review, accepted):
   against the league as it stood entering that day, with the labeled
   prior-season fallback for the thin first nights. The phase 2 measurement
   sets the fallback's bar or removes the fallback; it does not reopen the
-  ruler itself. Recorded as ADR-0089 when phase 2 lands.
+  ruler itself. Recorded as ADR-0089 when phase 2 lands. _Measured and
+  decided 2026-09-28 (`docs/research/pre-game-ruler-2025-26.md`): the
+  fallback applies only to an empty ruler (a team playing on the league's
+  opening night); every other card uses its own pre-game ruler and states
+  how many games that ruler covers._
+- **Game-grain bands** (decided 2026-09-28, from the same measurement): the
+  "Good shots?" answer uses the season verdict ladder unchanged; the "Did
+  they fall?" answer uses twice its bands (neutral inside 0.04, bare from
+  0.10, "well" from 0.20, "far" from 0.30). Recorded in ADR-0090.
 - **Nothing from the 2026-09-22 plan is sacred.** Where this plan differs,
   this plan wins.
 
@@ -501,6 +509,18 @@ season-end ruler. If the movement is small everywhere after a week or two,
 that is the bar. If it is small everywhere from night one, drop the
 fallback.
 
+_Result (2026-09-26, decided 2026-09-28; `docs/research/pre-game-ruler-2025-26.md`):
+small from night one. The Jazz's first game, priced against a 2-game ruler
+(356 league attempts, 20 in the thinnest zone), moved 0.015 on selection and
+0.011 on making against the season-end ruler, inside the ladder's 0.02
+neutral band; nothing moves more than 0.009 from game four. The fallback is
+dropped except for an empty ruler, which has nothing to price against: a
+game on the league's opening night uses the prior season's full baseline,
+labeled. Every other card uses its own ruler and states its game count.
+The rulers are DateTo-only pulls through a near-shotless player, because
+the frame respects DateFrom and does not depend on the subject
+(`live_pulls.pull_ruler_snapshot`, `ingestion/pull_rulers.py`)._
+
 Season-to-date views (the season profile, a player's season zones) use the
 frontier ruler, labeled as such. Anything plotted per game, including the
 quadrant and the ledger's decomposition, uses each game's own card values,
@@ -598,6 +618,13 @@ Before authoring the band words, compute the distribution of 2025-26
 per-game selection and making deltas. Game-grain making swings far wider
 than season-grain making, so if the season ladder says "far" on most
 nights, the ADR sets game-grain bands with their rationale.
+
+_Result (decided 2026-09-28): selection keeps the season ladder, which at
+game grain spread 82 games as 30 neutral, 37 hedged, 15 bare, none "well"
+or "far". Making takes twice its bands: on the season ladder 40 of 82
+games read "well" or "far", while at 2x (0.04 / 0.10 / 0.20 / 0.30) they
+spread 18 / 24 / 28 / 12 / 0. The band words themselves are still yours to
+author._
 
 ## Arguments this season
 
@@ -767,7 +794,12 @@ published or why it did not (the halt toast and the status files).
   is an hour's work; the 2025-26 replay is the real rehearsal.
 - **Opponent shots before phase 4.** Confirm the date-windowed opponent pull
   returns the opponent's full game (it is the same endpoint and filters the
-  team branch already proved, with a date window added).
+  team branch already proved, with a date window added). _Answered
+  2026-09-28: `live_pulls.pull_team_game_snapshot` (DateFrom = DateTo = the
+  game date), backfilled by `ingestion/pull_opponent_games.py` for all 82
+  2025-26 Jazz games; every pull's row count equals the opponent's box FGA,
+  0 mismatches. Raw lands per game under
+  `data/raw/_teams/<opp>/<season>/games/<gameId>/`._
 - **SLC Stars.** Unverified what the G League endpoints carry. Expect shot
   charts and play-by-play at best, no tracking. A December spike decides.
 - **The read API.** A résumé item, not a product need, until a page asks a

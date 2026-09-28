@@ -353,6 +353,60 @@ def pull_team_shot_snapshot(
     return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
 
 
+def pull_team_game_snapshot(
+    team: str,
+    team_id: int,
+    season: str,
+    out_dir: Path,
+    *,
+    game_id: str,
+    game_date: str,
+    stamp: str = "",
+    pull_date: str,
+    timeout: int = 90,
+) -> Path:
+    """One team's shots in one game: a team-wide shotchartdetail windowed to
+    the game's date (DateFrom = DateTo = game_date). A team plays at most once
+    a day, so the window is exactly the game; the 2026-09-26 spike matched
+    Minnesota's 89 rows to the box score shooter by shooter. The report card's
+    opponent side until league-wide pulls exist (docs/plans/jazz-first-site.md,
+    phase 4). Stored as <out_dir>/<game_id>/<pull-date>.json, per-game like
+    the play-by-play corpus. The windowed LeagueAverages frame is that day's
+    only and is never a ruler (see pull_ruler_snapshot)."""
+    raw = shotchartdetail.ShotChartDetail(
+        team_id=team_id,
+        player_id=0,
+        season_nullable=season,
+        season_type_all_star=SEASON_TYPE,
+        context_measure_simple="FGA",  # ALL attempts — never the PTS default
+        date_from_nullable=nba_date(game_date),
+        date_to_nullable=nba_date(game_date),
+        timeout=timeout,
+    ).get_dict()
+    headers, rows = result_rows(raw, "Shot_Chart_Detail")
+    games = sorted({str(r[headers.index("GAME_ID")]) for r in rows}) if rows else []
+    snapshot = {
+        "_meta": {
+            "team": team,
+            "team_id": team_id,
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "pull_date": pull_date,
+            "pull_unit": "game",
+            "game_id": game_id,
+            "game_date": game_date,
+            "date_from": game_date,
+            "date_to": game_date,
+            "games_in_rows": games,
+            "shot_rows": len(rows),
+            "context_measure": "FGA",
+            "source": "stats.nba.com shotchartdetail team-wide, one-day window (unofficial)",
+        },
+        "response": raw,
+    }
+    return write_snapshot(out_dir / game_id / f"{pull_date}{stamp}.json", snapshot)
+
+
 # The pre-game ruler (docs/plans/jazz-first-site.md; ADR-0089 to record it):
 # a game is priced against the LeagueAverages frame through the day before
 # it. Two facts from the 2026-09-26 spike shape the pull:
