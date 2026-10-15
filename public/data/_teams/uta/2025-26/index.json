@@ -1,0 +1,6644 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "team": "Utah Jazz",
+    "teamId": 1610612762,
+    "tricode": "UTA",
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "dataThrough": "2026-04-12",
+    "gamesIncluded": 82
+  },
+  "games": [
+    {
+      "gameId": "0022500087",
+      "slug": "2025-10-22-lac",
+      "gameDate": "2025-10-22",
+      "opponent": "LAC",
+      "home": true,
+      "teamScore": 129,
+      "opponentScore": 108,
+      "box": {
+        "points": 129,
+        "fgm": 48,
+        "fga": 87,
+        "tpm": 17,
+        "tpa": 44,
+        "ftm": 16,
+        "fta": 20,
+        "ast": 38
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-10-21",
+        "games": 2,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 85,
+            "fgm": 63
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 61,
+            "fgm": 33
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 47,
+            "fgm": 24
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 20,
+            "fgm": 5
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 20,
+            "fgm": 3
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 123,
+            "fgm": 41
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 24,
+            "fgm": 13
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500098",
+      "slug": "2025-10-24-sac",
+      "gameDate": "2025-10-24",
+      "opponent": "SAC",
+      "home": false,
+      "teamScore": 104,
+      "opponentScore": 105,
+      "box": {
+        "points": 104,
+        "fgm": 38,
+        "fga": 86,
+        "tpm": 13,
+        "tpa": 41,
+        "ftm": 15,
+        "fta": 17,
+        "ast": 25
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-10-23",
+        "games": 16,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 839,
+            "fgm": 564
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 579,
+            "fgm": 270
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 329,
+            "fgm": 143
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 149,
+            "fgm": 52
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 123,
+            "fgm": 39
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 891,
+            "fgm": 315
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 156,
+            "fgm": 75
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 173,
+            "fgm": 68
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500120",
+      "slug": "2025-10-27-phx",
+      "gameDate": "2025-10-27",
+      "opponent": "PHX",
+      "home": true,
+      "teamScore": 138,
+      "opponentScore": 134,
+      "box": {
+        "points": 138,
+        "fgm": 44,
+        "fga": 108,
+        "tpm": 16,
+        "tpa": 49,
+        "ftm": 34,
+        "fta": 36,
+        "ast": 27
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-10-26",
+        "games": 42,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 2173,
+            "fgm": 1439
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 1471,
+            "fgm": 657
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 765,
+            "fgm": 312
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 404,
+            "fgm": 153
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 321,
+            "fgm": 104
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 2351,
+            "fgm": 839
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 1,
+            "fgm": 1
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 377,
+            "fgm": 160
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 388,
+            "fgm": 152
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500135",
+      "slug": "2025-10-29-por",
+      "gameDate": "2025-10-29",
+      "opponent": "POR",
+      "home": true,
+      "teamScore": 134,
+      "opponentScore": 136,
+      "box": {
+        "points": 134,
+        "fgm": 41,
+        "fga": 84,
+        "tpm": 11,
+        "tpa": 35,
+        "ftm": 41,
+        "fta": 49,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-10-28",
+        "games": 58,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 2969,
+            "fgm": 1975
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 2081,
+            "fgm": 936
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 1023,
+            "fgm": 407
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 553,
+            "fgm": 212
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 453,
+            "fgm": 163
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 3275,
+            "fgm": 1150
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 2,
+            "fgm": 2
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 492,
+            "fgm": 198
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 531,
+            "fgm": 209
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500025",
+      "slug": "2025-10-31-phx",
+      "gameDate": "2025-10-31",
+      "opponent": "PHX",
+      "home": false,
+      "teamScore": 96,
+      "opponentScore": 118,
+      "box": {
+        "points": 96,
+        "fgm": 30,
+        "fga": 80,
+        "tpm": 12,
+        "tpa": 37,
+        "ftm": 24,
+        "fta": 32,
+        "ast": 23
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-10-30",
+        "games": 72,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 3634,
+            "fgm": 2431
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 2606,
+            "fgm": 1172
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 1244,
+            "fgm": 493
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 694,
+            "fgm": 268
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 582,
+            "fgm": 214
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 4070,
+            "fgm": 1433
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 3,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 598,
+            "fgm": 245
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 646,
+            "fgm": 248
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500150",
+      "slug": "2025-11-02-cha",
+      "gameDate": "2025-11-02",
+      "opponent": "CHA",
+      "home": false,
+      "teamScore": 103,
+      "opponentScore": 126,
+      "box": {
+        "points": 103,
+        "fgm": 36,
+        "fga": 88,
+        "tpm": 7,
+        "tpa": 32,
+        "ftm": 24,
+        "fta": 29,
+        "ast": 27
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-01",
+        "games": 86,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 4361,
+            "fgm": 2914
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 3021,
+            "fgm": 1344
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 1520,
+            "fgm": 613
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 835,
+            "fgm": 316
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 715,
+            "fgm": 263
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 4841,
+            "fgm": 1710
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 3,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 723,
+            "fgm": 304
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 797,
+            "fgm": 309
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500158",
+      "slug": "2025-11-03-bos",
+      "gameDate": "2025-11-03",
+      "opponent": "BOS",
+      "home": false,
+      "teamScore": 105,
+      "opponentScore": 103,
+      "box": {
+        "points": 105,
+        "fgm": 38,
+        "fga": 84,
+        "tpm": 9,
+        "tpa": 31,
+        "ftm": 20,
+        "fta": 25,
+        "ast": 23
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-02",
+        "games": 94,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 4792,
+            "fgm": 3211
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 3276,
+            "fgm": 1471
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 1626,
+            "fgm": 650
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 932,
+            "fgm": 353
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 796,
+            "fgm": 295
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 5291,
+            "fgm": 1862
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 4,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 779,
+            "fgm": 320
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 847,
+            "fgm": 330
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500172",
+      "slug": "2025-11-05-det",
+      "gameDate": "2025-11-05",
+      "opponent": "DET",
+      "home": false,
+      "teamScore": 103,
+      "opponentScore": 114,
+      "box": {
+        "points": 103,
+        "fgm": 33,
+        "fga": 86,
+        "tpm": 12,
+        "tpa": 39,
+        "ftm": 25,
+        "fta": 29,
+        "ast": 24
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-04",
+        "games": 109,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 5527,
+            "fgm": 3719
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 3803,
+            "fgm": 1698
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 1879,
+            "fgm": 765
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1086,
+            "fgm": 409
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 914,
+            "fgm": 345
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 6100,
+            "fgm": 2140
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 4,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 906,
+            "fgm": 374
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 973,
+            "fgm": 391
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500036",
+      "slug": "2025-11-07-min",
+      "gameDate": "2025-11-07",
+      "opponent": "MIN",
+      "home": false,
+      "teamScore": 97,
+      "opponentScore": 137,
+      "box": {
+        "points": 97,
+        "fgm": 35,
+        "fga": 94,
+        "tpm": 9,
+        "tpa": 39,
+        "ftm": 18,
+        "fta": 25,
+        "ast": 28
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-06",
+        "games": 121,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 6097,
+            "fgm": 4110
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 4268,
+            "fgm": 1873
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 2110,
+            "fgm": 848
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1172,
+            "fgm": 447
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1012,
+            "fgm": 389
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 6790,
+            "fgm": 2386
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 4,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1023,
+            "fgm": 417
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1087,
+            "fgm": 431
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500205",
+      "slug": "2025-11-10-min",
+      "gameDate": "2025-11-10",
+      "opponent": "MIN",
+      "home": true,
+      "teamScore": 113,
+      "opponentScore": 120,
+      "box": {
+        "points": 113,
+        "fgm": 38,
+        "fga": 95,
+        "tpm": 17,
+        "tpa": 52,
+        "ftm": 20,
+        "fta": 24,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-09",
+        "games": 147,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 7561,
+            "fgm": 5081
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 5135,
+            "fgm": 2240
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 2565,
+            "fgm": 1020
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1410,
+            "fgm": 538
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1242,
+            "fgm": 475
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 8218,
+            "fgm": 2878
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 5,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1245,
+            "fgm": 510
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1320,
+            "fgm": 510
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500211",
+      "slug": "2025-11-11-ind",
+      "gameDate": "2025-11-11",
+      "opponent": "IND",
+      "home": true,
+      "teamScore": 152,
+      "opponentScore": 128,
+      "box": {
+        "points": 152,
+        "fgm": 51,
+        "fga": 92,
+        "tpm": 19,
+        "tpa": 42,
+        "ftm": 31,
+        "fta": 35,
+        "ast": 38
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-10",
+        "games": 156,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 7960,
+            "fgm": 5343
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 5524,
+            "fgm": 2411
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 2713,
+            "fgm": 1087
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1489,
+            "fgm": 565
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1314,
+            "fgm": 509
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 8766,
+            "fgm": 3060
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 5,
+            "fgm": 3
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1318,
+            "fgm": 540
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1395,
+            "fgm": 547
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500227",
+      "slug": "2025-11-13-atl",
+      "gameDate": "2025-11-13",
+      "opponent": "ATL",
+      "home": true,
+      "teamScore": 122,
+      "opponentScore": 132,
+      "box": {
+        "points": 122,
+        "fgm": 45,
+        "fga": 92,
+        "tpm": 19,
+        "tpa": 44,
+        "ftm": 13,
+        "fta": 21,
+        "ast": 39
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-12",
+        "games": 174,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 8781,
+            "fgm": 5898
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 6204,
+            "fgm": 2745
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 3019,
+            "fgm": 1208
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1670,
+            "fgm": 633
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1498,
+            "fgm": 572
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 9790,
+            "fgm": 3434
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 6,
+            "fgm": 4
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1465,
+            "fgm": 598
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1554,
+            "fgm": 610
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500240",
+      "slug": "2025-11-16-chi",
+      "gameDate": "2025-11-16",
+      "opponent": "CHI",
+      "home": true,
+      "teamScore": 150,
+      "opponentScore": 147,
+      "box": {
+        "points": 150,
+        "fgm": 49,
+        "fga": 111,
+        "tpm": 18,
+        "tpa": 49,
+        "ftm": 34,
+        "fta": 41,
+        "ast": 29
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-15",
+        "games": 191,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 9669,
+            "fgm": 6484
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 6781,
+            "fgm": 2993
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 3309,
+            "fgm": 1326
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1839,
+            "fgm": 692
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1651,
+            "fgm": 634
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 10749,
+            "fgm": 3783
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 7,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1609,
+            "fgm": 663
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1700,
+            "fgm": 663
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500253",
+      "slug": "2025-11-18-lal",
+      "gameDate": "2025-11-18",
+      "opponent": "LAL",
+      "home": false,
+      "teamScore": 126,
+      "opponentScore": 140,
+      "box": {
+        "points": 126,
+        "fgm": 48,
+        "fga": 92,
+        "tpm": 13,
+        "tpa": 45,
+        "ftm": 17,
+        "fta": 18,
+        "ast": 33
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-17",
+        "games": 207,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 10512,
+            "fgm": 7035
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 7406,
+            "fgm": 3264
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 3585,
+            "fgm": 1438
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 1991,
+            "fgm": 752
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1801,
+            "fgm": 698
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 11639,
+            "fgm": 4087
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 8,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1745,
+            "fgm": 721
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1840,
+            "fgm": 717
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500055",
+      "slug": "2025-11-21-okc",
+      "gameDate": "2025-11-21",
+      "opponent": "OKC",
+      "home": true,
+      "teamScore": 112,
+      "opponentScore": 144,
+      "box": {
+        "points": 112,
+        "fgm": 38,
+        "fga": 79,
+        "tpm": 16,
+        "tpa": 38,
+        "ftm": 20,
+        "fta": 24,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-20",
+        "games": 226,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 11572,
+            "fgm": 7717
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 8012,
+            "fgm": 3539
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 3886,
+            "fgm": 1579
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2185,
+            "fgm": 812
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 1987,
+            "fgm": 777
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 12716,
+            "fgm": 4457
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 8,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 1898,
+            "fgm": 790
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1988,
+            "fgm": 789
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500282",
+      "slug": "2025-11-23-lal",
+      "gameDate": "2025-11-23",
+      "opponent": "LAL",
+      "home": true,
+      "teamScore": 106,
+      "opponentScore": 108,
+      "box": {
+        "points": 106,
+        "fgm": 40,
+        "fga": 94,
+        "tpm": 13,
+        "tpa": 40,
+        "ftm": 13,
+        "fta": 18,
+        "ast": 27
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-22",
+        "games": 242,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 12388,
+            "fgm": 8256
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 8556,
+            "fgm": 3797
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 4151,
+            "fgm": 1692
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2337,
+            "fgm": 870
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2125,
+            "fgm": 821
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 13590,
+            "fgm": 4790
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 8,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2032,
+            "fgm": 848
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2119,
+            "fgm": 844
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500291",
+      "slug": "2025-11-24-gsw",
+      "gameDate": "2025-11-24",
+      "opponent": "GSW",
+      "home": false,
+      "teamScore": 117,
+      "opponentScore": 134,
+      "box": {
+        "points": 117,
+        "fgm": 47,
+        "fga": 99,
+        "tpm": 11,
+        "tpa": 36,
+        "ftm": 12,
+        "fta": 18,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-23",
+        "games": 250,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 12780,
+            "fgm": 8520
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 8878,
+            "fgm": 3944
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 4268,
+            "fgm": 1738
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2414,
+            "fgm": 896
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2197,
+            "fgm": 848
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 14028,
+            "fgm": 4944
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 8,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2089,
+            "fgm": 870
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2179,
+            "fgm": 868
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500077",
+      "slug": "2025-11-28-sac",
+      "gameDate": "2025-11-28",
+      "opponent": "SAC",
+      "home": true,
+      "teamScore": 128,
+      "opponentScore": 119,
+      "box": {
+        "points": 128,
+        "fgm": 42,
+        "fga": 87,
+        "tpm": 13,
+        "tpa": 40,
+        "ftm": 31,
+        "fta": 40,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-27",
+        "games": 272,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 13795,
+            "fgm": 9201
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 9758,
+            "fgm": 4338
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 4688,
+            "fgm": 1912
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2634,
+            "fgm": 979
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2393,
+            "fgm": 922
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 15241,
+            "fgm": 5362
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 8,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2294,
+            "fgm": 960
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2394,
+            "fgm": 952
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500301",
+      "slug": "2025-11-30-hou",
+      "gameDate": "2025-11-30",
+      "opponent": "HOU",
+      "home": true,
+      "teamScore": 101,
+      "opponentScore": 129,
+      "box": {
+        "points": 101,
+        "fgm": 39,
+        "fga": 88,
+        "tpm": 9,
+        "tpa": 32,
+        "ftm": 14,
+        "fta": 15,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-29",
+        "games": 291,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 14762,
+            "fgm": 9837
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 10407,
+            "fgm": 4628
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 5023,
+            "fgm": 2059
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2839,
+            "fgm": 1056
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2575,
+            "fgm": 997
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 16260,
+            "fgm": 5718
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2475,
+            "fgm": 1043
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2548,
+            "fgm": 1016
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500316",
+      "slug": "2025-12-01-hou",
+      "gameDate": "2025-12-01",
+      "opponent": "HOU",
+      "home": true,
+      "teamScore": 133,
+      "opponentScore": 125,
+      "box": {
+        "points": 133,
+        "fgm": 45,
+        "fga": 90,
+        "tpm": 14,
+        "tpa": 35,
+        "ftm": 29,
+        "fta": 38,
+        "ast": 33
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-11-30",
+        "games": 299,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 15169,
+            "fgm": 10103
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 10706,
+            "fgm": 4781
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 5176,
+            "fgm": 2129
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2912,
+            "fgm": 1091
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2648,
+            "fgm": 1015
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 16706,
+            "fgm": 5867
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2548,
+            "fgm": 1077
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2628,
+            "fgm": 1052
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500335",
+      "slug": "2025-12-04-bkn",
+      "gameDate": "2025-12-04",
+      "opponent": "BKN",
+      "home": false,
+      "teamScore": 123,
+      "opponentScore": 110,
+      "box": {
+        "points": 123,
+        "fgm": 42,
+        "fga": 83,
+        "tpm": 14,
+        "tpa": 25,
+        "ftm": 25,
+        "fta": 27,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-03",
+        "games": 323,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 16365,
+            "fgm": 10902
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 11667,
+            "fgm": 5218
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 5640,
+            "fgm": 2337
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3141,
+            "fgm": 1183
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2857,
+            "fgm": 1096
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 17989,
+            "fgm": 6338
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2787,
+            "fgm": 1190
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2853,
+            "fgm": 1147
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500343",
+      "slug": "2025-12-05-nyk",
+      "gameDate": "2025-12-05",
+      "opponent": "NYK",
+      "home": false,
+      "teamScore": 112,
+      "opponentScore": 146,
+      "box": {
+        "points": 112,
+        "fgm": 35,
+        "fga": 87,
+        "tpm": 15,
+        "tpa": 42,
+        "ftm": 27,
+        "fta": 35,
+        "ast": 23
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-04",
+        "games": 328,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 16667,
+            "fgm": 11110
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 11813,
+            "fgm": 5266
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 5723,
+            "fgm": 2369
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3188,
+            "fgm": 1197
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2899,
+            "fgm": 1114
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 18255,
+            "fgm": 6433
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2833,
+            "fgm": 1208
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 2890,
+            "fgm": 1161
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500363",
+      "slug": "2025-12-07-okc",
+      "gameDate": "2025-12-07",
+      "opponent": "OKC",
+      "home": true,
+      "teamScore": 101,
+      "opponentScore": 131,
+      "box": {
+        "points": 101,
+        "fgm": 40,
+        "fga": 85,
+        "tpm": 12,
+        "tpa": 36,
+        "ftm": 9,
+        "fta": 12,
+        "ast": 25
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-06",
+        "games": 347,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 17612,
+            "fgm": 11755
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 12495,
+            "fgm": 5570
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 6047,
+            "fgm": 2493
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3355,
+            "fgm": 1260
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3086,
+            "fgm": 1193
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 19196,
+            "fgm": 6780
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3009,
+            "fgm": 1278
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3038,
+            "fgm": 1215
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501213",
+      "slug": "2025-12-12-mem",
+      "gameDate": "2025-12-12",
+      "opponent": "MEM",
+      "home": false,
+      "teamScore": 130,
+      "opponentScore": 126,
+      "box": {
+        "points": 130,
+        "fgm": 48,
+        "fga": 104,
+        "tpm": 17,
+        "tpa": 47,
+        "ftm": 17,
+        "fta": 25,
+        "ast": 33
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-11",
+        "games": 365,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 18537,
+            "fgm": 12371
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 13122,
+            "fgm": 5843
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 6376,
+            "fgm": 2636
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3514,
+            "fgm": 1322
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3249,
+            "fgm": 1255
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 20191,
+            "fgm": 7137
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3154,
+            "fgm": 1345
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3222,
+            "fgm": 1291
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501224",
+      "slug": "2025-12-15-dal",
+      "gameDate": "2025-12-15",
+      "opponent": "DAL",
+      "home": true,
+      "teamScore": 140,
+      "opponentScore": 133,
+      "box": {
+        "points": 140,
+        "fgm": 50,
+        "fga": 97,
+        "tpm": 13,
+        "tpa": 36,
+        "ftm": 27,
+        "fta": 33,
+        "ast": 33
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-14",
+        "games": 382,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 19418,
+            "fgm": 12941
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 13752,
+            "fgm": 6124
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 6677,
+            "fgm": 2763
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3698,
+            "fgm": 1387
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3429,
+            "fgm": 1324
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 21107,
+            "fgm": 7456
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3315,
+            "fgm": 1418
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3362,
+            "fgm": 1345
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500379",
+      "slug": "2025-12-18-lal",
+      "gameDate": "2025-12-18",
+      "opponent": "LAL",
+      "home": true,
+      "teamScore": 135,
+      "opponentScore": 143,
+      "box": {
+        "points": 135,
+        "fgm": 43,
+        "fga": 83,
+        "tpm": 18,
+        "tpa": 37,
+        "ftm": 31,
+        "fta": 47,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-17",
+        "games": 389,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 19753,
+            "fgm": 13170
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 14011,
+            "fgm": 6245
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 6838,
+            "fgm": 2836
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3755,
+            "fgm": 1408
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3490,
+            "fgm": 1346
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 21485,
+            "fgm": 7589
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 9,
+            "fgm": 5
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3412,
+            "fgm": 1461
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3426,
+            "fgm": 1375
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500393",
+      "slug": "2025-12-20-orl",
+      "gameDate": "2025-12-20",
+      "opponent": "ORL",
+      "home": true,
+      "teamScore": 127,
+      "opponentScore": 128,
+      "box": {
+        "points": 127,
+        "fgm": 44,
+        "fga": 105,
+        "tpm": 15,
+        "tpa": 43,
+        "ftm": 24,
+        "fta": 30,
+        "ast": 34
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-19",
+        "games": 406,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 20683,
+            "fgm": 13771
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 14623,
+            "fgm": 6511
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 7189,
+            "fgm": 3001
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 3921,
+            "fgm": 1479
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3653,
+            "fgm": 1400
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 22420,
+            "fgm": 7898
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 11,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3594,
+            "fgm": 1549
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3595,
+            "fgm": 1452
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500405",
+      "slug": "2025-12-22-den",
+      "gameDate": "2025-12-22",
+      "opponent": "DEN",
+      "home": false,
+      "teamScore": 112,
+      "opponentScore": 135,
+      "box": {
+        "points": 112,
+        "fgm": 41,
+        "fga": 96,
+        "tpm": 14,
+        "tpa": 41,
+        "ftm": 16,
+        "fta": 19,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-21",
+        "games": 422,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 21431,
+            "fgm": 14266
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 15231,
+            "fgm": 6782
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 7510,
+            "fgm": 3126
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4079,
+            "fgm": 1540
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3817,
+            "fgm": 1470
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 23318,
+            "fgm": 8183
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 13,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3760,
+            "fgm": 1618
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3750,
+            "fgm": 1508
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500419",
+      "slug": "2025-12-23-mem",
+      "gameDate": "2025-12-23",
+      "opponent": "MEM",
+      "home": true,
+      "teamScore": 128,
+      "opponentScore": 137,
+      "box": {
+        "points": 128,
+        "fgm": 40,
+        "fga": 90,
+        "tpm": 16,
+        "tpa": 45,
+        "ftm": 32,
+        "fta": 36,
+        "ast": 29
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-22",
+        "games": 429,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 21780,
+            "fgm": 14489
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 15509,
+            "fgm": 6903
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 7631,
+            "fgm": 3173
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4142,
+            "fgm": 1565
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 3893,
+            "fgm": 1500
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 23702,
+            "fgm": 8318
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 14,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 3826,
+            "fgm": 1646
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3805,
+            "fgm": 1527
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500430",
+      "slug": "2025-12-26-det",
+      "gameDate": "2025-12-26",
+      "opponent": "DET",
+      "home": true,
+      "teamScore": 131,
+      "opponentScore": 129,
+      "box": {
+        "points": 131,
+        "fgm": 44,
+        "fga": 90,
+        "tpm": 18,
+        "tpa": 38,
+        "ftm": 25,
+        "fta": 26,
+        "ast": 35
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-25",
+        "games": 448,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 22746,
+            "fgm": 15187
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 16211,
+            "fgm": 7207
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 7996,
+            "fgm": 3324
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4334,
+            "fgm": 1639
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4052,
+            "fgm": 1561
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 24713,
+            "fgm": 8685
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 14,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4020,
+            "fgm": 1721
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 3976,
+            "fgm": 1603
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500440",
+      "slug": "2025-12-27-sas",
+      "gameDate": "2025-12-27",
+      "opponent": "SAS",
+      "home": false,
+      "teamScore": 127,
+      "opponentScore": 114,
+      "box": {
+        "points": 127,
+        "fgm": 45,
+        "fga": 83,
+        "tpm": 17,
+        "tpa": 37,
+        "ftm": 20,
+        "fta": 26,
+        "ast": 34
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-26",
+        "games": 457,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 23195,
+            "fgm": 15474
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 16525,
+            "fgm": 7351
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 8144,
+            "fgm": 3388
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4411,
+            "fgm": 1662
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4138,
+            "fgm": 1599
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 25220,
+            "fgm": 8879
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 14,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4088,
+            "fgm": 1753
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4056,
+            "fgm": 1635
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500459",
+      "slug": "2025-12-30-bos",
+      "gameDate": "2025-12-30",
+      "opponent": "BOS",
+      "home": true,
+      "teamScore": 119,
+      "opponentScore": 129,
+      "box": {
+        "points": 119,
+        "fgm": 41,
+        "fga": 87,
+        "tpm": 16,
+        "tpa": 42,
+        "ftm": 21,
+        "fta": 25,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-29",
+        "games": 483,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 24640,
+            "fgm": 16400
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 17411,
+            "fgm": 7745
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 8638,
+            "fgm": 3601
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4675,
+            "fgm": 1757
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4379,
+            "fgm": 1692
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 26626,
+            "fgm": 9394
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 15,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4338,
+            "fgm": 1869
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4300,
+            "fgm": 1732
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500475",
+      "slug": "2026-01-01-lac",
+      "gameDate": "2026-01-01",
+      "opponent": "LAC",
+      "home": false,
+      "teamScore": 101,
+      "opponentScore": 118,
+      "box": {
+        "points": 101,
+        "fgm": 36,
+        "fga": 78,
+        "tpm": 6,
+        "tpa": 27,
+        "ftm": 23,
+        "fta": 30,
+        "ast": 20
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2025-12-31",
+        "games": 496,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 25345,
+            "fgm": 16867
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 17829,
+            "fgm": 7930
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 8888,
+            "fgm": 3701
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4816,
+            "fgm": 1812
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4494,
+            "fgm": 1745
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 27368,
+            "fgm": 9651
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 15,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4451,
+            "fgm": 1918
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4437,
+            "fgm": 1783
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500492",
+      "slug": "2026-01-03-gsw",
+      "gameDate": "2026-01-03",
+      "opponent": "GSW",
+      "home": false,
+      "teamScore": 114,
+      "opponentScore": 123,
+      "box": {
+        "points": 114,
+        "fgm": 45,
+        "fga": 86,
+        "tpm": 13,
+        "tpa": 35,
+        "ftm": 11,
+        "fta": 17,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-02",
+        "games": 511,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 26087,
+            "fgm": 17379
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 18381,
+            "fgm": 8190
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 9159,
+            "fgm": 3815
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4964,
+            "fgm": 1877
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4641,
+            "fgm": 1799
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 28157,
+            "fgm": 9901
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 15,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4602,
+            "fgm": 1982
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4557,
+            "fgm": 1833
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500509",
+      "slug": "2026-01-05-por",
+      "gameDate": "2026-01-05",
+      "opponent": "POR",
+      "home": false,
+      "teamScore": 117,
+      "opponentScore": 137,
+      "box": {
+        "points": 117,
+        "fgm": 45,
+        "fga": 92,
+        "tpm": 13,
+        "tpa": 31,
+        "ftm": 14,
+        "fta": 17,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-04",
+        "games": 527,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 26870,
+            "fgm": 17905
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 18964,
+            "fgm": 8458
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 9426,
+            "fgm": 3942
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5138,
+            "fgm": 1955
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4796,
+            "fgm": 1857
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 29025,
+            "fgm": 10199
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4750,
+            "fgm": 2053
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4676,
+            "fgm": 1889
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500525",
+      "slug": "2026-01-07-okc",
+      "gameDate": "2026-01-07",
+      "opponent": "OKC",
+      "home": false,
+      "teamScore": 125,
+      "opponentScore": 129,
+      "box": {
+        "points": 125,
+        "fgm": 49,
+        "fga": 111,
+        "tpm": 11,
+        "tpa": 41,
+        "ftm": 16,
+        "fta": 21,
+        "ast": 33
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-06",
+        "games": 541,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 27538,
+            "fgm": 18336
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 19505,
+            "fgm": 8680
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 9702,
+            "fgm": 4052
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5290,
+            "fgm": 2018
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4929,
+            "fgm": 1902
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 29783,
+            "fgm": 10465
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4880,
+            "fgm": 2110
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4822,
+            "fgm": 1942
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500531",
+      "slug": "2026-01-08-dal",
+      "gameDate": "2026-01-08",
+      "opponent": "DAL",
+      "home": true,
+      "teamScore": 116,
+      "opponentScore": 114,
+      "box": {
+        "points": 116,
+        "fgm": 47,
+        "fga": 95,
+        "tpm": 13,
+        "tpa": 41,
+        "ftm": 9,
+        "fta": 14,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-07",
+        "games": 553,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 28154,
+            "fgm": 18716
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 19913,
+            "fgm": 8876
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 9942,
+            "fgm": 4152
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5425,
+            "fgm": 2067
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5046,
+            "fgm": 1942
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 30447,
+            "fgm": 10682
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4992,
+            "fgm": 2154
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4950,
+            "fgm": 1998
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500547",
+      "slug": "2026-01-10-cha",
+      "gameDate": "2026-01-10",
+      "opponent": "CHA",
+      "home": true,
+      "teamScore": 95,
+      "opponentScore": 150,
+      "box": {
+        "points": 95,
+        "fgm": 36,
+        "fga": 88,
+        "tpm": 7,
+        "tpa": 31,
+        "ftm": 16,
+        "fta": 21,
+        "ast": 22
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-09",
+        "games": 566,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 28764,
+            "fgm": 19140
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 20415,
+            "fgm": 9112
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 10169,
+            "fgm": 4247
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5539,
+            "fgm": 2113
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5168,
+            "fgm": 1983
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 31168,
+            "fgm": 10934
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5105,
+            "fgm": 2207
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5064,
+            "fgm": 2040
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500558",
+      "slug": "2026-01-12-cle",
+      "gameDate": "2026-01-12",
+      "opponent": "CLE",
+      "home": false,
+      "teamScore": 123,
+      "opponentScore": 112,
+      "box": {
+        "points": 123,
+        "fgm": 40,
+        "fga": 83,
+        "tpm": 18,
+        "tpa": 41,
+        "ftm": 25,
+        "fta": 28,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-11",
+        "games": 582,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 29528,
+            "fgm": 19654
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 21060,
+            "fgm": 9394
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 10464,
+            "fgm": 4372
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5701,
+            "fgm": 2171
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5326,
+            "fgm": 2045
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 32014,
+            "fgm": 11210
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5253,
+            "fgm": 2271
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5211,
+            "fgm": 2101
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500573",
+      "slug": "2026-01-14-chi",
+      "gameDate": "2026-01-14",
+      "opponent": "CHI",
+      "home": false,
+      "teamScore": 126,
+      "opponentScore": 128,
+      "box": {
+        "points": 126,
+        "fgm": 47,
+        "fga": 86,
+        "tpm": 8,
+        "tpa": 28,
+        "ftm": 24,
+        "fta": 27,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-13",
+        "games": 595,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 30116,
+            "fgm": 20070
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 21529,
+            "fgm": 9616
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 10698,
+            "fgm": 4468
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5837,
+            "fgm": 2215
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5463,
+            "fgm": 2101
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 32724,
+            "fgm": 11468
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5378,
+            "fgm": 2321
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5320,
+            "fgm": 2147
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500583",
+      "slug": "2026-01-15-dal",
+      "gameDate": "2026-01-15",
+      "opponent": "DAL",
+      "home": false,
+      "teamScore": 122,
+      "opponentScore": 144,
+      "box": {
+        "points": 122,
+        "fgm": 47,
+        "fga": 96,
+        "tpm": 10,
+        "tpa": 36,
+        "ftm": 18,
+        "fta": 23,
+        "ast": 33
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-14",
+        "games": 602,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 30452,
+            "fgm": 20303
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 21785,
+            "fgm": 9735
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 10839,
+            "fgm": 4529
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 5918,
+            "fgm": 2246
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5522,
+            "fgm": 2120
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 33105,
+            "fgm": 11587
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5439,
+            "fgm": 2349
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5400,
+            "fgm": 2180
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500593",
+      "slug": "2026-01-17-dal",
+      "gameDate": "2026-01-17",
+      "opponent": "DAL",
+      "home": false,
+      "teamScore": 120,
+      "opponentScore": 138,
+      "box": {
+        "points": 120,
+        "fgm": 48,
+        "fga": 89,
+        "tpm": 10,
+        "tpa": 31,
+        "ftm": 14,
+        "fta": 20,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-16",
+        "games": 617,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 31124,
+            "fgm": 20763
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 22359,
+            "fgm": 9990
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 11119,
+            "fgm": 4643
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6076,
+            "fgm": 2304
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5684,
+            "fgm": 2186
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 33913,
+            "fgm": 11890
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 17,
+            "fgm": 7
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5586,
+            "fgm": 2412
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5533,
+            "fgm": 2231
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500611",
+      "slug": "2026-01-19-sas",
+      "gameDate": "2026-01-19",
+      "opponent": "SAS",
+      "home": false,
+      "teamScore": 110,
+      "opponentScore": 123,
+      "box": {
+        "points": 110,
+        "fgm": 37,
+        "fga": 92,
+        "tpm": 13,
+        "tpa": 37,
+        "ftm": 23,
+        "fta": 27,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-18",
+        "games": 632,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 31830,
+            "fgm": 21254
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 22927,
+            "fgm": 10241
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 11393,
+            "fgm": 4754
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6220,
+            "fgm": 2367
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5836,
+            "fgm": 2243
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 34742,
+            "fgm": 12183
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 18,
+            "fgm": 8
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5719,
+            "fgm": 2467
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5674,
+            "fgm": 2287
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500616",
+      "slug": "2026-01-20-min",
+      "gameDate": "2026-01-20",
+      "opponent": "MIN",
+      "home": true,
+      "teamScore": 127,
+      "opponentScore": 122,
+      "box": {
+        "points": 127,
+        "fgm": 48,
+        "fga": 87,
+        "tpm": 12,
+        "tpa": 29,
+        "ftm": 19,
+        "fta": 26,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-19",
+        "games": 641,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 32268,
+            "fgm": 21533
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 23225,
+            "fgm": 10376
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 11559,
+            "fgm": 4816
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6305,
+            "fgm": 2401
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 5925,
+            "fgm": 2271
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 35228,
+            "fgm": 12364
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 19,
+            "fgm": 9
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5809,
+            "fgm": 2497
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5750,
+            "fgm": 2319
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500632",
+      "slug": "2026-01-22-sas",
+      "gameDate": "2026-01-22",
+      "opponent": "SAS",
+      "home": true,
+      "teamScore": 109,
+      "opponentScore": 126,
+      "box": {
+        "points": 109,
+        "fgm": 43,
+        "fga": 90,
+        "tpm": 12,
+        "tpa": 30,
+        "ftm": 11,
+        "fta": 13,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-21",
+        "games": 655,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 32930,
+            "fgm": 21976
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 23756,
+            "fgm": 10616
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 11837,
+            "fgm": 4923
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6441,
+            "fgm": 2458
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6037,
+            "fgm": 2314
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 36022,
+            "fgm": 12642
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 20,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 5951,
+            "fgm": 2556
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 5886,
+            "fgm": 2367
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500649",
+      "slug": "2026-01-24-mia",
+      "gameDate": "2026-01-24",
+      "opponent": "MIA",
+      "home": true,
+      "teamScore": 116,
+      "opponentScore": 147,
+      "box": {
+        "points": 116,
+        "fgm": 44,
+        "fga": 92,
+        "tpm": 7,
+        "tpa": 25,
+        "ftm": 21,
+        "fta": 28,
+        "ast": 36
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-23",
+        "games": 671,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 33731,
+            "fgm": 22523
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 24327,
+            "fgm": 10857
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 12140,
+            "fgm": 5045
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6602,
+            "fgm": 2517
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6187,
+            "fgm": 2378
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 36901,
+            "fgm": 12944
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 20,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6097,
+            "fgm": 2613
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6043,
+            "fgm": 2432
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500670",
+      "slug": "2026-01-27-lac",
+      "gameDate": "2026-01-27",
+      "opponent": "LAC",
+      "home": true,
+      "teamScore": 103,
+      "opponentScore": 115,
+      "box": {
+        "points": 103,
+        "fgm": 37,
+        "fga": 82,
+        "tpm": 12,
+        "tpa": 33,
+        "ftm": 17,
+        "fta": 21,
+        "ast": 28
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-26",
+        "games": 690,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 34655,
+            "fgm": 23130
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 25039,
+            "fgm": 11163
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 12451,
+            "fgm": 5170
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6803,
+            "fgm": 2595
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6365,
+            "fgm": 2444
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 37940,
+            "fgm": 13280
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 20,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6263,
+            "fgm": 2681
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6188,
+            "fgm": 2489
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500678",
+      "slug": "2026-01-28-gsw",
+      "gameDate": "2026-01-28",
+      "opponent": "GSW",
+      "home": true,
+      "teamScore": 124,
+      "opponentScore": 140,
+      "box": {
+        "points": 124,
+        "fgm": 44,
+        "fga": 90,
+        "tpm": 15,
+        "tpa": 38,
+        "ftm": 21,
+        "fta": 24,
+        "ast": 38
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-27",
+        "games": 697,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 35009,
+            "fgm": 23355
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 25298,
+            "fgm": 11264
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 12599,
+            "fgm": 5234
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 6867,
+            "fgm": 2624
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6433,
+            "fgm": 2468
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 38291,
+            "fgm": 13400
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6345,
+            "fgm": 2717
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6254,
+            "fgm": 2517
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500694",
+      "slug": "2026-01-30-bkn",
+      "gameDate": "2026-01-30",
+      "opponent": "BKN",
+      "home": true,
+      "teamScore": 99,
+      "opponentScore": 109,
+      "box": {
+        "points": 99,
+        "fgm": 39,
+        "fga": 78,
+        "tpm": 10,
+        "tpa": 29,
+        "ftm": 11,
+        "fta": 19,
+        "ast": 26
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-29",
+        "games": 714,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 35886,
+            "fgm": 23920
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 25897,
+            "fgm": 11524
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 12961,
+            "fgm": 5380
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7030,
+            "fgm": 2677
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6577,
+            "fgm": 2532
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 39166,
+            "fgm": 13712
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6522,
+            "fgm": 2794
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6439,
+            "fgm": 2586
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500706",
+      "slug": "2026-02-01-tor",
+      "gameDate": "2026-02-01",
+      "opponent": "TOR",
+      "home": false,
+      "teamScore": 100,
+      "opponentScore": 107,
+      "box": {
+        "points": 100,
+        "fgm": 32,
+        "fga": 90,
+        "tpm": 8,
+        "tpa": 36,
+        "ftm": 28,
+        "fta": 34,
+        "ast": 20
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-31",
+        "games": 729,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 36643,
+            "fgm": 24443
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 26449,
+            "fgm": 11753
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 13218,
+            "fgm": 5482
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7157,
+            "fgm": 2728
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6706,
+            "fgm": 2576
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 40015,
+            "fgm": 14036
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6654,
+            "fgm": 2847
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6564,
+            "fgm": 2635
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500717",
+      "slug": "2026-02-03-ind",
+      "gameDate": "2026-02-03",
+      "opponent": "IND",
+      "home": false,
+      "teamScore": 131,
+      "opponentScore": 122,
+      "box": {
+        "points": 131,
+        "fgm": 50,
+        "fga": 88,
+        "tpm": 13,
+        "tpa": 29,
+        "ftm": 18,
+        "fta": 26,
+        "ast": 38
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-02",
+        "games": 743,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 37323,
+            "fgm": 24887
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 26948,
+            "fgm": 11963
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 13487,
+            "fgm": 5593
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7292,
+            "fgm": 2790
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6829,
+            "fgm": 2619
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 40751,
+            "fgm": 14280
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6786,
+            "fgm": 2904
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6701,
+            "fgm": 2689
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500735",
+      "slug": "2026-02-05-atl",
+      "gameDate": "2026-02-05",
+      "opponent": "ATL",
+      "home": false,
+      "teamScore": 119,
+      "opponentScore": 121,
+      "box": {
+        "points": 119,
+        "fgm": 47,
+        "fga": 101,
+        "tpm": 12,
+        "tpa": 30,
+        "ftm": 13,
+        "fta": 20,
+        "ast": 19
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-04",
+        "games": 760,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 38115,
+            "fgm": 25438
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 27616,
+            "fgm": 12282
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 13814,
+            "fgm": 5716
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7479,
+            "fgm": 2871
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 6992,
+            "fgm": 2681
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 41744,
+            "fgm": 14640
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 6968,
+            "fgm": 2977
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6846,
+            "fgm": 2739
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500750",
+      "slug": "2026-02-07-orl",
+      "gameDate": "2026-02-07",
+      "opponent": "ORL",
+      "home": false,
+      "teamScore": 117,
+      "opponentScore": 120,
+      "box": {
+        "points": 117,
+        "fgm": 44,
+        "fga": 92,
+        "tpm": 10,
+        "tpa": 31,
+        "ftm": 19,
+        "fta": 23,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-06",
+        "games": 774,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 38778,
+            "fgm": 25910
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 28099,
+            "fgm": 12496
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 14066,
+            "fgm": 5830
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7628,
+            "fgm": 2920
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 7129,
+            "fgm": 2739
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 42486,
+            "fgm": 14889
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 7085,
+            "fgm": 3035
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 6981,
+            "fgm": 2795
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500763",
+      "slug": "2026-02-09-mia",
+      "gameDate": "2026-02-09",
+      "opponent": "MIA",
+      "home": false,
+      "teamScore": 115,
+      "opponentScore": 111,
+      "box": {
+        "points": 115,
+        "fgm": 39,
+        "fga": 92,
+        "tpm": 10,
+        "tpa": 36,
+        "ftm": 27,
+        "fta": 31,
+        "ast": 29
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-08",
+        "games": 788,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 39498,
+            "fgm": 26395
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 28534,
+            "fgm": 12696
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 14333,
+            "fgm": 5927
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7776,
+            "fgm": 2971
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 7256,
+            "fgm": 2787
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 43258,
+            "fgm": 15177
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 21,
+            "fgm": 10
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 7226,
+            "fgm": 3083
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7107,
+            "fgm": 2844
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500786",
+      "slug": "2026-02-11-sac",
+      "gameDate": "2026-02-11",
+      "opponent": "SAC",
+      "home": true,
+      "teamScore": 121,
+      "opponentScore": 93,
+      "box": {
+        "points": 121,
+        "fgm": 47,
+        "fga": 86,
+        "tpm": 15,
+        "tpa": 37,
+        "ftm": 12,
+        "fta": 13,
+        "ast": 34
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-10",
+        "games": 802,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 40196,
+            "fgm": 26882
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 29033,
+            "fgm": 12914
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 14584,
+            "fgm": 6047
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 7925,
+            "fgm": 3028
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 7392,
+            "fgm": 2839
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 43995,
+            "fgm": 15419
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 22,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 7375,
+            "fgm": 3155
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7209,
+            "fgm": 2892
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500790",
+      "slug": "2026-02-12-por",
+      "gameDate": "2026-02-12",
+      "opponent": "POR",
+      "home": true,
+      "teamScore": 119,
+      "opponentScore": 135,
+      "box": {
+        "points": 119,
+        "fgm": 42,
+        "fga": 87,
+        "tpm": 14,
+        "tpa": 38,
+        "ftm": 21,
+        "fta": 29,
+        "ast": 28
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-11",
+        "games": 816,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 40862,
+            "fgm": 27325
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 29548,
+            "fgm": 13146
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 14807,
+            "fgm": 6136
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 8071,
+            "fgm": 3089
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 7533,
+            "fgm": 2898
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 44777,
+            "fgm": 15682
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 22,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 7494,
+            "fgm": 3207
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7313,
+            "fgm": 2929
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500804",
+      "slug": "2026-02-20-mem",
+      "gameDate": "2026-02-20",
+      "opponent": "MEM",
+      "home": false,
+      "teamScore": 114,
+      "opponentScore": 123,
+      "box": {
+        "points": 114,
+        "fgm": 46,
+        "fga": 93,
+        "tpm": 13,
+        "tpa": 34,
+        "ftm": 9,
+        "fta": 16,
+        "ast": 28
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-19",
+        "games": 829,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 41479,
+            "fgm": 27721
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 30020,
+            "fgm": 13357
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 15043,
+            "fgm": 6243
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 8201,
+            "fgm": 3138
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 7666,
+            "fgm": 2955
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 45496,
+            "fgm": 15911
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 22,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 7618,
+            "fgm": 3268
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7425,
+            "fgm": 2975
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500830",
+      "slug": "2026-02-23-hou",
+      "gameDate": "2026-02-23",
+      "opponent": "HOU",
+      "home": false,
+      "teamScore": 105,
+      "opponentScore": 125,
+      "box": {
+        "points": 105,
+        "fgm": 36,
+        "fga": 98,
+        "tpm": 8,
+        "tpa": 44,
+        "ftm": 25,
+        "fta": 30,
+        "ast": 23
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-22",
+        "games": 855,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 42862,
+            "fgm": 28625
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 30923,
+            "fgm": 13757
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 15521,
+            "fgm": 6448
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 8433,
+            "fgm": 3236
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 7950,
+            "fgm": 3067
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 46870,
+            "fgm": 16392
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 22,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 7874,
+            "fgm": 3389
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7647,
+            "fgm": 3059
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500856",
+      "slug": "2026-02-26-nop",
+      "gameDate": "2026-02-26",
+      "opponent": "NOP",
+      "home": true,
+      "teamScore": 118,
+      "opponentScore": 129,
+      "box": {
+        "points": 118,
+        "fgm": 45,
+        "fga": 90,
+        "tpm": 12,
+        "tpa": 37,
+        "ftm": 16,
+        "fta": 25,
+        "ast": 28
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-25",
+        "games": 875,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 43872,
+            "fgm": 29279
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 31661,
+            "fgm": 14085
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 15873,
+            "fgm": 6603
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 8636,
+            "fgm": 3313
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8135,
+            "fgm": 3142
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 48011,
+            "fgm": 16770
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 22,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8052,
+            "fgm": 3469
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7821,
+            "fgm": 3134
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500867",
+      "slug": "2026-02-28-nop",
+      "gameDate": "2026-02-28",
+      "opponent": "NOP",
+      "home": true,
+      "teamScore": 105,
+      "opponentScore": 115,
+      "box": {
+        "points": 105,
+        "fgm": 33,
+        "fga": 96,
+        "tpm": 12,
+        "tpa": 43,
+        "ftm": 27,
+        "fta": 33,
+        "ast": 24
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-02-27",
+        "games": 890,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 44599,
+            "fgm": 29764
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 32251,
+            "fgm": 14359
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 16142,
+            "fgm": 6716
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 8786,
+            "fgm": 3374
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8248,
+            "fgm": 3186
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 48808,
+            "fgm": 17061
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8193,
+            "fgm": 3527
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 7949,
+            "fgm": 3189
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500881",
+      "slug": "2026-03-02-den",
+      "gameDate": "2026-03-02",
+      "opponent": "DEN",
+      "home": true,
+      "teamScore": 125,
+      "opponentScore": 128,
+      "box": {
+        "points": 125,
+        "fgm": 44,
+        "fga": 86,
+        "tpm": 15,
+        "tpa": 39,
+        "ftm": 22,
+        "fta": 26,
+        "ast": 24
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-01",
+        "games": 906,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 45395,
+            "fgm": 30302
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 32799,
+            "fgm": 14609
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 16425,
+            "fgm": 6827
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 8937,
+            "fgm": 3428
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8404,
+            "fgm": 3245
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 49680,
+            "fgm": 17349
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8339,
+            "fgm": 3587
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8086,
+            "fgm": 3240
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500895",
+      "slug": "2026-03-04-phi",
+      "gameDate": "2026-03-04",
+      "opponent": "PHI",
+      "home": false,
+      "teamScore": 102,
+      "opponentScore": 106,
+      "box": {
+        "points": 102,
+        "fgm": 36,
+        "fga": 88,
+        "tpm": 12,
+        "tpa": 39,
+        "ftm": 18,
+        "fta": 19,
+        "ast": 22
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-03",
+        "games": 920,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 46103,
+            "fgm": 30788
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 33256,
+            "fgm": 14798
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 16648,
+            "fgm": 6915
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9070,
+            "fgm": 3478
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8544,
+            "fgm": 3281
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 50428,
+            "fgm": 17610
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8448,
+            "fgm": 3629
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8200,
+            "fgm": 3286
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500900",
+      "slug": "2026-03-05-was",
+      "gameDate": "2026-03-05",
+      "opponent": "WAS",
+      "home": false,
+      "teamScore": 122,
+      "opponentScore": 112,
+      "box": {
+        "points": 122,
+        "fgm": 47,
+        "fga": 92,
+        "tpm": 15,
+        "tpa": 35,
+        "ftm": 13,
+        "fta": 18,
+        "ast": 31
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-04",
+        "games": 926,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 46383,
+            "fgm": 30980
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 33450,
+            "fgm": 14882
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 16749,
+            "fgm": 6961
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9125,
+            "fgm": 3497
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8607,
+            "fgm": 3305
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 50773,
+            "fgm": 17727
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8501,
+            "fgm": 3652
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8248,
+            "fgm": 3309
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500919",
+      "slug": "2026-03-07-mil",
+      "gameDate": "2026-03-07",
+      "opponent": "MIL",
+      "home": false,
+      "teamScore": 99,
+      "opponentScore": 113,
+      "box": {
+        "points": 99,
+        "fgm": 31,
+        "fga": 90,
+        "tpm": 12,
+        "tpa": 49,
+        "ftm": 25,
+        "fta": 29,
+        "ast": 23
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-06",
+        "games": 942,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 47195,
+            "fgm": 31533
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 34070,
+            "fgm": 15150
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 17033,
+            "fgm": 7078
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9309,
+            "fgm": 3564
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8744,
+            "fgm": 3362
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 51595,
+            "fgm": 18022
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8649,
+            "fgm": 3712
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8384,
+            "fgm": 3366
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500934",
+      "slug": "2026-03-09-gsw",
+      "gameDate": "2026-03-09",
+      "opponent": "GSW",
+      "home": true,
+      "teamScore": 119,
+      "opponentScore": 116,
+      "box": {
+        "points": 119,
+        "fgm": 40,
+        "fga": 83,
+        "tpm": 12,
+        "tpa": 34,
+        "ftm": 27,
+        "fta": 29,
+        "ast": 29
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-08",
+        "games": 958,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 47978,
+            "fgm": 32065
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 34637,
+            "fgm": 15398
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 17286,
+            "fgm": 7180
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9475,
+            "fgm": 3621
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 8873,
+            "fgm": 3412
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 52478,
+            "fgm": 18306
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 23,
+            "fgm": 11
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8777,
+            "fgm": 3759
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8509,
+            "fgm": 3421
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500949",
+      "slug": "2026-03-11-nyk",
+      "gameDate": "2026-03-11",
+      "opponent": "NYK",
+      "home": true,
+      "teamScore": 117,
+      "opponentScore": 134,
+      "box": {
+        "points": 117,
+        "fgm": 42,
+        "fga": 87,
+        "tpm": 18,
+        "tpa": 36,
+        "ftm": 15,
+        "fta": 19,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-10",
+        "games": 974,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 48733,
+            "fgm": 32589
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 35211,
+            "fgm": 15648
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 17547,
+            "fgm": 7292
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9642,
+            "fgm": 3684
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9026,
+            "fgm": 3478
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 53415,
+            "fgm": 18644
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 24,
+            "fgm": 12
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 8906,
+            "fgm": 3820
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8641,
+            "fgm": 3472
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500967",
+      "slug": "2026-03-13-por",
+      "gameDate": "2026-03-13",
+      "opponent": "POR",
+      "home": false,
+      "teamScore": 114,
+      "opponentScore": 124,
+      "box": {
+        "points": 114,
+        "fgm": 42,
+        "fga": 92,
+        "tpm": 13,
+        "tpa": 30,
+        "ftm": 17,
+        "fta": 22,
+        "ast": 28
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-12",
+        "games": 989,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 49555,
+            "fgm": 33149
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 35702,
+            "fgm": 15868
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 17808,
+            "fgm": 7412
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9789,
+            "fgm": 3741
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9166,
+            "fgm": 3539
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 54234,
+            "fgm": 18932
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 24,
+            "fgm": 12
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9047,
+            "fgm": 3893
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8761,
+            "fgm": 3519
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022500982",
+      "slug": "2026-03-15-sac",
+      "gameDate": "2026-03-15",
+      "opponent": "SAC",
+      "home": false,
+      "teamScore": 111,
+      "opponentScore": 116,
+      "box": {
+        "points": 111,
+        "fgm": 41,
+        "fga": 86,
+        "tpm": 12,
+        "tpa": 36,
+        "ftm": 17,
+        "fta": 25,
+        "ast": 22
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-14",
+        "games": 1004,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 50262,
+            "fgm": 33628
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 36277,
+            "fgm": 16137
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 18079,
+            "fgm": 7529
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 9941,
+            "fgm": 3791
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9319,
+            "fgm": 3608
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 55042,
+            "fgm": 19198
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 24,
+            "fgm": 12
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9192,
+            "fgm": 3957
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 8887,
+            "fgm": 3572
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501004",
+      "slug": "2026-03-18-min",
+      "gameDate": "2026-03-18",
+      "opponent": "MIN",
+      "home": false,
+      "teamScore": 111,
+      "opponentScore": 147,
+      "box": {
+        "points": 111,
+        "fgm": 40,
+        "fga": 93,
+        "tpm": 13,
+        "tpa": 39,
+        "ftm": 18,
+        "fta": 26,
+        "ast": 26
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-17",
+        "games": 1027,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 51495,
+            "fgm": 34469
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 37012,
+            "fgm": 16436
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 18513,
+            "fgm": 7701
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10176,
+            "fgm": 3893
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9515,
+            "fgm": 3698
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 56295,
+            "fgm": 19623
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 24,
+            "fgm": 12
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9416,
+            "fgm": 4050
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9097,
+            "fgm": 3651
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501014",
+      "slug": "2026-03-19-mil",
+      "gameDate": "2026-03-19",
+      "opponent": "MIL",
+      "home": true,
+      "teamScore": 128,
+      "opponentScore": 96,
+      "box": {
+        "points": 128,
+        "fgm": 48,
+        "fga": 89,
+        "tpm": 18,
+        "tpa": 48,
+        "ftm": 14,
+        "fta": 20,
+        "ast": 34
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-18",
+        "games": 1036,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 52021,
+            "fgm": 34820
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 37299,
+            "fgm": 16572
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 18663,
+            "fgm": 7766
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10261,
+            "fgm": 3926
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9601,
+            "fgm": 3730
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 56770,
+            "fgm": 19793
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 25,
+            "fgm": 13
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9492,
+            "fgm": 4081
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9171,
+            "fgm": 3685
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501030",
+      "slug": "2026-03-21-phi",
+      "gameDate": "2026-03-21",
+      "opponent": "PHI",
+      "home": true,
+      "teamScore": 116,
+      "opponentScore": 126,
+      "box": {
+        "points": 116,
+        "fgm": 39,
+        "fga": 96,
+        "tpm": 9,
+        "tpa": 40,
+        "ftm": 29,
+        "fta": 31,
+        "ast": 29
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-20",
+        "games": 1050,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 52721,
+            "fgm": 35265
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 37760,
+            "fgm": 16786
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 18917,
+            "fgm": 7878
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10387,
+            "fgm": 3970
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9714,
+            "fgm": 3773
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 57535,
+            "fgm": 20056
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 25,
+            "fgm": 13
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9617,
+            "fgm": 4142
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9300,
+            "fgm": 3736
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501043",
+      "slug": "2026-03-23-tor",
+      "gameDate": "2026-03-23",
+      "opponent": "TOR",
+      "home": true,
+      "teamScore": 127,
+      "opponentScore": 143,
+      "box": {
+        "points": 127,
+        "fgm": 39,
+        "fga": 83,
+        "tpm": 13,
+        "tpa": 36,
+        "ftm": 36,
+        "fta": 43,
+        "ast": 25
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-22",
+        "games": 1065,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 53504,
+            "fgm": 35800
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 38271,
+            "fgm": 17028
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 19171,
+            "fgm": 7985
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10551,
+            "fgm": 4032
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9847,
+            "fgm": 3816
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 58360,
+            "fgm": 20369
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 26,
+            "fgm": 13
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9754,
+            "fgm": 4207
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9417,
+            "fgm": 3778
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501057",
+      "slug": "2026-03-25-was",
+      "gameDate": "2026-03-25",
+      "opponent": "WAS",
+      "home": true,
+      "teamScore": 110,
+      "opponentScore": 133,
+      "box": {
+        "points": 110,
+        "fgm": 45,
+        "fga": 96,
+        "tpm": 7,
+        "tpa": 29,
+        "ftm": 13,
+        "fta": 25,
+        "ast": 34
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-24",
+        "games": 1079,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 54221,
+            "fgm": 36302
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 38705,
+            "fgm": 17228
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 19402,
+            "fgm": 8085
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10698,
+            "fgm": 4095
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 9985,
+            "fgm": 3881
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 59157,
+            "fgm": 20667
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 26,
+            "fgm": 13
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 9891,
+            "fgm": 4269
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9511,
+            "fgm": 3816
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501072",
+      "slug": "2026-03-27-den",
+      "gameDate": "2026-03-27",
+      "opponent": "DEN",
+      "home": false,
+      "teamScore": 129,
+      "opponentScore": 135,
+      "box": {
+        "points": 129,
+        "fgm": 53,
+        "fga": 95,
+        "tpm": 9,
+        "tpa": 33,
+        "ftm": 14,
+        "fta": 19,
+        "ast": 34
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-26",
+        "games": 1094,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 54972,
+            "fgm": 36833
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 39231,
+            "fgm": 17479
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 19691,
+            "fgm": 8202
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10826,
+            "fgm": 4151
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10116,
+            "fgm": 3935
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 59988,
+            "fgm": 20969
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 26,
+            "fgm": 13
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10026,
+            "fgm": 4326
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9665,
+            "fgm": 3876
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501081",
+      "slug": "2026-03-28-phx",
+      "gameDate": "2026-03-28",
+      "opponent": "PHX",
+      "home": false,
+      "teamScore": 109,
+      "opponentScore": 134,
+      "box": {
+        "points": 109,
+        "fgm": 43,
+        "fga": 92,
+        "tpm": 10,
+        "tpa": 23,
+        "ftm": 13,
+        "fta": 19,
+        "ast": 30
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-27",
+        "games": 1104,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 55546,
+            "fgm": 37213
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 39556,
+            "fgm": 17611
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 19859,
+            "fgm": 8270
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 10920,
+            "fgm": 4190
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10197,
+            "fgm": 3969
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 60549,
+            "fgm": 21159
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 27,
+            "fgm": 14
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10116,
+            "fgm": 4367
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9743,
+            "fgm": 3903
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501096",
+      "slug": "2026-03-30-cle",
+      "gameDate": "2026-03-30",
+      "opponent": "CLE",
+      "home": true,
+      "teamScore": 113,
+      "opponentScore": 122,
+      "box": {
+        "points": 113,
+        "fgm": 42,
+        "fga": 88,
+        "tpm": 15,
+        "tpa": 29,
+        "ftm": 14,
+        "fta": 20,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-29",
+        "games": 1119,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 56344,
+            "fgm": 37742
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 40021,
+            "fgm": 17822
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 20128,
+            "fgm": 8377
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 11088,
+            "fgm": 4268
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10341,
+            "fgm": 4020
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 61339,
+            "fgm": 21428
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 27,
+            "fgm": 14
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10257,
+            "fgm": 4428
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 9871,
+            "fgm": 3949
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501112",
+      "slug": "2026-04-01-den",
+      "gameDate": "2026-04-01",
+      "opponent": "DEN",
+      "home": true,
+      "teamScore": 117,
+      "opponentScore": 130,
+      "box": {
+        "points": 117,
+        "fgm": 44,
+        "fga": 95,
+        "tpm": 12,
+        "tpa": 37,
+        "ftm": 17,
+        "fta": 25,
+        "ast": 32
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-03-31",
+        "games": 1134,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 57121,
+            "fgm": 38275
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 40533,
+            "fgm": 18044
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 20400,
+            "fgm": 8488
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 11241,
+            "fgm": 4328
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10475,
+            "fgm": 4065
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 62120,
+            "fgm": 21684
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 27,
+            "fgm": 14
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10400,
+            "fgm": 4484
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 10000,
+            "fgm": 4004
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501124",
+      "slug": "2026-04-03-hou",
+      "gameDate": "2026-04-03",
+      "opponent": "HOU",
+      "home": false,
+      "teamScore": 106,
+      "opponentScore": 140,
+      "box": {
+        "points": 106,
+        "fgm": 43,
+        "fga": 96,
+        "tpm": 5,
+        "tpa": 27,
+        "ftm": 15,
+        "fta": 22,
+        "ast": 22
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-04-02",
+        "games": 1149,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 57813,
+            "fgm": 38772
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 41197,
+            "fgm": 18348
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 20630,
+            "fgm": 8591
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 11412,
+            "fgm": 4397
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10616,
+            "fgm": 4124
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 62928,
+            "fgm": 21985
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 29,
+            "fgm": 15
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10527,
+            "fgm": 4538
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 10103,
+            "fgm": 4053
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501139",
+      "slug": "2026-04-05-okc",
+      "gameDate": "2026-04-05",
+      "opponent": "OKC",
+      "home": false,
+      "teamScore": 111,
+      "opponentScore": 146,
+      "box": {
+        "points": 111,
+        "fgm": 43,
+        "fga": 100,
+        "tpm": 14,
+        "tpa": 39,
+        "ftm": 11,
+        "fta": 15,
+        "ast": 29
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-04-04",
+        "games": 1161,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 58498,
+            "fgm": 39214
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 41617,
+            "fgm": 18538
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 20822,
+            "fgm": 8676
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 11529,
+            "fgm": 4451
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10719,
+            "fgm": 4161
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 63573,
+            "fgm": 22230
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 29,
+            "fgm": 15
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10627,
+            "fgm": 4583
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 10195,
+            "fgm": 4093
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501153",
+      "slug": "2026-04-07-nop",
+      "gameDate": "2026-04-07",
+      "opponent": "NOP",
+      "home": false,
+      "teamScore": 137,
+      "opponentScore": 156,
+      "box": {
+        "points": 137,
+        "fgm": 53,
+        "fga": 104,
+        "tpm": 10,
+        "tpa": 32,
+        "ftm": 21,
+        "fta": 24,
+        "ast": 38
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-04-06",
+        "games": 1177,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 59370,
+            "fgm": 39802
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 42141,
+            "fgm": 18774
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 21098,
+            "fgm": 8794
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 11696,
+            "fgm": 4516
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 10853,
+            "fgm": 4214
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 64431,
+            "fgm": 22554
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 29,
+            "fgm": 15
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10778,
+            "fgm": 4643
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 10320,
+            "fgm": 4151
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501181",
+      "slug": "2026-04-10-mem",
+      "gameDate": "2026-04-10",
+      "opponent": "MEM",
+      "home": true,
+      "teamScore": 147,
+      "opponentScore": 101,
+      "box": {
+        "points": 147,
+        "fgm": 62,
+        "fga": 110,
+        "tpm": 15,
+        "tpa": 35,
+        "ftm": 8,
+        "fta": 17,
+        "ast": 43
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-04-09",
+        "games": 1200,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 60636,
+            "fgm": 40661
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 42905,
+            "fgm": 19093
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 21509,
+            "fgm": 8967
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 11930,
+            "fgm": 4617
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 11060,
+            "fgm": 4285
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 65627,
+            "fgm": 22973
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 29,
+            "fgm": 15
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 10999,
+            "fgm": 4745
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 10510,
+            "fgm": 4222
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022501198",
+      "slug": "2026-04-12-lal",
+      "gameDate": "2026-04-12",
+      "opponent": "LAL",
+      "home": false,
+      "teamScore": 107,
+      "opponentScore": 131,
+      "box": {
+        "points": 107,
+        "fgm": 41,
+        "fga": 94,
+        "tpm": 7,
+        "tpa": 34,
+        "ftm": 18,
+        "fta": 27,
+        "ast": 25
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-04-11",
+        "games": 1215,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 61354,
+            "fgm": 41164
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 43460,
+            "fgm": 19360
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 21781,
+            "fgm": 9080
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 12059,
+            "fgm": 4671
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 11202,
+            "fgm": 4341
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 66478,
+            "fgm": 23261
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 29,
+            "fgm": 15
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 11156,
+            "fgm": 4818
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 10625,
+            "fgm": 4262
+          }
+        ]
+      }
+    }
+  ]
+}

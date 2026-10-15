@@ -4,8 +4,9 @@ The game payload is born DB-native (no file derive), so its golden comes
 from the record-store path, the regen_gamelog_golden.py pattern: spin a
 throwaway Dockerized Postgres, load the truncated two-team fixture game
 through the real loaders, run the real export, and write
-tests/fixtures/game.golden.json. Deterministic: same fixtures in,
-byte-identical golden out.
+tests/fixtures/game.golden.json plus the one-game season index,
+tests/fixtures/team-index.golden.json. Deterministic: same fixtures in,
+byte-identical goldens out.
 
 USAGE (from the repo root; requires Docker):
   python ingestion/regen_game_golden.py
@@ -13,6 +14,7 @@ USAGE (from the repo root; requires Docker):
 
 from __future__ import annotations
 
+import tempfile
 from pathlib import Path
 
 import ephemeral_pg
@@ -26,6 +28,7 @@ import record_store as rs
 REPO = Path(__file__).resolve().parents[1]
 FIXTURES = REPO / "tests" / "fixtures"
 GOLDEN = FIXTURES / "game.golden.json"
+INDEX_GOLDEN = FIXTURES / "team-index.golden.json"
 GAME_ID = "0022500492"
 TEAM = "Utah Jazz"
 
@@ -49,9 +52,13 @@ def main() -> None:
         with rs.connect(dsn) as conn:
             load_fixture_store(conn)
             payload = egp.export_game(conn, TEAM, GAME_ID)
+            with tempfile.TemporaryDirectory() as tmp:
+                egp.export_season(conn, TEAM, "2025-26", Path(tmp))
+                index_text = (Path(tmp) / "index.json").read_text(encoding="utf-8")
         GOLDEN.write_text(egp.payload_text(payload), encoding="utf-8", newline="\n")
+        INDEX_GOLDEN.write_text(index_text, encoding="utf-8", newline="\n")
         sides = ", ".join(f"{s['tricode']} {len(s['shots'])} shots" for s in payload["sides"])
-        print(f"golden -> {GOLDEN} ({sides})")
+        print(f"goldens -> {GOLDEN.name}, {INDEX_GOLDEN.name} ({sides})")
     finally:
         ephemeral_pg.stop(container)
 

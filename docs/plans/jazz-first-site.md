@@ -702,6 +702,13 @@ backup bucket, set the task's power settings (done 2026-09-24).
   league game log; and that log reads "@" for both teams of a
   neutral-site game, so it stores the two teams, never home and away._
 - 82 opponent pulls for 2025-26; the season index; 82 game payloads.
+  _Built 2026-10-14: `export_game_payload.py --scratch` loaded the season
+  into a throwaway Postgres (the deployed team payload reproduced byte for
+  byte), and all 82 games passed every oracle on the first run, with every
+  shot on both sides matched to its play-by-play event (no unknown assist
+  statuses). Committed under `public/data/_teams/uta/2025-26/` (about 10 MB)
+  with the deployed-pair guard. The ledger file stays until the season
+  page reads the index._
 - The report card page, the season page with ledger and quadrant, share
   cards and emitted pages.
 - ADR-0087: the root becomes the Jazz home, `/arguments` the directory.

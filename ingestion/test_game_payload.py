@@ -21,7 +21,7 @@ import load_hero_season as lhs
 import load_rulers as lr
 import load_team_games as ltg
 import record_store as rs
-from regen_game_golden import FIXTURES, GAME_ID, GOLDEN, TEAM, load_fixture_store
+from regen_game_golden import FIXTURES, GAME_ID, GOLDEN, INDEX_GOLDEN, TEAM, load_fixture_store
 
 CURRY, GREEN = 201939, 203110
 FILIPOWSKI, HENDRICKS = 1642271, 1641707
@@ -44,6 +44,14 @@ def run_sql(conn, sql: str, params=()) -> None:
 def test_game_golden_roundtrip_through_the_store(store):
     payload = egp.export_game(store, TEAM, GAME_ID)
     assert egp.payload_text(payload) == GOLDEN.read_text(encoding="utf-8")
+
+
+def test_season_export_writes_the_golden_game_file_and_index(store, tmp_path):
+    egp.export_season(store, TEAM, "2025-26", tmp_path)
+    game_file = tmp_path / "games" / f"{GAME_ID}.json"
+    assert game_file.read_text(encoding="utf-8") == GOLDEN.read_text(encoding="utf-8")
+    assert (tmp_path / "index.json").read_text(encoding="utf-8") == INDEX_GOLDEN.read_text(
+        encoding="utf-8")
 
 
 # ------------------------------------------------------------- the oracles

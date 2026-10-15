@@ -206,3 +206,9 @@ script from the real raw artifacts; every file carries a `fixture_note`.
   asserts the byte-identical roundtrip and a manufactured violation for
   every export oracle; `src/domain/gamePayload.test.ts` strict-parses it
   and proves each identity bites at the load boundary too.
+- **`team-index.golden.json`** — the season index the same store's season
+  export writes (one row: the fixture game, its slug, scores, box line, and
+  ruler with its zones), regenerated beside the game golden.
+  `test_game_payload.py` holds the season export's game file and index to
+  the two goldens byte-for-byte; `src/domain/teamSeasonIndex.test.ts`
+  strict-parses it.
