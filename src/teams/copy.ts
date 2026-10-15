@@ -90,6 +90,11 @@ export const REPORT_COPY = {
   rulerPriorSeason: (season: string, games: string) =>
     `Priced against the full ${season} season, ${games} games, since no league game had been played before this one. Each dot on the chart is priced against its own day’s league.`,
   draftTag: 'draft copy',
+  // The emitted share page's meta (the ADR-0067 pattern at game grain).
+  shareDescription: (team: string, date: string, matchup: string) =>
+    `${team} report card, ${date} ${matchup}. Shot diet and conversion against the league as it stood that day, both teams on the same terms.`,
+  shareImageAlt: (team: string, score: string, date: string, matchup: string) =>
+    `${team} report card, ${score} ${matchup}, ${date}, with the game’s shot chart`,
   noSuchGame: (team: string, segment: string) => `No ${team} game on file for ${segment}.`,
   seasonNotOnFile: (team: string, segment: string) => `No ${team} season on file for ${segment}.`,
 } as const

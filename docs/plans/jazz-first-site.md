@@ -723,6 +723,15 @@ backup bucket, set the task's power settings (done 2026-09-24).
   `src/teams/computedCopy.ts`, tagged on the page until authored. The old
   one-game page (`TeamGamePage`) is gone; the season page with its own
   quadrant is still to do._
+  _Share cards built the same day: `npm run cards:games` draws a 1200×630
+  card per published game (the score, the two answers, the game's court)
+  from committed files only, and the build emits
+  `dist/jazz/<game-slug>/index.html` for every index row with its card as
+  `og:image`, failing on a missing card (the ADR-0067 rule), plus
+  `dist/jazz/index.html` so the directory always has its own page. 82
+  cards, about 4 MB. The answer words are baked in, so the cards rerun
+  when the computed copy is authored. Running the generator from the loop
+  in the publishing session is ADR-0091's work (phase 3)._
 - ADR-0087: the root becomes the Jazz home, `/arguments` the directory.
   The README's intro, its "Live at" line, and its route list follow in the
   same PR; they still describe the directory at the root.
