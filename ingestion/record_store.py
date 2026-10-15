@@ -62,15 +62,18 @@ def connect(dsn: str) -> psycopg.Connection:
 
 def scope_key(source: str, *, player_id: int | None = None, season: str | None = None,
               season_type: str | None = None, game_id: str | None = None,
-              team_id: int | None = None) -> str:
+              team_id: int | None = None, through: str | None = None) -> str:
     """The source_head key: source plus the dimensions this source is scoped
     by, empty for the rest (0006_source_head.sql). Team-scoped sources
-    (0009_team_surface.sql) append a sixth segment; player-scoped keys keep
-    their five-segment form byte-for-byte."""
+    (0009_team_surface.sql) append a sixth segment and date-scoped rulers
+    (0010_game_payload.sql) a seventh; keys without them keep their earlier
+    form byte-for-byte."""
     key = ":".join([source, str(player_id or ""), season or "",
                     season_type or "", game_id or ""])
-    if team_id is not None:
-        key += f":{team_id}"
+    if team_id is not None or through is not None:
+        key += f":{team_id or ''}"
+    if through is not None:
+        key += f":{through}"
     return key
 
 

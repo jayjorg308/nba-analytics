@@ -692,6 +692,15 @@ backup bucket, set the task's power settings (done 2026-09-24).
   rewrite._
 - The ruler measurement and the game-grain delta distribution.
 - ADR-0088 and ADR-0089; the game payload export, golden, oracles, guards.
+  _Built 2026-10-14 (`feature_ReportCardPage`): migration
+  `0010_game_payload.sql` (`league_ruler_zone`, `league_game`, the
+  one-day team source), `load_rulers.py`, `load_team_games.py`,
+  `export_game_payload.py` with every oracle above, the golden
+  (`regen_game_golden.py`, one trimmed real game), and the TypeScript
+  contract. Two findings: a ruler's game count needs its own source (the
+  frame states attempts only), so `pull_rulers.py` now also pulls the
+  league game log; and that log reads "@" for both teams of a
+  neutral-site game, so it stores the two teams, never home and away._
 - 82 opponent pulls for 2025-26; the season index; 82 game payloads.
 - The report card page, the season page with ledger and quadrant, share
   cards and emitted pages.

@@ -59,28 +59,37 @@ const FTA_BY_CLASS: Record<TripClass, readonly [number, number]> = {
 const countShape = <T extends readonly [string, ...string[]]>(values: T) =>
   z.strictObject(Object.fromEntries(values.map((value) => [value, z.number().int().min(0)])))
 
-const tripSchema = z
-  .strictObject({
-    gameId: z.string().min(1),
-    period: z.number().int().min(1),
-    clock: z.string().regex(/^PT\d{2}M\d{2}(\.\d{1,2})?S$/),
-    tripClass: z.enum(TRIP_CLASSES),
-    ftm: z.number().int().min(0),
-    fta: z.number().int().min(1),
-    shotId: z.number().int().nullable(),
-  })
-  .superRefine((trip, ctx) => {
-    const [min, max] = FTA_BY_CLASS[trip.tripClass]
-    if (trip.fta < min || trip.fta > max) {
-      ctx.addIssue({ code: 'custom', message: `${trip.tripClass} trip fta must be in [${min}, ${max}]` })
-    }
-    if (trip.ftm > trip.fta) {
-      ctx.addIssue({ code: 'custom', message: 'trip ftm exceeds fta' })
-    }
-    if ((trip.tripClass === 'andOne') !== (trip.shotId !== null)) {
-      ctx.addIssue({ code: 'custom', message: 'shotId is present iff the trip is an and-one' })
-    }
-  })
+/** The v3 trip row's fields, exported so the game payload (ADR-0088) can
+ * extend the row with player identity instead of duplicating it. */
+export const tripShape = {
+  gameId: z.string().min(1),
+  period: z.number().int().min(1),
+  clock: z.string().regex(/^PT\d{2}M\d{2}(\.\d{1,2})?S$/),
+  tripClass: z.enum(TRIP_CLASSES),
+  ftm: z.number().int().min(0),
+  fta: z.number().int().min(1),
+  shotId: z.number().int().nullable(),
+}
+
+/** The trip row's class bounds and linkage rule, shared with the game
+ * payload's extended row. */
+export function checkTrip(
+  trip: { tripClass: TripClass; ftm: number; fta: number; shotId: number | null },
+  ctx: z.RefinementCtx,
+): void {
+  const [min, max] = FTA_BY_CLASS[trip.tripClass]
+  if (trip.fta < min || trip.fta > max) {
+    ctx.addIssue({ code: 'custom', message: `${trip.tripClass} trip fta must be in [${min}, ${max}]` })
+  }
+  if (trip.ftm > trip.fta) {
+    ctx.addIssue({ code: 'custom', message: 'trip ftm exceeds fta' })
+  }
+  if ((trip.tripClass === 'andOne') !== (trip.shotId !== null)) {
+    ctx.addIssue({ code: 'custom', message: 'shotId is present iff the trip is an and-one' })
+  }
+}
+
+const tripSchema = z.strictObject(tripShape).superRefine(checkTrip)
 
 export const freethrowPayloadSchema = z
   .strictObject({

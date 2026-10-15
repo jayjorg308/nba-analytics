@@ -1,0 +1,207 @@
+{
+  "_meta": {
+    "game_id": "0022500492",
+    "pull_date": "2026-07-16",
+    "pull_unit": "game",
+    "source": "NBA Stats BoxScoreTraditionalV3",
+    "fixture_note": "FIXTURE: trimmed from the real 2025-26 artifact for game 0022500492 (UTA vs GSW, 2026-01-03) to five players; see tests/fixtures/README.md. Team assists and points are the kept players' own."
+  },
+  "response": {
+    "meta": {
+      "version": 1,
+      "request": "http://nba.cloud/games/0022500492/boxscoretraditional?Format=json",
+      "time": "2026-01-04T01:20:13.2013Z"
+    },
+    "boxScoreTraditional": {
+      "gameId": "0022500492",
+      "awayTeamId": 1610612762,
+      "homeTeamId": 1610612744,
+      "homeTeam": {
+        "teamId": 1610612744,
+        "teamCity": "Golden State",
+        "teamName": "Warriors",
+        "teamTricode": "GSW",
+        "teamSlug": "warriors",
+        "players": [
+          {
+            "personId": 203110,
+            "firstName": "Draymond",
+            "familyName": "Green",
+            "nameI": "D. Green",
+            "playerSlug": "draymond-green",
+            "position": "F",
+            "comment": "",
+            "jerseyNum": "",
+            "statistics": {
+              "minutes": "12:04",
+              "fieldGoalsMade": 3,
+              "fieldGoalsAttempted": 4,
+              "fieldGoalsPercentage": 0.75,
+              "threePointersMade": 1,
+              "threePointersAttempted": 2,
+              "threePointersPercentage": 0.5,
+              "freeThrowsMade": 1,
+              "freeThrowsAttempted": 1,
+              "freeThrowsPercentage": 1.0,
+              "reboundsOffensive": 0,
+              "reboundsDefensive": 3,
+              "reboundsTotal": 3,
+              "assists": 2,
+              "steals": 0,
+              "blocks": 1,
+              "turnovers": 1,
+              "foulsPersonal": 0,
+              "points": 8,
+              "plusMinusPoints": -15.0
+            }
+          },
+          {
+            "personId": 201939,
+            "firstName": "Stephen",
+            "familyName": "Curry",
+            "nameI": "S. Curry",
+            "playerSlug": "stephen-curry",
+            "position": "G",
+            "comment": "",
+            "jerseyNum": "",
+            "statistics": {
+              "minutes": "34:16",
+              "fieldGoalsMade": 8,
+              "fieldGoalsAttempted": 18,
+              "fieldGoalsPercentage": 0.444,
+              "threePointersMade": 6,
+              "threePointersAttempted": 12,
+              "threePointersPercentage": 0.5,
+              "freeThrowsMade": 9,
+              "freeThrowsAttempted": 9,
+              "freeThrowsPercentage": 1.0,
+              "reboundsOffensive": 0,
+              "reboundsDefensive": 2,
+              "reboundsTotal": 2,
+              "assists": 5,
+              "steals": 1,
+              "blocks": 0,
+              "turnovers": 2,
+              "foulsPersonal": 2,
+              "points": 31,
+              "plusMinusPoints": 5.0
+            }
+          }
+        ],
+        "statistics": {
+          "assists": 6,
+          "points": 39
+        }
+      },
+      "awayTeam": {
+        "teamId": 1610612762,
+        "teamCity": "Utah",
+        "teamName": "Jazz",
+        "teamTricode": "UTA",
+        "teamSlug": "jazz",
+        "players": [
+          {
+            "personId": 1641718,
+            "firstName": "Keyonte",
+            "familyName": "George",
+            "nameI": "K. George",
+            "playerSlug": "keyonte-george",
+            "position": "G",
+            "comment": "",
+            "jerseyNum": "",
+            "statistics": {
+              "minutes": "36:21",
+              "fieldGoalsMade": 7,
+              "fieldGoalsAttempted": 18,
+              "fieldGoalsPercentage": 0.389,
+              "threePointersMade": 4,
+              "threePointersAttempted": 9,
+              "threePointersPercentage": 0.444,
+              "freeThrowsMade": 4,
+              "freeThrowsAttempted": 5,
+              "freeThrowsPercentage": 0.8,
+              "reboundsOffensive": 1,
+              "reboundsDefensive": 1,
+              "reboundsTotal": 2,
+              "assists": 9,
+              "steals": 1,
+              "blocks": 0,
+              "turnovers": 7,
+              "foulsPersonal": 2,
+              "points": 22,
+              "plusMinusPoints": -5.0
+            }
+          },
+          {
+            "personId": 1641707,
+            "firstName": "Taylor",
+            "familyName": "Hendricks",
+            "nameI": "T. Hendricks",
+            "playerSlug": "taylor-hendricks",
+            "position": "",
+            "comment": "",
+            "jerseyNum": "",
+            "statistics": {
+              "minutes": "12:23",
+              "fieldGoalsMade": 0,
+              "fieldGoalsAttempted": 0,
+              "fieldGoalsPercentage": 0.0,
+              "threePointersMade": 0,
+              "threePointersAttempted": 0,
+              "threePointersPercentage": 0.0,
+              "freeThrowsMade": 1,
+              "freeThrowsAttempted": 2,
+              "freeThrowsPercentage": 0.5,
+              "reboundsOffensive": 1,
+              "reboundsDefensive": 1,
+              "reboundsTotal": 2,
+              "assists": 3,
+              "steals": 0,
+              "blocks": 0,
+              "turnovers": 1,
+              "foulsPersonal": 2,
+              "points": 1,
+              "plusMinusPoints": -4.0
+            }
+          },
+          {
+            "personId": 1642271,
+            "firstName": "Kyle",
+            "familyName": "Filipowski",
+            "nameI": "K. Filipowski",
+            "playerSlug": "kyle-filipowski",
+            "position": "",
+            "comment": "",
+            "jerseyNum": "",
+            "statistics": {
+              "minutes": "18:40",
+              "fieldGoalsMade": 3,
+              "fieldGoalsAttempted": 3,
+              "fieldGoalsPercentage": 1.0,
+              "threePointersMade": 0,
+              "threePointersAttempted": 0,
+              "threePointersPercentage": 0.0,
+              "freeThrowsMade": 1,
+              "freeThrowsAttempted": 2,
+              "freeThrowsPercentage": 0.5,
+              "reboundsOffensive": 0,
+              "reboundsDefensive": 1,
+              "reboundsTotal": 1,
+              "assists": 1,
+              "steals": 1,
+              "blocks": 1,
+              "turnovers": 0,
+              "foulsPersonal": 2,
+              "points": 7,
+              "plusMinusPoints": -4.0
+            }
+          }
+        ],
+        "statistics": {
+          "assists": 6,
+          "points": 30
+        }
+      }
+    }
+  }
+}

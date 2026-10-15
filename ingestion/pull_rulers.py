@@ -7,6 +7,12 @@ season-end ruler, skipping any through-date already in the raw layer, so a
 rerun pulls only what is missing. Rulers land under
 data/raw/_league/<season>/rulers/<through>/<pull-date>.json.
 
+It also pulls the league game log (data/raw/_league/<season>/game-log/),
+the source of each ruler's game count (ADR-0089): the frame states league
+attempts, never how many games they came from. Skipped when a log already
+on disk reaches the last ruler date; a living season's log grows, so a
+rerun after new games pulls a fresh one beside the old (append-only).
+
 LOCAL-ONLY: stats.nba.com blocks cloud IPs.
 
     python ingestion/pull_rulers.py --team uta --season 2025-26
@@ -61,6 +67,19 @@ def main() -> None:
         meta = json.loads(path.read_text(encoding="utf-8"))["_meta"]
         print(f"  [{i}/{len(todo)}] through {through}: league FGA {meta['league_fga']}", flush=True)
         time.sleep(args.sleep)
+
+    log_dir = REPO / "data" / "raw" / "_league" / args.season / "game-log"
+    logs = sorted(log_dir.glob("*.json")) if log_dir.exists() else []
+    if logs:
+        meta = json.loads(logs[-1].read_text(encoding="utf-8"))["_meta"]
+        reach = (meta["date_range"] or ["", ""])[1]
+        if reach >= max(wanted):
+            print(f"league game log on disk reaches {reach}: not pulled")
+            return
+    path = live_pulls.pull_league_game_log_snapshot(
+        args.season, log_dir, stamp=live_pulls.stamp_now(), pull_date=pull_date)
+    meta = json.loads(path.read_text(encoding="utf-8"))["_meta"]
+    print(f"league game log: {meta['games_included']} games, {meta['date_range']}")
 
 
 if __name__ == "__main__":
