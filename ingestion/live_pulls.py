@@ -353,6 +353,115 @@ def pull_team_shot_snapshot(
     return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
 
 
+def pull_team_game_snapshot(
+    team: str,
+    team_id: int,
+    season: str,
+    out_dir: Path,
+    *,
+    game_id: str,
+    game_date: str,
+    stamp: str = "",
+    pull_date: str,
+    timeout: int = 90,
+) -> Path:
+    """One team's shots in one game: a team-wide shotchartdetail windowed to
+    the game's date (DateFrom = DateTo = game_date). A team plays at most once
+    a day, so the window is exactly the game; the 2026-09-26 spike matched
+    Minnesota's 89 rows to the box score shooter by shooter. The report card's
+    opponent side until league-wide pulls exist (docs/plans/jazz-first-site.md,
+    phase 4). Stored as <out_dir>/<game_id>/<pull-date>.json, per-game like
+    the play-by-play corpus. The windowed LeagueAverages frame is that day's
+    only and is never a ruler (see pull_ruler_snapshot)."""
+    raw = shotchartdetail.ShotChartDetail(
+        team_id=team_id,
+        player_id=0,
+        season_nullable=season,
+        season_type_all_star=SEASON_TYPE,
+        context_measure_simple="FGA",  # ALL attempts — never the PTS default
+        date_from_nullable=nba_date(game_date),
+        date_to_nullable=nba_date(game_date),
+        timeout=timeout,
+    ).get_dict()
+    headers, rows = result_rows(raw, "Shot_Chart_Detail")
+    games = sorted({str(r[headers.index("GAME_ID")]) for r in rows}) if rows else []
+    snapshot = {
+        "_meta": {
+            "team": team,
+            "team_id": team_id,
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "pull_date": pull_date,
+            "pull_unit": "game",
+            "game_id": game_id,
+            "game_date": game_date,
+            "date_from": game_date,
+            "date_to": game_date,
+            "games_in_rows": games,
+            "shot_rows": len(rows),
+            "context_measure": "FGA",
+            "source": "stats.nba.com shotchartdetail team-wide, one-day window (unofficial)",
+        },
+        "response": raw,
+    }
+    return write_snapshot(out_dir / game_id / f"{pull_date}{stamp}.json", snapshot)
+
+
+# The pre-game ruler (docs/plans/jazz-first-site.md; ADR-0089 to record it):
+# a game is priced against the LeagueAverages frame through the day before
+# it. Two facts from the 2026-09-26 spike shape the pull:
+#   - the frame does not depend on the pull's subject (UTA and OKC team
+#     pulls through 2025-11-10 returned identical frames, 27,771 league
+#     FGA), so the ruler is pulled through a near-shotless player and the
+#     verbatim artifact is ~3 KB instead of a team's whole season;
+#   - the frame DOES respect DateFrom (a one-day window returned that day's
+#     1,635 league FGA), so a ruler is DateTo-only, never windowed.
+# The subject's own rows are ignored; any player id works.
+RULER_SUBJECT_PLAYER_ID = 1643060  # Hayden Gray: 3 FGA in all of 2025-26
+
+
+def pull_ruler_snapshot(
+    season: str,
+    out_dir: Path,
+    *,
+    through: str,
+    stamp: str = "",
+    pull_date: str,
+    subject_player_id: int = RULER_SUBJECT_PLAYER_ID,
+    timeout: int = 90,
+) -> Path:
+    """One league zone frame through `through` (inclusive): the ruler for a
+    game played the next day. Stored as <out_dir>/<through>/<pull-date>.json,
+    so a later re-pull of the same ruler appends beside it (ADR-0006)."""
+    raw = shotchartdetail.ShotChartDetail(
+        team_id=0,
+        player_id=subject_player_id,
+        season_nullable=season,
+        season_type_all_star=SEASON_TYPE,
+        context_measure_simple="FGA",
+        date_to_nullable=nba_date(through),
+        timeout=timeout,
+    ).get_dict()
+    headers, rows = result_rows(raw, "LeagueAverages")
+    league_fga = sum(int(r[headers.index("FGA")]) for r in rows) if rows else 0
+    snapshot = {
+        "_meta": {
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "pull_date": pull_date,
+            "through": through,
+            "date_to": through,
+            "league_fga": league_fga,
+            "subject_player_id": subject_player_id,
+            "subject_note": "incidental: LeagueAverages is subject-independent",
+            "context_measure": "FGA",
+            "source": "stats.nba.com shotchartdetail LeagueAverages (unofficial)",
+        },
+        "response": raw,
+    }
+    return write_snapshot(out_dir / through / f"{pull_date}{stamp}.json", snapshot)
+
+
 def pull_roster_snapshot(
     team: str,
     team_id: int,
