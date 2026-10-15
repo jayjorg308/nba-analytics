@@ -35,11 +35,23 @@ def latest(path: Path) -> Path:
     return sorted(path.glob("*.json"))[-1]
 
 
-def box_teams(game_id: str) -> tuple[dict, dict]:
+def box_teams(game_id: str, raw_root: Path = REPO / "data" / "raw") -> tuple[dict, dict]:
     """(home, away) team objects from the game's latest box score."""
-    box = json.loads(latest(REPO / "data" / "raw" / "box-score" / game_id).read_text(encoding="utf-8"))
+    box = json.loads(latest(raw_root / "box-score" / game_id).read_text(encoding="utf-8"))
     bs = box["response"]["boxScoreTraditional"]
     return bs["homeTeam"], bs["awayTeam"]
+
+
+def box_fga(side: dict) -> int:
+    """A side's field-goal attempts, summed over its box players."""
+    return sum(p["statistics"]["fieldGoalsAttempted"] for p in side["players"])
+
+
+def reconciles(meta: dict, game_id: str, side: dict) -> bool:
+    """A one-day pull landed the whole game: rows for that game alone, as
+    many as the side's box FGA. Also the season loop's readiness test
+    (ADR-0091), where a pull that falls short is lag and defers the game."""
+    return meta["games_in_rows"] == [game_id] and meta["shot_rows"] == box_fga(side)
 
 
 def main() -> None:
@@ -78,11 +90,11 @@ def main() -> None:
             game_id=game_id, game_date=game_date, stamp=live_pulls.stamp_now(),
             pull_date=pull_date)
         meta = json.loads(path.read_text(encoding="utf-8"))["_meta"]
-        box_fga = opp["statistics"]["fieldGoalsAttempted"]
-        ok = meta["games_in_rows"] == [game_id] and meta["shot_rows"] == box_fga
+        ok = reconciles(meta, game_id, opp)
         mismatches += 0 if ok else 1
         print(f"  [{i}/{len(todo)}] {game_date} {game_id} {opp['teamTricode']}: "
-              f"{meta['shot_rows']} rows, box FGA {box_fga}{'' if ok else '  <-- MISMATCH'}", flush=True)
+              f"{meta['shot_rows']} rows, box FGA {box_fga(opp)}{'' if ok else '  <-- MISMATCH'}",
+              flush=True)
         time.sleep(args.sleep)
     print(f"done: {len(todo)} pulled, {mismatches} mismatch(es) against the box score")
 

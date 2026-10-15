@@ -770,6 +770,22 @@ backup bucket, set the task's power settings (done 2026-09-24).
 ### Phase 3: live season, drill-ins, computed copy (October 19 to November 8)
 
 - ADR-0091 (game-night publishing, share images in the data commit).
+  _Built 2026-10-15: the team session sources every unpublished game inside
+  its frontier (the pre-game ruler, both teams' one-day pulls reconciled to
+  the box, a league game log naming it; a source that lags defers the game
+  and the frontier), exports the game files and index into `data/derived`
+  against the published ones, and in live mode syncs them, draws the
+  missing cards, and commits both after the gate. Wiring it found that a
+  game file naming the team's season pull would change the next morning
+  (that pull's source head moves every session), so the subject's side now
+  reads its own one-day pull too. The guards and the card generator read
+  published seasons from disk, so 2026-27's first data commits are guarded
+  before the registry lists the season. Dry run over 2025-26 (as of
+  2026-04-12, scratch store, `--no-commit`, the committed games and cards
+  set aside): 82 subject one-day pulls, each equal to its box FGA; all 82
+  game files rebuilt, each differing from the committed file only in the
+  subject's source line; the index identical; all 82 cards byte-identical;
+  the full gate green inside the session._
 - A player's night, a player's season, the roster rail.
 - ADR-0090 and the first templates: the two answers, then superlatives.
 - Retire `/game` and the game-log contract; the receipt components move to

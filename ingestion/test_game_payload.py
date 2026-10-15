@@ -20,6 +20,7 @@ import export_team_shot_payload as etp
 import load_hero_season as lhs
 import load_rulers as lr
 import load_team_games as ltg
+import load_team_season as lts
 import record_store as rs
 from regen_game_golden import FIXTURES, GAME_ID, GOLDEN, INDEX_GOLDEN, TEAM, load_fixture_store
 
@@ -145,6 +146,71 @@ def test_published_game_files_are_never_rewritten(store, tmp_path):
         egp.export_season(store, TEAM, "2025-26", tmp_path)
     assert egp.export_season(store, TEAM, "2025-26", tmp_path,
                              allow_rewrite=True)["rewritten"] == 1
+
+
+def test_an_export_against_the_published_dir_writes_only_new_games(store, tmp_path):
+    """The season loop's mode (ADR-0091): out_dir gets the index and the
+    games with no published file; a published game is compared, never
+    copied, and refuses if its bytes would change."""
+    published, derived = tmp_path / "public", tmp_path / "derived"
+    first = egp.export_season(store, TEAM, "2025-26", derived / "1", published_dir=published)
+    assert first == {"written": 1, "unchanged": 0, "rewritten": 0}
+    game = derived / "1" / "games" / f"{GAME_ID}.json"
+    assert game.read_text(encoding="utf-8") == GOLDEN.read_text(encoding="utf-8")
+
+    (published / "games").mkdir(parents=True)
+    (published / "games" / game.name).write_text(game.read_text(encoding="utf-8"),
+                                                 encoding="utf-8", newline="\n")
+    again = egp.export_season(store, TEAM, "2025-26", derived / "2", published_dir=published)
+    assert again == {"written": 0, "unchanged": 1, "rewritten": 0}
+    assert not (derived / "2" / "games").exists()
+    assert (derived / "2" / "index.json").read_text(encoding="utf-8") == INDEX_GOLDEN.read_text(
+        encoding="utf-8")
+
+    run_sql(store, "UPDATE player SET name = 'Wardell Curry' WHERE player_id = %s", (CURRY,))
+    with pytest.raises(SystemExit, match="immutable"):
+        egp.export_season(store, TEAM, "2025-26", derived / "3", published_dir=published)
+    assert not (derived / "3" / "games").exists()
+
+
+def subject_one_day_pull(tmp_path: Path) -> Path:
+    """The fixture game's subject side as a one-day pull: the team snapshot
+    fixture holds that one game alone, so its rows are the pull's rows."""
+    snap = json.loads((FIXTURES / "game-team-snapshot.truncated.json").read_text(encoding="utf-8"))
+    snap["_meta"].update({"pull_date": "2026-10-15", "pull_unit": "game", "game_id": GAME_ID,
+                          "game_date": "2026-01-03", "date_from": "2026-01-03",
+                          "date_to": "2026-01-03", "games_in_rows": [GAME_ID]})
+    path = tmp_path / "uta" / "games" / GAME_ID / "2026-10-15.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(snap), encoding="utf-8")
+    return path
+
+
+def test_the_subjects_one_day_pull_keeps_a_published_game_stable(store, tmp_path):
+    """Why the loop pulls the subject's side per game (ADR-0091): the season
+    pull's head moves with every session's pull, so a game file naming it
+    would change the next morning; a one-day pull is the game's own source."""
+    def repull(pull_date: str) -> Path:
+        snap = json.loads((FIXTURES / "game-team-snapshot.truncated.json").read_text(encoding="utf-8"))
+        snap["_meta"]["pull_date"] = pull_date
+        path = tmp_path / f"{pull_date}.json"
+        path.write_text(json.dumps(snap), encoding="utf-8")
+        return path
+
+    def subject_source() -> str:
+        return egp.export_game(store, TEAM, GAME_ID)["sides"][0]["sourceShotSnapshot"]
+
+    roster = FIXTURES / "team-roster.truncated.json"
+    before = subject_source()
+    lts.load_team_season(store, repull("2026-10-16"), roster)
+    assert subject_source() != before  # the season head moved
+
+    one_day = subject_one_day_pull(tmp_path)
+    ltg.load_team_games(store, [one_day])
+    published = egp.payload_text(egp.export_game(store, TEAM, GAME_ID))
+    assert subject_source().endswith(f"{GAME_ID}/2026-10-15.json")
+    lts.load_team_season(store, repull("2026-10-17"), roster)
+    assert egp.payload_text(egp.export_game(store, TEAM, GAME_ID)) == published
 
 
 # ---------------------------------------------------------------- loaders

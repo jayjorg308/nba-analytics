@@ -37,11 +37,17 @@ the whole session runs against a completed season as if the calendar read
 
 THE TEAM SESSION (ADR-0081/0082, per liveTeams entry, after the heroes):
   roster + team-wide discovery pulls, missing pairs, the pair frontier (no
-  tracking coherence — no team tracking contract), the anchored team pull,
-  the team shot derive (record store or files), the frontier gate, and in
-  live mode team:sync -> full gate -> a data-only commit under
-  public/data/_teams/<tricode>/. A tool surface renders from game one, so
-  there is no volume gate; dark mode still pulls and derives daily.
+  tracking coherence — no team tracking contract), then each unpublished
+  game's own sources (ADR-0091: its pre-game ruler, both teams' one-day
+  pulls reconciled to the box, a league game log that names it; a source
+  that lags defers the game and the frontier with it), the anchored team
+  pull, the team shot derive (record store or files), the game files and
+  season index exported into data/derived against the published ones
+  (ADR-0088: a published game that would change halts), the frontier gate,
+  and in live mode team:sync -> cards:games for the new games -> full gate
+  -> a data-only commit of public/data/_teams/<tricode>/ and those cards.
+  A tool surface renders from game one, so there is no volume gate; dark
+  mode still pulls and derives daily.
 
 LOCAL-ONLY: stats.nba.com blocks cloud IPs. Run on the dev machine, via
 scripts/season-update.ps1 under Task Scheduler for the daily cadence.
@@ -59,6 +65,8 @@ from datetime import date, datetime
 from pathlib import Path
 
 import live_pulls
+import pull_opponent_games as pog
+from pull_rulers import day_before
 
 STUCK_SESSIONS = 3
 RETREAT_LIMIT = 10
@@ -663,6 +671,165 @@ def team_slug(entry: dict) -> str:
     return f"team-{entry['tricode'].lower()}"
 
 
+# --- Game publishing (ADR-0088/0089/0091) ---------------------------------------
+#
+# A game publishes as one immutable file, so everything it names must be
+# stable from the session that first writes it: its pre-game ruler, the
+# league game log behind the ruler's game count, and BOTH teams' one-day
+# pulls. The subject reads its own one-day pull, not the season pull, because
+# the season pull's source head moves every session and an immutable file
+# cannot name a moving source (ADR-0091).
+
+CARDS_DIR = "public/social-cards/"
+
+
+def latest_json(directory: Path) -> Path | None:
+    """The latest snapshot in a raw directory (stamped names sort in pull
+    order), or None when it has none."""
+    snaps = sorted(directory.glob("*.json")) if directory.is_dir() else []
+    return snaps[-1] if snaps else None
+
+
+def one_day_pull_dir(raw_root: Path, tricode: str, season: str) -> Path:
+    """Where a team's one-day pulls land, one directory per game."""
+    return raw_root / "_teams" / tricode.lower() / season / "games"
+
+
+def logged_games(log_path: Path) -> set[str]:
+    """The game ids a league game log snapshot names."""
+    headers, rows = live_pulls.result_rows(read_json(log_path)["response"], "LeagueGameLog")
+    return {str(r[headers.index("GAME_ID")]) for r in rows}
+
+
+def unpublished_games(games: dict[str, str], paired: set[str], through: str,
+                      published_dir: Path) -> dict[str, str]:
+    """The paired games through a date that have no published game file:
+    the ones this session sources and, on green, publishes."""
+    return {gid: gd for gid, gd in games.items()
+            if gd <= through and gid in paired
+            and not (published_dir / "games" / f"{gid}.json").exists()}
+
+
+def ensure_game_sources(new: dict[str, str], season: str, raw_root: Path, *,
+                        as_of: str | None, stamp: str, pull_date: str,
+                        sleep: float) -> dict[str, str]:
+    """Put on disk what each new game's file reads, pulling only what is
+    missing: the pre-game ruler (the league frame through the day before,
+    ADR-0089), both teams' one-day pulls (the teams read from the game's box
+    score; one on disk that does not reconcile with the box is pulled
+    again), and a league game log that names every new game (one fresh pull
+    when the latest on disk does not). Returns {game_id: reason} for the
+    games whose sources still fall short: lag, which defers (ADR-0058)."""
+    lagging: dict[str, str] = {}
+    rulers = raw_root / "_league" / season / "rulers"
+    for gid, gdate in sorted(new.items(), key=lambda g: (g[1], g[0])):
+        through = day_before(gdate)
+        if latest_json(rulers / through) is None:
+            time.sleep(sleep)
+            live_pulls.pull_ruler_snapshot(season, rulers, through=through,
+                                           stamp=stamp, pull_date=pull_date)
+            log(f"  ruler through {through} pulled")
+        for side in pog.box_teams(gid, raw_root):
+            out_dir = one_day_pull_dir(raw_root, side["teamTricode"], season)
+            snap = latest_json(out_dir / gid)
+            if snap is not None and pog.reconciles(read_json(snap)["_meta"], gid, side):
+                continue
+            time.sleep(sleep)
+            snap = live_pulls.pull_team_game_snapshot(
+                f"{side['teamCity']} {side['teamName']}", int(side["teamId"]), season,
+                out_dir, game_id=gid, game_date=gdate, stamp=stamp, pull_date=pull_date)
+            meta = read_json(snap)["_meta"]
+            log(f"  {gid} {side['teamTricode']} one-day pull: {meta['shot_rows']} rows, "
+                f"box FGA {pog.box_fga(side)}")
+            if not pog.reconciles(meta, gid, side):
+                lagging[gid] = (f"{side['teamTricode']} one-day pull has {meta['shot_rows']} "
+                                f"rows for {meta['games_in_rows']}, box FGA {pog.box_fga(side)}")
+    needed = set(new) - set(lagging)
+    if needed:
+        log_dir = raw_root / "_league" / season / "game-log"
+        log_path = latest_json(log_dir)
+        if log_path is None or needed - logged_games(log_path):
+            time.sleep(sleep)
+            log_path = live_pulls.pull_league_game_log_snapshot(
+                season, log_dir, date_to=as_of, stamp=stamp, pull_date=pull_date)
+            log(f"  league game log -> {log_path.name}")
+        for gid in sorted(needed - logged_games(log_path)):
+            lagging[gid] = "not yet in the league game log"
+    return lagging
+
+
+def db_export_games(args: argparse.Namespace, team: str, season: str,
+                    universe: dict[str, str], raw_root: Path, out_dir: Path,
+                    published_dir: Path, report: list[str]) -> list[str]:
+    """The game step (ADR-0088/0091): load every universe game's sources
+    (both one-day pulls, its pre-game ruler, the latest league game log),
+    then export the game files and the season index into out_dir, each game
+    checked against its published file. Identical bytes stay put, a game
+    with no published file is written, and a published game whose bytes
+    would change halts the session (a correction travels by PR). Returns the
+    slugs of the games written."""
+    guard_production_store(args)
+    import export_game_payload as egp
+    import load_hero_season as lhs
+    import load_rulers as lr
+    import load_team_games as ltg
+    import record_store as rs
+
+    rulers = raw_root / "_league" / season / "rulers"
+    ruler_paths: list[Path] = []
+    for through in sorted({day_before(d) for d in universe.values()}):
+        path = latest_json(rulers / through)
+        if path is None:
+            raise Halt(f"no ruler on disk through {through} for a game inside the frontier")
+        ruler_paths.append(path)
+    pull_paths: list[Path] = []
+    for gid in sorted(universe):
+        for side in pog.box_teams(gid, raw_root):
+            path = latest_json(one_day_pull_dir(raw_root, side["teamTricode"], season) / gid)
+            if path is None:
+                raise Halt(f"game {gid}: no one-day pull on disk for {side['teamTricode']}")
+            pull_paths.append(path)
+    log_path = latest_json(raw_root / "_league" / season / "game-log")
+    if log_path is None:
+        raise Halt(f"no league game log on disk for {season}")
+
+    with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
+        rs.apply_migrations(conn)
+        try:
+            ltg.load_team_games(conn, pull_paths)
+            lr.load_rulers(conn, ruler_paths, log_path)
+        except lhs.LoadHalt as halt:
+            raise Halt(f"record-store load halted: {halt}") from halt
+        except SystemExit as exc:
+            raise Halt(f"record-store load failed: {exc}") from exc
+        report.append(f"game sources loaded: {len(pull_paths)} one-day pulls, "
+                      f"{len(ruler_paths)} rulers, the league game log")
+        try:
+            counts = egp.export_season(conn, team, season, out_dir,
+                                       published_dir=published_dir)
+        except SystemExit as exc:
+            raise Halt(f"game export failed: {exc}") from exc
+    written = {p.stem for p in (out_dir / "games").glob("*.json")}
+    slugs = [g["slug"] for g in read_json(out_dir / "index.json")["games"]
+             if g["gameId"] in written]
+    report.append(f"game export ok: {len(slugs)} new ({', '.join(slugs) or 'none'}), "
+                  f"{counts['unchanged']} published and unchanged")
+    return slugs
+
+
+def changed_team_cards() -> list[str]:
+    """Team share cards new or changed in the tree: the files under a team's
+    subdirectory of public/social-cards/ (hero cards sit at its top level and
+    never ride a data commit)."""
+    paths = []
+    status = run(f"git status --porcelain --untracked-files=all {CARDS_DIR}").stdout
+    for line in status.splitlines():
+        path = line[3:].strip().strip('"').replace("\\", "/")
+        if path.startswith(CARDS_DIR) and "/" in path[len(CARDS_DIR):]:
+            paths.append(path)
+    return paths
+
+
 def db_derive_team(args: argparse.Namespace, team: str, season: str,
                    shot_path: Path, roster_path: Path, universe: set[str],
                    out_path: Path, report: list[str]) -> None:
@@ -706,10 +873,12 @@ def db_derive_team(args: argparse.Namespace, team: str, season: str,
 
 def run_team(entry: dict, args: argparse.Namespace) -> dict:
     """One team session: roster + discovery pulls, missing pairs, the pair
-    frontier (no tracking coherence — no team tracking contract), the
-    anchored team pull, the derive, the frontier gate, and in live mode the
-    sync -> full gate -> data commit. A tool surface renders from game one
-    (ADR-0081), so 'gates' here means frontier exactness, never volume."""
+    frontier (no tracking coherence — no team tracking contract), each
+    unpublished game's own sources (lag retreats the frontier), the anchored
+    team pull, the derive, the frontier gate, the game export, and in live
+    mode the sync -> cards -> full gate -> data commit. A tool surface
+    renders from game one (ADR-0081), so 'gates' here means frontier
+    exactness, never volume."""
     team, team_id, season = entry["team"], int(entry["teamId"]), entry["season"]
     tricode = entry["tricode"].lower()
     mode = entry.get("mode", "dark")
@@ -718,12 +887,16 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
     stamp = live_pulls.stamp_now()
     raw_root = REPO / "data" / "raw"
     team_root = raw_root / "_teams" / tricode / season
+    published_dir = REPO / "public" / "data" / "_teams" / tricode / season
     report: list[str] = []
     status: dict = {"slug": slug, "team": team, "season": season, "mode": mode,
                     "session": f"{pull_date}{stamp}", "asOf": args.as_of}
 
     log(f"\n=== season loop (team): {team} {season} [{mode}]"
         f"{' as-of ' + args.as_of if args.as_of else ''} ===")
+    if mode == "live" and args.engine != "db":
+        raise Halt("a live team session publishes game payloads, which are born "
+                   "DB-native (ADR-0088) — run it with --engine db")
 
     # 1. Roster (current state — the roster has no DateTo; under --as-of the
     #    replay still observes today's roster, and the payload says so).
@@ -755,9 +928,9 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
         run("python ingestion/pull_play_by_play.py --game-ids " + " ".join(missing),
             timeout=3600)
     paired = {g for g in games if paired_game_exists(raw_root, g)}
-    new_games = len([g for g in missing if g in paired])
 
-    # 4. Frontier: pair availability alone (ADR-0058; no tracking to reconcile).
+    # 4. Frontier candidate: pair availability (ADR-0058; no tracking to
+    #    reconcile).
     candidate = candidate_frontier(games, paired)
     if candidate is None:
         status.update(outcome="deferred", deferred=True,
@@ -766,33 +939,56 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
         return status
 
     deployed = REPO / "public" / "data" / "_teams" / tricode / f"{season}.json"
+    deployed_index = published_dir / "index.json"
     prior_discoveries = sorted(p for p in team_root.glob("*-discovery.json")
                                if p != discovery_path)
-    if (mode == "live" and not args.force and deployed.exists() and prior_discoveries):
+    if (mode == "live" and not args.force and deployed.exists()
+            and deployed_index.exists() and prior_discoveries):
         deployed_meta = read_json(deployed)["_meta"]
         _, prior_rows = shot_rows(read_json(prior_discoveries[-1]))
         pre_drop = deployed_meta["totalShots"] + deployed_meta["zoneConflictsDropped"]
-        if (deployed_meta["dataThrough"] == candidate and pre_drop == len(rows)
-                and prior_rows == rows):
+        if (deployed_meta["dataThrough"] == candidate
+                and read_json(deployed_index)["_meta"]["dataThrough"] == candidate
+                and pre_drop == len(rows) and prior_rows == rows):
             status.update(outcome="no-change", frontier=candidate,
                           note="upstream identical to previous session; "
                                "deployed already at the candidate frontier")
             log("  no change upstream — session ends before anchored pulls")
             return status
 
-    frontier = candidate
-    deferred = len(paired) < len(games)
+    # 5. Each unpublished game's own sources (ADR-0091). A source that lags
+    #    defers its game, and the frontier, being whole dates, stops before it.
+    lagging: dict[str, str] = {}
+    if args.engine == "db":
+        new = unpublished_games(games, paired, candidate, published_dir)
+        if new:
+            log(f"  sourcing {len(new)} unpublished game(s)")
+            lagging = ensure_game_sources(new, season, raw_root, as_of=args.as_of,
+                                          stamp=stamp, pull_date=pull_date,
+                                          sleep=args.sleep)
+        for gid, why in sorted(lagging.items()):
+            report.append(f"game {gid} ({games[gid]}) deferred: {why}")
+        if lagging:
+            status["lagging"] = lagging  # the status file says why, published or not
+    frontier = candidate_frontier(games, paired - set(lagging))
+    if frontier is None:
+        status.update(outcome="deferred", deferred=True, candidate=candidate,
+                      note="no game's sources are complete yet — frontier unset")
+        log("  DEFERRED: no game's sources are complete yet")
+        return status
+    deferred = len(paired) < len(games) or frontier != candidate
     status.update(frontier=frontier, candidate=candidate, deferred=deferred)
     report.append(f"frontier {frontier}"
-                  + (" — deferred games pending upstream pairs" if deferred else ""))
+                  + (f" (candidate {candidate})" if frontier != candidate else "")
+                  + (" — deferred games pending upstream" if deferred else ""))
     if deferred:
         prior = consecutive_deferrals(STATUS_DIR, slug, season)
         if prior + 1 >= STUCK_SESSIONS:
             status["stuckAlarm"] = True
-            report.append(f"!! STALENESS ALARM: pairs missing behind the candidate for "
+            report.append(f"!! STALENESS ALARM: games deferred behind the candidate for "
                           f"{prior + 1} consecutive sessions (ADR-0058)")
 
-    # 5. The anchored team pull at the settled frontier.
+    # 6. The anchored team pull at the settled frontier.
     max_disc_date = max(games.values())
     if frontier == max_disc_date and (args.as_of is None or args.as_of == frontier):
         shot_path = discovery_path
@@ -802,7 +998,7 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
             team, team_id, season, team_root,
             date_to=frontier, stamp=f"{stamp}-frontier", pull_date=pull_date)
 
-    # 6. Derive — the record store (production) or the file derive (fallback);
+    # 7. Derive — the record store (production) or the file derive (fallback);
     #    same derived path either way, so sync and gates are engine-blind.
     derived = REPO / "data" / "derived" / "_teams" / tricode / season
     out_path = derived / f"{pull_date}{stamp}.json"
@@ -823,7 +1019,7 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
             raise Halt(f"ledger derive failed:\n{result.stdout}\n{result.stderr}")
         report.append("ledger derive ok (files)")
 
-    # 7. The frontier gate: the payload states exactly the settled frontier.
+    # 8. The frontier gate: the payload states exactly the settled frontier.
     meta = read_json(out_path)["_meta"]
     frontier_ok = (meta["dataThrough"] == frontier
                    and meta["gamesIncluded"] == len(universe))
@@ -836,24 +1032,45 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
                   f"games through {meta['dataThrough']}, "
                   f"{meta['zoneConflictsDropped']} conflict(s) dropped")
 
+    # 9. The game files and the season index (ADR-0088), into data/derived
+    #    beside the team payload, checked against the published files. Born
+    #    DB-native, so the files engine (dark only, above) skips them.
+    new_slugs: list[str] = []
+    if args.engine == "db":
+        new_slugs = db_export_games(
+            args, team, season, {gid: games[gid] for gid in universe}, raw_root,
+            derived / "games" / out_path.stem, published_dir, report)
+    else:
+        report.append("game payloads skipped: born DB-native (ADR-0088)")
+    status["newGames"] = new_slugs
+
     if mode == "dark":
         status.update(outcome="dark")
         log("  dark mode: derived + reported, publishing nothing")
         return status
 
-    # 8. Publish (live mode): sync -> full gate -> data commit on green.
+    # 10. Publish (live mode): sync -> share cards -> full gate -> a data
+    #     commit on green (ADR-0057, as amended by ADR-0091).
     if not args.no_commit:
         guard_publish()
     result = run(f"npm run team:sync -- {tricode} {season}")
     if result.returncode != 0:
         raise Halt(f"team:sync failed:\n{result.stdout}\n{result.stderr}")
+    # Every published game missing its card: the new games', plus any a
+    # halted session left undrawn. Drawn from committed files only.
+    result = run("npm run cards:games -- --missing")
+    if result.returncode != 0:
+        raise Halt(f"cards:games failed:\n{result.stdout}\n{result.stderr}")
     run_gate()
     report.append("full gate green")
 
     deployed_dir = f"public/data/_teams/{tricode}/"
-    if not run(f"git status --porcelain {deployed_dir}").stdout.strip():
+    cards = changed_team_cards()
+    if cards:
+        report.append(f"share cards: {', '.join(Path(c).stem for c in cards)}")
+    if not run(f"git status --porcelain {deployed_dir}").stdout.strip() and not cards:
         status.update(outcome="no-change")
-        report.append("deployed team payload unchanged — nothing to commit")
+        report.append("deployed team payloads unchanged — nothing to commit")
         log("  no change — nothing to commit")
         return status
     if args.no_commit:
@@ -863,9 +1080,10 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
     msg_file = STATUS_DIR / f"commit-msg-{slug}.txt"
     msg_file.parent.mkdir(parents=True, exist_ok=True)
     msg_file.write_text(
-        build_commit_message(slug, season, frontier, len(universe), new_games, report),
+        build_commit_message(slug, season, frontier, len(universe), len(new_slugs), report),
         encoding="utf-8")
-    for cmd in (f"git add {deployed_dir}", f"git commit -F \"{msg_file}\""):
+    adds = [f"git add {deployed_dir}"] + ([f"git add -- {' '.join(cards)}"] if cards else [])
+    for cmd in (*adds, f"git commit -F \"{msg_file}\""):
         result = run(cmd)
         if result.returncode != 0:
             raise Halt(f"git step failed:\n[{cmd}]\n{result.stderr}")

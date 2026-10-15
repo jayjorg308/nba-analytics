@@ -2,12 +2,15 @@
 // plan): each committed game builds its card, and its two numbers equal its
 // quadrant dot's and its ledger row's AS DISPLAYED, the gaps of displayed
 // anchors (ADR-0023), so a reader who follows a link never sees a number
-// change. Ranks appear from the minimum game count on. Skips on clean clones.
+// change. Ranks appear from the minimum game count on. Covers every team
+// season published on disk, registered or not (ADR-0091). Skips on clean
+// clones.
 
-import { existsSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { formatSignedGap } from '../format'
+import { publishedSeasons, TEAMS_ROOT as teamsRoot } from '../teams/published'
 import { TEAMS } from '../teams/registry'
 import type { ShotMetrics } from './aggregate'
 import { aggregateTeam } from './aggregateTeam'
@@ -17,7 +20,6 @@ import { buildReportCard, SEASON_RANK_MIN_GAMES } from './reportCard'
 import { parseTeamSeasonIndex } from './teamSeasonIndex'
 import { parseTeamShotPayload } from './teamShotPayload'
 
-const teamsRoot = path.resolve(process.cwd(), 'public/data/_teams')
 const readJson = (p: string) => JSON.parse(readFileSync(p, 'utf-8')) as unknown
 
 const displayed = (m: ShotMetrics) => [
@@ -26,9 +28,11 @@ const displayed = (m: ShotMetrics) => [
 ]
 
 const published = TEAMS.flatMap((team) =>
-  team.seasons
-    .map((season) => ({ team, season, root: path.join(teamsRoot, team.tricode.toLowerCase()) }))
-    .filter(({ root, season }) => existsSync(path.join(root, season, 'index.json'))),
+  publishedSeasons(team).map((season) => ({
+    team,
+    season,
+    root: path.join(teamsRoot, team.tricode.toLowerCase()),
+  })),
 )
 
 describe.skipIf(published.length === 0)('deployed report cards', () => {

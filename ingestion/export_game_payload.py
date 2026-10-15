@@ -36,7 +36,8 @@ one row per published game — slug, date, opponent, home, both scores, the
 subject's box team line, and that game's ruler with its rolled-up zones —
 small and living. Game files are immutable: export_season never rewrites a
 published game file whose bytes would change (a correction travels by PR,
---allow-rewrite).
+--allow-rewrite). The season loop's team session exports into data/derived
+against the published directory and syncs from there (ADR-0091).
 
 USAGE:
   python ingestion/export_game_payload.py --team "Utah Jazz" --season 2025-26 --out-dir public/data/_teams/uta/2025-26
@@ -443,16 +444,21 @@ def payload_text(payload: dict) -> str:
     return json.dumps(payload, indent=2)
 
 
-def write_immutable(path: Path, text: str, *, allow_rewrite: bool) -> str:
+def write_immutable(path: Path, text: str, *, allow_rewrite: bool,
+                    published: Path | None = None) -> str:
     """Write a game file once. Identical bytes are a no-op; different bytes
-    over a published file refuse unless the caller is a reviewed correction."""
-    if path.exists():
-        current = path.read_text(encoding="utf-8")
-        if current == text:
+    over a published file refuse unless the caller is a reviewed correction.
+    `published` names the copy to compare against when it lives elsewhere
+    (the season loop exports into data/derived, ADR-0091); it defaults to
+    `path` itself."""
+    current = published or path
+    if current.exists():
+        if current.read_text(encoding="utf-8") == text:
             return "unchanged"
         if not allow_rewrite:
-            fail(f"{path} is published and would change — game files are immutable; "
+            fail(f"{current} is published and would change — game files are immutable; "
                  f"a correction travels by PR with a note (--allow-rewrite)")
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8", newline="\n")
         return "rewritten"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -461,9 +467,15 @@ def write_immutable(path: Path, text: str, *, allow_rewrite: bool) -> str:
 
 
 def export_season(conn, team: str, season: str, out_dir: Path, *,
-                  season_type: str = "Regular Season", allow_rewrite: bool = False) -> dict:
+                  season_type: str = "Regular Season", allow_rewrite: bool = False,
+                  published_dir: Path | None = None) -> dict:
     """Every game of the team shot payload's game set, then the index.
-    Returns {written, unchanged, rewritten} counts."""
+    Returns {written, unchanged, rewritten} counts.
+
+    With `published_dir` (the season loop, ADR-0091), each game is checked
+    against the published season directory instead of out_dir, and out_dir
+    receives only what a sync must copy: the index, plus the games with no
+    published file. A published game whose bytes would change still refuses."""
     team_payload = etp.export_payload(conn, team, season, season_type)
     # Chronological already (ADR-0082), so first appearance is game order.
     game_ids = list(dict.fromkeys(s["gameId"] for s in team_payload["shots"]))
@@ -472,8 +484,10 @@ def export_season(conn, team: str, season: str, out_dir: Path, *,
     for game_id in game_ids:
         game = export_game(conn, team, game_id)
         check_subject_slice(game, team_payload)
-        outcome = write_immutable(out_dir / "games" / f"{game_id}.json", payload_text(game),
-                                  allow_rewrite=allow_rewrite)
+        name = Path("games") / f"{game_id}.json"
+        outcome = write_immutable(out_dir / name, payload_text(game),
+                                  allow_rewrite=allow_rewrite,
+                                  published=published_dir / name if published_dir else None)
         counts[outcome] += 1
         rows.append(index_row(game))
     pm = team_payload["_meta"]
