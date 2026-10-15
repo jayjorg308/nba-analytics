@@ -711,6 +711,18 @@ backup bucket, set the task's power settings (done 2026-09-24).
   page reads the index._
 - The report card page, the season page with ledger and quadrant, share
   cards and emitted pages.
+  _Built 2026-10-14 (`feature_ReportCardPage`): the report card at
+  `/jazz/<game-slug>` in the chosen layout (`/jazz/<gameId>` opens the same
+  card), the quadrant's prior-season layer (renders once 2026-27 cards
+  exist; tested with a relabeled season), `src/app/teamRoute.ts`, and the
+  season page's ledger now priced per game against each game's own ruler
+  from the index, so a ledger row, its quadrant dot, and its card show the
+  same two numbers (guarded over all 82 games). Season ranks start at ten
+  games (`SEASON_RANK_MIN_GAMES`). The band words, the night's title, the
+  corner labels, and the rank phrasing are drafts in
+  `src/teams/computedCopy.ts`, tagged on the page until authored. The old
+  one-game page (`TeamGamePage`) is gone; the season page with its own
+  quadrant is still to do._
 - ADR-0087: the root becomes the Jazz home, `/arguments` the directory.
   The README's intro, its "Live at" line, and its route list follow in the
   same PR; they still describe the directory at the root.

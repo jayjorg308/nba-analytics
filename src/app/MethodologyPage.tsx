@@ -243,7 +243,11 @@ export function MethodologyPage() {
               of the team shot payload (season, game); the box oracle is
               team_payload.reconcile_box (per player, per game, at derive/load
               and export); the ledger is ledger_facts.build_ledger; the
-              per-game zone view is counts only (TeamGamePage.ZoneCounts). */}
+              per-game zone view is counts only (ReportCardPage's ZoneCounts).
+              Each game row is priced against its own pre-game ruler since
+              the report card (ADR-0089); the sentence below names no
+              ruler, so it stays true. The ruler's own paragraph is phase
+              3's methodology work. */}
           <p>
             The team page is a tool, not an argument. It takes every shot a team’s players took,
             runs the same two-axis arithmetic the player pages run, and shows the result with no

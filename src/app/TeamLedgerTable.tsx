@@ -32,7 +32,7 @@ export function TeamLedgerTable({ team, rows }: { team: TeamConfig; rows: readon
             {rows.map((r) => (
               <tr key={r.gameId}>
                 <th scope="row">
-                  <a href={teamGameUrl(team, r.gameId)}>{formatGameDate(r.gameDate)}</a>
+                  <a href={teamGameUrl(team, r.slug)}>{formatGameDate(r.gameDate)}</a>
                 </th>
                 <td>{formatMatchup(r.opponent, r.home)}</td>
                 <td>
@@ -69,7 +69,8 @@ export function TeamLedgerTable({ team, rows }: { team: TeamConfig; rows: readon
       </div>
       <p className="table-note">
         Selection Δ is expected points per shot from the game’s shot diet minus the league diet’s;
-        Conversion Δ is actual points per shot minus that expectation. Both in points per shot.
+        Conversion Δ is actual points per shot minus that expectation. Both in points per shot,
+        each game priced against the league as it stood entering its day, as on its card.
         {anyThin ? ` ${TEAM_COPY.ledgerThinNote}` : ''}
       </p>
     </div>
