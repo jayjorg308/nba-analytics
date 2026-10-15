@@ -201,3 +201,33 @@ def test_publish_halts_on_tracked_changes_elsewhere(monkeypatch):
     assert "src/App.tsx" in str(exc.value)
     assert "b.sql" in str(exc.value)
     assert "ace-bailey" not in str(exc.value)
+
+
+# --- The live gate (docs/plans/jazz-first-site.md, Phase 2) ---------------------
+
+def test_gate_requires_the_record_store_tests(monkeypatch):
+    calls = []
+
+    def fake_run(cmd, **kw):
+        calls.append((cmd, kw.get("extra_env")))
+        return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(su, "run", fake_run)
+    su.run_gate()
+    assert [cmd for cmd, _ in calls] == list(su.GATE_COMMANDS)
+    assert all(env == {"NBA_REQUIRE_RECORD_STORE": "1"} for _, env in calls)
+
+
+def test_gate_halts_on_the_first_red_command(monkeypatch):
+    calls = []
+
+    def fake_run(cmd, **kw):
+        calls.append(cmd)
+        code = 1 if cmd == "npm test" else 0
+        return subprocess.CompletedProcess(cmd, code, stdout="boom", stderr="")
+
+    monkeypatch.setattr(su, "run", fake_run)
+    with pytest.raises(su.Halt, match="npm test") as exc:
+        su.run_gate(" (the session's remedy)")
+    assert "(the session's remedy)" in str(exc.value)
+    assert calls == ["python -m pytest ingestion -q", "npm test"]
