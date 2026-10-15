@@ -7,11 +7,12 @@ import { MethodologyPage } from './app/MethodologyPage'
 import { GameCardPage } from './app/GameCardPage'
 import { GameLandingPage } from './app/GameLandingPage'
 import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
-import { TeamGamePage } from './app/TeamGamePage'
+import { ReportCardPage } from './app/ReportCardPage'
+import { parseTeamRoute } from './app/teamRoute'
 import { TeamPage } from './app/TeamPage'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
-import { GAME_ID, teamBySlug } from './teams/registry'
+import { teamBySlug } from './teams/registry'
 
 function App() {
     // Read once at render: navigation between pages is full page loads
@@ -80,13 +81,15 @@ function App() {
         )
     }
     // The team surface (ADR-0081/0082): a reserved team slug resolved before
-    // the registry. /jazz renders the canonical team season in place,
-    // /jazz/<season> a season with deployed payloads, /jazz/<gameId> one
-    // game row expanded (a ten-digit id, never confusable with a season).
-    // Anything else under the slug is nobody's page.
+    // the registry. teamRoute.ts reads the second segment: /jazz renders the
+    // canonical team season in place, /jazz/<season> a season with deployed
+    // payloads, /jazz/<game-slug> a report card, and /jazz/<gameId> (the
+    // first team page's links) the same card. Anything else under the slug
+    // is nobody's page.
     const team = teamBySlug(route.slug)
     if (team !== undefined) {
-        if (route.season === undefined) {
+        const teamRoute = parseTeamRoute(route.season)
+        if (teamRoute.kind === 'canonical') {
             return (
                 <>
                     <TeamPage team={team} season={team.canonicalSeason} />
@@ -94,18 +97,18 @@ function App() {
                 </>
             )
         }
-        if (GAME_ID.test(route.season)) {
+        if (teamRoute.kind === 'game' || teamRoute.kind === 'gameId') {
             return (
                 <>
-                    <TeamGamePage team={team} gameId={route.season} />
+                    <ReportCardPage team={team} route={teamRoute} />
                     <Analytics />
                 </>
             )
         }
-        if (team.seasons.includes(route.season)) {
+        if (teamRoute.kind === 'season' && team.seasons.includes(teamRoute.season)) {
             return (
                 <>
-                    <TeamPage team={team} season={route.season} />
+                    <TeamPage team={team} season={teamRoute.season} />
                     <Analytics />
                 </>
             )

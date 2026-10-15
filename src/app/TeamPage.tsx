@@ -3,27 +3,35 @@
 // surface and its frontier, the season-to-date two-axis profile over the
 // team shot payload, and the game ledger. Every number is aggregateTeam's
 // (one aggregation over slices of one payload); this component formats.
-// Both team contracts are required — one class of team page.
+// The shot payload, the ledger facts, and the season index (each game's
+// ruler, ADR-0088/0089) are all required — one class of team page.
 
 import { useEffect, useMemo } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
 import { aggregateTeam } from '../domain/aggregateTeam'
 import type { TeamMetrics } from '../domain/aggregateTeam'
 import type { LedgerFacts } from '../domain/ledgerFacts'
+import type { TeamSeasonIndex } from '../domain/teamSeasonIndex'
 import type { AssistStatus } from '../domain/shotContextPayload'
 import type { TeamShotPayload } from '../domain/teamShotPayload'
 import { formatDataThrough } from '../format'
 import { methodologyUrl } from '../heroes/urls'
 import { TEAM_COPY } from '../teams/copy'
 import type { TeamConfig } from '../teams/registry'
-import { ledgerFactsUrl, teamPageUrl, teamSeasonUrl, teamShotPayloadUrl } from '../teams/urls'
+import {
+  ledgerFactsUrl,
+  teamPageUrl,
+  teamSeasonIndexUrl,
+  teamSeasonUrl,
+  teamShotPayloadUrl,
+} from '../teams/urls'
 import { HeadlineBanner } from './HeadlineBanner'
 import { TEAM_SUBJECT } from './headlineSubject'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 import { TeamLedgerTable } from './TeamLedgerTable'
 import { Term } from './Term'
-import { useLedgerFacts, useTeamShotPayload } from './usePayload'
+import { useLedgerFacts, useTeamSeasonIndex, useTeamShotPayload } from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
 export function TeamPageError({ message }: { message: string }) {
@@ -38,6 +46,7 @@ export function TeamPageError({ message }: { message: string }) {
 export function TeamPage({ team, season }: { team: TeamConfig; season: string }) {
   const payloadState = useTeamShotPayload(teamShotPayloadUrl(team, season))
   const ledgerState = useLedgerFacts(ledgerFactsUrl(team, season))
+  const indexState = useTeamSeasonIndex(teamSeasonIndexUrl(team, season))
 
   useEffect(() => {
     document.title = `${team.name} · ${season} · shot profile`
@@ -45,7 +54,8 @@ export function TeamPage({ team, season }: { team: TeamConfig; season: string })
 
   if (payloadState.status === 'error') return <TeamPageError message={payloadState.message} />
   if (ledgerState.status === 'error') return <TeamPageError message={ledgerState.message} />
-  if (payloadState.status === 'loading' || ledgerState.status === 'loading') {
+  if (indexState.status === 'error') return <TeamPageError message={indexState.message} />
+  if (payloadState.status === 'loading' || ledgerState.status === 'loading' || indexState.status === 'loading') {
     return (
       <main className="hero-page team-page">
         <SiteNav />
@@ -54,7 +64,13 @@ export function TeamPage({ team, season }: { team: TeamConfig; season: string })
     )
   }
   return (
-    <TeamReady team={team} season={season} payload={payloadState.payload} ledger={ledgerState.payload} />
+    <TeamReady
+      team={team}
+      season={season}
+      payload={payloadState.payload}
+      ledger={ledgerState.payload}
+      index={indexState.payload}
+    />
   )
 }
 
@@ -105,13 +121,15 @@ function TeamReady({
   season,
   payload,
   ledger,
+  index,
 }: {
   team: TeamConfig
   season: string
   payload: TeamShotPayload
   ledger: LedgerFacts
+  index: TeamSeasonIndex
 }) {
-  const metrics = useMemo(() => aggregateTeam(payload, ledger), [payload, ledger])
+  const metrics = useMemo(() => aggregateTeam(payload, ledger, index), [payload, ledger, index])
   // The team payload carries no Case 3 context: the scatter renders every
   // shot with no assist marking (the map is empty, never guessed).
   const noAssists = useMemo(() => new Map<string, AssistStatus>(), [])

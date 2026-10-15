@@ -1,15 +1,18 @@
 // The team-level pure module (ADR-0081/0084, the Jazz surface plan): accepts
-// the parsed team shot payload and its ledger facts, enforces their
-// identities, and computes every number the team surface renders by calling
-// aggregateShotMetrics over slices of the SAME rows — the whole season for
-// the profile, one game's rows for each game row. React never slices, never
-// tallies, never subtracts (ADR-0011); selection and making math stays
-// aggregateShotMetrics's alone (ADR-0009).
+// the parsed team shot payload, its ledger facts, and the season index,
+// enforces their identities, and computes every number the team surface
+// renders by calling aggregateShotMetrics over slices of the SAME rows — the
+// whole season for the profile (the frontier ruler, the season's league),
+// one game's rows for each game row under THAT game's pre-game ruler from
+// the index (ADR-0089), so a ledger row always shows its card's numbers.
+// React never slices, never tallies, never subtracts (ADR-0011); selection
+// and making math stays aggregateShotMetrics's alone (ADR-0009).
 
 import { aggregateShotMetrics } from './aggregate'
 import type { ShotMetrics } from './aggregate'
 import { SMALL_SAMPLE_MAKING_ATTEMPTS } from './constants'
 import type { LedgerFacts } from './ledgerFacts'
+import type { TeamSeasonIndex } from './teamSeasonIndex'
 import type { TeamShotPayload } from './teamShotPayload'
 
 export interface TeamPlayerLine {
@@ -26,6 +29,8 @@ export interface TeamPlayerLine {
  * that game's slice of the team payload. */
 export interface TeamGameRow {
   gameId: string
+  /** The report card's URL segment, from the season index. */
+  slug: string
   gameDate: string
   opponent: string
   home: boolean
@@ -39,6 +44,7 @@ export interface TeamGameRow {
   /** Post-drop rows in the team payload for this game (the attempts the
    * decomposition sees). */
   shots: number
+  /** The game's slice under its own pre-game ruler: its card's numbers. */
   metrics: ShotMetrics
   /** The game's evaluation attempts fall under the making bar: the headline
    * pair renders with its count and a plain note (ADR-0081/0084). */
@@ -72,9 +78,18 @@ function nameIndex(payload: TeamShotPayload): Map<number, string> {
   return names
 }
 
-export function aggregateTeam(payload: TeamShotPayload, ledger: LedgerFacts): TeamMetrics {
+export function aggregateTeam(
+  payload: TeamShotPayload,
+  ledger: LedgerFacts,
+  index: TeamSeasonIndex,
+): TeamMetrics {
   const pm = payload._meta
   const lm = ledger._meta
+  const im = index._meta
+  if (pm.teamId !== im.teamId || pm.season !== im.season || pm.seasonType !== im.seasonType) {
+    throw new Error(`team payload (${pm.team} ${pm.season}) and season index (${im.team} ${im.season}) disagree`)
+  }
+  const indexRows = new Map(index.games.map((g) => [g.gameId, g]))
   if (pm.teamId !== lm.teamId || pm.season !== lm.season || pm.seasonType !== lm.seasonType) {
     throw new Error(
       `team payload (${pm.team} ${pm.season}) and ledger (${lm.team} ${lm.season}) disagree on identity`,
@@ -99,6 +114,9 @@ export function aggregateTeam(payload: TeamShotPayload, ledger: LedgerFacts): Te
   if (ledgerIds.size !== byGame.size) {
     throw new Error(`ledger lists ${ledgerIds.size} games, payload has ${byGame.size}`)
   }
+  if (indexRows.size !== ledgerIds.size || [...ledgerIds].some((id) => !indexRows.has(id))) {
+    throw new Error(`season index lists ${indexRows.size} games, the ledger ${ledgerIds.size}, not the same set`)
+  }
 
   const names = nameIndex(payload)
   let boxFga = 0
@@ -108,9 +126,11 @@ export function aggregateTeam(payload: TeamShotPayload, ledger: LedgerFacts): Te
       throw new Error(`game ${g.gameId}: box FGA ${g.fga} < ${slice.length} payload rows`)
     }
     boxFga += g.fga
-    const metrics = aggregateShotMetrics(slice, payload.zoneBaseline)
+    const indexRow = indexRows.get(g.gameId)!
+    const metrics = aggregateShotMetrics(slice, indexRow.ruler.zoneBaseline)
     return {
       gameId: g.gameId,
+      slug: indexRow.slug,
       gameDate: g.gameDate,
       opponent: g.opponent,
       home: g.home,

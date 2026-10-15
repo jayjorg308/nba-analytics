@@ -1,0 +1,276 @@
+{
+  "_meta": {
+    "season": "2025-26",
+    "season_type": "Regular Season",
+    "pull_date": "2026-09-26",
+    "through": "2026-01-02",
+    "date_to": "2026-01-02",
+    "league_fga": 91404,
+    "subject_player_id": 1643060,
+    "subject_note": "incidental: LeagueAverages is subject-independent",
+    "context_measure": "FGA",
+    "source": "stats.nba.com shotchartdetail LeagueAverages (unofficial)"
+  },
+  "response": {
+    "resource": "shotchartdetail",
+    "parameters": {
+      "LeagueID": "00",
+      "Season": "2025-26",
+      "SeasonType": "Regular Season",
+      "TeamID": 0,
+      "PlayerID": 1643060,
+      "GameID": null,
+      "Outcome": null,
+      "Location": null,
+      "Month": 0,
+      "SeasonSegment": null,
+      "DateFrom": "",
+      "DateTo": "01/02/2026",
+      "OpponentTeamID": 0,
+      "VsConference": null,
+      "VsDivision": null,
+      "Position": null,
+      "RookieYear": null,
+      "GameSegment": null,
+      "Period": 0,
+      "LastNGames": 0,
+      "ISTRound": null,
+      "ClutchTime": null,
+      "AheadBehind": null,
+      "PointDiff": null,
+      "RangeType": null,
+      "StartPeriod": null,
+      "EndPeriod": null,
+      "StartRange": null,
+      "EndRange": null,
+      "ContextFilter": null,
+      "ContextMeasure": "FGA"
+    },
+    "resultSets": [
+      {
+        "name": "Shot_Chart_Detail",
+        "headers": [
+          "GRID_TYPE",
+          "GAME_ID",
+          "GAME_EVENT_ID",
+          "PLAYER_ID",
+          "PLAYER_NAME",
+          "TEAM_ID",
+          "TEAM_NAME",
+          "PERIOD",
+          "MINUTES_REMAINING",
+          "SECONDS_REMAINING",
+          "EVENT_TYPE",
+          "ACTION_TYPE",
+          "SHOT_TYPE",
+          "SHOT_ZONE_BASIC",
+          "SHOT_ZONE_AREA",
+          "SHOT_ZONE_RANGE",
+          "SHOT_DISTANCE",
+          "LOC_X",
+          "LOC_Y",
+          "SHOT_ATTEMPTED_FLAG",
+          "SHOT_MADE_FLAG",
+          "GAME_DATE",
+          "HTM",
+          "VTM"
+        ],
+        "rowSet": []
+      },
+      {
+        "name": "LeagueAverages",
+        "headers": [
+          "GRID_TYPE",
+          "SHOT_ZONE_BASIC",
+          "SHOT_ZONE_AREA",
+          "SHOT_ZONE_RANGE",
+          "FGA",
+          "FGM",
+          "FG_PCT"
+        ],
+        "rowSet": [
+          [
+            "League Averages",
+            "Above the Break 3",
+            "Back Court(BC)",
+            "Back Court Shot",
+            3,
+            2,
+            0.667
+          ],
+          [
+            "League Averages",
+            "Above the Break 3",
+            "Center(C)",
+            "24+ ft.",
+            7175,
+            2529,
+            0.352
+          ],
+          [
+            "League Averages",
+            "Above the Break 3",
+            "Left Side Center(LC)",
+            "24+ ft.",
+            11118,
+            3978,
+            0.358
+          ],
+          [
+            "League Averages",
+            "Above the Break 3",
+            "Right Side Center(RC)",
+            "24+ ft.",
+            9861,
+            3392,
+            0.344
+          ],
+          [
+            "League Averages",
+            "Backcourt",
+            "Back Court(BC)",
+            "Back Court Shot",
+            15,
+            6,
+            0.4
+          ],
+          [
+            "League Averages",
+            "In The Paint (Non-RA)",
+            "Center(C)",
+            "8-16 ft.",
+            5686,
+            2630,
+            0.463
+          ],
+          [
+            "League Averages",
+            "In The Paint (Non-RA)",
+            "Center(C)",
+            "Less Than 8 ft.",
+            10711,
+            4669,
+            0.436
+          ],
+          [
+            "League Averages",
+            "In The Paint (Non-RA)",
+            "Left Side(L)",
+            "8-16 ft.",
+            907,
+            410,
+            0.452
+          ],
+          [
+            "League Averages",
+            "In The Paint (Non-RA)",
+            "Right Side(R)",
+            "8-16 ft.",
+            1077,
+            481,
+            0.447
+          ],
+          [
+            "League Averages",
+            "Left Corner 3",
+            "Left Side(L)",
+            "24+ ft.",
+            4964,
+            1877,
+            0.378
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Center(C)",
+            "16-24 ft.",
+            1271,
+            509,
+            0.4
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Center(C)",
+            "8-16 ft.",
+            772,
+            344,
+            0.446
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Left Side Center(LC)",
+            "16-24 ft.",
+            1198,
+            477,
+            0.398
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Left Side(L)",
+            "16-24 ft.",
+            482,
+            191,
+            0.396
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Left Side(L)",
+            "8-16 ft.",
+            1865,
+            771,
+            0.413
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Right Side Center(RC)",
+            "16-24 ft.",
+            1153,
+            474,
+            0.411
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Right Side(R)",
+            "16-24 ft.",
+            453,
+            182,
+            0.402
+          ],
+          [
+            "League Averages",
+            "Mid-Range",
+            "Right Side(R)",
+            "8-16 ft.",
+            1965,
+            867,
+            0.441
+          ],
+          [
+            "League Averages",
+            "Restricted Area",
+            "Center(C)",
+            "Less Than 8 ft.",
+            26087,
+            17379,
+            0.666
+          ],
+          [
+            "League Averages",
+            "Right Corner 3",
+            "Right Side(R)",
+            "24+ ft.",
+            4641,
+            1799,
+            0.388
+          ]
+        ]
+      }
+    ]
+  }
+}

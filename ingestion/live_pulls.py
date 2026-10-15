@@ -36,6 +36,7 @@ from nba_api.stats.endpoints import (
     commonteamroster,
     leaguedashplayerstats,
     leaguedashteamptshot,
+    leaguegamelog,
     playerdashptshots,
     shotchartdetail,
 )
@@ -460,6 +461,46 @@ def pull_ruler_snapshot(
         "response": raw,
     }
     return write_snapshot(out_dir / through / f"{pull_date}{stamp}.json", snapshot)
+
+
+def pull_league_game_log_snapshot(
+    season: str,
+    out_dir: Path,
+    *,
+    date_to: str | None = None,
+    stamp: str = "",
+    pull_date: str,
+    timeout: int = 90,
+) -> Path:
+    """One league game log pull (team grain: two rows per game): every game
+    the league has played in the season, with its date. The source of a
+    ruler's game count (ADR-0089) — the LeagueAverages frame states league
+    attempts, never how many games they came from. Cumulative, so a living
+    season re-pulls it beside the ruler; stored as <out_dir>/<pull-date>.json."""
+    raw = leaguegamelog.LeagueGameLog(
+        season=season,
+        season_type_all_star=SEASON_TYPE,
+        player_or_team_abbreviation="T",
+        date_to_nullable=nba_date(date_to) if date_to else "",
+        timeout=timeout,
+    ).get_dict()
+    headers, rows = result_rows(raw, "LeagueGameLog")
+    dates = sorted(str(r[headers.index("GAME_DATE")]) for r in rows) if rows else []
+    games = {str(r[headers.index("GAME_ID")]) for r in rows} if rows else set()
+    snapshot = {
+        "_meta": {
+            "season": season,
+            "season_type": SEASON_TYPE,
+            "pull_date": pull_date,
+            "date_to": date_to,
+            "games_included": len(games),
+            "date_range": [dates[0], dates[-1]] if dates else None,
+            "team_game_rows": len(rows),
+            "source": "stats.nba.com leaguegamelog team grain (unofficial)",
+        },
+        "response": raw,
+    }
+    return write_snapshot(out_dir / f"{pull_date}{stamp}.json", snapshot)
 
 
 def pull_roster_snapshot(

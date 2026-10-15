@@ -3083,6 +3083,341 @@
     }
 }
 
+/* --- The team report card (docs/plans/jazz-first-site.md): the quadrant
+   leads with the two answers beside it, then this game's court, both sides
+   on the same terms, the players, and the ruler line. Text that must stay
+   legible at 375px (corner labels, axis captions) is HTML over the SVG,
+   never SVG text scaled with the plot. Dense UI text opts into line-height
+   normal per the house companion rule. ------------------------------------ */
+
+.report-header {
+    max-width: 960px;
+    margin: 96px auto 28px;
+}
+
+.report-title {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.75rem);
+    line-height: 0.95;
+    margin: 4px 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--text-h);
+}
+
+.report-night {
+    color: var(--text);
+}
+
+/* The computed-copy registry's draft marker (src/teams/computedCopy.ts):
+   visible until the author's words land, so nobody mistakes a placeholder
+   for an authored line. */
+.draft-tag {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 1px 6px;
+    border: 1px dashed var(--accent-border);
+    border-radius: 4px;
+    font: 500 11px/1.4 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    vertical-align: middle;
+}
+
+.report-lead {
+    max-width: 960px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+
+.report-lead > *,
+.report-court-row > * {
+    min-width: 0;
+}
+
+.report-section {
+    max-width: 960px;
+    margin: 48px auto 0;
+}
+
+.report-ruler {
+    max-width: 960px;
+    margin: 40px auto 0;
+    font-size: 14px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.quadrant {
+    margin: 0;
+}
+
+.quadrant-plot {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.quadrant-plot svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.quadrant-zero {
+    stroke: var(--border);
+    stroke-width: 1.5;
+}
+
+.quadrant-hit {
+    fill: transparent;
+}
+
+.quadrant-dot {
+    stroke: var(--bg);
+    stroke-width: 2;
+}
+
+.quadrant-dot-season {
+    fill: var(--text);
+    fill-opacity: 0.75;
+}
+
+.quadrant-dot-prior {
+    fill: var(--text);
+    fill-opacity: 0.22;
+    stroke-width: 1;
+}
+
+.quadrant-dot-tonight {
+    fill: var(--accent);
+}
+
+.quadrant a:hover .quadrant-dot-season,
+.quadrant a:hover .quadrant-dot-prior,
+.quadrant a:focus-visible .quadrant-dot-season,
+.quadrant a:focus-visible .quadrant-dot-prior {
+    fill: var(--text-h);
+    fill-opacity: 1;
+}
+
+.quadrant a:focus-visible {
+    outline: none;
+}
+
+.quadrant a:focus-visible .quadrant-hit {
+    stroke: var(--accent);
+    stroke-width: 2;
+}
+
+.quadrant-corner {
+    position: absolute;
+    max-width: 44%;
+    font-size: 12px;
+    line-height: 1.25;
+    color: var(--text);
+    pointer-events: none;
+}
+
+.quadrant-corner-tl {
+    top: 8px;
+    left: 10px;
+}
+
+.quadrant-corner-tr {
+    top: 8px;
+    right: 10px;
+    text-align: right;
+}
+
+.quadrant-corner-bl {
+    bottom: 8px;
+    left: 10px;
+}
+
+.quadrant-corner-br {
+    bottom: 8px;
+    right: 10px;
+    text-align: right;
+}
+
+.quadrant-axis {
+    font: 12px/1.3 var(--mono);
+    color: var(--text);
+    margin: 6px 0;
+}
+
+.quadrant-axis-x {
+    text-align: right;
+}
+
+.quadrant-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 13px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.quadrant-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+}
+
+.quadrant-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.quadrant-key {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.quadrant-key-tonight {
+    background: var(--accent);
+}
+
+.quadrant-key-season {
+    background: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+.quadrant-key-prior {
+    background: color-mix(in srgb, var(--text) 22%, transparent);
+}
+
+.quadrant-readout {
+    min-height: 2.6em;
+    color: var(--text-h);
+}
+
+/* "Hover" only where there is a hovering pointer; a phone reads "tap". */
+.quadrant-hint-touch {
+    display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+    .quadrant-hint-pointer {
+        display: none;
+    }
+
+    .quadrant-hint-touch {
+        display: inline;
+    }
+}
+
+.report-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.answer {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    line-height: normal;
+}
+
+.answer-question {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--text-h);
+}
+
+.answer-number {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(2.75rem, 7vw, 4rem);
+    line-height: 1;
+    margin: 8px 0 6px;
+    color: var(--text-h);
+}
+
+.answer-words {
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+    color: var(--text-h);
+}
+
+.answer-anchors,
+.answer-rank,
+.answer-note {
+    font-size: 13px;
+    margin: 4px 0 0;
+    color: var(--text);
+}
+
+.answer-anchors .anchor {
+    font-family: var(--mono);
+    color: var(--text-h);
+}
+
+.report-court-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.report-court {
+    max-width: 520px;
+}
+
+.report-sides td,
+.report-sides thead th,
+.report-sides tbody th {
+    text-align: center;
+}
+
+.report-sides tbody th {
+    font-weight: 400;
+    color: var(--text);
+}
+
+.report-sides td.edge {
+    background: var(--accent-bg);
+    box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.cell-sub {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: normal;
+    color: var(--text);
+}
+
+@media (max-width: 760px) {
+    .report-lead,
+    .report-court-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .report-header {
+        margin-top: 80px;
+    }
+}
+
 /* --- Game cards (ADR-0086): a tool page — the poster over the receipt
    drill-in. Dense UI text opts into line-height normal per the house
    companion rule. --- */

@@ -7,10 +7,16 @@
 //
 // Requires every hero's committed card (npm run cards:generate) — a
 // registered hero without one fails the build, the hero:sync
-// partial-fails stance applied to share assets.
+// partial-fails stance applied to share assets. Team report cards follow
+// the same rule at game grain (docs/plans/jazz-first-site.md, "Share
+// cards"): every published game — every row of a committed season index —
+// gets dist/<team>/<game-slug>/index.html with its own card as og:image,
+// and a published game without its card (npm run cards:games) fails the
+// build.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { parseTeamSeasonIndex } from '../src/domain/teamSeasonIndex'
 import { HEROES } from '../src/heroes/registry'
 import {
   heroPageHtml,
@@ -20,6 +26,8 @@ import {
   withFontPreloads,
 } from '../src/heroes/socialCards'
 import { canonicalSeasonOf } from '../src/heroes/types'
+import { TEAMS } from '../src/teams/registry'
+import { gameCardPath, gamePageMeta, teamPageMeta } from '../src/teams/shareCards'
 
 function fail(message: string): never {
   console.error(message)
@@ -71,6 +79,28 @@ writeFileSync(
   join('dist', 'methodology', 'index.html'),
   heroPageHtml(indexHtml, methodologyPageMeta()),
 )
+let gamePages = 0
+for (const team of TEAMS) {
+  // The bare team route gets its own page first, so dist/<team>/ always
+  // has an index.html now that the report cards live beneath it.
+  mkdirSync(join('dist', team.slug), { recursive: true })
+  writeFileSync(join('dist', team.slug, 'index.html'), heroPageHtml(indexHtml, teamPageMeta(team)))
+  for (const season of team.seasons) {
+    const indexPath = join('public', 'data', '_teams', team.tricode.toLowerCase(), season, 'index.json')
+    if (!existsSync(indexPath)) continue
+    const index = parseTeamSeasonIndex(JSON.parse(readFileSync(indexPath, 'utf-8')))
+    for (const row of index.games) {
+      const card = join('public', gameCardPath(team, row.slug))
+      if (!existsSync(card)) {
+        fail(`${team.slug}/${row.slug}: missing ${card} — run npm run cards:games and commit the card`)
+      }
+      const dir = join('dist', team.slug, row.slug)
+      mkdirSync(dir, { recursive: true })
+      writeFileSync(join(dir, 'index.html'), heroPageHtml(indexHtml, gamePageMeta(team, season, row)))
+      gamePages += 1
+    }
+  }
+}
 console.log(
-  `emitted ${pages} hero share pages for ${HEROES.length} heroes, plus the methodology page, into dist/`,
+  `emitted ${pages} hero share pages for ${HEROES.length} heroes, ${TEAMS.length} team page(s) with ${gamePages} report card pages, plus the methodology page, into dist/`,
 )

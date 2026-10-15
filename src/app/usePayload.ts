@@ -9,8 +9,12 @@ import type { DerivedPayload } from '../domain/payload'
 import { parseDerivedPayload } from '../domain/payload'
 import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { parseShotContextPayload } from '../domain/shotContextPayload'
+import type { GamePayload } from '../domain/gamePayload'
+import { parseGamePayload } from '../domain/gamePayload'
 import type { LedgerFacts } from '../domain/ledgerFacts'
 import { parseLedgerFacts } from '../domain/ledgerFacts'
+import type { TeamSeasonIndex } from '../domain/teamSeasonIndex'
+import { parseTeamSeasonIndex } from '../domain/teamSeasonIndex'
 import type { TeamShotPayload } from '../domain/teamShotPayload'
 import { parseTeamShotPayload } from '../domain/teamShotPayload'
 
@@ -156,4 +160,25 @@ export function useTeamShotPayload(url: string): PayloadState<TeamShotPayload> {
  * team page. */
 export function useLedgerFacts(url: string): PayloadState<LedgerFacts> {
   return useParsedPayload(url, parseLedgerFacts, 'game ledger data')
+}
+
+/** A team season index (ADR-0088): the season page's per-game rulers, and
+ * the report card's slug lookup. */
+export function useTeamSeasonIndex(url: string): PayloadState<TeamSeasonIndex> {
+  return useParsedPayload(url, parseTeamSeasonIndex, 'season index')
+}
+
+/** The report card's season data: null until the season is known to be on
+ * file (the prior season's pair is absent unless that season is published). */
+export function useOptionalTeamSeasonIndex(url: string | null): OptionalPayloadState<TeamSeasonIndex> {
+  return useOptionalParsedPayload(url, parseTeamSeasonIndex, 'season index')
+}
+
+export function useOptionalTeamShotPayload(url: string | null): OptionalPayloadState<TeamShotPayload> {
+  return useOptionalParsedPayload(url, parseTeamShotPayload, 'team shot data')
+}
+
+/** One game payload (ADR-0088): requested once the index names its file. */
+export function useOptionalGamePayload(url: string | null): OptionalPayloadState<GamePayload> {
+  return useOptionalParsedPayload(url, parseGamePayload, 'game data')
 }

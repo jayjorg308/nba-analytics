@@ -1,0 +1,95 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "team": "Utah Jazz",
+    "teamId": 1610612762,
+    "tricode": "UTA",
+    "season": "2025-26",
+    "seasonType": "Regular Season",
+    "dataThrough": "2026-01-03",
+    "gamesIncluded": 1
+  },
+  "games": [
+    {
+      "gameId": "0022500492",
+      "slug": "2026-01-03-gsw",
+      "gameDate": "2026-01-03",
+      "opponent": "GSW",
+      "home": false,
+      "teamScore": 30,
+      "opponentScore": 39,
+      "box": {
+        "points": 30,
+        "fgm": 10,
+        "fga": 21,
+        "tpm": 4,
+        "tpa": 9,
+        "ftm": 6,
+        "fta": 9,
+        "ast": 6
+      },
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2025-26",
+        "through": "2026-01-02",
+        "games": 2,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 26087,
+            "fgm": 17379
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 18381,
+            "fgm": 8190
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 9159,
+            "fgm": 3815
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 4964,
+            "fgm": 1877
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 4641,
+            "fgm": 1799
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 28157,
+            "fgm": 9901
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 15,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 4602,
+            "fgm": 1982
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 4557,
+            "fgm": 1833
+          }
+        ]
+      }
+    }
+  ]
+}

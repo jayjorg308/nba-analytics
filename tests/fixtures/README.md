@@ -163,3 +163,52 @@ free throw: `ingestion/derive_freethrow.py` + `src/domain/freethrowPayload.ts`).
   roundtrip and that a doctored box line hard-fails the export;
   `src/domain/gameLogPayload.test.ts` strict-parses it and proves the
   receipt identity bites.
+
+## Game payload (ADR-0088; schema v1 — both teams, one file per game)
+
+One real game, trimmed: 0022500492, the 2025-26 Jazz at Golden State
+(2026-01-03), cut to five players chosen for what they exercise — Keyonte
+George (the season's one zone-point conflict, an and-one), Taylor Hendricks
+(a shotless free-throw trip), and Kyle Filipowski (a bonus trip) for Utah;
+Stephen Curry (a technical free throw beside shooting-foul and bonus trips)
+and Draymond Green (an and-one) for Golden State. Built once by a scratch
+script from the real raw artifacts; every file carries a `fixture_note`.
+
+- **`game-playbyplay.truncated.json`** — the real PlayByPlayV3 actions of the
+  five: every field goal and free throw, plus every same-period,
+  same-second action within the trip grammar's search window of each free
+  throw (the causing fouls, the and-one makes, substitutions). 96 of 481
+  actions. The builder ran `reconstruct_game_trips` for each kept player
+  over the full and trimmed lists and required identical trips, technicals,
+  and splits.
+- **`game-boxscore.truncated.json`** — the real BoxScoreTraditionalV3 cut to
+  the five player lines; each team's `statistics` is reduced to the two
+  fields the loader reads, `assists` (the scorer credits left among the
+  kept field goals, so the ADR-0046 reconciliation is exact) and `points`
+  (the kept players' sum).
+- **`game-team-snapshot.truncated.json`** — the real UTA team-wide season
+  snapshot (`data/raw/_teams/uta/2025-26/2026-09-22.json`) cut to this game's
+  rows for the three Jazz players (21, the conflict included), with the
+  season `LeagueAverages` frame verbatim. Loaded with
+  `team-roster.truncated.json` (above), whose team and season match.
+- **`game-opponent-snapshot.truncated.json`** — the real one-day GSW pull for
+  the game (`live_pulls.pull_team_game_snapshot`) cut to Curry and Green
+  (22 rows), its one-day league frame verbatim (validated, never loaded).
+- **`game-ruler.json`** — the real ruler through 2026-01-02, verbatim.
+- **`game-log.truncated.json`** — the real league game log cut to the
+  league's opening night (two games) plus the fixture game, so the golden's
+  ruler states a game count of 2. The pytest prior-season test empties the
+  log before the date to exercise the fallback.
+- **`game.golden.json`** — the game payload export over the fixture store
+  (pair, team season, opponent pull, ruler and log, in the production load
+  order). DB-native: regenerate via `python ingestion/regen_game_golden.py`
+  (needs Docker), never `golden:regen`. `ingestion/test_game_payload.py`
+  asserts the byte-identical roundtrip and a manufactured violation for
+  every export oracle; `src/domain/gamePayload.test.ts` strict-parses it
+  and proves each identity bites at the load boundary too.
+- **`team-index.golden.json`** — the season index the same store's season
+  export writes (one row: the fixture game, its slug, scores, box line, and
+  ruler with its zones), regenerated beside the game golden.
+  `test_game_payload.py` holds the season export's game file and index to
+  the two goldens byte-for-byte; `src/domain/teamSeasonIndex.test.ts`
+  strict-parses it.
