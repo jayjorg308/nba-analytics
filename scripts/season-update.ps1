@@ -38,6 +38,18 @@ $repo = Split-Path -Parent $PSScriptRoot
 Set-Location $repo
 $loopArgs = $args
 
+# UTF-8 console: the loop's Python output (the em dashes in its report
+# lines) reads correctly in the window and the log. A Task Scheduler console
+# otherwise decodes it with codepage 437, turning each dash into three
+# garbled characters (diagnosed 2026-09-25).
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
+
+# Re-read PATH from the registry: installs (rclone by winget, Docker Desktop)
+# land there, and a long-running Task Scheduler environment may not have
+# picked them up yet. Every command below sees the current PATH.
+$env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
+    [Environment]::GetEnvironmentVariable("Path", "User")
+
 $logDir = Join-Path $repo "data\season-loop"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 $log = Join-Path $logDir ("run-" + (Get-Date -Format "yyyy-MM-ddTHHmmss") + ".log")
@@ -50,6 +62,7 @@ $log = Join-Path $logDir ("run-" + (Get-Date -Format "yyyy-MM-ddTHHmmss") + ".lo
 # 2026-09-25). Stringifying each line prints it as plain text. Success and
 # failure are read from $LASTEXITCODE, which survives the pipeline, and a
 # failure raises the toast below; red text is never the signal.
+
 # Pull first: on main the session starts from origin's main, or a PR merged
 # on GitHub would make the data commit's push fail. Fast-forward only; a pull
 # that cannot fast-forward halts like any session. On any other branch
@@ -60,6 +73,39 @@ $branch = (git rev-parse --abbrev-ref HEAD | Out-String).Trim()
 if ($branch -eq "main") {
     git pull --ff-only 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log -Append
     $exitCode = $LASTEXITCODE
+}
+
+# Docker for the live gate: a live session's gate requires the record-store
+# tests (NBA_REQUIRE_RECORD_STORE, season_update.GATE_ENV), and they need the
+# Docker daemon, which is often stopped after a restart. When any session in
+# season.config.json is live, start Docker Desktop and wait up to 90 seconds.
+# If it never comes up the gate fails and the publish halts with the toast;
+# nothing ships on skipped checks. Dark-only runs never start it.
+function Test-DockerUp {
+    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { return $false }
+    docker info 2>$null | Out-Null
+    return ($LASTEXITCODE -eq 0)
+}
+$anyLive = $false
+try {
+    $config = Get-Content (Join-Path $repo "season.config.json") -Raw | ConvertFrom-Json
+    $anyLive = [bool](@($config.liveSeasons) + @($config.liveTeams) |
+        Where-Object { $_.mode -eq "live" })
+} catch {
+    "could not read season.config.json ($_); the loop will report it" | Tee-Object -FilePath $log -Append
+}
+if ($exitCode -eq 0 -and $anyLive -and -not (Test-DockerUp)) {
+    $dockerDesktop = Join-Path $env:ProgramFiles "Docker\Docker\Docker Desktop.exe"
+    if (Test-Path $dockerDesktop) {
+        "starting Docker Desktop for the live gate" | Tee-Object -FilePath $log -Append
+        Start-Process $dockerDesktop
+        for ($i = 0; $i -lt 18 -and -not (Test-DockerUp); $i++) { Start-Sleep -Seconds 5 }
+    }
+    if (Test-DockerUp) {
+        "Docker is up" | Tee-Object -FilePath $log -Append
+    } else {
+        "Docker is not running; a live gate will fail and halt the publish" | Tee-Object -FilePath $log -Append
+    }
 }
 
 if ($exitCode -eq 0) {
@@ -76,10 +122,6 @@ if ($exitCode -eq 0) {
 # overwrite. The remote is the rclone config entry holding the R2 bucket's
 # token; the credentials live in rclone's config, never in this repo.
 $backupTarget = "goodshots-r2:goodshots-raw/raw"
-# A winget install adds rclone to the user PATH in the registry, which a
-# long-running Task Scheduler environment may not have picked up yet.
-$env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
-    [Environment]::GetEnvironmentVariable("Path", "User")
 $backupExit = 0
 if (Get-Command rclone -ErrorAction SilentlyContinue) {
     "raw backup -> $backupTarget" | Tee-Object -FilePath $log -Append

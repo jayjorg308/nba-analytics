@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -156,10 +157,32 @@ def consecutive_deferrals(status_dir: Path, slug: str, season: str) -> int:
 
 # --- Session plumbing -----------------------------------------------------------
 
-def run(cmd: str, *, cwd: Path = REPO, timeout: int = 1800) -> subprocess.CompletedProcess:
+def run(cmd: str, *, cwd: Path = REPO, timeout: int = 1800,
+        extra_env: dict[str, str] | None = None) -> subprocess.CompletedProcess:
     log(f"  $ {cmd}")
+    env = {**os.environ, **extra_env} if extra_env else None
     return subprocess.run(cmd, cwd=cwd, shell=True, capture_output=True,
-                          text=True, timeout=timeout)
+                          text=True, timeout=timeout, env=env)
+
+
+# The full repository gate a live publish must pass. NBA_REQUIRE_RECORD_STORE
+# turns the record-store tests' skips (no Docker, daemon down, no psycopg,
+# container failed; ingestion/conftest.py) into failures: a publish never
+# rides on checks that did not run. Seen 2026-09-25, when Docker was down in
+# the loop clone and the suite passed with 23 of them skipped.
+GATE_COMMANDS = ("python -m pytest ingestion -q", "npm test",
+                 "npm run lint", "npm run build")
+GATE_ENV = {"NBA_REQUIRE_RECORD_STORE": "1"}
+
+
+def run_gate(on_red: str = "") -> None:
+    """Run the full gate; Halt on the first red command. `on_red` adds the
+    session's own remedy to the halt message."""
+    for cmd in GATE_COMMANDS:
+        result = run(cmd, extra_env=GATE_ENV)
+        if result.returncode != 0:
+            raise Halt(f"gate red — publish halted{on_red}:\n[{cmd}]\n"
+                       f"{result.stdout[-4000:]}\n{result.stderr[-4000:]}")
 
 
 def read_json(path: Path) -> dict:
@@ -522,15 +545,8 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
     result = run(f"npm run hero:sync -- {slug} {season}")
     if result.returncode != 0:
         raise Halt(f"hero:sync failed:\n{result.stdout}\n{result.stderr}")
-    gate_cmds = ["python -m pytest ingestion -q", "npm test",
-                 "npm run lint", "npm run build"]
-    for cmd in gate_cmds:
-        result = run(cmd)
-        if result.returncode != 0:
-            raise Halt(f"gate red — publish halted (nothing ships until a "
-                       f"human acts; a broken verdict guard means rewrite "
-                       f"copy + mapping together):\n[{cmd}]\n"
-                       f"{result.stdout[-4000:]}\n{result.stderr[-4000:]}")
+    run_gate(" (nothing ships until a human acts; a broken verdict guard "
+             "means rewrite copy + mapping together)")
     report.append("full gate green")
 
     changed = run(f"git status --porcelain public/data/{slug}/").stdout.strip()
@@ -831,12 +847,7 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
     result = run(f"npm run team:sync -- {tricode} {season}")
     if result.returncode != 0:
         raise Halt(f"team:sync failed:\n{result.stdout}\n{result.stderr}")
-    for cmd in ["python -m pytest ingestion -q", "npm test", "npm run lint",
-                "npm run build"]:
-        result = run(cmd)
-        if result.returncode != 0:
-            raise Halt(f"gate red — publish halted:\n[{cmd}]\n"
-                       f"{result.stdout[-4000:]}\n{result.stderr[-4000:]}")
+    run_gate()
     report.append("full gate green")
 
     deployed_dir = f"public/data/_teams/{tricode}/"
