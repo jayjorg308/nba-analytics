@@ -554,20 +554,43 @@ then rewritten properly.
 
 ### The team report card, `/jazz/<game-slug>`
 
-1. Header: both teams, the score, date, home or away, the season link.
-2. **Good shots?** The Jazz diet priced at the ruler against the league's
-   diet, with its computed answer and, when phase 4 lands, the league rank.
-3. **Did they fall?** Actual PPS against expected from the diet, with its
-   computed answer.
+_Layout chosen 2026-10-14 from the three-variant prototype: C, Season
+context, with B's side-by-side opponent rows and the prior season's games
+behind the quadrant. Reviewed on the 2025-26 opener and the Apr 10 win over
+Memphis, at desktop and 375px; the verdict and its reasons are in the
+prototype's NOTES (`proto_ReportCard`, d3d6b85)._
+
+1. Header: date, opponent, home or away, the season link, then the result
+   and score with the night's computed title (the prototype's form:
+   "W 147–101 · league-average shots that fell"; the band words are
+   computed copy, ADR-0090).
+2. **The quadrant leads.** Selection delta across, making delta up, one dot
+   per game from its card, tonight highlighted, each dot a link (a tap on a
+   phone; the "hover" hint only with a pointer). The four corners carry
+   structural labels, legible at 375px. **The prior season's games sit
+   behind as faded dots**, labeled as the prior season, so the chart is
+   full from opening night. The seasons are comparable on these axes
+   because every dot is priced against its own pre-game ruler, the league
+   as it stood entering that day. 2026-27 cards therefore need the 2025-26
+   game payloads deployed first, which phase 2 builds anyway.
+3. **Good shots?** and **Did they fall?** beside the quadrant: tonight's
+   two numbers with their computed answers and anchors. Season ranks join
+   them only above a minimum game count, set in the build (game one of the
+   prototype read "1st-best diet of 1 games so far"). The league rank
+   arrives with phase 4.
 4. The court: tonight's shots, made and missed; zone counts only (no zone
    shading at game grain, ADR-0084).
-5. The opponent's shots, the same two numbers, described, never credited to
-   the defense.
-6. The line: trips by class and FT points, both sides.
-7. The credit: assisted share of makes, both sides, with unknowns shown.
-8. Players: each Jazz shooter's attempts, points, expected from diet,
+5. **The other side, side by side** (from variant B): Jazz and opponent in
+   one table, the same terms on each row. Diet at league rates, scored per
+   shot, conversion against expected, the rim, three, and mid-range shares,
+   the line (trips by class and FT points), and the credit (assisted share
+   of makes, with unknowns shown). The side with the edge is marked only on
+   rows with a better direction; shares carry no edge. Described, never
+   credited to the defense.
+6. Players: each Jazz shooter's attempts, points, expected from diet,
    conversion, trips, linking his night.
-9. The ruler, stated in one structural line.
+7. The ruler, stated in one structural line with the number of games it
+   covers (decided 2026-09-28).
 
 No small-sample flag on game-grain values (ADR-0086's stance: selection is
 priced choices, conversion is what happened, nothing estimates a rate). The
@@ -664,6 +687,9 @@ backup bucket, set the task's power settings (done 2026-09-24).
 ### Phase 2: the report card on 2025-26 (October 5 to 18)
 
 - The three-variant prototype of the report card, choose, delete.
+  _Chosen 2026-10-14: C with B's opponent rows and the prior season behind
+  the quadrant (see the team report card, above). Deletion travels with the
+  rewrite._
 - The ruler measurement and the game-grain delta distribution.
 - ADR-0088 and ADR-0089; the game payload export, golden, oracles, guards.
 - 82 opponent pulls for 2025-26; the season index; 82 game payloads.
@@ -693,6 +719,12 @@ backup bucket, set the task's power settings (done 2026-09-24).
 - Config PR: `liveTeams` UTA 2026-27 live; the team registry adds 2026-27
   as canonical once its first game payload deploys.
 - First game-night run, watched live.
+- _Dates confirmed 2026-10-14: the league opens Tuesday, October 20 (three
+  games); the Jazz open Wednesday, October 21 at Memphis, home opener
+  October 23 against New Orleans. The Jazz's first card therefore prices
+  against a three-game ruler, not the empty-ruler fallback (the 2025-26
+  opener priced against a two-game ruler, 356 league attempts, and moved
+  at most 0.015 against the season-end ruler)._
 
 ### Phase 3: live season, drill-ins, computed copy (October 19 to November 8)
 
