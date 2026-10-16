@@ -5,9 +5,9 @@
 # session, copies the raw layer to the R2 backup, and notifies.
 #
 # WHERE IT RUNS: the loop's own clone, ..\nba-analytics-loop, kept on main
-# (its data\ is a junction to the dev checkout's data\), never the dev
-# checkout, so the branch checked out for development never decides what
-# publishes. docs/plans/jazz-first-site.md (Operations) records the clone
+# (its data\ is a junction to the dev checkout's data\, and it has its own
+# Python in .venv\), never the dev checkout, so the branch checked out for
+# development never decides what publishes. docs/plans/jazz-first-site.md (Operations) records the clone
 # setup and every Task Scheduler setting below, with the reasons.
 #
 # THE TWO TASKS, both running this file from the clone:
@@ -50,9 +50,28 @@ try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
 $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
     [Environment]::GetEnvironmentVariable("Path", "User")
 
+# The loop's own Python: the clone's .venv (built from a fixed interpreter
+# with ingestion\requirements.txt; the plan's Operations section has the
+# commands) goes first on PATH, so every `python` below, npm's season:update
+# script and each subprocess the loop starts, is the venv's and never
+# whichever Python the registry lists first. On 2026-10-15 a Python 3.15
+# install at 04:06 landed ahead of 3.14 on the machine PATH, and the 06:30
+# session died on its first import (no nba_api in the new interpreter). A
+# checkout without a .venv falls back to PATH; the log names the interpreter
+# either way.
+$venvScripts = Join-Path $repo ".venv\Scripts"
+$hasVenv = Test-Path (Join-Path $venvScripts "python.exe")
+if ($hasVenv) {
+    $env:Path = $venvScripts + ";" + $env:Path
+}
+
 $logDir = Join-Path $repo "data\season-loop"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 $log = Join-Path $logDir ("run-" + (Get-Date -Format "yyyy-MM-ddTHHmmss") + ".log")
+
+$python = (Get-Command python -ErrorAction SilentlyContinue).Source
+if (-not $hasVenv) { $python = "$python (no .venv in this checkout; the first python on PATH)" }
+"python -> $python" | Tee-Object -FilePath $log -Append
 
 # Every native command below is piped as `<command> 2>&1 | ForEach-Object { "$_" }`.
 # Windows PowerShell 5.1 wraps a redirected native command's stderr lines in

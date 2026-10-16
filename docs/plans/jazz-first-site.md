@@ -297,6 +297,30 @@ Each of these is small, and all of them land before opening night.
   `repo_relative` fix, `test_repo_relative.py`). Clone it from the local
   checkout, then point `origin` at the GitHub remote. npm's install-script
   approval skips esbuild's postinstall; the gate passes without it.
+- **The loop's own Python.** _Added 2026-10-15._ The clone runs from its
+  own `.venv` (gitignored), never whichever Python the machine PATH lists
+  first: the wrapper puts `.venv\Scripts` at the front of PATH, so npm's
+  `season:update` script and every subprocess the loop starts use it, and
+  each run log opens with a `python -> <path>` line naming the interpreter.
+  The trap it closes: on 2026-10-15 a Python 3.15 install landed at 04:06
+  as `C:\Python315`, ahead of `C:\Python314` on the machine PATH, and the
+  06:30 session died on its first import (3.15 had none of the loop's
+  packages). Built from the interpreter the loop had been running, pinned
+  to the versions it had been running, so the fix changed no package:
+
+  ```powershell
+  C:\Python314\python.exe -m pip freeze > constraints.txt
+  C:\Python314\python.exe -m venv .venv
+  .venv\Scripts\python.exe -m pip install -r ingestion\requirements.txt -c constraints.txt
+  ```
+
+  Verified the same day by running the new wrapper in the clone as the task
+  would (exit 0, all four dark sessions clean, backup copied) and the
+  Python gate under the venv with `NBA_REQUIRE_RECORD_STORE=1` (200 passed,
+  none skipped). A venv is tied to its base interpreter: if
+  `C:\Python314` is ever removed, rebuild it from the next one. When
+  `ingestion\requirements.txt` gains a package, install it into the clone's
+  venv too, or the session that first imports it halts.
 - **Pull before the session.** The loop never pulls today, so a PR merged
   on GitHub makes its next push fail. The wrapper runs
   `git pull --ff-only` first; a failed pull halts with the toast.
@@ -736,7 +760,9 @@ backup bucket, set the task's power settings (done 2026-09-24).
   The README's intro, its "Live at" line, and its route list follow in the
   same PR; they still describe the directory at the root.
 - Deploy with 2025-26 as the canonical team season. The site has 82 real
-  report cards before the season starts.
+  report cards before the season starts. _Deployed 2026-10-15 from main
+  (#67), for example `/jazz/2026-04-10-mem`; the computed copy's DRAFT COPY
+  tags show on the live pages until it is authored._
 - **The live gate requires the record-store tests** (added 2026-09-25).
   Today, when Docker is down, `ingestion/conftest.py` skips the record-store
   tests and the loop's live gate passes without them (seen in the loop clone
@@ -757,6 +783,15 @@ backup bucket, set the task's power settings (done 2026-09-24).
 
 ### Opening night (week of October 19)
 
+- **Before the config PR:** apply migration `0010_game_payload.sql` to the
+  production store from main, by hand. On 2026-10-15 the store's
+  `schema_migration` ended at `0009`, and every loader applies pending
+  migrations on first use, so left alone `0010` would land unattended in
+  the first game-night session. It only adds two tables and widens the
+  snapshot source check. Rerun `season_replay.py` (CLAUDE.md's
+  rule before each activation; last run 2026-08-24). Author the computed
+  copy, then rerun `cards:games`, since the answer words are baked into the
+  cards.
 - Config PR: `liveTeams` UTA 2026-27 live; the team registry adds 2026-27
   as canonical once its first game payload deploys.
 - First game-night run, watched live.
