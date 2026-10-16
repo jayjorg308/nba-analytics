@@ -7,7 +7,8 @@ frontiers, the Gate 2 mechanical reading, stuck detection, the branch
 guard's decisions (git itself is faked), and the team session's game
 publishing: what each new game pulls, lag deferring the frontier, and the
 live publish's order (pulls, git, and npm faked; the record-store steps
-stubbed, plus one run of the game step against a real store).
+stubbed, plus one run of the game step against a real store); and an
+upstream failure halting only its own session.
 """
 
 from __future__ import annotations
@@ -580,3 +581,52 @@ def test_the_game_step_exports_new_games_from_the_raw_layer(pg_dsn, tmp_path):
     with pytest.raises(su.Halt, match="immutable"):
         su.db_export_games(args, TEAM, "2025-26", universe, raw, tmp_path / "out3",
                            published, [])
+
+
+# ---------------------------------------------------- one session's upstream failure
+
+
+def test_upstream_failure_halts_only_its_own_session(monkeypatch, tmp_path):
+    # A pull that stays down through live_pulls' retries halts its session
+    # like any Halt; the sessions after it still run (before 2026-10-16 the
+    # exception ended the process, so a hero's 500 cost the morning's team
+    # session), and the run still exits non-zero so the wrapper toasts.
+    config = {
+        "liveSeasons": [
+            {"slug": "first-hero", "season": "2026-27", "mode": "dark"},
+            {"slug": "second-hero", "season": "2026-27", "mode": "dark"},
+        ],
+        "liveTeams": [{"tricode": "UTA", "team": "Utah Jazz", "teamId": 1610612762,
+                       "season": "2026-27", "mode": "dark"}],
+    }
+    config_path = tmp_path / "season.config.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    ran: list[str] = []
+
+    def fake_season(entry, _pins, _args):
+        ran.append(entry["slug"])
+        if entry["slug"] == "first-hero":
+            raise su.live_pulls.UpstreamUnavailable(
+                "playerdashptshots (player_id=1): stats.nba.com failed 4 attempts")
+        return {"slug": entry["slug"], "season": entry["season"], "outcome": "no-data"}
+
+    def fake_team(entry, _args):
+        ran.append(entry["tricode"])
+        return {"slug": su.team_slug(entry), "season": entry["season"], "outcome": "no-data"}
+
+    monkeypatch.setattr(su, "run_season", fake_season)
+    monkeypatch.setattr(su, "run_team", fake_team)
+    monkeypatch.setattr(su, "STATUS_DIR", tmp_path / "status")
+    monkeypatch.setattr(su.sys, "argv", ["season_update.py", "--config", str(config_path)])
+    with pytest.raises(SystemExit) as exited:
+        su.main()
+    assert exited.value.code == 1
+    assert ran == ["first-hero", "second-hero", "UTA"]
+    def status(key: str) -> dict:
+        (path,) = (tmp_path / "status").glob(f"*-{key}-2026-27.json")
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    halted = status("first-hero")
+    assert halted["outcome"] == "halt" and "failed 4 attempts" in halted["error"]
+    assert status("second-hero")["outcome"] == "no-data"
+    assert status("team-uta")["outcome"] == "no-data"
