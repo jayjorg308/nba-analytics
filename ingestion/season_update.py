@@ -634,10 +634,14 @@ def main() -> None:
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
     session = f"{date.today().isoformat()}{datetime.now().strftime('T%H%M%S')}"
     halted = False
+    # A pull that stays down through live_pulls' retries halts its own
+    # session only, like any Halt: the sessions after it still run (before
+    # 2026-10-16 one stats.nba.com 500 in a hero session ended the process,
+    # and the morning's team session never ran), and the next run retries.
     for entry in entries:
         try:
             status = run_season(entry, pins_all, args)
-        except Halt as halt:
+        except (Halt, live_pulls.UpstreamUnavailable) as halt:
             status = {"slug": entry["slug"], "season": entry["season"],
                       "mode": entry["mode"], "outcome": "halt",
                       "error": str(halt)}
@@ -651,7 +655,7 @@ def main() -> None:
         slug = team_slug(entry)
         try:
             status = run_team(entry, args)
-        except Halt as halt:
+        except (Halt, live_pulls.UpstreamUnavailable) as halt:
             status = {"slug": slug, "team": entry["team"], "season": entry["season"],
                       "mode": entry.get("mode", "dark"), "outcome": "halt",
                       "error": str(halt)}

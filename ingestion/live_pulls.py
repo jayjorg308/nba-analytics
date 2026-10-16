@@ -32,6 +32,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+import requests
 from nba_api.stats.endpoints import (
     commonteamroster,
     leaguedashplayerstats,
@@ -42,6 +43,49 @@ from nba_api.stats.endpoints import (
 )
 
 SEASON_TYPE = "Regular Season"
+
+# UPSTREAM RETRIES (2026-10-16): stats.nba.com answers some requests with an
+# HTTP 500 and an empty body, intermittently. The 2026-10-16 replay lost
+# three of its six days that way, and a direct probe saw one request fail
+# and then succeed forty seconds later. nba_api surfaces it as a
+# JSONDecodeError raised inside the endpoint's constructor. Every pull below
+# goes through fetch(), which retries a transient failure after each of
+# these delays (100 seconds of waiting in all, past the observed recovery)
+# and then raises UpstreamUnavailable. The season loop turns that into a
+# halt of the one session that pulled (season_update.main), so the sessions
+# after it still run and the next run tries again.
+RETRY_DELAYS: tuple[float, ...] = (10.0, 30.0, 60.0)
+TRANSIENT = (json.JSONDecodeError, requests.exceptions.RequestException)
+
+
+class UpstreamUnavailable(RuntimeError):
+    """A stats.nba.com request that still failed after every retry."""
+
+
+def fetch(endpoint, **params) -> dict:
+    """One stats.nba.com request through an nba_api endpoint class, its
+    response as a dict, retried on transient failures (RETRY_DELAYS). Any
+    other exception is a defect, not weather, and propagates at once."""
+    what = getattr(endpoint, "endpoint", endpoint.__name__)
+    subject = ", ".join(f"{k}={v}" for k, v in params.items()
+                        if v and k in ("player_id", "team_id", "date_from_nullable",
+                                       "date_to_nullable"))
+    if subject:
+        what = f"{what} ({subject})"
+    attempts = len(RETRY_DELAYS) + 1
+    for attempt in range(1, attempts + 1):
+        try:
+            return endpoint(**params).get_dict()
+        except TRANSIENT as exc:
+            if attempt == attempts:
+                raise UpstreamUnavailable(
+                    f"{what}: stats.nba.com failed {attempts} attempts, the last "
+                    f"with {type(exc).__name__}: {exc}") from exc
+            delay = RETRY_DELAYS[attempt - 1]
+            print(f"  {what}: attempt {attempt} failed ({type(exc).__name__}), "
+                  f"retrying in {delay:g}s", flush=True)
+            time.sleep(delay)
+    raise AssertionError("unreachable")
 
 # League tracking context filters, resolved literals as recorded per raw
 # snapshot _meta.resolved_filters since v2.0/v2.1 (ADR-0030 closures: league
@@ -105,7 +149,8 @@ def pull_shot_snapshot(
     (date_to set). Both result sets kept verbatim (the LeagueAverages frame
     respects DateTo — the ADR-0058 spike closure — so an anchored pull
     carries the true as-of baseline)."""
-    raw = shotchartdetail.ShotChartDetail(
+    raw = fetch(
+        shotchartdetail.ShotChartDetail,
         team_id=0,
         player_id=player_id,
         season_nullable=season,
@@ -113,7 +158,7 @@ def pull_shot_snapshot(
         context_measure_simple="FGA",  # ALL attempts — never the PTS default
         date_to_nullable=nba_date(date_to) if date_to else "",
         timeout=timeout,
-    ).get_dict()
+    )
     headers, rows = result_rows(raw, "Shot_Chart_Detail")
     dates = sorted(str(r[headers.index("GAME_DATE")]) for r in rows) if rows else []
     games = {str(r[headers.index("GAME_ID")]) for r in rows} if rows else set()
@@ -149,7 +194,8 @@ def pull_tracking_snapshot(
     timeout: int = 60,
 ) -> Path:
     """One playerdashptshots pull (all families), optionally anchored."""
-    raw = playerdashptshots.PlayerDashPtShots(
+    raw = fetch(
+        playerdashptshots.PlayerDashPtShots,
         team_id=0,
         player_id=player_id,
         season=season,
@@ -157,7 +203,7 @@ def pull_tracking_snapshot(
         per_mode_simple="Totals",  # raw counts — the endpoint defaults per-game
         date_to_nullable=nba_date(date_to) if date_to else "",
         timeout=timeout,
-    ).get_dict()
+    )
     snapshot = {
         "_meta": {
             "player": player,
@@ -186,13 +232,14 @@ def pull_league_totals_snapshot(
     """One LeagueDashPlayerStats Totals pull, optionally anchored — the Gate 5
     oracle and league free-throw baseline source (ADR-0054), in the artifact
     shape derive_freethrow expects."""
-    raw = leaguedashplayerstats.LeagueDashPlayerStats(
+    raw = fetch(
+        leaguedashplayerstats.LeagueDashPlayerStats,
         season=season,
         season_type_all_star=SEASON_TYPE,
         per_mode_detailed="Totals",
         date_to_nullable=nba_date(date_to) if date_to else "",
         timeout=timeout,
-    ).get_dict()
+    )
     snapshot = {
         "_meta": {
             "season": season,
@@ -221,14 +268,15 @@ def pull_league_advanced_snapshot(
     verbatim, with FGA for the derive's pre-drop oracle. The spike proved the
     Advanced measure respects DateTo (rows, GP, and USG_PCT all move with the
     date), so an anchored pull carries the true as-of usage."""
-    raw = leaguedashplayerstats.LeagueDashPlayerStats(
+    raw = fetch(
+        leaguedashplayerstats.LeagueDashPlayerStats,
         season=season,
         season_type_all_star=SEASON_TYPE,
         per_mode_detailed="Totals",
         measure_type_detailed_defense="Advanced",
         date_to_nullable=nba_date(date_to) if date_to else "",
         timeout=timeout,
-    ).get_dict()
+    )
     snapshot = {
         "_meta": {
             "season": season,
@@ -261,14 +309,15 @@ def pull_league_tracking_snapshot(
 
     def call(**filters: str) -> dict:
         time.sleep(sleep)
-        return leaguedashteamptshot.LeagueDashTeamPtShot(
+        return fetch(
+            leaguedashteamptshot.LeagueDashTeamPtShot,
             season=season,
             season_type_all_star=SEASON_TYPE,
             per_mode_simple="Totals",
             date_to_nullable=nba_date(date_to) if date_to else "",
             timeout=timeout,
             **filters,
-        ).get_dict()
+        )
 
     overall = call()
     general = {
@@ -322,7 +371,8 @@ def pull_team_shot_snapshot(
     shot every player took for the team, with the LeagueAverages frame —
     unfiltered (discovery) or frontier-anchored (date_to set). The team shot
     payload's source (ADR-0082); stored under data/raw/_teams/<tricode>/."""
-    raw = shotchartdetail.ShotChartDetail(
+    raw = fetch(
+        shotchartdetail.ShotChartDetail,
         team_id=team_id,
         player_id=0,
         season_nullable=season,
@@ -330,7 +380,7 @@ def pull_team_shot_snapshot(
         context_measure_simple="FGA",  # ALL attempts — never the PTS default
         date_to_nullable=nba_date(date_to) if date_to else "",
         timeout=timeout,
-    ).get_dict()
+    )
     headers, rows = result_rows(raw, "Shot_Chart_Detail")
     dates = sorted(str(r[headers.index("GAME_DATE")]) for r in rows) if rows else []
     games = {str(r[headers.index("GAME_ID")]) for r in rows} if rows else set()
@@ -374,7 +424,8 @@ def pull_team_game_snapshot(
     phase 4). Stored as <out_dir>/<game_id>/<pull-date>.json, per-game like
     the play-by-play corpus. The windowed LeagueAverages frame is that day's
     only and is never a ruler (see pull_ruler_snapshot)."""
-    raw = shotchartdetail.ShotChartDetail(
+    raw = fetch(
+        shotchartdetail.ShotChartDetail,
         team_id=team_id,
         player_id=0,
         season_nullable=season,
@@ -383,7 +434,7 @@ def pull_team_game_snapshot(
         date_from_nullable=nba_date(game_date),
         date_to_nullable=nba_date(game_date),
         timeout=timeout,
-    ).get_dict()
+    )
     headers, rows = result_rows(raw, "Shot_Chart_Detail")
     games = sorted({str(r[headers.index("GAME_ID")]) for r in rows}) if rows else []
     snapshot = {
@@ -434,7 +485,8 @@ def pull_ruler_snapshot(
     """One league zone frame through `through` (inclusive): the ruler for a
     game played the next day. Stored as <out_dir>/<through>/<pull-date>.json,
     so a later re-pull of the same ruler appends beside it (ADR-0006)."""
-    raw = shotchartdetail.ShotChartDetail(
+    raw = fetch(
+        shotchartdetail.ShotChartDetail,
         team_id=0,
         player_id=subject_player_id,
         season_nullable=season,
@@ -442,7 +494,7 @@ def pull_ruler_snapshot(
         context_measure_simple="FGA",
         date_to_nullable=nba_date(through),
         timeout=timeout,
-    ).get_dict()
+    )
     headers, rows = result_rows(raw, "LeagueAverages")
     league_fga = sum(int(r[headers.index("FGA")]) for r in rows) if rows else 0
     snapshot = {
@@ -477,13 +529,14 @@ def pull_league_game_log_snapshot(
     ruler's game count (ADR-0089) — the LeagueAverages frame states league
     attempts, never how many games they came from. Cumulative, so a living
     season re-pulls it beside the ruler; stored as <out_dir>/<pull-date>.json."""
-    raw = leaguegamelog.LeagueGameLog(
+    raw = fetch(
+        leaguegamelog.LeagueGameLog,
         season=season,
         season_type_all_star=SEASON_TYPE,
         player_or_team_abbreviation="T",
         date_to_nullable=nba_date(date_to) if date_to else "",
         timeout=timeout,
-    ).get_dict()
+    )
     headers, rows = result_rows(raw, "LeagueGameLog")
     dates = sorted(str(r[headers.index("GAME_DATE")]) for r in rows) if rows else []
     games = {str(r[headers.index("GAME_ID")]) for r in rows} if rows else set()
@@ -516,11 +569,12 @@ def pull_roster_snapshot(
     """One commonteamroster pull — the roster as observed today (no DateTo
     exists for it; the roster is current state, ADR-0082). Stored beside the
     team shot snapshots under .../roster/."""
-    raw = commonteamroster.CommonTeamRoster(
+    raw = fetch(
+        commonteamroster.CommonTeamRoster,
         team_id=team_id,
         season=season,
         timeout=timeout,
-    ).get_dict()
+    )
     snapshot = {
         "_meta": {
             "team": team,

@@ -321,6 +321,20 @@ Each of these is small, and all of them land before opening night.
   `C:\Python314` is ever removed, rebuild it from the next one. When
   `ingestion\requirements.txt` gains a package, install it into the clone's
   venv too, or the session that first imports it halts.
+- **Upstream retries.** _Added 2026-10-16._ stats.nba.com answers some
+  requests with an HTTP 500 and an empty body, intermittently: the
+  2026-10-16 replay lost three of its six days that way (twice, at 1.5 and
+  5 seconds between pulls), and a direct probe saw one tracking request
+  fail and then succeed forty seconds later. Two changes. Every pull in
+  `live_pulls` goes through `fetch()`, which retries a transient failure
+  (a body that is not JSON, a timeout, a dropped connection) after 10, 30,
+  and 60 seconds, then raises `UpstreamUnavailable`; any other exception
+  is a defect and propagates at once. And `season_update.main` treats
+  `UpstreamUnavailable` as a halt of the one session that pulled, so the
+  sessions after it still run: before, one 500 in a hero session ended the
+  process and the 06:30 team session never ran. The play-by-play pulls
+  already retried in their own process, and a pair that never lands defers
+  its game.
 - **Pull before the session.** The loop never pulls today, so a PR merged
   on GitHub makes its next push fail. The wrapper runs
   `git pull --ff-only` first; a failed pull halts with the toast.
@@ -791,7 +805,13 @@ backup bucket, set the task's power settings (done 2026-09-24).
   snapshot source check. Rerun `season_replay.py` (CLAUDE.md's
   rule before each activation; last run 2026-08-24). Author the computed
   copy, then rerun `cards:games`, since the answer words are baked into the
-  cards.
+  cards. _Migration applied 2026-10-16 from main (`d656046`), verified: both
+  tables and the index present, the source check widened, the existing
+  snapshot rows untouched. Replay rerun 2026-10-16: the first two runs lost
+  three days to stats.nba.com 500s (the upstream retries above); the third
+  passed every per-day oracle and the flip-signal day, and failed one
+  terminal oracle, the creation payload, because upstream revised the
+  2025-26 tracking data (see the open questions)._
 - Config PR: `liveTeams` UTA 2026-27 live; the team registry adds 2026-27
   as canonical once its first game payload deploys.
 - First game-night run, watched live.
@@ -928,3 +948,22 @@ published or why it did not (the halt toast and the status files).
   charts and play-by-play at best, no tracking. A December spike decides.
 - **The read API.** A résumé item, not a product need, until a page asks a
   question the published files cannot answer.
+- **Upstream revised the 2025-26 tracking data.** _Found 2026-10-16 by the
+  replay's terminal oracle._ Between the 2026-08-24 replay (every oracle
+  exact) and 2026-10-16, stats.nba.com reclassified the season's tracking.
+  The league battery through April 12 moved in all 14 contexts: tracked
+  attempts 218,352 to 218,974, defender distance most of all (very tight
+  14,468 to 26,784, tight 83,893 to 75,696). Cody Williams kept his 509
+  attempts while 25 of his 26 context rows moved (very tight 44 to 93).
+  Every deployed 2025-26 creation payload is derived from a snapshot
+  pulled July 16 to August 10, and the league side of all of them from
+  July 16, so each is still exact against the snapshot its `_meta` names,
+  and the frozen guards still pass. Open: whether a frozen argument stays
+  pinned to its pre-revision snapshot (the provenance answer) or re-derives
+  and re-authors its creation claims (the accuracy answer). Until that is
+  decided, the replay's terminal creation oracle fails by construction for
+  2025-26; never loosen it to pass. For the living season, the loaders
+  let cumulative growth flow but halt on a correction or decrease without
+  `--allow-changed`, and a reclassification takes attempts out of some
+  contexts, so a mid-season revision stops the session rather than
+  shifting a published claim silently.
