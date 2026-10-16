@@ -4,17 +4,20 @@
 // strict-parses (its receipt identities with it) and agrees with its index
 // row; the subject's shots equal the team shot payload's slice for the
 // game; and each file's ruler equals the index's, so a quadrant dot and its
-// card price the same rows against the same pairs. Skips on clean clones.
+// card price the same rows against the same pairs. "Every team season with
+// an index" is read from disk, registered or not: the season loop publishes
+// a living season before the registry lists it (ADR-0091), and its data
+// commits are guarded from the first game. Skips on clean clones.
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { publishedSeasons, TEAMS_ROOT as teamsRoot } from '../teams/published'
 import { TEAMS } from '../teams/registry'
 import { type GamePayload, parseGamePayload } from './gamePayload'
 import { parseTeamSeasonIndex } from './teamSeasonIndex'
 import { parseTeamShotPayload } from './teamShotPayload'
 
-const teamsRoot = path.resolve(process.cwd(), 'public/data/_teams')
 const readJson = (p: string) => JSON.parse(readFileSync(p, 'utf-8')) as unknown
 
 /** A copy without one key: the fields two contracts share. */
@@ -25,9 +28,11 @@ function omit<T extends object, K extends keyof T>(obj: T, key: K): Omit<T, K> {
 }
 
 const published = TEAMS.flatMap((team) =>
-  team.seasons
-    .map((season) => ({ team, season, dir: path.join(teamsRoot, team.tricode.toLowerCase(), season) }))
-    .filter(({ dir }) => existsSync(path.join(dir, 'index.json'))),
+  publishedSeasons(team).map((season) => ({
+    team,
+    season,
+    dir: path.join(teamsRoot, team.tricode.toLowerCase(), season),
+  })),
 )
 
 describe.skipIf(published.length === 0)('deployed game payloads', () => {

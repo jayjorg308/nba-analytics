@@ -12,6 +12,7 @@ import { parseGamePayload } from '../domain/gamePayload'
 import { parseTeamSeasonIndex } from '../domain/teamSeasonIndex'
 import { formatSignedGap } from '../format'
 import { heroPageHtml, SITE_ORIGIN } from '../heroes/socialCards'
+import { publishedSeasons, TEAMS_ROOT } from './published'
 import { utahJazz, TEAMS } from './registry'
 import { gameCardPath, gameCardSpec, gamePageMeta, gamePreloadPaths, teamPageMeta } from './shareCards'
 import { gamePayloadUrl, ledgerFactsUrl, teamSeasonIndexUrl, teamShotPayloadUrl } from './urls'
@@ -75,10 +76,11 @@ describe('gameCardSpec', () => {
   })
 })
 
+// Every published season on disk, registered or not: the season loop draws
+// a living season's cards in the session that publishes its games (ADR-0091).
 const published = TEAMS.flatMap((team) =>
-  team.seasons.flatMap((season) => {
-    const file = path.resolve(process.cwd(), 'public/data/_teams', team.tricode.toLowerCase(), season, 'index.json')
-    if (!existsSync(file)) return []
+  publishedSeasons(team).flatMap((season) => {
+    const file = path.join(TEAMS_ROOT, team.tricode.toLowerCase(), season, 'index.json')
     return parseTeamSeasonIndex(JSON.parse(readFileSync(file, 'utf-8'))).games.map((g) => ({ team, slug: g.slug }))
   }),
 )
