@@ -244,16 +244,38 @@ def catalog_snapshot(cur, source: str, path: Path, meta: dict) -> int:
 # ------------------------------------------------------------------- load
 
 
+def frame_change_record(meta: dict, snapshot_path: Path, changes: list[str]) -> dict:
+    """What a loop session records when the season-to-date league frame
+    changed against current state (ADR-0080 as amended 2026-10-22): the
+    incoming frame's through-date and snapshot, and every cell that shrank
+    (a cell that grew is ordinary growth and is not listed, so a shot moved
+    between zones shows as its losing cell only). The same through-date as
+    the previous session's frame means an NBA correction; an earlier one
+    means this session's frontier trails the session that loaded last."""
+    return {"through": meta.get("date_to"),
+            "snapshot": dp.repo_relative(snapshot_path),
+            "changes": changes}
+
+
 def load_hero_season(
     conn,
     snapshot_path: Path,
     advanced_path: Path,
     allow_changed: bool = False,
+    accept_frame_changes: bool = False,
 ) -> dict:
     """Load one hero-season; return the change-detection report.
 
     Runs in a single transaction: any failure (validation, oracle, halt)
     rolls the whole load back.
+
+    accept_frame_changes (the season loop's loads, never the CLI): a change
+    to league_zone_baseline is applied without halting and returned as
+    `_leagueFrameChanges` (frame_change_record). The frame is the league's
+    aggregate, not an observation of the subject: scorers move shots
+    between zones after games (the 2026-10-22 morning halt), and each
+    session anchors the frame at its own frontier. Every other table's
+    corrections still halt.
     """
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     meta, _post_drop, _league, _conflicts = dp.validate_snapshot(snapshot)
@@ -415,12 +437,19 @@ def load_hero_season(
                 " (SELECT game_id FROM game WHERE season = %s AND season_type = %s)",
                 [player_id, season, season_type],
             ))
+            mark = len(changed_detail)
             baseline.flush(cur, report, changed_detail,
                            scope=(season_scope_sql, [season, season_type]))
+            frame_detail = changed_detail[mark:]
+            if accept_frame_changes:
+                del changed_detail[mark:]
             player_seasons.flush(cur, report, changed_detail,
                                  scope=(season_scope_sql, [season, season_type]))
 
             halting = sum(c["changed"] + c["deleted"] for c in report.values())
+            if accept_frame_changes:
+                frame = report["league_zone_baseline"]
+                halting -= frame["changed"] + frame["deleted"]
             if halting and not allow_changed:
                 raise LoadHalt(
                     f"{halting} row(s) changed or deleted against current state "
@@ -436,6 +465,9 @@ def load_hero_season(
             rs.set_head(cur, rs.scope_key("league-advanced", season=season,
                                           season_type=season_type),
                         adv_snap, run_id)
+            if accept_frame_changes and frame_detail:
+                report["_leagueFrameChanges"] = frame_change_record(
+                    meta, snapshot_path, frame_detail)
             cur.execute(
                 "UPDATE load_run SET report = %s WHERE run_id = %s",
                 (Jsonb(report), run_id),

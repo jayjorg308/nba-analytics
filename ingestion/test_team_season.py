@@ -127,6 +127,22 @@ def test_a_changed_shot_row_halts_and_rolls_back(store):
         load_team(store)
 
 
+def test_the_loop_accepts_a_league_frame_correction_and_records_it(store):
+    # The 2026-10-22 morning halt, shape for shape: the stored frame holds
+    # one more attempt in a cell than the incoming pull (304 -> 303).
+    load_team(store)
+    with store.cursor() as cur:
+        cur.execute("UPDATE league_zone_baseline SET fga = fga + 1 "
+                    "WHERE ctid = (SELECT ctid FROM league_zone_baseline LIMIT 1)")
+    store.commit()
+    with pytest.raises(lhs.LoadHalt, match="league_zone_baseline"):
+        load_team(store)
+    report = load_team(store, accept_frame_changes=True)
+    assert report["league_zone_baseline"]["changed"] == 1
+    (change,) = report["_leagueFrameChanges"]["changes"]
+    assert change.startswith("league_zone_baseline") and " fga " in change
+
+
 def test_scope_key_keeps_the_player_form_and_adds_a_team_segment():
     assert rs.scope_key("shotchartdetail", player_id=1, season="2025-26",
                         season_type="Regular Season") == \

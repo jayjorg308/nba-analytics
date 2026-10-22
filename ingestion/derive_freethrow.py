@@ -69,6 +69,24 @@ def fail(message: str) -> None:
     sys.exit(f"derive_freethrow: {message}")
 
 
+# A game ID encodes its season: '00', the season-type digit, the season's
+# start year, then a five-digit sequence (0022500087 is a 2025-26 regular
+# season game, 0022600089 a 2026-27 one). The corpus is shared across
+# seasons, so a scan for a hero's shotless free-throw games must stay inside
+# the season it derives: on 2026-10-22 Keyonte George's 7 free-throw
+# attempts in 2026-27's opener entered his 2025-26 derive.
+SEASON_TYPE_DIGIT = {"Regular Season": "2", "Playoffs": "4"}
+
+
+def season_game_prefix(season: str, season_type: str = "Regular Season") -> str:
+    """The game-ID prefix every game of a season shares ('00225' for the
+    2025-26 regular season)."""
+    digit = SEASON_TYPE_DIGIT.get(season_type)
+    if digit is None or not re.fullmatch(r"\d{4}-\d{2}", season):
+        fail(f"no game-ID prefix for season {season!r} {season_type!r}")
+    return f"00{digit}{season[2:4]}"
+
+
 @dataclass(frozen=True)
 class Trip:
     game_id: str
@@ -166,6 +184,44 @@ def _trip_context(
             ft_violation = True
     return TripContext(and_one_shot, foul_subtype, foul_penalty,
                        teammate_make, substitution, ft_violation)
+
+
+# The late-stamped and-one (ADR-0053 as amended 2026-10-22): on 2026-27's
+# opening night the feed stamped Keyonte George's made three at PT08M11.00S
+# and the shooting foul and his one free throw at PT08M10.00S (game
+# 0022600089), and the next morning's feed still did. The same-second
+# linkage above cannot see it. The fallback reaches back at most this many
+# whole seconds, and only for a trip that would otherwise be unclassifiable,
+# so no trip any earlier grammar classified can change.
+AND_ONE_MAX_CLOCK_GAP = 2
+
+
+def _late_and_one_make(
+    actions: list, first_index: int, period: int, clock: str, player_id: int
+) -> dict | None:
+    """The shooter's own made shot one or two seconds before a one-throw
+    shooting-foul trip, when nothing else could have earned the throw: the
+    nearest made shot scanning back from the trip's first free throw must be
+    the shooter's, in the same period, with no made shot by anyone between
+    them. None otherwise."""
+    from derive_shot_context import _clock_parts
+
+    trip_parts = _clock_parts(clock)
+    if trip_parts is None:
+        return None
+    trip_seconds = trip_parts[0] * 60 + trip_parts[1]
+    for j in range(first_index - 1, max(-1, first_index - 1 - FOUL_SEARCH_WINDOW), -1):
+        action = actions[j]
+        if not isinstance(action, dict) or int(action.get("period", 0)) != period:
+            return None
+        if action.get("actionType") != "Made Shot":
+            continue
+        parts = _clock_parts(str(action.get("clock", "")))
+        if parts is None or int(action.get("personId", 0)) != player_id:
+            return None
+        gap = parts[0] * 60 + parts[1] - trip_seconds
+        return action if 1 <= gap <= AND_ONE_MAX_CLOCK_GAP else None
+    return None
 
 
 def reconstruct_game_trips(
@@ -321,6 +377,23 @@ def reconstruct_game_trips(
                 trip_class = "awayFromPlay"
             elif ctx.foul_subtype == "Transition Take" and declared == 1:
                 trip_class = "transitionTake"
+            elif (
+                declared == 1
+                and ctx.foul_subtype in SHOOTING_FOULS
+                and (late := _late_and_one_make(
+                    actions, first_index, period, clock, player_id)) is not None
+            ):
+                # The late-stamped and-one (AND_ONE_MAX_CLOCK_GAP): the
+                # last branch before totality fails, so it only ever
+                # classifies a trip no earlier rule could.
+                trip_class = "andOne"
+                shot_id = int(late.get("actionNumber", -1))
+                if shot_id not in made_shot_ids:
+                    fail(
+                        f"game {game_id}: and-one linkage failed — made shot "
+                        f"{shot_id} absent from the sibling shot payload "
+                        f"(zone-conflict drop?)"
+                    )
             else:
                 fail(
                     f"game {game_id} P{period} {clock}: unclassifiable trip "
@@ -579,12 +652,15 @@ def load_freethrow_game_snapshots(
         shot_payload, raw_root, allow_missing_games=allow_missing_games
     )
     shot_game_ids = {str(shot["gameId"]) for shot in shot_payload.get("shots", [])}
+    meta = shot_payload.get("_meta", {})
+    prefix = season_game_prefix(str(meta.get("season", "")),
+                                str(meta.get("seasonType", "Regular Season")))
     box_root = raw_root / "box-score"
     if not box_root.exists():
         return snapshots
     for box_dir in sorted(path for path in box_root.iterdir() if path.is_dir()):
         game_id = box_dir.name
-        if game_id in shot_game_ids:
+        if game_id in shot_game_ids or not game_id.startswith(prefix):
             continue
         pbp_dir = raw_root / "play-by-play" / game_id
         box_files = {path.name: path for path in box_dir.glob("*.json")}

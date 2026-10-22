@@ -467,10 +467,13 @@ def load_game_corpus(
                                  f"(Gate 4) — pull it first")
                     game_pairs.append((game_id, *pair))
                 box_root = raw_root / "box-score"
+                # Only this season's games: the corpus is shared across
+                # seasons (derive_freethrow.season_game_prefix).
+                prefix = df.season_game_prefix(season, season_type)
                 if box_root.exists():
                     for box_dir in sorted(p for p in box_root.iterdir() if p.is_dir()):
                         game_id = box_dir.name
-                        if game_id in shot_games:
+                        if game_id in shot_games or not game_id.startswith(prefix):
                             continue
                         pair = latest_pair(raw_root, game_id)
                         if pair is None:

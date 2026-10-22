@@ -815,6 +815,22 @@ backup bucket, set the task's power settings (done 2026-09-24).
 - Config PR: `liveTeams` UTA 2026-27 live; the team registry adds 2026-27
   as canonical once its first game payload deploys.
 - First game-night run, watched live.
+- _Opening night, 2026-10-21 (Memphis 123, Jazz 103, game 0022600089),
+  ran with the team session still dark: the config PR and the computed
+  copy had not landed. Every source arrived and reconciled (the pbp/box
+  pair, the three-game ruler, both one-day pulls equal to their box FGA,
+  75 and 93), and the team payload derived. Two halts kept the game file
+  from exporting, both fixed on 2026-10-22 (ADR-0053 and ADR-0080 as
+  amended): at 23:45 the free-throw grammar met a late-stamped and-one
+  (George's make at 8:11, the foul and his free throw at 8:10), and at
+  06:30 the load halted on an overnight NBA correction to the league frame.
+  A dry run of the team session on the fix branch, against a scratch store
+  seeded with that night's load, accepted the correction, recorded it in
+  the status file, and exported the game file with every oracle passing.
+  Seen the same morning: Darryn Peterson's own shot pull returned nothing at
+  06:30 though the team pull already held his 7 attempts (it caught up by
+  midmorning; the loop read it as "no shots yet"), and Ace and Keyonte
+  deferred on tracking lag, as expected the morning after a game._
 - _Dates confirmed 2026-10-14: the league opens Tuesday, October 20 (three
   games); the Jazz open Wednesday, October 21 at Memphis, home opener
   October 23 against New Orleans. The Jazz's first card therefore prices

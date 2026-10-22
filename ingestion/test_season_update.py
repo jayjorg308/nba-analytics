@@ -630,3 +630,16 @@ def test_upstream_failure_halts_only_its_own_session(monkeypatch, tmp_path):
     assert halted["outcome"] == "halt" and "failed 4 attempts" in halted["error"]
     assert status("second-hero")["outcome"] == "no-data"
     assert status("team-uta")["outcome"] == "no-data"
+
+
+def test_accepted_frame_changes_reach_the_report_and_the_status_record():
+    # ADR-0080 as amended 2026-10-22: what a loop load accepted becomes a
+    # report line (the data commit's body) and the status file's record.
+    record = {"through": "2026-10-21", "snapshot": "data/raw/x.json",
+              "changes": ["league_zone_baseline {...}: fga 304 -> 303"]}
+    report: list[str] = []
+    assert su.accepted_frame_changes({"_leagueFrameChanges": record}, report) == record
+    assert report == ["league frame: 1 change(s) accepted (frame through 2026-10-21)"]
+    report = []
+    assert su.accepted_frame_changes({"shot": {"changed": 0}}, report) is None
+    assert report == []

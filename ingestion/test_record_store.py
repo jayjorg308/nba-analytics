@@ -196,6 +196,41 @@ def test_living_season_shrinkage_halts_then_allows(store, tmp_path):
     assert payload["_meta"]["totalShots"] == 14
 
 
+# The league frame (ADR-0080 as amended 2026-10-22): a scorer moving a shot
+# between zones overnight shrinks one league cell. The loaders still halt on
+# it; the season loop's loads accept it and record it.
+
+
+def test_a_league_frame_correction_still_halts_outside_the_loop(store, tmp_path):
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, baseline_fga_delta=-1)
+    with pytest.raises(lhs.LoadHalt, match="league_zone_baseline"):
+        lhs.load_hero_season(store, snapshot_path=snap_path, advanced_path=adv_path)
+
+
+def test_the_loop_accepts_a_league_frame_correction_and_records_it(store, tmp_path):
+    import derive_payload as dp
+
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, baseline_fga_delta=-1)
+    report = lhs.load_hero_season(store, snapshot_path=snap_path,
+                                  advanced_path=adv_path, accept_frame_changes=True)
+    assert report["league_zone_baseline"]["changed"] == 1
+    record = report["_leagueFrameChanges"]
+    assert record["snapshot"] == dp.repo_relative(snap_path)
+    assert len(record["changes"]) == 1
+    assert record["changes"][0].startswith("league_zone_baseline")
+    assert " fga " in record["changes"][0]
+
+
+def test_the_loop_flag_never_accepts_a_subject_correction(store, tmp_path):
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, drop_last_shot=True)
+    with pytest.raises(lhs.LoadHalt, match="changed or deleted"):
+        lhs.load_hero_season(store, snapshot_path=snap_path, advanced_path=adv_path,
+                             accept_frame_changes=True)
+
+
 @pytest.mark.skipif(
     not DEPLOYED.exists(), reason="deployed payload absent (clean clone)"
 )
