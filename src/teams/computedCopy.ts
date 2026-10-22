@@ -1,24 +1,26 @@
 // Computed copy for the team report card (docs/plans/jazz-first-site.md,
-// "Computed copy"; ADR-0090 to record it): sentences authored once as
-// templates and filled mechanically, each emitted only when the predicate
-// that licenses it holds. The same band always produces the same words on
-// every card. Kept apart from the structural copy in ./copy.ts on purpose:
-// these words read a direction into the numbers, which structural copy
-// never may, so they live only here, behind their predicates, under their
-// own guard (computedCopy.test.ts: no grade or causal vocabulary, the house
+// "Computed copy"; ADR-0090): sentences authored once as templates and
+// filled mechanically, each emitted only when the predicate that licenses it
+// holds. The same band always produces the same words on every card. Kept
+// apart from the structural copy in ./copy.ts on purpose: these words read a
+// direction into the numbers, which structural copy never may, so they live
+// only here, behind their predicates, under their own guard
+// (computedCopy.test.ts: no grade or causal vocabulary, the house
 // punctuation, and predicate-emission agreement over every deployed game).
 //
-// DRAFT. Every rendering below is a placeholder carried over from the
-// prototype for the author to replace in the author's voice (CLAUDE.md,
-// "Verdict voice"; red-penned like any verdict). While AUTHORED is false the
-// page tags each computed sentence as draft copy. The bands themselves are
+// AUTHORED 2026-10-22 in the author's register (docs/voice/VOICE.md,
+// "Computed copy"), red-penned like any verdict. The magnitude words are the
+// verdict ladder's own ("a bit", the bare comparative, "well", "far"), so a
+// reader calibrates them once across verdicts and cards. The bands are
 // decided (2026-09-28): selection uses the season verdict ladder unchanged;
-// making uses twice its bands (docs/research/pre-game-ruler-2025-26.md).
+// making uses twice its bands (docs/research/pre-game-ruler-2025-26.md),
+// which only ever makes a card's word stricter than the ladder's floor.
 
 import { FAR_PPS, MATERIAL_PPS, NEUTRAL_BAND_PPS, STRONG_PPS } from '../heroes/verdictLadder'
 
-/** Flip to true in the PR that lands the authored words. */
-export const AUTHORED = false
+/** True since the authored words landed (2026-10-22); false tags every
+ * computed sentence on the page as draft copy. */
+export const AUTHORED = true
 
 /** Game-grain making swings far wider than season-grain making, so its
  * bands are the ladder's times this (decided 2026-09-28). */
@@ -46,22 +48,26 @@ export const QUESTIONS = {
 
 type BandWords = { neutral: string } & Record<Exclude<Band, 'neutral'>, Record<Direction, string>>
 
-/** "Good shots?" — the selection answer, one rendering per band and side. */
+/** "Good shots?" The diet priced at league rates against the league's own
+ * diet, answered the way a verdict opens: the hedge is the answer inside the
+ * material bar, "Yes" or "No" past it. */
 export const SELECTION_ANSWERS: BandWords = {
-  neutral: 'League-average shots',
-  hedged: { up: 'Slightly better shots than the league', down: 'Slightly tougher shots than the league' },
-  bare: { up: 'Good shots', down: 'Tough shots' },
-  well: { up: 'Very good shots', down: 'Very tough shots' },
-  far: { up: 'Great shots', down: 'Bad shots' },
+  neutral: 'Essentially league average',
+  hedged: { up: 'A bit above average', down: 'A bit below average' },
+  bare: { up: 'Yes, above average', down: 'No, below average' },
+  well: { up: 'Yes, well above average', down: 'No, well below average' },
+  far: { up: 'Yes, far above average', down: 'No, far below average' },
 }
 
-/** "Did they fall?" — the making answer, on the scaled bands. */
+/** "Did they fall?" Points per shot against what that diet should yield,
+ * on the scaled bands. The comparison rotates to "expectation" so the two
+ * answers never repeat a class (VOICE.md). */
 export const MAKING_ANSWERS: BandWords = {
-  neutral: 'They fell about as expected',
-  hedged: { up: 'A few extra fell', down: 'A few fewer fell' },
-  bare: { up: 'They fell', down: 'They didn’t fall' },
-  well: { up: 'They really fell', down: 'They really didn’t fall' },
-  far: { up: 'Everything fell', down: 'Nothing fell' },
+  neutral: 'About as expected',
+  hedged: { up: 'A bit above expectation', down: 'A bit below expectation' },
+  bare: { up: 'Yes, above expectation', down: 'No, below expectation' },
+  well: { up: 'Yes, well above expectation', down: 'No, well below expectation' },
+  far: { up: 'Yes, far above expectation', down: 'No, far below expectation' },
 }
 
 function wordsFor(words: BandWords, b: { band: Band; direction: Direction }): string {
@@ -76,35 +82,60 @@ export function makingAnswer(delta: number): string {
   return wordsFor(MAKING_ANSWERS, bandOf(delta, MAKING_BAND_SCALE))
 }
 
-/** The night's title beside the score: three words a side, neutral inside
- * the neutral band so it never contradicts the answers beside it. */
-export const TITLE_WORDS = {
-  selection: { neutral: 'league-average shots', up: 'good shots', down: 'tough shots' },
-  making: { neutral: 'that fell about as expected', up: 'that fell', down: 'that didn’t fall' },
-} as const
+/** A title side's state: the hedge survives into the title (a card whose
+ * answer says "a bit" never gets a bare title), and everything past the
+ * material bar takes the bare comparative, which understates "well" and
+ * "far" and so stays inside the ladder. */
+export type TitleState = 'up' | 'hedgedUp' | 'neutral' | 'hedgedDown' | 'down'
+
+export function titleState(b: { band: Band; direction: Direction }): TitleState {
+  if (b.band === 'neutral') return 'neutral'
+  if (b.band === 'hedged') return b.direction === 'up' ? 'hedgedUp' : 'hedgedDown'
+  return b.direction
+}
+
+/** The night's title beside the score, selection then making. */
+export const TITLE_WORDS: Record<'selection' | 'making', Record<TitleState, string>> = {
+  selection: {
+    up: 'above-average shots',
+    hedgedUp: 'a bit above-average shots',
+    neutral: 'league-average shots',
+    hedgedDown: 'a bit below-average shots',
+    down: 'below-average shots',
+  },
+  making: {
+    up: 'that beat expectation',
+    hedgedUp: 'that beat expectation by a bit',
+    neutral: 'that fell about as expected',
+    hedgedDown: 'that trailed expectation by a bit',
+    down: 'that trailed expectation',
+  },
+}
 
 export function nightTitle(selectionDelta: number, makingDelta: number): string {
-  const s = bandOf(selectionDelta)
-  const k = bandOf(makingDelta, MAKING_BAND_SCALE)
-  const sel = s.band === 'neutral' ? TITLE_WORDS.selection.neutral : TITLE_WORDS.selection[s.direction]
-  const mak = k.band === 'neutral' ? TITLE_WORDS.making.neutral : TITLE_WORDS.making[k.direction]
+  const sel = TITLE_WORDS.selection[titleState(bandOf(selectionDelta))]
+  const mak = TITLE_WORDS.making[titleState(bandOf(makingDelta, MAKING_BAND_SCALE))]
   return `${sel} ${mak}`
 }
 
 /** The quadrant's four regions, named by sign only: a corner names a region
- * of the chart, never a game, so it carries no band. */
+ * of the chart, never a game, so it carries no band. Conversational on
+ * purpose (the author's red pen, 2026-10-22): region names, not claims.
+ * "Costly" is the value ledger's word (VOICE.md), not "tough": the axis
+ * prices a diet, it never measures how hard a shot was. */
 export const CORNER_LABELS: Record<`${Direction}-${Direction}`, string> = {
   'up-up': 'good shots that fell',
-  'down-up': 'tough shots that fell',
+  'down-up': 'costly shots that fell',
   'up-down': 'good shots that didn’t fall',
-  'down-down': 'tough shots that didn’t fall',
+  'down-down': 'costly shots that didn’t fall',
 }
 
 /** A season rank as words, counted from whichever end is nearer, so the
- * bottom half never reads "54th-best of 82". */
+ * bottom half never reads "54th-best of 82". Value and expectation, never
+ * best and worst: a rank places a game, it never grades one. */
 export const RANK_WORDS = {
-  selection: { top: 'best diet', bottom: 'toughest diet' },
-  making: { top: 'best conversion', bottom: 'worst conversion' },
+  selection: { top: 'most valuable diet', bottom: 'least valuable diet' },
+  making: { top: 'furthest above expectation', bottom: 'furthest below expectation' },
 } as const
 
 export function rankLine(kind: 'selection' | 'making', rank: number, games: number): string {

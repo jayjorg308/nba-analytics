@@ -68,7 +68,7 @@ describe('ReportCardPage', () => {
     expect(screen.getByText('Utah Jazz · Jan 3, 2026 · @ GSW')).toBeTruthy()
     expect(screen.getByRole('link', { name: '← 2025-26 season' }).getAttribute('href')).toBe('/jazz')
     // The quadrant: four corners, one link per game, this game's link to itself.
-    for (const corner of ['tough shots that fell', 'good shots that fell', 'tough shots that didn’t fall', 'good shots that didn’t fall']) {
+    for (const corner of ['costly shots that fell', 'good shots that fell', 'costly shots that didn’t fall', 'good shots that didn’t fall']) {
       expect(screen.getByText(corner)).toBeTruthy()
     }
     const quadrant = screen.getByRole('group', { name: /Every Utah Jazz game so far/ })
