@@ -278,9 +278,66 @@ def test_corpus_discovery_includes_shotless_free_throw_games(tmp_path):
     _write_pair(tmp_path, "0022500002", [player(hero, 3, 4)], [])  # shotless FT game
     _write_pair(tmp_path, "0022500003", [player(hero, 0, 0)], [])  # shotless, no FT
     _write_pair(tmp_path, "0022500004", [player(12345, 5, 6)], [])  # hero absent
+    # Another season's game: the corpus is shared, the derive is not
+    # (season_game_prefix; Keyonte George's 2026-27 opener, 2026-10-22).
+    _write_pair(tmp_path, "0022600005", [player(hero, 5, 7)], [])
 
-    shot_payload = {"shots": [{"gameId": "0022500001"}]}
+    shot_payload = {"_meta": {"season": "2025-26", "seasonType": "Regular Season"},
+                    "shots": [{"gameId": "0022500001"}]}
     games = df.load_freethrow_game_snapshots(
         shot_payload, tmp_path, hero, allow_missing_games=False
     )
     assert sorted(games) == ["0022500001", "0022500002"]
+
+
+def test_season_game_prefix_reads_the_season_out_of_the_game_id():
+    assert df.season_game_prefix("2025-26") == "00225"
+    assert df.season_game_prefix("2026-27") == "00226"
+    assert df.season_game_prefix("2025-26", "Playoffs") == "00425"
+    with pytest.raises(SystemExit, match="no game-ID prefix"):
+        df.season_game_prefix("")
+
+
+# The late-stamped and-one (ADR-0053 as amended 2026-10-22), shaped like
+# game 0022600089: George's made three at PT08M11.00S, the shooting foul and
+# his one free throw at PT08M10.00S.
+GEORGE, UTA, MEM, WELLS = 1641718, 1610612762, 1610612763, 1642377
+
+
+def _act(number: int, clock: str, action_type: str, sub_type: str,
+         description: str, person: int = GEORGE, team: int = UTA) -> dict:
+    return {"actionNumber": number, "clock": clock, "period": 1, "teamId": team,
+            "personId": person, "actionType": action_type, "subType": sub_type,
+            "description": description}
+
+
+def _late_and_one_game(make_clock: str = "PT08M11.00S", maker: int = GEORGE,
+                       between: tuple = ()) -> list:
+    return [
+        _act(45, make_clock, "Made Shot", "Jump Shot",
+             "George 25' 3PT Jump Shot (5 PTS) (Hayes 1 AST)", person=maker),
+        *between,
+        _act(47, "PT08M10.00S", "Foul", "Shooting", "Wells S.FOUL (P1.T4) (A.Nagy)",
+             person=WELLS, team=MEM),
+        _act(49, "PT08M10.00S", "Free Throw", "Free Throw 1 of 1",
+             "MISS George Free Throw 1 of 1"),
+    ]
+
+
+def test_a_late_stamped_and_one_links_to_the_shooters_make():
+    trips, *_ = df.reconstruct_game_trips("0022600089", _late_and_one_game(), GEORGE, {45})
+    assert [(t.trip_class, t.ftm, t.fta, t.shot_id) for t in trips] == [("andOne", 0, 1, 45)]
+
+
+@pytest.mark.parametrize("game", [
+    # Three seconds is past AND_ONE_MAX_CLOCK_GAP.
+    _late_and_one_game(make_clock="PT08M13.00S"),
+    # Someone else's make is the nearest one: it could have earned the throw.
+    _late_and_one_game(between=(_act(46, "PT08M11.00S", "Made Shot", "Layup",
+                                     "Hayes 2' Layup (4 PTS)", person=1629637),)),
+    # The nearest make is a teammate's, not the shooter's.
+    _late_and_one_game(maker=1629637),
+])
+def test_the_late_and_one_fallback_stays_narrow(game):
+    with pytest.raises(SystemExit, match="unclassifiable trip"):
+        df.reconstruct_game_trips("0022600089", game, GEORGE, {45, 46})

@@ -60,13 +60,16 @@ def load_team_season(
     snapshot_path: Path,
     roster_path: Path,
     allow_changed: bool = False,
+    accept_frame_changes: bool = False,
 ) -> dict:
     """Load one team-season; return the change-detection report (plus
     `_unpairedGames`, the snapshot games with no box lines yet, and
     `_departed`, roster rows the incoming roster no longer lists).
 
     Single transaction: any failure (validation, oracle, halt) rolls the
-    whole load back.
+    whole load back. accept_frame_changes as in
+    load_hero_season.load_hero_season: league frame changes apply without
+    halting and return as `_leagueFrameChanges`.
     """
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     meta, shots, league = tp.validate_team_snapshot(snapshot)
@@ -197,8 +200,12 @@ def load_team_season(
                 "team_id = %s AND game_id = ANY(%s)",
                 [team_id, list(game_facts)],
             ))
+            mark = len(changed_detail)
             baseline.flush(cur, report, changed_detail,
                            scope=("season = %s AND season_type = %s", [season, season_type]))
+            frame_detail = changed_detail[mark:]
+            if accept_frame_changes:
+                del changed_detail[mark:]
             roster_scope = ("team_id = %s AND season = %s AND season_type = %s",
                             [team_id, season, season_type])
             roster_detail: list[str] = []
@@ -208,6 +215,9 @@ def load_team_season(
             # everything else that changed or vanished is a contradiction.
             halting = (sum(c["changed"] + c["deleted"] for c in report.values())
                        - departed)
+            if accept_frame_changes:
+                frame = report["league_zone_baseline"]
+                halting -= frame["changed"] + frame["deleted"]
             changed_detail += [d for d in roster_detail if "DELETED" not in d]
             if halting and not allow_changed:
                 raise lhs.LoadHalt(
@@ -237,6 +247,9 @@ def load_team_season(
             rs.set_head(cur, rs.scope_key(ROSTER_SOURCE, season=season,
                                           season_type=season_type, team_id=team_id),
                         roster_snap, run_id)
+            if accept_frame_changes and frame_detail:
+                report["_leagueFrameChanges"] = lhs.frame_change_record(
+                    meta, snapshot_path, frame_detail)
             cur.execute("UPDATE load_run SET report = %s WHERE run_id = %s",
                         (Jsonb(report), run_id))
         conn.commit()

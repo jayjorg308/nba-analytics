@@ -284,15 +284,29 @@ def guard_publish() -> None:
                    + "\n".join(dirty))
 
 
+def accepted_frame_changes(load_report: dict, report: list[str]) -> dict | None:
+    """The league frame changes a loop load accepted (ADR-0080 as amended
+    2026-10-22), reported in the session's lines; the caller records the
+    returned record in the session's status file as leagueFrameChanges."""
+    record = load_report.get("_leagueFrameChanges")
+    if record:
+        line = (f"league frame: {len(record['changes'])} change(s) accepted "
+                f"(frame through {record['through'] or 'today'})")
+        log(f"  {line}")
+        report.append(line)
+    return record
+
+
 def db_derive(args: argparse.Namespace, player: str, season: str,
               shot_path: Path, advanced_path: Path, tracking_path: Path,
               league_tracking_path: Path, totals_path: Path,
               universe: set[str], derived: Path, out: str,
-              report: list[str]) -> None:
+              report: list[str]) -> dict | None:
     """The DB-engine derive phase (ADR-0080): load the session's snapshots
     into the record store (every reconciliation live; change detection halts
-    on corrections, growth flows), then export the four payloads to the same
-    derived paths the file derives use. A LoadHalt or any loader/export
+    on corrections, growth flows, and a league frame change is accepted and
+    returned for the status file), then export the four payloads to the
+    same derived paths the file derives use. A LoadHalt or any loader/export
     hard-fail is a session Halt."""
     guard_production_store(args)
     import derive_payload as dp
@@ -308,8 +322,10 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
     with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
         rs.apply_migrations(conn)
         try:
-            lhs.load_hero_season(conn, snapshot_path=shot_path,
-                                 advanced_path=advanced_path)
+            hero_report = lhs.load_hero_season(conn, snapshot_path=shot_path,
+                                               advanced_path=advanced_path,
+                                               accept_frame_changes=True)
+            frame_changes = accepted_frame_changes(hero_report, report)
             lt.load_tracking(conn, player, season,
                              snapshot_path=tracking_path,
                              league_path=league_tracking_path)
@@ -340,6 +356,7 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
             path.write_text(mod.payload_text(payload), encoding="utf-8",
                             newline="\n")
             report.append(f"{name} export ok (record store)")
+    return frame_changes
 
 
 def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
@@ -497,9 +514,11 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
     out = f"{pull_date}{stamp}.json"
     if args.engine == "db":
         universe = {gid for gid, gd in games.items() if gd <= frontier}
-        db_derive(args, player, season, shot_path, advanced_path,
-                  tracking_path, league_tracking_path, totals_path,
-                  universe, derived, out, report)
+        frame_changes = db_derive(args, player, season, shot_path, advanced_path,
+                                  tracking_path, league_tracking_path, totals_path,
+                                  universe, derived, out, report)
+        if frame_changes:
+            status["leagueFrameChanges"] = frame_changes
     else:
         steps = [
             ("shot", f"python ingestion/derive_payload.py "
@@ -836,11 +855,12 @@ def changed_team_cards() -> list[str]:
 
 def db_derive_team(args: argparse.Namespace, team: str, season: str,
                    shot_path: Path, roster_path: Path, universe: set[str],
-                   out_path: Path, report: list[str]) -> None:
+                   out_path: Path, report: list[str]) -> dict | None:
     """The team session's DB-engine derive (ADR-0080/0082): load the team
     shot + roster snapshots, load the universe's game pairs hero-free, then
     export the team shot payload with every oracle live (the per-player
-    per-game box oracle refuses a game without its pair)."""
+    per-game box oracle refuses a game without its pair). Returns the league
+    frame changes the load accepted, for the status file."""
     guard_production_store(args)
     import export_ledger_facts as elf
     import export_team_shot_payload as etp
@@ -854,7 +874,9 @@ def db_derive_team(args: argparse.Namespace, team: str, season: str,
     with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
         rs.apply_migrations(conn)
         try:
-            lts.load_team_season(conn, shot_path, roster_path)
+            team_report = lts.load_team_season(conn, shot_path, roster_path,
+                                               accept_frame_changes=True)
+            frame_changes = accepted_frame_changes(team_report, report)
             lgc.load_game_pairs(conn, universe, raw_root=REPO / "data" / "raw")
         except lhs.LoadHalt as halt:
             raise Halt(f"record-store load halted: {halt}") from halt
@@ -873,6 +895,7 @@ def db_derive_team(args: argparse.Namespace, team: str, season: str,
             raise Halt(f"ledger export failed: {exc}") from exc
         lf.write_payload(out_path.parent / "ledger" / out_path.name, ledger)
         report.append("ledger export ok (record store)")
+    return frame_changes
 
 
 def run_team(entry: dict, args: argparse.Namespace) -> dict:
@@ -1008,7 +1031,10 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
     out_path = derived / f"{pull_date}{stamp}.json"
     universe = {gid for gid, gd in games.items() if gd <= frontier}
     if args.engine == "db":
-        db_derive_team(args, team, season, shot_path, roster_path, universe, out_path, report)
+        frame_changes = db_derive_team(args, team, season, shot_path, roster_path,
+                                       universe, out_path, report)
+        if frame_changes:
+            status["leagueFrameChanges"] = frame_changes
     else:
         result = run("python ingestion/derive_team_payload.py "
                      f"--snapshot-file \"{shot_path}\" --roster-file \"{roster_path}\" "
