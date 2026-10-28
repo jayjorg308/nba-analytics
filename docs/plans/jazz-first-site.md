@@ -6,6 +6,10 @@ wherever the two disagree; everything that plan decided and this one does not
 mention still stands. Decisions to record are listed under "Decisions to
 record" and each lands as an ADR with the increment that needs it._
 
+> **Refined 2026-10-28.** The page work still to do (the report card's
+> restyle, player pages, and the Jazz home at the root) is planned in
+> `docs/plans/jazz-home-transition.md`, which wins where the two disagree.
+
 > **Progress (2026-09-24, Phase 1 on `feature_JazzSite`).** Integration
 > steps 1 to 5 and 7 are done: the game-card ADR is 0086 (`31f5bcd`), the
 > merge through `316ef12` is in (`f864904`; the eleven hero game-log files
@@ -813,7 +817,11 @@ backup bucket, set the task's power settings (done 2026-09-24).
   terminal oracle, the creation payload, because upstream revised the
   2025-26 tracking data (see the open questions)._
 - Config PR: `liveTeams` UTA 2026-27 live; the team registry adds 2026-27
-  as canonical once its first game payload deploys.
+  as canonical once its first game payload deploys. _Flipped 2026-10-28
+  (`task_JazzLive`, Stage 0 of `docs/plans/jazz-home-transition.md`), a
+  week late: the config waited on the authored computed copy (#73) and the
+  loop halts (#72). The first live session publishes every game through
+  its frontier in one data commit; the registry follows the next morning._
 - First game-night run, watched live.
 - _Opening night, 2026-10-21 (Memphis 123, Jazz 103, game 0022600089),
   ran with the team session still dark: the config PR and the computed

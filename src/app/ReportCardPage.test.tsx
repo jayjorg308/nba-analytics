@@ -17,8 +17,14 @@ import { relabelIndex, teamPayloadFromGame } from '../domain/teamPayloadFromGame
 import { parseTeamSeasonIndex } from '../domain/teamSeasonIndex'
 import { AUTHORED } from '../teams/computedCopy'
 import { utahJazz } from '../teams/registry'
+import type { TeamConfig } from '../teams/registry'
 import { ReportCardPage } from './ReportCardPage'
 import { parseTeamRoute } from './teamRoute'
+
+// The fixture game is a 2025-26 game, so the team is pinned to the season it
+// was cut from: the registry's canonical season moves every year, and a
+// fixture's back link and its on-file seasons must not move with it.
+const jazz: TeamConfig = { ...utahJazz, seasons: ['2025-26'], canonicalSeason: '2025-26' }
 
 // under jsdom, import.meta.url is not a file URL — resolve from the repo root
 const read = (rel: string) => JSON.parse(readFileSync(path.resolve(process.cwd(), rel), 'utf-8')) as unknown
@@ -62,7 +68,7 @@ afterEach(() => {
 describe('ReportCardPage', () => {
   it('renders the card in the chosen order, every number from the files', async () => {
     stubFetch(READY)
-    render(<ReportCardPage team={utahJazz} route={routeOf('2026-01-03-gsw')} />)
+    render(<ReportCardPage team={jazz} route={routeOf('2026-01-03-gsw')} />)
     const h1 = await screen.findByRole('heading', { level: 1 })
     expect(h1.textContent).toMatch(/^L 30–39 · /)
     expect(screen.getByText('Utah Jazz · Jan 3, 2026 · @ GSW')).toBeTruthy()
@@ -97,12 +103,12 @@ describe('ReportCardPage', () => {
 
   it('opens the same card from the first team page’s game-id link', async () => {
     stubFetch(READY)
-    render(<ReportCardPage team={utahJazz} route={routeOf('0022500492')} />)
+    render(<ReportCardPage team={jazz} route={routeOf('0022500492')} />)
     expect((await screen.findByRole('heading', { level: 1 })).textContent).toMatch(/^L 30–39/)
   })
 
   it('draws the prior season behind when that season is published', async () => {
-    const team = { ...utahJazz, seasons: ['2024-25', '2025-26'] as const }
+    const team = { ...jazz, seasons: ['2024-25', '2025-26'] as const }
     stubFetch({
       ...READY,
       '/data/_teams/uta/2024-25/index.json': {
@@ -119,11 +125,11 @@ describe('ReportCardPage', () => {
 
   it('names a game not on file plainly, and a season not on file without fetching', async () => {
     stubFetch(READY)
-    render(<ReportCardPage team={utahJazz} route={routeOf('2026-01-04-gsw')} />)
+    render(<ReportCardPage team={jazz} route={routeOf('2026-01-04-gsw')} />)
     expect(await screen.findByText('No Utah Jazz game on file for 2026-01-04-gsw.')).toBeTruthy()
     cleanup()
     const fetch = stubFetch({})
-    render(<ReportCardPage team={utahJazz} route={routeOf('2024-11-01-lac')} />)
+    render(<ReportCardPage team={jazz} route={routeOf('2024-11-01-lac')} />)
     expect(screen.getByText('No Utah Jazz season on file for 2024-11-01-lac.')).toBeTruthy()
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -132,7 +138,7 @@ describe('ReportCardPage', () => {
     const broken = structuredClone(gameJson) as { sides: { box: { points: number } }[] }
     broken.sides[0]!.box.points += 1
     stubFetch({ ...READY, [URLS.game]: { ok: true, json: broken } })
-    render(<ReportCardPage team={utahJazz} route={routeOf('2026-01-03-gsw')} />)
+    render(<ReportCardPage team={jazz} route={routeOf('2026-01-03-gsw')} />)
     expect(await screen.findByText(/Payload contract violation/)).toBeTruthy()
     expect(screen.queryByRole('heading', { level: 1 })).toBeNull()
   })

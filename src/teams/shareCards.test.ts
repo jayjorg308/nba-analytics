@@ -51,7 +51,8 @@ describe('gamePageMeta', () => {
 
 describe('teamPageMeta', () => {
   it('gives the bare team route its own page, preloading what the season page fetches', () => {
-    const meta = teamPageMeta(utahJazz)
+    // Pinned to a fixed canonical season: the registry's moves every year.
+    const meta = teamPageMeta({ ...utahJazz, seasons: ['2025-26'], canonicalSeason: '2025-26' })
     expect(meta.url).toBe(`${SITE_ORIGIN}/jazz`)
     expect(meta.title).toBe('Utah Jazz · 2025-26 · shot profile')
     expect(meta.preloadPaths).toEqual([

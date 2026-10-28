@@ -13,9 +13,12 @@
     "(ADR-0081/0082, docs/plans/jazz-surface.md): roster + team-wide shot",
     "pulls, every game's pbp/box pair, the team shot payload under",
     "public/data/_teams/<tricode>/. mode 'dark' = pull/derive/report daily,",
-    "publish nothing; mode 'live' = team:sync + full gate + data commit on",
-    "green. A tool surface has no volume gate (ADR-0081): the live flip is",
-    "the config change that lands with the /jazz page (increment 2).",
+    "publish nothing; mode 'live' = team:sync + the new games' share cards +",
+    "full gate + data commit on green (ADR-0091). A tool surface has no",
+    "volume gate (ADR-0081): the live flip is this config change alone. UTA",
+    "2026-27 flipped live 2026-10-28 (docs/plans/jazz-home-transition.md,",
+    "Stage 0); the team registry lists a season once its first data commit",
+    "lands, never before.",
     "",
     "trackingShortfalls: characterized outage games per hero-season, keyed",
     "'<slug>/<season>' -> { gameId: missing attempts }. Absent = 0. An",
@@ -74,7 +77,7 @@
       "teamId": 1610612762,
       "team": "Utah Jazz",
       "season": "2026-27",
-      "mode": "dark"
+      "mode": "live"
     }
   ],
   "trackingShortfalls": {
