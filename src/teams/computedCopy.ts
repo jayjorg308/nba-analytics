@@ -94,28 +94,37 @@ export function titleState(b: { band: Band; direction: Direction }): TitleState 
   return b.direction
 }
 
-/** The night's title beside the score, selection then making. */
+/** The night's title beside the score: two parallel phrases, selection then
+ * making, the hedge after its noun (revised 2026-10-28). The
+ * first set's single clause put "a bit" before a hyphenated adjective ("a
+ * bit below-average shots", which reads as "a few below-average shots") and
+ * left "by a bit" dangling at the end, on 37 and 25 of 2025-26's 82 titles. */
 export const TITLE_WORDS: Record<'selection' | 'making', Record<TitleState, string>> = {
   selection: {
-    up: 'above-average shots',
-    hedgedUp: 'a bit above-average shots',
+    up: 'shots above average',
+    hedgedUp: 'shots a bit above average',
     neutral: 'league-average shots',
-    hedgedDown: 'a bit below-average shots',
-    down: 'below-average shots',
+    hedgedDown: 'shots a bit below average',
+    down: 'shots below average',
   },
   making: {
-    up: 'that beat expectation',
-    hedgedUp: 'that beat expectation by a bit',
-    neutral: 'that fell about as expected',
-    hedgedDown: 'that trailed expectation by a bit',
-    down: 'that trailed expectation',
+    up: 'makes above expectation',
+    hedgedUp: 'makes a bit above expectation',
+    neutral: 'makes about as expected',
+    hedgedDown: 'makes a bit below expectation',
+    down: 'makes below expectation',
   },
 }
 
+export function titleOf(selection: string, making: string): string {
+  return `${selection}, ${making}`
+}
+
 export function nightTitle(selectionDelta: number, makingDelta: number): string {
-  const sel = TITLE_WORDS.selection[titleState(bandOf(selectionDelta))]
-  const mak = TITLE_WORDS.making[titleState(bandOf(makingDelta, MAKING_BAND_SCALE))]
-  return `${sel} ${mak}`
+  return titleOf(
+    TITLE_WORDS.selection[titleState(bandOf(selectionDelta))],
+    TITLE_WORDS.making[titleState(bandOf(makingDelta, MAKING_BAND_SCALE))],
+  )
 }
 
 /** The quadrant's four regions, named by sign only: a corner names a region

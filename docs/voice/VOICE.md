@@ -170,6 +170,11 @@ first set was authored (2026-10-22):
   material bar ("A bit below average"); "Yes" or "No" leads past it.
 - **A hedge never drops between two lines of one card.** The title beside
   a hedged answer carries "a bit" too.
+- **A title hedge sits after its noun** (revised 2026-10-28). The title is
+  two parallel phrases, "shots a bit below average, makes a bit above
+  expectation". The first set's single clause read "a bit below-average
+  shots that beat expectation by a bit": "a bit" before a hyphenated
+  adjective reads as "a few", and a trailing "by a bit" dangles.
 - **Region names stay short and conversational** (the author's red pen):
   a chart corner names a region, not a game, so "good shots that fell"
   beats the precise "above-average shots that beat expectation".
