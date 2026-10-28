@@ -583,6 +583,25 @@ def test_the_game_step_exports_new_games_from_the_raw_layer(pg_dsn, tmp_path):
                            published, [])
 
 
+def test_the_store_reports_a_heros_shots_past_his_frontier(pg_dsn):
+    # ADR-0080 as amended 2026-10-28: the team load writes George's shots in
+    # the 2026-01-03 game, so a hero session whose tracking stops at
+    # 2026-01-02 finds the store past its frontier and defers.
+    import load_team_season as lts
+    import record_store as rs
+    from regen_game_golden import FIXTURES
+
+    with rs.connect(pg_dsn) as conn:
+        rs.apply_migrations(conn)
+        lts.load_team_season(conn, FIXTURES / "game-team-snapshot.truncated.json",
+                             FIXTURES / "team-roster.truncated.json")
+    args = argparse.Namespace(db_url=pg_dsn)
+    george = 1641718
+    assert su.store_shots_after(args, george, "2025-26", "2026-01-02") == "2026-01-03"
+    assert su.store_shots_after(args, george, "2025-26", "2026-01-03") is None
+    assert su.store_shots_after(args, george, "2026-27", "2025-10-01") is None
+
+
 # ---------------------------------------------------- one session's upstream failure
 
 
@@ -642,4 +661,15 @@ def test_accepted_frame_changes_reach_the_report_and_the_status_record():
     assert report == ["league frame: 1 change(s) accepted (frame through 2026-10-21)"]
     report = []
     assert su.accepted_frame_changes({"shot": {"changed": 0}}, report) is None
+    assert report == []
+
+
+def test_accepted_player_renames_reach_the_report_and_the_status_record():
+    # ADR-0080 as amended 2026-10-28, the frame's rule for player names.
+    renames = ["player {'player_id': 1630619}: name 'Moussa Cisse' -> 'Moussa Cissé'"]
+    report: list[str] = []
+    assert su.accepted_player_renames({"_playerRenames": renames}, report) == renames
+    assert report == ["player names: 1 rename(s) accepted"]
+    report = []
+    assert su.accepted_player_renames({"player": {"changed": 0}}, report) is None
     assert report == []
