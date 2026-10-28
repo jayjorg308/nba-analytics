@@ -13,7 +13,8 @@ Voice operates inside the house rails. Nothing below licenses vocabulary
 drift, a re-graded magnitude word, or a claim without a guard mapping.
 
 Scope: this guide covers **authored hero copy** (verdicts, their sentence
-families, and banner alt text). It does not govern **structural copy** — the
+families, and banner alt text) and the report card's **computed copy** (its
+own section below). It does not govern **structural copy** — the
 methodology page, glossary definitions, section descriptions, the directory
 blurb — which is product voice rather than the author's, and whose discipline
 is claim verification rather than cadence (CLAUDE.md's Structural copy entry,
@@ -153,6 +154,33 @@ extra: it may claim only what the frame shows.
   entirely the author's.
 - The credit line beside it takes two forms and never guesses: see
   CONTEXT.md's Hero banner entry.
+
+## Computed copy (the report card)
+
+The report card's templates (`src/teams/computedCopy.ts`, ADR-0090) are
+authored once in this register and then filled mechanically, so every
+phrase must read right on every night its band licenses. Settled when the
+first set was authored (2026-10-22):
+
+- **Ladder words, nothing else.** "A bit", the bare comparative, "well",
+  "far". The prototype's "slightly", "very", "really", "great", and "bad"
+  all priced magnitude off the ladder, and "Nothing fell" was simply false
+  on a night shots fell.
+- **Answers open like verdicts.** The hedge is the answer inside the
+  material bar ("A bit below average"); "Yes" or "No" leads past it.
+- **A hedge never drops between two lines of one card.** The title beside
+  a hedged answer carries "a bit" too.
+- **A title hedge sits after its noun** (revised 2026-10-28). The title is
+  two parallel phrases, "shots a bit below average, makes a bit above
+  expectation". The first set's single clause read "a bit below-average
+  shots that beat expectation by a bit": "a bit" before a hyphenated
+  adjective reads as "a few", and a trailing "by a bit" dangles.
+- **Region names stay short and conversational** (the author's red pen):
+  a chart corner names a region, not a game, so "good shots that fell"
+  beats the precise "above-average shots that beat expectation".
+- **"Costly", not "tough".** The selection axis prices a diet; it never
+  says how hard a shot was, and difficulty belongs to the contested family.
+- **Ranks place, never grade.** "Least valuable diet", not "worst".
 
 ## Vocabulary calls settled during the corpus build
 

@@ -24,6 +24,7 @@ import {
   SELECTION_ANSWERS,
   selectionAnswer,
   TITLE_WORDS,
+  titleOf,
 } from './computedCopy'
 
 // Grades and causes: no surface grades a game, and nothing on a card says
@@ -53,7 +54,7 @@ function everyRendering(): string[] {
     for (const band of ['hedged', 'bare', 'well', 'far'] as const) out.push(words[band].up, words[band].down)
   }
   for (const s of Object.values(TITLE_WORDS.selection)) {
-    for (const m of Object.values(TITLE_WORDS.making)) out.push(`${s} ${m}`)
+    for (const m of Object.values(TITLE_WORDS.making)) out.push(titleOf(s, m))
   }
   for (const games of [10, 41, 82]) {
     for (let rank = 1; rank <= games; rank++) out.push(rankLine('selection', rank, games), rankLine('making', rank, games))
@@ -87,15 +88,28 @@ describe('computed copy templates', () => {
   it('say the same words for the same band, and a neutral title inside the neutral band', () => {
     expect(selectionAnswer(0.06)).toBe(selectionAnswer(0.09))
     expect(makingAnswer(-0.11)).toBe(makingAnswer(-0.19))
-    expect(nightTitle(0.01, -0.03)).toBe(`${TITLE_WORDS.selection.neutral} ${TITLE_WORDS.making.neutral}`)
-    expect(nightTitle(-0.03, 0.05)).toBe(`${TITLE_WORDS.selection.down} ${TITLE_WORDS.making.up}`)
+    expect(nightTitle(0.01, -0.03)).toBe(titleOf(TITLE_WORDS.selection.neutral, TITLE_WORDS.making.neutral))
+  })
+
+  it('keep the hedge in the title, and take the bare comparative past the material bar', () => {
+    // A hedged answer never sits beside a bare title (the 2026-10-22 fix:
+    // 27 of 2025-26's cards said "slightly" in the answer and not the title).
+    expect(nightTitle(-0.03, 0.05)).toBe(titleOf(TITLE_WORDS.selection.hedgedDown, TITLE_WORDS.making.hedgedUp))
+    expect(nightTitle(0.03, -0.05)).toBe(titleOf(TITLE_WORDS.selection.hedgedUp, TITLE_WORDS.making.hedgedDown))
+    // The hedge rides after its noun, once per phrase (revised 2026-10-28).
+    expect(nightTitle(-0.03, 0.05)).toBe('shots a bit below average, makes a bit above expectation')
+    // Bare, well, and far all title as the bare comparative (understating).
+    for (const sel of [0.06, 0.12, 0.2]) {
+      expect(nightTitle(sel, 0.25)).toBe(titleOf(TITLE_WORDS.selection.up, TITLE_WORDS.making.up))
+      expect(nightTitle(-sel, -0.25)).toBe(titleOf(TITLE_WORDS.selection.down, TITLE_WORDS.making.down))
+    }
   })
 
   it('count a rank from whichever end is nearer', () => {
-    expect(rankLine('selection', 1, 82)).toBe('best diet of 82 games so far')
-    expect(rankLine('selection', 54, 82)).toBe('29th-toughest diet of 82 games so far')
-    expect(rankLine('making', 82, 82)).toBe('worst conversion of 82 games so far')
-    expect(rankLine('making', 3, 41)).toBe('3rd-best conversion of 41 games so far')
+    expect(rankLine('selection', 1, 82)).toBe('most valuable diet of 82 games so far')
+    expect(rankLine('selection', 54, 82)).toBe('29th-least valuable diet of 82 games so far')
+    expect(rankLine('making', 82, 82)).toBe('furthest below expectation of 82 games so far')
+    expect(rankLine('making', 3, 41)).toBe('3rd-furthest above expectation of 41 games so far')
     expect([1, 2, 3, 4, 11, 12, 13, 21, 22, 23, 101, 111].map(ordinal)).toEqual([
       '1st', '2nd', '3rd', '4th', '11th', '12th', '13th', '21st', '22nd', '23rd', '101st', '111th',
     ])
