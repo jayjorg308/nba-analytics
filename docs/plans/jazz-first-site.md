@@ -831,6 +831,27 @@ backup bucket, set the task's power settings (done 2026-09-24).
   06:30 though the team pull already held his 7 attempts (it caught up by
   midmorning; the loop read it as "no shots yet"), and Ace and Keyonte
   deferred on tracking lag, as expected the morning after a game._
+- _October 23 to 28: no session finished. Four causes, three fixed on
+  2026-10-28 (ADR-0053 and ADR-0080 as amended). From the 23:45 session on
+  the 23rd every team session halted on game 0022600100: the feed labeled
+  Saddiq Bey's free throw for Jaxson Hayes's hanging technical `Free Throw
+  1 of 1`, which the grammar could not classify, so the 89, 100, 112, and
+  126 games all waited behind it. From the 23rd to the 26th stats.nba.com
+  returned empty bodies to the date-anchored tracking pull through all four
+  retries, halting the hero sessions (upstream; it cleared on the 27th).
+  From the 27th every hero load halted on two league-wide renames ('Moussa
+  Cisse' to 'Moussa Cissé', 'Terrence Shannon Jr.' to 'Terrence Shannon
+  Jr'), and on the 27th the loads also read game 0022600126 as deleted:
+  the game-night load had written the heroes' shots in it, and tracking
+  had not caught up. The grammar now counts the mislabeled throw with the
+  technicals, the loop accepts and records renames, and a hero session
+  whose frontier the store has passed defers. A dry run of the full
+  morning session on the fix branch, against a scratch copy of the
+  production store, ran clean: all three hero loads accepted and recorded
+  both renames and derived at the 10-26 frontier, and the team session
+  exported all four games with every oracle passing (Bey's throw counted
+  as a technical). Keyonte's session replayed as of the 25th, with game
+  126 already in the store, deferred instead of halting._
 - _Dates confirmed 2026-10-14: the league opens Tuesday, October 20 (three
   games); the Jazz open Wednesday, October 21 at Memphis, home opener
   October 23 against New Orleans. The Jazz's first card therefore prices

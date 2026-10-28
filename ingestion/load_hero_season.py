@@ -274,8 +274,13 @@ def load_hero_season(
     `_leagueFrameChanges` (frame_change_record). The frame is the league's
     aggregate, not an observation of the subject: scorers move shots
     between zones after games (the 2026-10-22 morning halt), and each
-    session anchors the frame at its own frontier. Every other table's
-    corrections still halt.
+    session anchors the frame at its own frontier. A player's name changing
+    is applied the same way and returned as `_playerRenames` (ADR-0080 as
+    amended 2026-10-28): the Advanced artifact restages every player in the
+    league, and stats.nba.com renames people ('Moussa Cisse' became 'Moussa
+    Cissé' and 'Terrence Shannon Jr.' 'Terrence Shannon Jr', halting every
+    hero session from 2026-10-27). Every other table's corrections still
+    halt.
     """
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     meta, _post_drop, _league, _conflicts = dp.validate_snapshot(snapshot)
@@ -429,7 +434,13 @@ def load_hero_season(
             # snapshots assert their scopes COMPLETELY, so scope-complete
             # flushes detect deletions (a vanished row is a contradiction).
             season_scope_sql = "season = %s AND season_type = %s"
+            # A player row's only content is the name, so every changed
+            # player row is a rename.
+            name_mark = len(changed_detail)
             players.flush(cur, report, changed_detail)
+            rename_detail = changed_detail[name_mark:]
+            if accept_frame_changes:
+                del changed_detail[name_mark:]
             teams.flush(cur, report, changed_detail)
             games.flush(cur, report, changed_detail)
             shot_rows.flush(cur, report, changed_detail, scope=(
@@ -450,6 +461,7 @@ def load_hero_season(
             if accept_frame_changes:
                 frame = report["league_zone_baseline"]
                 halting -= frame["changed"] + frame["deleted"]
+                halting -= report["player"]["changed"]
             if halting and not allow_changed:
                 raise LoadHalt(
                     f"{halting} row(s) changed or deleted against current state "
@@ -468,6 +480,8 @@ def load_hero_season(
             if accept_frame_changes and frame_detail:
                 report["_leagueFrameChanges"] = frame_change_record(
                     meta, snapshot_path, frame_detail)
+            if accept_frame_changes and rename_detail:
+                report["_playerRenames"] = rename_detail
             cur.execute(
                 "UPDATE load_run SET report = %s WHERE run_id = %s",
                 (Jsonb(report), run_id),

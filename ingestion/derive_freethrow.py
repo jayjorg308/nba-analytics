@@ -224,6 +224,33 @@ def _late_and_one_make(
     return None
 
 
+# The mislabeled technical (ADR-0053 as amended 2026-10-28): in game
+# 0022600100 Hayes's hanging technical at P4 PT08M14.00S sent Saddiq Bey to
+# the line, and the feed labeled his one throw 'Free Throw 1 of 1', not
+# 'Free Throw Technical' (the corpus's seven earlier hanging technicals were
+# all labeled). A technical's throw is never a trip. Like the late-stamped
+# and-one, the fallback runs only for a trip no earlier rule classified. A
+# double technical awards no throws and never qualifies.
+def _mislabeled_technical(
+    actions: list, first_index: int, period: int, clock: str, hero_team: int
+) -> bool:
+    """A same-second technical foul by the shooter's opponent within the
+    search window, scanning back from the trip's first free throw."""
+    for j in range(first_index - 1, max(-1, first_index - 1 - FOUL_SEARCH_WINDOW), -1):
+        action = actions[j]
+        if not isinstance(action, dict) or int(action.get("period", 0)) != period:
+            return False
+        if (
+            action.get("actionType") == "Foul"
+            and _same_second(str(action.get("clock", "")), clock)
+            and int(action.get("teamId", 0)) not in (0, hero_team)
+        ):
+            subtype = str(action.get("subType", ""))
+            if "Technical" in subtype and subtype != "Double Technical":
+                return True
+    return False
+
+
 def reconstruct_game_trips(
     game_id: str, actions: list, player_id: int, made_shot_ids: set[int]
 ) -> tuple[list[Trip], int, int, int, int]:
@@ -383,9 +410,10 @@ def reconstruct_game_trips(
                 and (late := _late_and_one_make(
                     actions, first_index, period, clock, player_id)) is not None
             ):
-                # The late-stamped and-one (AND_ONE_MAX_CLOCK_GAP): the
-                # last branch before totality fails, so it only ever
-                # classifies a trip no earlier rule could.
+                # The late-stamped and-one (AND_ONE_MAX_CLOCK_GAP): with the
+                # mislabeled technical below, the last branches before
+                # totality fails, so they only ever classify a trip no
+                # earlier rule could.
                 trip_class = "andOne"
                 shot_id = int(late.get("actionNumber", -1))
                 if shot_id not in made_shot_ids:
@@ -394,6 +422,17 @@ def reconstruct_game_trips(
                         f"{shot_id} absent from the sibling shot payload "
                         f"(zone-conflict drop?)"
                     )
+            elif (
+                declared == 1
+                and ctx.foul_subtype is None
+                and _mislabeled_technical(
+                    actions, first_index, period, clock, hero_team)
+            ):
+                # The mislabeled technical: a technical's throw under a
+                # regular label, counted with the technicals, never a trip.
+                technical_fta += len(events)
+                technical_ftm += ftm
+                continue
             else:
                 fail(
                     f"game {game_id} P{period} {clock}: unclassifiable trip "
