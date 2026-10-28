@@ -119,7 +119,7 @@ def test_snapshot_recatalog_with_different_bytes_halts(store, tmp_path):
 
 
 def _day_two_fixtures(tmp_path, *, drop_last_shot=False, add_shot=False,
-                      baseline_fga_delta=0):
+                      baseline_fga_delta=0, rename_other=None):
     """A synthetic next-day pull session: the truncated snapshot mutated and
     written under a later pull date, plus an advanced artifact whose hero FGA
     matches (the FGA oracle must hold on both days)."""
@@ -153,6 +153,10 @@ def _day_two_fixtures(tmp_path, *, drop_last_shot=False, add_shot=False,
     for row in rows["rowSet"]:
         if int(row[idx]) == hero_id:
             row[fga_idx] = len(shots["rowSet"])
+    if rename_other:
+        # stats.nba.com renaming someone else in the league.
+        other = next(row for row in rows["rowSet"] if int(row[idx]) != hero_id)
+        other[rows["headers"].index("PLAYER_NAME")] = rename_other
     adv["_meta"]["pull_date"] = "2026-07-10"
     adv_path = tmp_path / "advanced-2026-07-10.json"
     adv_path.write_text(json.dumps(adv), encoding="utf-8")
@@ -221,6 +225,32 @@ def test_the_loop_accepts_a_league_frame_correction_and_records_it(store, tmp_pa
     assert len(record["changes"]) == 1
     assert record["changes"][0].startswith("league_zone_baseline")
     assert " fga " in record["changes"][0]
+
+
+# Player renames (ADR-0080 as amended 2026-10-28): the Advanced artifact
+# restages every player in the league, and stats.nba.com renames people
+# ('Moussa Cisse' to 'Moussa Cissé'). Same rule as the frame: the loaders
+# halt, the loop accepts and records.
+
+
+def test_a_player_rename_still_halts_outside_the_loop(store, tmp_path):
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, rename_other="Renamed Player")
+    with pytest.raises(lhs.LoadHalt, match="name .* -> 'Renamed Player'"):
+        lhs.load_hero_season(store, snapshot_path=snap_path, advanced_path=adv_path)
+
+
+def test_the_loop_accepts_a_player_rename_and_records_it(store, tmp_path):
+    load_fixtures(store)
+    snap_path, adv_path = _day_two_fixtures(tmp_path, rename_other="Renamed Player")
+    report = lhs.load_hero_season(store, snapshot_path=snap_path,
+                                  advanced_path=adv_path, accept_frame_changes=True)
+    assert report["player"]["changed"] == 1
+    (rename,) = report["_playerRenames"]
+    assert rename.startswith("player ") and rename.endswith("-> 'Renamed Player'")
+    with store.cursor() as cur:
+        cur.execute("SELECT count(*) FROM player WHERE name = 'Renamed Player'")
+        assert cur.fetchone()[0] == 1
 
 
 def test_the_loop_flag_never_accepts_a_subject_correction(store, tmp_path):

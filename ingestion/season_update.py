@@ -297,17 +297,56 @@ def accepted_frame_changes(load_report: dict, report: list[str]) -> dict | None:
     return record
 
 
+def accepted_player_renames(load_report: dict, report: list[str]) -> list[str] | None:
+    """The player renames a loop load accepted (ADR-0080 as amended
+    2026-10-28), reported in the session's lines with each rename; the
+    caller records them in the session's status file as playerRenames."""
+    renames = load_report.get("_playerRenames")
+    if renames:
+        line = f"player names: {len(renames)} rename(s) accepted"
+        log(f"  {line}")
+        for rename in renames:
+            log(f"    {rename}")
+        report.append(line)
+    return renames
+
+
+def store_shots_after(args: argparse.Namespace, player_id: int, season: str,
+                      frontier: str) -> str | None:
+    """The latest game date after the frontier at which the record store
+    already holds the hero's shots, or None. The team session loads every
+    shooter on its roster into the shared shot table through its own
+    frontier (ADR-0082), so a hero who plays for a live team is often in
+    the store ahead of his own tracking."""
+    guard_production_store(args)
+    import record_store as rs
+
+    with rs.connect(rs.resolve_dsn(args.db_url)) as conn:
+        rs.apply_migrations(conn)
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT max(g.game_date) FROM shot s JOIN game g USING (game_id)"
+                " WHERE s.player_id = %s AND g.season = %s AND g.season_type = %s"
+                " AND g.game_date > %s",
+                (player_id, season, live_pulls.SEASON_TYPE,
+                 date.fromisoformat(frontier)),
+            )
+            latest = cur.fetchone()[0]
+    return latest.isoformat() if latest else None
+
+
 def db_derive(args: argparse.Namespace, player: str, season: str,
               shot_path: Path, advanced_path: Path, tracking_path: Path,
               league_tracking_path: Path, totals_path: Path,
               universe: set[str], derived: Path, out: str,
-              report: list[str]) -> dict | None:
+              report: list[str]) -> dict:
     """The DB-engine derive phase (ADR-0080): load the session's snapshots
     into the record store (every reconciliation live; change detection halts
-    on corrections, growth flows, and a league frame change is accepted and
-    returned for the status file), then export the four payloads to the
-    same derived paths the file derives use. A LoadHalt or any loader/export
-    hard-fail is a session Halt."""
+    on corrections, growth flows, and a league frame change or a player
+    rename is accepted and returned for the status file, keyed by its status
+    field), then export the four payloads to the same derived paths the
+    file derives use. A LoadHalt or any loader/export hard-fail is a session
+    Halt."""
     guard_production_store(args)
     import derive_payload as dp
     import export_creation_payload as ecr
@@ -325,7 +364,10 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
             hero_report = lhs.load_hero_season(conn, snapshot_path=shot_path,
                                                advanced_path=advanced_path,
                                                accept_frame_changes=True)
-            frame_changes = accepted_frame_changes(hero_report, report)
+            records = {
+                "leagueFrameChanges": accepted_frame_changes(hero_report, report),
+                "playerRenames": accepted_player_renames(hero_report, report),
+            }
             lt.load_tracking(conn, player, season,
                              snapshot_path=tracking_path,
                              league_path=league_tracking_path)
@@ -356,7 +398,7 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
             path.write_text(mod.payload_text(payload), encoding="utf-8",
                             newline="\n")
             report.append(f"{name} export ok (record store)")
-    return frame_changes
+    return {key: record for key, record in records.items() if record}
 
 
 def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
@@ -481,6 +523,22 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
                 f"{prior + 1} consecutive sessions — characterize the gap "
                 f"(outage -> pin it in season.config.json; ADR-0058)")
 
+    # 3b. A frontier the store has passed (ADR-0080 as amended 2026-10-28).
+    #     The hero load asserts every one of the hero's season shots, so
+    #     rows the game-night team load wrote after this frontier would read
+    #     as deletions (the 2026-10-27 halt, game 0022600126). Tracking lag
+    #     defers, as when it trails every candidate; the session that
+    #     follows tracking's catch-up loads them.
+    if args.engine == "db":
+        ahead = store_shots_after(args, player_id, season, frontier)
+        if ahead is not None:
+            status.update(outcome="deferred", deferred=True,
+                          note=f"the record store holds {player}'s shots "
+                               f"through {ahead}; tracking reaches {frontier}")
+            log(f"  DEFERRED: the store holds shots through {ahead}, "
+                f"past the frontier {frontier}")
+            return status
+
     # 4. Anchored pulls at the settled frontier.
     max_disc_date = max(games.values())
     if frontier == max_disc_date and (args.as_of is None or args.as_of == frontier):
@@ -514,11 +572,9 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
     out = f"{pull_date}{stamp}.json"
     if args.engine == "db":
         universe = {gid for gid, gd in games.items() if gd <= frontier}
-        frame_changes = db_derive(args, player, season, shot_path, advanced_path,
-                                  tracking_path, league_tracking_path, totals_path,
-                                  universe, derived, out, report)
-        if frame_changes:
-            status["leagueFrameChanges"] = frame_changes
+        status.update(db_derive(args, player, season, shot_path, advanced_path,
+                                tracking_path, league_tracking_path, totals_path,
+                                universe, derived, out, report))
     else:
         steps = [
             ("shot", f"python ingestion/derive_payload.py "

@@ -341,3 +341,46 @@ def test_a_late_stamped_and_one_links_to_the_shooters_make():
 def test_the_late_and_one_fallback_stays_narrow(game):
     with pytest.raises(SystemExit, match="unclassifiable trip"):
         df.reconstruct_game_trips("0022600089", game, GEORGE, {45, 46})
+
+
+# The mislabeled technical (ADR-0053 as amended 2026-10-28), shaped like game
+# 0022600100: Hayes dunks, draws a hanging technical, and Bey's one throw is
+# labeled 'Free Throw 1 of 1', all at PT08M14.00S.
+BEY, HAYES, NOP = 1630180, 1629637, 1610612740
+
+
+def _mislabeled_technical_game(foul_subtype: str = "Hanging Technical",
+                               foul_clock: str = "PT08M14.00S",
+                               foul_team: int = UTA,
+                               throws: tuple = ("Free Throw 1 of 1",)) -> list:
+    return [
+        _act(592, "PT08M14.00S", "Made Shot", "Alley Oop Dunk Shot",
+             "Hayes 7' Alley Oop Dunk (15 PTS) (Sensabaugh 2 AST)", person=HAYES),
+        _act(594, foul_clock, "Foul", foul_subtype,
+             "Hayes HANGING.TECH.FOUL (P2.T2) (J.Capers)", person=HAYES, team=foul_team),
+        *(_act(595 + i, "PT08M14.00S", "Free Throw", sub_type,
+               f"Bey {sub_type} (18 PTS)", person=BEY, team=NOP)
+          for i, sub_type in enumerate(throws)),
+    ]
+
+
+def test_a_mislabeled_technical_counts_with_the_technicals():
+    trips, tftm, tfta, sftm, sfta = df.reconstruct_game_trips(
+        "0022600100", _mislabeled_technical_game(), BEY, set())
+    assert trips == []
+    assert (tftm, tfta, sftm, sfta) == (1, 1, 0, 0)
+
+
+@pytest.mark.parametrize("game", [
+    # A double technical awards no throws.
+    _mislabeled_technical_game(foul_subtype="Double Technical"),
+    # The technical is a second away from the throw.
+    _mislabeled_technical_game(foul_clock="PT08M15.00S"),
+    # The shooter's own team drew the technical.
+    _mislabeled_technical_game(foul_team=NOP),
+    # A two-throw visit is never a technical's.
+    _mislabeled_technical_game(throws=("Free Throw 1 of 2", "Free Throw 2 of 2")),
+])
+def test_the_mislabeled_technical_fallback_stays_narrow(game):
+    with pytest.raises(SystemExit, match="unclassifiable trip"):
+        df.reconstruct_game_trips("0022600100", game, BEY, set())
