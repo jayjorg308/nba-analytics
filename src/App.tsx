@@ -6,25 +6,34 @@ import { HeroPage } from './app/HeroPage'
 import { MethodologyPage } from './app/MethodologyPage'
 import { GameCardPage } from './app/GameCardPage'
 import { GameLandingPage } from './app/GameLandingPage'
-import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
+import { ARGUMENTS_ROUTE, COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
 import { PlayerSeasonPage } from './app/PlayerSeasonPage'
 import { ReportCardPage } from './app/ReportCardPage'
 import { parseTeamRoute } from './app/teamRoute'
 import { TeamPage } from './app/TeamPage'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
-import { teamBySlug } from './teams/registry'
+import { HOME_TEAM, teamBySlug } from './teams/registry'
 
 function App() {
     // Read once at render: navigation between pages is full page loads
     // (plain anchors, ADR-0022), so the path never changes while mounted.
     const route = parseRoute(window.location.pathname, import.meta.env.BASE_URL)
-    // The hero index is the site root (ADR-0022): the root renders the
-    // directory of arguments, and each hero is a directory of season
-    // arguments (ADR-0060) — /<slug> renders the canonical season in place,
-    // /<slug>/<season> a specific season argument. An unknown path — hero or
-    // season — renders the directory with a quiet note.
+    // The site root is the home team's canonical season (ADR-0087, amending
+    // ADR-0022): the same page /jazz renders, in place, never a redirect.
+    // The directory of arguments lives at /arguments, and each hero is a
+    // directory of season arguments (ADR-0060): /<slug> renders the canonical
+    // season in place, /<slug>/<season> a specific season argument. An
+    // unknown path, hero or season, renders the directory with a quiet note.
     if (route.slug === '') {
+        return (
+            <>
+                <TeamPage team={HOME_TEAM} season={HOME_TEAM.canonicalSeason} />
+                <Analytics />
+            </>
+        )
+    }
+    if (route.slug === ARGUMENTS_ROUTE && route.season === undefined) {
         return (
             <>
                 <HeroIndexPage />
@@ -32,11 +41,11 @@ function App() {
             </>
         )
     }
-    // The methodology page (ADR-0071): the one static route beside the
-    // directory, resolved before the registry so a hero slug can never
-    // shadow it (the reserved-route guard in registry.test.ts forbids the
-    // collision from the other side). A deeper path under it is nobody's
-    // page and falls through to the directory's unknown-path note.
+    // The methodology page (ADR-0071): a static route beside the directory,
+    // resolved before the registry so a hero slug can never shadow it (the
+    // reserved-route guard in registry.test.ts forbids the collision from
+    // the other side). A deeper path under it is nobody's page and falls
+    // through to the directory's unknown-path note.
     if (route.slug === METHODOLOGY_ROUTE && route.season === undefined) {
         return (
             <>

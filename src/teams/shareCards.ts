@@ -15,7 +15,7 @@ import type { IndexGame } from '../domain/teamSeasonIndex'
 import { displayGapUnits, formatGameDate, formatMatchup, formatSignedGap } from '../format'
 import { SITE_ORIGIN, type HeroPageMeta } from '../heroes/socialCards'
 import { makingAnswer, QUESTIONS, selectionAnswer } from './computedCopy'
-import { REPORT_COPY, TEAM_COPY } from './copy'
+import { HOME_COPY, REPORT_COPY } from './copy'
 import { gamePhotoOf } from './gamePhotos'
 import type { TeamConfig } from './registry'
 
@@ -119,20 +119,51 @@ export function gamePageMeta(team: TeamConfig, season: string, row: IndexGame): 
   }
 }
 
-/** The bare team route's share page (/jazz, the canonical season). Emitted
- * so dist/<team>/ is never a directory without its own page now that the
- * report cards live beneath it; it keeps the product-wide card, like the
- * methodology page, and preloads the canonical season's three files. */
-export function teamPageMeta(team: TeamConfig): HeroPageMeta {
-  const season = team.canonicalSeason
-  const base = `/data/_teams/${team.tricode.toLowerCase()}`
+/** A team season's committed share card (ADR-0087): the site root's, the
+ * team route's, and the season page's. Static (the season and the team mark,
+ * no numbers), so it is true every day and the loop never redraws it. */
+export function seasonCardPath(team: TeamConfig, season: string): string {
+  return `social-cards/${team.slug}/${season}.png`
+}
+
+/** The card generator's spec for a season card (scripts/generate_social_cards.py,
+ * the marquee with the team mark where a headshot stands). */
+export function seasonCardSpec(team: TeamConfig, season: string) {
+  if (team.teamLogoPath === undefined) throw new Error(`${team.slug} has no team mark for its season card`)
   return {
-    // Mirrors the team page's runtime document.title.
-    title: `${team.name} · ${season} · shot profile`,
-    description: TEAM_COPY.toolNote,
-    imageUrl: `${SITE_ORIGIN}/social-card.png`,
-    imageAlt: 'Good Shots wordmark beside a basketball',
-    url: `${SITE_ORIGIN}/${team.slug}`,
-    preloadPaths: [`${base}/${season}.json`, `${base}/${season}.ledger.json`, `${base}/${season}/index.json`],
+    slug: `${team.slug}/${season}`,
+    playerName: team.name,
+    meta: season,
+    logoPath: team.teamLogoPath,
+    cue: HOME_COPY.cardCue,
+  }
+}
+
+/** The files a season home fetches at boot (the node-safe twin of the
+ * team URLs in src/teams/urls.ts): the season's payload and index, and the
+ * prior season's when that season is registered (its faded dots). */
+export function seasonPreloadPaths(team: TeamConfig, season: string): string[] {
+  const base = `/data/_teams/${team.tricode.toLowerCase()}`
+  const paths = [`${base}/${season}.json`, `${base}/${season}/index.json`]
+  const start = Number(season.slice(0, 4)) - 1
+  const prior = `${start}-${String(start + 1).slice(-2)}`
+  if (team.seasons.includes(prior)) paths.push(`${base}/${prior}/index.json`, `${base}/${prior}.json`)
+  return paths
+}
+
+/** A season home's share meta: the bare team route (/jazz, the canonical
+ * season) or a season page (/jazz/<season>). The site root takes the same
+ * meta without its og:url (rootPageHtml). */
+export function seasonPageMeta(team: TeamConfig, season: string): HeroPageMeta {
+  return {
+    // Mirrors TeamPage's runtime document.title.
+    title: `${team.name} · ${season} · Good Shots`,
+    description: HOME_COPY.shareDescription(team.name, season),
+    imageUrl: `${SITE_ORIGIN}/${seasonCardPath(team, season)}`,
+    // The hero card's alt form (socialCards.ts), naming the mark that
+    // stands where a headshot would.
+    imageAlt: `${team.name} mark beside the Good Shots wordmark, ${season}`,
+    url: season === team.canonicalSeason ? `${SITE_ORIGIN}/${team.slug}` : `${SITE_ORIGIN}/${team.slug}/${season}`,
+    preloadPaths: seasonPreloadPaths(team, season),
   }
 }

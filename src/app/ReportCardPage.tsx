@@ -252,7 +252,7 @@ function CardReady({
             : REPORT_COPY.rulerPriorSeason(card.ruler.season, card.ruler.games.toLocaleString('en-US'))}
         </p>
       </main>
-      <SiteFooter directoryLink />
+      <SiteFooter />
     </>
   )
 }

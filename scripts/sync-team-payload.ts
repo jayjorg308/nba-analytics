@@ -47,10 +47,12 @@ if (targets.length === 0) {
   process.exit(1)
 }
 
-// The team contracts sync together, from ONE session (ADR-0082/0084/0088/
-// 0091): the team shot payload, the ledger facts, and the game export (the
-// season index plus the game files with no published copy yet). A target
-// with any of the three missing, or with the three from different sessions,
+// The team contracts sync together, from ONE session (ADR-0082/0088/0091):
+// the team shot payload and the game export (the season index plus the game
+// files with no published copy yet). The ledger facts no longer deploy
+// (ADR-0087: the season index carries every ledger row), so the session's
+// ledger output stays under data/derived/ until its producer retires. A
+// target with either missing, or with the two from different sessions,
 // fails before anything is copied, so a one-sided deployment update can
 // never ship. Game files are immutable: a published game file the export
 // would change fails the sync (the export refuses first; this is the
@@ -65,13 +67,11 @@ for (const t of targets) {
   const publishedDir = join(deployedDir, t.season)
   const isJson = (name: string) => name.endsWith('.json')
   const shot = latestEntry(derivedDir, isJson)
-  const ledger = latestEntry(join(derivedDir, 'ledger'), isJson)
   const gamesDir = latestEntry(join(derivedDir, 'games'), (name) =>
     existsSync(join(derivedDir, 'games', name, 'index.json')),
   )
   const absent = [
     shot === null && 'team shot payload',
-    ledger === null && 'ledger facts',
     gamesDir === null && 'game export (season index)',
   ].filter(Boolean)
   if (absent.length > 0) {
@@ -82,11 +82,10 @@ for (const t of targets) {
     continue
   }
   const session = basename(gamesDir!)
-  if (basename(shot!) !== `${session}.json` || basename(ledger!) !== `${session}.json`) {
+  if (basename(shot!) !== `${session}.json`) {
     errors.push(
       `${label}: the latest derived contracts come from different sessions (` +
-        `${basename(shot!)}, ledger ${basename(ledger!)}, games ${session}) — a partial session ` +
-        `never syncs`,
+        `${basename(shot!)}, games ${session}) — a partial session never syncs`,
     )
     continue
   }
@@ -114,7 +113,6 @@ for (const t of targets) {
   }
   copies.push(
     { source: shot!, dest: join(deployedDir, `${t.season}.json`) },
-    { source: ledger!, dest: join(deployedDir, `${t.season}.ledger.json`) },
     { source: join(gamesDir!, 'index.json'), dest: join(publishedDir, 'index.json') },
   )
 }

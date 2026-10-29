@@ -2,7 +2,10 @@
 // cards"; ADR-0067's pattern at game grain): the meta a scraper reads, the
 // preloads agreeing with the runtime fetches, a card's content equal to its
 // page's numbers, and the committed-card guard — every published game has a
-// 1200x630 card, so the build's emission step never fails on deploy.
+// 1200x630 card, so the build's emission step never fails on deploy. The
+// season homes' pages and cards (ADR-0087) ride the same rules: a season
+// card per registered season, the meta pointing at it, the root's page
+// without an og:url.
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -11,11 +14,19 @@ import { aggregateShotMetrics } from '../domain/aggregate'
 import { parseGamePayload } from '../domain/gamePayload'
 import { parseTeamSeasonIndex } from '../domain/teamSeasonIndex'
 import { formatSignedGap } from '../format'
-import { heroPageHtml, SITE_ORIGIN } from '../heroes/socialCards'
+import { heroPageHtml, rootPageHtml, SITE_ORIGIN } from '../heroes/socialCards'
 import { publishedSeasons, TEAMS_ROOT } from './published'
 import { utahJazz, TEAMS } from './registry'
-import { gameCardPath, gameCardSpec, gamePageMeta, gamePreloadPaths, teamPageMeta } from './shareCards'
-import { gamePayloadUrl, ledgerFactsUrl, teamSeasonIndexUrl, teamShotPayloadUrl } from './urls'
+import {
+  gameCardPath,
+  gameCardSpec,
+  gamePageMeta,
+  gamePreloadPaths,
+  seasonCardPath,
+  seasonCardSpec,
+  seasonPageMeta,
+} from './shareCards'
+import { gamePayloadUrl, teamSeasonIndexUrl, teamShotPayloadUrl } from './urls'
 
 const read = (rel: string) => JSON.parse(readFileSync(path.resolve(process.cwd(), rel), 'utf-8')) as unknown
 const game = parseGamePayload(read('tests/fixtures/game.golden.json'))
@@ -49,17 +60,63 @@ describe('gamePageMeta', () => {
   })
 })
 
-describe('teamPageMeta', () => {
-  it('gives the bare team route its own page, preloading what the season page fetches', () => {
-    // Pinned to a fixed canonical season: the registry's moves every year.
-    const meta = teamPageMeta({ ...utahJazz, seasons: ['2025-26'], canonicalSeason: '2025-26' })
-    expect(meta.url).toBe(`${SITE_ORIGIN}/jazz`)
-    expect(meta.title).toBe('Utah Jazz · 2025-26 · shot profile')
-    expect(meta.preloadPaths).toEqual([
-      teamShotPayloadUrl(utahJazz, '2025-26'),
-      ledgerFactsUrl(utahJazz, '2025-26'),
-      teamSeasonIndexUrl(utahJazz, '2025-26'),
+describe('seasonPageMeta (ADR-0087)', () => {
+  // Pinned to fixed seasons: the registry's canonical season moves every year.
+  const jazz = { ...utahJazz, seasons: ['2025-26', '2026-27'], canonicalSeason: '2026-27' }
+
+  it('gives the bare team route the canonical season and a season page every other one', () => {
+    const canonical = seasonPageMeta(jazz, '2026-27')
+    expect(canonical.url).toBe(`${SITE_ORIGIN}/jazz`)
+    expect(canonical.title).toBe('Utah Jazz · 2026-27 · Good Shots')
+    expect(canonical.imageUrl).toBe(`${SITE_ORIGIN}/social-cards/jazz/2026-27.png`)
+    expect(canonical.description).not.toContain('—')
+    expect(seasonPageMeta(jazz, '2025-26').url).toBe(`${SITE_ORIGIN}/jazz/2025-26`)
+  })
+
+  it('preloads exactly what the season home fetches at boot, the prior season included', () => {
+    expect(seasonPageMeta(jazz, '2026-27').preloadPaths).toEqual([
+      teamShotPayloadUrl(jazz, '2026-27'),
+      teamSeasonIndexUrl(jazz, '2026-27'),
+      teamSeasonIndexUrl(jazz, '2025-26'),
+      teamShotPayloadUrl(jazz, '2025-26'),
     ])
+    expect(seasonPageMeta(jazz, '2025-26').preloadPaths).toEqual([
+      teamShotPayloadUrl(jazz, '2025-26'),
+      teamSeasonIndexUrl(jazz, '2025-26'),
+    ])
+  })
+
+  it('makes the root page with the season’s card and no og:url', () => {
+    const html = rootPageHtml(readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8'), seasonPageMeta(jazz, '2026-27'))
+    expect(html).toContain('<title>Utah Jazz · 2026-27 · Good Shots</title>')
+    expect(html).toContain(`content="${SITE_ORIGIN}/social-cards/jazz/2026-27.png"`)
+    expect(html).not.toContain('property="og:url"')
+    expect(html).toContain('<link rel="preload" href="/data/_teams/uta/2026-27/index.json" as="fetch" crossorigin />')
+  })
+
+  it('draws the season card from the team mark, the season as its eyebrow', () => {
+    expect(seasonCardSpec(jazz, '2026-27')).toEqual({
+      slug: 'jazz/2026-27',
+      playerName: 'Utah Jazz',
+      meta: '2026-27',
+      logoPath: 'img/utah-logo.png',
+      cue: 'The latest game →',
+    })
+    expect(seasonCardPath(jazz, '2026-27')).toBe('social-cards/jazz/2026-27.png')
+  })
+})
+
+describe('committed season cards (one per registered team season, 1200x630)', () => {
+  it('exist for every registered season at og:image size', () => {
+    for (const team of TEAMS) {
+      for (const season of team.seasons) {
+        const card = path.resolve(process.cwd(), 'public', seasonCardPath(team, season))
+        expect(existsSync(card), `run npm run cards:generate — missing ${card}`).toBe(true)
+        const png = readFileSync(card)
+        expect(png.readUInt32BE(16), season).toBe(1200)
+        expect(png.readUInt32BE(20), season).toBe(630)
+      }
+    }
   })
 })
 

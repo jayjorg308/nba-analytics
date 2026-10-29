@@ -215,7 +215,7 @@ function SeasonPage({ team, ps, payload }: { team: TeamConfig; ps: PlayerSeason;
           <GameLog team={team} ps={ps} />
         </section>
       </main>
-      <SiteFooter directoryLink />
+      <SiteFooter />
     </>
   )
 }

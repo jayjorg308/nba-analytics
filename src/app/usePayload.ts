@@ -11,8 +11,6 @@ import type { ShotContextPayload } from '../domain/shotContextPayload'
 import { parseShotContextPayload } from '../domain/shotContextPayload'
 import type { GamePayload } from '../domain/gamePayload'
 import { parseGamePayload } from '../domain/gamePayload'
-import type { LedgerFacts } from '../domain/ledgerFacts'
-import { parseLedgerFacts } from '../domain/ledgerFacts'
 import type { TeamSeasonIndex } from '../domain/teamSeasonIndex'
 import { parseTeamSeasonIndex } from '../domain/teamSeasonIndex'
 import type { TeamShotPayload } from '../domain/teamShotPayload'
@@ -156,14 +154,9 @@ export function useTeamShotPayload(url: string): PayloadState<TeamShotPayload> {
   return useParsedPayload(url, parseTeamShotPayload, 'team shot data')
 }
 
-/** The game ledger facts (ADR-0084) beside it — both required, one class of
- * team page. */
-export function useLedgerFacts(url: string): PayloadState<LedgerFacts> {
-  return useParsedPayload(url, parseLedgerFacts, 'game ledger data')
-}
-
-/** A team season index (ADR-0088): the season page's per-game rulers, and
- * the report card's slug lookup. */
+/** A team season index (ADR-0088): the season home's games and ledger rows
+ * (the ledger facts file's successor, ADR-0087), and the report card's slug
+ * lookup. */
 export function useTeamSeasonIndex(url: string): PayloadState<TeamSeasonIndex> {
   return useParsedPayload(url, parseTeamSeasonIndex, 'season index')
 }

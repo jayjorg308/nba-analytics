@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { HEROES } from '../heroes/registry'
+import { directoryOrder, HEROES } from '../heroes/registry'
 import { canonicalSeasonOf, indexMetaOf } from '../heroes/types'
+import { HOME_TEAM } from '../teams/registry'
 import { HeroIndexPage } from './HeroIndexPage'
 
 afterEach(cleanup)
@@ -11,11 +12,14 @@ afterEach(cleanup)
 // link and the footer's Methodology link (ADR-0071), the comparison
 // discovery link (comparison plan §5), plus the footer's three social links
 // (Instagram, X, contact email). The count also guards that the shared
-// footer renders no way-back pill here — the index IS the directory
-// (ROADMAP launch item 4).
+// footer renders no Arguments link here — the page IS the directory
+// (ROADMAP launch item 4; at /arguments since ADR-0087).
 const CHROME_LINKS = 7
 
-describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
+// The directory's order (ADR-0087): the home team's arguments first.
+const ORDERED = directoryOrder(HOME_TEAM.slug)
+
+describe('HeroIndexPage (the directory of arguments, ADR-0022/0065/0087)', () => {
   it('marquees the first registered hero and rails the rest, all as plain links', () => {
     render(<HeroIndexPage />)
 
@@ -52,9 +56,10 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
     // The featured name is a real heading (ROADMAP launch item 3): heading
     // navigation must reach the page's most important item, not skip from
     // the hidden site h1 straight to the rail.
-    screen.getByRole('heading', { level: 2, name: HEROES[0]!.playerName })
+    screen.getByRole('heading', { level: 2, name: ORDERED[0]!.playerName })
+    expect(document.title).toBe('Arguments · Good Shots')
 
-    for (const [i, hero] of HEROES.entries()) {
+    for (const [i, hero] of ORDERED.entries()) {
       const link = links.find((a) => a.getAttribute('href') === `/${hero.slug}`)
       expect(link, hero.slug).toBeDefined()
       // Name-led (ADR-0065): the player's name is the tile copy; the thesis
@@ -70,6 +75,22 @@ describe('HeroIndexPage (the directory of arguments, ADR-0022/0065)', () => {
         expect(link!.textContent).toContain(indexMetaOf(hero))
       }
     }
+  })
+
+  it('lists the home team’s arguments first, each group in registry order (ADR-0087)', () => {
+    render(<HeroIndexPage />)
+    const isHome = (slug: string) =>
+      HEROES.find((h) => h.slug === slug)!.seasons.some((s) => s.teamPage === HOME_TEAM.slug)
+    const hrefs = [...document.querySelectorAll('.index-marquee, .index-card')].map((a) =>
+      a.getAttribute('href')!.slice(1),
+    )
+    expect(hrefs).toEqual(ORDERED.map((h) => h.slug))
+    const firstOther = hrefs.findIndex((slug) => !isHome(slug))
+    expect(hrefs.slice(0, firstOther).every(isHome)).toBe(true)
+    expect(hrefs.slice(firstOther).some(isHome)).toBe(false)
+    expect(hrefs.slice(0, firstOther)).toEqual(HEROES.filter((h) => isHome(h.slug)).map((h) => h.slug))
+    // The page never links to itself.
+    expect(screen.queryByRole('link', { name: 'Arguments' })).toBeNull()
   })
 
   it('carries no team marks anywhere (ADR-0065 amendment: considered, declined)', () => {

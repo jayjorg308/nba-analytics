@@ -46,7 +46,7 @@ export function GameLandingPage() {
           </ul>
         )}
       </main>
-      <SiteFooter directoryLink />
+      <SiteFooter />
     </>
   )
 }

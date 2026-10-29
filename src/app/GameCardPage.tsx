@@ -309,7 +309,7 @@ function Shell({ children }: { children: React.ReactNode }) {
         <SiteNav />
         {children}
       </main>
-      <SiteFooter directoryLink />
+      <SiteFooter />
     </>
   )
 }

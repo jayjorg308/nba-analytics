@@ -2,6 +2,7 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { HEROES } from '../heroes/registry'
+import { TEAMS } from '../teams/registry'
 import { GLOSSARY } from './glossary'
 import { MethodologyPage } from './MethodologyPage'
 
@@ -29,7 +30,10 @@ describe('MethodologyPage (the self-explanation surface, ADR-0071)', () => {
   it('credits every registered banner, stating pending plainly when unknown', () => {
     render(<MethodologyPage />)
     const rows = [...document.querySelectorAll('.methodology-credits li')]
-    expect(rows).toHaveLength(HEROES.length)
+    // Every hero banner, plus every team season's banner photograph on file
+    // (ADR-0087; none until the user supplies one, so zero today).
+    const seasonBanners = TEAMS.flatMap((t) => Object.values(t.homes).filter((h) => h.banner !== undefined))
+    expect(rows).toHaveLength(HEROES.length + seasonBanners.length)
     for (const hero of HEROES) {
       const row = rows.find((li) => li.textContent!.includes(hero.playerName))
       expect(row, hero.slug).toBeDefined()
@@ -41,7 +45,8 @@ describe('MethodologyPage (the self-explanation surface, ADR-0071)', () => {
     }
     const pending = rows.filter((li) => li.textContent!.includes('credit pending'))
     expect(pending).toHaveLength(
-      HEROES.filter((h) => h.hero.imageCredit === undefined).length,
+      HEROES.filter((h) => h.hero.imageCredit === undefined).length +
+        seasonBanners.filter((h) => h.banner!.imageCredit === undefined).length,
     )
   })
 
@@ -53,8 +58,8 @@ describe('MethodologyPage (the self-explanation surface, ADR-0071)', () => {
       expect(link.getAttribute('href')).not.toBe('/methodology')
     }
     expect(
-      screen.getByRole('link', { name: 'All players' }).getAttribute('href'),
-    ).toBe('/')
+      screen.getByRole('link', { name: 'Arguments' }).getAttribute('href'),
+    ).toBe('/arguments')
   })
 
   it('prints definitions in place: no Term popovers, no buttons at all', () => {

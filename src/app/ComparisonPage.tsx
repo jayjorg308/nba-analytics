@@ -481,7 +481,7 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
             </ul>
           </section>
         </main>
-        <SiteFooter directoryLink />
+        <SiteFooter />
       </>
     )
   }
@@ -555,7 +555,7 @@ export function ComparisonPage({ navigate }: { navigate?: (url: string) => void 
           </>
         )}
       </main>
-      <SiteFooter directoryLink />
+      <SiteFooter />
     </>
   )
 }

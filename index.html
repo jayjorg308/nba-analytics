@@ -27,12 +27,14 @@
             name="description"
             content="One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after."
         />
-        <!-- The social card (ROADMAP: Launch, item 1). One product-wide card
-         for every route: the static host serves this index.html for each hero
-         URL, so per-hero cards need build-time or edge-generated HTML and
-         remain a deliberate upgrade, not the default. og:url is omitted on
-         purpose — scrapers treat it as canonical, and a root og:url would
-         collapse a shared hero link back to the front page. -->
+        <!-- The social card (ROADMAP: Launch, item 1): the product-wide card,
+         which /arguments keeps. The build re-points this file's meta at the
+         Jazz home's season card (ADR-0087, rootPageHtml) and emits real pages
+         for every hero, season, and report card route; the host serves the
+         built file for the root and as the fallback for every other route.
+         og:url is omitted on purpose — scrapers treat it as canonical, and a
+         root og:url would collapse every fallback route's shared link back
+         to the front page. -->
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Good Shots" />
         <meta property="og:title" content="Good Shots" />

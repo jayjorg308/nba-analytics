@@ -12,9 +12,16 @@ webfont files the site ships, not a re-downloaded cousin that could drift.
 @fontsource ships WOFF v1 beside WOFF2, and WOFF v1 is a zlib-wrapped SFNT,
 so the stdlib unpacks it into the TTF form PIL reads; no new dependency.
 
-Driven by scripts/generate-social-cards.ts (the registry lives in
+A TEAM SEASON'S CARD (ADR-0087, the site root's share card) is the same
+marquee with the team's normalized mark where the headshot stands (the
+banner's watermark asset, ADR-0021, drawn as the figure) and the season as
+the eyebrow: static, so it is true every day and never redrawn by the loop.
+
+Driven by scripts/generate-social-cards.ts (the registries live in
 TypeScript); specs arrive as JSON on stdin:
   [{"slug": ..., "playerName": ..., "meta": ..., "headshotPath": ...}]
+  [{"slug": "jazz/2026-27", "playerName": ..., "meta": ..., "logoPath": ...,
+    "cue": ...}]
 Cards land at public/social-cards/<slug>.png, committed like every deployed
 asset, so the build's HTML emission step can rely on them.
 """
@@ -25,7 +32,7 @@ import math
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 from card_common import (
     DISPLAY_900,
@@ -43,18 +50,49 @@ CARD_W, CARD_H = 1200, 630
 OUT_DIR = Path("public/social-cards")
 
 
+HERO_CUE = "Is he taking good shots? → The verdict"
+
+# The team mark as a figure: its visible ink (the normalized canvas holds it
+# at ~60% of the longest side, ADR-0021's asset interface) contained in the
+# right panel, centered in it, in the site's black and white.
+MARK_BOX = (520, 380)
+MARK_CENTER = (CARD_W - 330, CARD_H // 2 + 10)
+
+
+MARK_OPACITY = 0.82
+
+
+def draw_mark(card: Image.Image, logo_path: Path) -> None:
+    # The banner's treatment, grayscale(1) invert(1) (src/App.css
+    # .hero-banner-logo): a dark mark reads as light ink on the dark ground.
+    # Drawn as the figure, so far stronger than the banner's watermark
+    # opacity, short of full white so the name stays the brightest ink.
+    logo = Image.open(logo_path).convert("RGBA")
+    ink = logo.crop(logo.getchannel("A").getbbox())
+    scale = min(MARK_BOX[0] / ink.width, MARK_BOX[1] / ink.height)
+    size = (round(ink.width * scale), round(ink.height * scale))
+    ink = ink.resize(size, Image.Resampling.LANCZOS)
+    light = ImageOps.invert(ImageOps.grayscale(ink.convert("RGB")))
+    alpha = ink.getchannel("A").point(lambda a: round(a * MARK_OPACITY))
+    figure = Image.merge("RGBA", (light, light, light, alpha))
+    card.alpha_composite(figure, (MARK_CENTER[0] - size[0] // 2, MARK_CENTER[1] - size[1] // 2))
+
+
 def compose(spec: dict, display_woff: Path, sans_woff: Path) -> Image.Image:
     card = radial_ground((CARD_W, CARD_H)).convert("RGBA")
 
-    # Headshot: contain in the marquee's 58%-width x 92%-height box,
-    # grounded on the card's bottom edge, 2% right inset (the source PNG is
-    # flush at its own bottom edge — ADR-0065's measured geometry).
-    headshot = Image.open(Path("public") / spec["headshotPath"]).convert("RGBA")
-    box_w, box_h = round(CARD_W * 0.58), round(CARD_H * 0.92)
-    scale = min(box_w / headshot.width, box_h / headshot.height)
-    size = (round(headshot.width * scale), round(headshot.height * scale))
-    figure = monochrome(headshot.resize(size, Image.Resampling.LANCZOS))
-    card.alpha_composite(figure, (CARD_W - round(CARD_W * 0.02) - size[0], CARD_H - size[1]))
+    if "logoPath" in spec:
+        draw_mark(card, Path("public") / spec["logoPath"])
+    else:
+        # Headshot: contain in the marquee's 58%-width x 92%-height box,
+        # grounded on the card's bottom edge, 2% right inset (the source PNG
+        # is flush at its own bottom edge — ADR-0065's measured geometry).
+        headshot = Image.open(Path("public") / spec["headshotPath"]).convert("RGBA")
+        box_w, box_h = round(CARD_W * 0.58), round(CARD_H * 0.92)
+        scale = min(box_w / headshot.width, box_h / headshot.height)
+        size = (round(headshot.width * scale), round(headshot.height * scale))
+        figure = monochrome(headshot.resize(size, Image.Resampling.LANCZOS))
+        card.alpha_composite(figure, (CARD_W - round(CARD_W * 0.02) - size[0], CARD_H - size[1]))
 
     # Wordmark: the site signature, top-left in the navbar's position.
     wordmark = Image.open(WORDMARK).convert("RGBA")
@@ -92,7 +130,7 @@ def compose(spec: dict, display_woff: Path, sans_woff: Path) -> Image.Image:
         draw.text((64, y - round(name_size * 0.14)), line, font=font, fill=INK)
         y += line_h
     y += gap
-    draw_tracked(card, draw, "Is he taking good shots? → The verdict",
+    draw_tracked(card, draw, spec.get("cue", HERO_CUE),
                  cue_font, 64, y, 15 * 0.22, 0.75)
 
     return card
@@ -106,6 +144,7 @@ def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for spec in specs:
         out = OUT_DIR / f"{spec['slug']}.png"
+        out.parent.mkdir(parents=True, exist_ok=True)
         compose(spec, DISPLAY_900, SANS_500).convert("RGB").save(
             out, format="PNG", optimize=True
         )
