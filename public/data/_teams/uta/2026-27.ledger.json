@@ -1,0 +1,517 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "team": "Utah Jazz",
+    "teamId": 1610612762,
+    "tricode": "UTA",
+    "season": "2026-27",
+    "seasonType": "Regular Season",
+    "dataThrough": "2026-10-28",
+    "gamesIncluded": 5,
+    "sourceTeamPayload": "data/derived/_teams/uta/2026-27/2026-10-28T234521.json"
+  },
+  "games": [
+    {
+      "gameId": "0022600089",
+      "gameDate": "2026-10-21",
+      "opponent": "MEM",
+      "home": false,
+      "teamScore": 103,
+      "opponentScore": 123,
+      "fgm": 35,
+      "fga": 75,
+      "ftm": 22,
+      "fta": 33,
+      "players": [
+        {
+          "playerId": 1641718,
+          "fgm": 7,
+          "fga": 12,
+          "ftm": 4,
+          "fta": 7,
+          "points": 22
+        },
+        {
+          "playerId": 1628374,
+          "fgm": 4,
+          "fga": 13,
+          "ftm": 9,
+          "fta": 10,
+          "points": 18
+        },
+        {
+          "playerId": 1628991,
+          "fgm": 6,
+          "fga": 10,
+          "ftm": 1,
+          "fta": 2,
+          "points": 15
+        },
+        {
+          "playerId": 1642846,
+          "fgm": 5,
+          "fga": 11,
+          "ftm": 0,
+          "fta": 0,
+          "points": 12
+        },
+        {
+          "playerId": 1629004,
+          "fgm": 4,
+          "fga": 5,
+          "ftm": 0,
+          "fta": 0,
+          "points": 10
+        },
+        {
+          "playerId": 1643408,
+          "fgm": 3,
+          "fga": 7,
+          "ftm": 3,
+          "fta": 4,
+          "points": 9
+        },
+        {
+          "playerId": 1642268,
+          "fgm": 2,
+          "fga": 7,
+          "ftm": 3,
+          "fta": 5,
+          "points": 7
+        },
+        {
+          "playerId": 1629637,
+          "fgm": 2,
+          "fga": 3,
+          "ftm": 1,
+          "fta": 4,
+          "points": 5
+        },
+        {
+          "playerId": 1642271,
+          "fgm": 1,
+          "fga": 2,
+          "ftm": 1,
+          "fta": 1,
+          "points": 3
+        },
+        {
+          "playerId": 1641729,
+          "fgm": 1,
+          "fga": 4,
+          "ftm": 0,
+          "fta": 0,
+          "points": 2
+        },
+        {
+          "playerId": 1629006,
+          "fgm": 0,
+          "fga": 1,
+          "ftm": 0,
+          "fta": 0,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "gameId": "0022600100",
+      "gameDate": "2026-10-23",
+      "opponent": "NOP",
+      "home": true,
+      "teamScore": 120,
+      "opponentScore": 119,
+      "fgm": 41,
+      "fga": 84,
+      "ftm": 25,
+      "fta": 33,
+      "players": [
+        {
+          "playerId": 1628991,
+          "fgm": 7,
+          "fga": 15,
+          "ftm": 8,
+          "fta": 10,
+          "points": 24
+        },
+        {
+          "playerId": 1641718,
+          "fgm": 6,
+          "fga": 12,
+          "ftm": 4,
+          "fta": 6,
+          "points": 19
+        },
+        {
+          "playerId": 1629637,
+          "fgm": 7,
+          "fga": 8,
+          "ftm": 3,
+          "fta": 3,
+          "points": 17
+        },
+        {
+          "playerId": 1628374,
+          "fgm": 6,
+          "fga": 13,
+          "ftm": 0,
+          "fta": 0,
+          "points": 16
+        },
+        {
+          "playerId": 1643408,
+          "fgm": 6,
+          "fga": 12,
+          "ftm": 2,
+          "fta": 2,
+          "points": 15
+        },
+        {
+          "playerId": 1641729,
+          "fgm": 3,
+          "fga": 6,
+          "ftm": 2,
+          "fta": 2,
+          "points": 10
+        },
+        {
+          "playerId": 1642268,
+          "fgm": 3,
+          "fga": 5,
+          "ftm": 4,
+          "fta": 6,
+          "points": 10
+        },
+        {
+          "playerId": 1642846,
+          "fgm": 2,
+          "fga": 8,
+          "ftm": 1,
+          "fta": 2,
+          "points": 6
+        },
+        {
+          "playerId": 1629004,
+          "fgm": 1,
+          "fga": 4,
+          "ftm": 1,
+          "fta": 2,
+          "points": 3
+        },
+        {
+          "playerId": 1642271,
+          "fgm": 0,
+          "fga": 1,
+          "ftm": 0,
+          "fta": 0,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "gameId": "0022600112",
+      "gameDate": "2026-10-25",
+      "opponent": "LAL",
+      "home": true,
+      "teamScore": 123,
+      "opponentScore": 132,
+      "fgm": 46,
+      "fga": 95,
+      "ftm": 21,
+      "fta": 27,
+      "players": [
+        {
+          "playerId": 1628374,
+          "fgm": 9,
+          "fga": 20,
+          "ftm": 5,
+          "fta": 6,
+          "points": 28
+        },
+        {
+          "playerId": 1641718,
+          "fgm": 7,
+          "fga": 13,
+          "ftm": 8,
+          "fta": 10,
+          "points": 24
+        },
+        {
+          "playerId": 1628991,
+          "fgm": 7,
+          "fga": 14,
+          "ftm": 5,
+          "fta": 6,
+          "points": 20
+        },
+        {
+          "playerId": 1642846,
+          "fgm": 8,
+          "fga": 11,
+          "ftm": 0,
+          "fta": 0,
+          "points": 17
+        },
+        {
+          "playerId": 1629637,
+          "fgm": 4,
+          "fga": 5,
+          "ftm": 1,
+          "fta": 2,
+          "points": 9
+        },
+        {
+          "playerId": 1643408,
+          "fgm": 4,
+          "fga": 13,
+          "ftm": 0,
+          "fta": 0,
+          "points": 8
+        },
+        {
+          "playerId": 1641729,
+          "fgm": 3,
+          "fga": 7,
+          "ftm": 0,
+          "fta": 0,
+          "points": 7
+        },
+        {
+          "playerId": 1642268,
+          "fgm": 2,
+          "fga": 6,
+          "ftm": 2,
+          "fta": 3,
+          "points": 6
+        },
+        {
+          "playerId": 1629004,
+          "fgm": 1,
+          "fga": 4,
+          "ftm": 0,
+          "fta": 0,
+          "points": 2
+        },
+        {
+          "playerId": 1629006,
+          "fgm": 1,
+          "fga": 2,
+          "ftm": 0,
+          "fta": 0,
+          "points": 2
+        }
+      ]
+    },
+    {
+      "gameId": "0022600126",
+      "gameDate": "2026-10-26",
+      "opponent": "MEM",
+      "home": true,
+      "teamScore": 105,
+      "opponentScore": 110,
+      "fgm": 38,
+      "fga": 92,
+      "ftm": 19,
+      "fta": 25,
+      "players": [
+        {
+          "playerId": 1641718,
+          "fgm": 9,
+          "fga": 17,
+          "ftm": 8,
+          "fta": 9,
+          "points": 26
+        },
+        {
+          "playerId": 1642846,
+          "fgm": 6,
+          "fga": 10,
+          "ftm": 2,
+          "fta": 2,
+          "points": 17
+        },
+        {
+          "playerId": 1643408,
+          "fgm": 5,
+          "fga": 18,
+          "ftm": 1,
+          "fta": 1,
+          "points": 14
+        },
+        {
+          "playerId": 1628964,
+          "fgm": 7,
+          "fga": 8,
+          "ftm": 0,
+          "fta": 0,
+          "points": 14
+        },
+        {
+          "playerId": 1641729,
+          "fgm": 4,
+          "fga": 6,
+          "ftm": 0,
+          "fta": 0,
+          "points": 11
+        },
+        {
+          "playerId": 1642268,
+          "fgm": 2,
+          "fga": 9,
+          "ftm": 3,
+          "fta": 7,
+          "points": 7
+        },
+        {
+          "playerId": 1628991,
+          "fgm": 2,
+          "fga": 5,
+          "ftm": 2,
+          "fta": 3,
+          "points": 6
+        },
+        {
+          "playerId": 1630182,
+          "fgm": 2,
+          "fga": 4,
+          "ftm": 1,
+          "fta": 1,
+          "points": 6
+        },
+        {
+          "playerId": 1628374,
+          "fgm": 0,
+          "fga": 2,
+          "ftm": 2,
+          "fta": 2,
+          "points": 2
+        },
+        {
+          "playerId": 1628396,
+          "fgm": 1,
+          "fga": 2,
+          "ftm": 0,
+          "fta": 0,
+          "points": 2
+        },
+        {
+          "playerId": 1629004,
+          "fgm": 0,
+          "fga": 4,
+          "ftm": 0,
+          "fta": 0,
+          "points": 0
+        },
+        {
+          "playerId": 1629006,
+          "fgm": 0,
+          "fga": 4,
+          "ftm": 0,
+          "fta": 0,
+          "points": 0
+        },
+        {
+          "playerId": 1642271,
+          "fgm": 0,
+          "fga": 3,
+          "ftm": 0,
+          "fta": 0,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "gameId": "0022600141",
+      "gameDate": "2026-10-28",
+      "opponent": "SAS",
+      "home": true,
+      "teamScore": 111,
+      "opponentScore": 117,
+      "fgm": 39,
+      "fga": 92,
+      "ftm": 18,
+      "fta": 19,
+      "players": [
+        {
+          "playerId": 1641718,
+          "fgm": 11,
+          "fga": 27,
+          "ftm": 4,
+          "fta": 4,
+          "points": 31
+        },
+        {
+          "playerId": 1642846,
+          "fgm": 9,
+          "fga": 18,
+          "ftm": 0,
+          "fta": 0,
+          "points": 19
+        },
+        {
+          "playerId": 1643408,
+          "fgm": 4,
+          "fga": 13,
+          "ftm": 7,
+          "fta": 7,
+          "points": 18
+        },
+        {
+          "playerId": 1641729,
+          "fgm": 5,
+          "fga": 9,
+          "ftm": 2,
+          "fta": 2,
+          "points": 16
+        },
+        {
+          "playerId": 1628964,
+          "fgm": 4,
+          "fga": 6,
+          "ftm": 0,
+          "fta": 0,
+          "points": 8
+        },
+        {
+          "playerId": 1642268,
+          "fgm": 2,
+          "fga": 6,
+          "ftm": 3,
+          "fta": 4,
+          "points": 7
+        },
+        {
+          "playerId": 1629006,
+          "fgm": 2,
+          "fga": 2,
+          "ftm": 0,
+          "fta": 0,
+          "points": 5
+        },
+        {
+          "playerId": 1629004,
+          "fgm": 1,
+          "fga": 6,
+          "ftm": 0,
+          "fta": 0,
+          "points": 3
+        },
+        {
+          "playerId": 1630182,
+          "fgm": 1,
+          "fga": 3,
+          "ftm": 0,
+          "fta": 0,
+          "points": 2
+        },
+        {
+          "playerId": 1629637,
+          "fgm": 0,
+          "fga": 2,
+          "ftm": 2,
+          "fta": 2,
+          "points": 2
+        }
+      ]
+    }
+  ]
+}
