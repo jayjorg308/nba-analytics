@@ -252,6 +252,20 @@ so new decisions here start at 0094.
 ### Stage 3: the Jazz home
 
 - A two-variant prototype of the home first, since it is the front door.
+  _Chosen 2026-10-29: A, Acts (one column of numbered acts in the report
+  card's recipe; the latest game as a full-width tile with the score at
+  poster scale and the two answers beside it, the three before it as a row
+  of tiles; the featured three as portrait headshot cards, a swipe rail on
+  phones; the arguments closing as the directory's headshot rail). Declined:
+  B, Front page (the latest game and the players side by side in two
+  columns, a scoreboard strip, landscape player rows, a typographic argument
+  list), which fit more above the fold on desktop but broke the
+  single-column rhythm every other page keeps and collapsed to the same
+  stack on a phone. Built on the five published 2026-27 games; the
+  prototype was deleted before the build. The root's share card is a static
+  Jazz season card in the directory card's grammar (the team mark where a
+  headshot sits), chosen over the latest game's card, whose cached previews
+  would go stale._
 - **ADR-0087**: `/` renders the Jazz home, `/jazz` its alias, `/arguments`
   the directory (Jazz arguments first by registry order), the footer's
   Arguments link, the root's share card and emitted page. Amends ADR-0022
