@@ -342,6 +342,37 @@ Each of these is small, and all of them land before opening night.
 - **Pull before the session.** The loop never pulls today, so a PR merged
   on GitHub makes its next push fail. The wrapper runs
   `git pull --ff-only` first; a failed pull halts with the toast.
+- **The loop's push key.** _Added 2026-10-29._ main carries the "main
+  gate" ruleset (since 2026-07-11): every change arrives by pull request
+  with the TypeScript and Python gates green. The loop's data commit is a
+  direct push by design, made after the same full gate passes inside the
+  session, so the first live push (game night, 2026-10-28) was refused and
+  the commit sat in the clone overnight. The clone now pushes with its own
+  deploy key, and deploy keys are on the ruleset's bypass list ("Always
+  allow"). Every other checkout keeps the personal key, so a change made by
+  hand still needs a PR. Setup: an ed25519 key with no passphrase (the task
+  runs unattended) at `~/.ssh/id_ed25519_nba_loop`, added to the repo as a
+  deploy key with write access ("nba-analytics season loop"), and an SSH
+  alias in `~/.ssh/config` that the clone's `origin` names:
+
+  ```
+  Host github.com-nba-loop
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_nba_loop
+    IdentitiesOnly yes
+  ```
+
+  Then `git remote set-url origin
+  git@github.com-nba-loop:jayjorg308/nba-analytics.git` in the clone, and
+  `ssh -T git@github.com-nba-loop` should greet the repo, not the account
+  ("Hi jayjorg308/nba-analytics!"). The key fetches too, so the clone needs
+  no other key. A push accepted this way prints "Bypassed rule violations"
+  in the run log; that line is expected. A refused push leaves the commit
+  local, and the loop does not retry it: the next team session sees its
+  own copy as current and stops early. Push from the clone by hand once the
+  cause is fixed, and merge nothing to main before that, or the clone can
+  no longer fast-forward and every session halts at the pull.
 - **Branch guard.** `season_update.py` halts, with the existing toast,
   unless it is on main with no staged or unstaged changes outside
   `public/data/` and `data/`. The separate clone is the fix; the guard is
@@ -822,7 +853,15 @@ backup bucket, set the task's power settings (done 2026-09-24).
   week late: the config waited on the authored computed copy (#73) and the
   loop halts (#72). The first live session publishes every game through
   its frontier in one data commit; the registry follows the next morning._
-- First game-night run, watched live.
+- First game-night run, watched live. _2026-10-28 at 23:45, the first live
+  session: it pulled the night's San Antonio pair, sourced all five
+  unpublished games, synced, drew the five cards, passed the full gate, and
+  committed them (`b45c655`, through 2026-10-28). GitHub refused the push
+  on the "main gate" ruleset, so the commit stayed in the clone until it
+  was pushed by hand on 2026-10-29, once the loop's push key (Operations)
+  was in place. The next morning's hero sessions deferred on the new rule,
+  as designed: the store held the Jazz's 10-28 shots, and tracking
+  reached 10-26._
 - _Opening night, 2026-10-21 (Memphis 123, Jazz 103, game 0022600089),
   ran with the team session still dark: the config PR and the computed
   copy had not landed. Every source arrived and reconciled (the pbp/box
