@@ -74,6 +74,17 @@ sga-hero.jpg record (see its entry)._
   site: `cdn.nba.com/teams/uploads/sites/1610612762/2026/04/U5A6952.jpg`
   (a raw camera filename; no photographer credited on the source, so the
   credit stays at team grain). Committed as a 2048px q82 JPEG derivative.
+- `public/img/darryn-peterson-hero.jpg` — photograph by Aaron Baker, Imagn
+  Images via Reuters Connect (Jazz vs San Antonio, Delta Center,
+  2026-10-12, the 2026-27 preseason), its caption and mandatory credit
+  supplied by the author with the image. Chosen 2026-10-29 from four
+  candidates for his 2026-27 argument's banner, ahead of his flip, so no
+  hero config references it yet; `hero:scaffold` emits this conventional
+  path. A dribble rather than a shot, so a shooting frame may replace it
+  later (the alt-text form wants the action that argues the thesis).
+  Committed as a 1600x2000 q85 progressive JPEG derivative with the
+  metadata dropped (`scripts/game_photo.py`); source retained in
+  `data/hero-sources/darryn-peterson-hero-1.jpg`.
 - `public/img/maxime-raynaud-hero.jpg` — photograph by Ray Chavez, Bay Area
   News Group (Kings at Golden State, 2025-26); committed as a web-sized
   2048px JPEG derivative of the author-supplied source (ADR-0021).

@@ -285,7 +285,14 @@ so new decisions here start at 0094.
 - **Game photos** whenever you want them, from Stage 1 on, through
   `game:photo`.
 - **Darryn Peterson's banner photo** before his flip (his headshot comes
-  from the Stage 2 script).
+  from the Stage 2 script). _Chosen 2026-10-29 and committed at
+  `public/img/darryn-peterson-hero.jpg`, the path `hero:scaffold` emits
+  (provenance in `docs/image-credits.md`). For the flip PR: credit
+  "photograph by Aaron Baker, Imagn Images"; alt text drafted for the
+  author's red pen, the frame only with no opponent in it, "Darryn
+  Peterson pushes the ball up the floor in the white Jazz number 22
+  jersey"; focal points set by eye in the browser at the flip. A
+  shooting frame would argue the thesis better and may replace it._
 - Review each prototype; red-pen the structural copy each stage adds.
 
 ## Open details for the builds
