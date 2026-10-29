@@ -40,6 +40,11 @@ export function teamGameUrl(team: TeamConfig, slug: string): string {
   return `${import.meta.env.BASE_URL}${team.slug}/${slug}`
 }
 
+/** A committed image under public/ (a game photograph's derivative). */
+export function publicAssetUrl(publicPath: string): string {
+  return `${import.meta.env.BASE_URL}${publicPath}`
+}
+
 export function teamLogoUrl(team: TeamConfig): string | null {
   return team.teamLogoPath ? `${import.meta.env.BASE_URL}${team.teamLogoPath}` : null
 }

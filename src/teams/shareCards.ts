@@ -16,6 +16,7 @@ import { displayGapUnits, formatGameDate, formatMatchup, formatSignedGap } from 
 import { SITE_ORIGIN, type HeroPageMeta } from '../heroes/socialCards'
 import { makingAnswer, QUESTIONS, selectionAnswer } from './computedCopy'
 import { REPORT_COPY, TEAM_COPY } from './copy'
+import { gamePhotoOf } from './gamePhotos'
 import type { TeamConfig } from './registry'
 
 /** The committed card for a game, under public/ (no leading slash). */
@@ -32,6 +33,10 @@ export interface GameCardSpec {
   answers: { question: string; number: string; words: string }[]
   /** The subject's shots in stats.nba.com units (hoop at the origin). */
   shots: { x: number; y: number; made: boolean }[]
+  /** The game's own photograph, when one is on file (ADR-0094): it takes
+   * the court's place as the banner's wide panel, with its credit in the
+   * corner. Absent, the card is the data card ADR-0091's loop draws. */
+  photo?: { path: string; position: string; credit: string }
 }
 
 function scoreOf(game: GamePayload): string {
@@ -69,6 +74,19 @@ export function gameCardSpec(team: TeamConfig, game: GamePayload, slug: string):
       },
     ],
     shots: subject.shots.map((s) => ({ x: s.locX, y: s.locY, made: s.made })),
+    ...photoOf(slug),
+  }
+}
+
+function photoOf(slug: string): Pick<GameCardSpec, 'photo'> {
+  const photo = gamePhotoOf(slug)
+  if (photo === undefined) return {}
+  return {
+    photo: {
+      path: photo.imagePath,
+      position: photo.imagePositionWide,
+      credit: photo.imageCredit ?? REPORT_COPY.creditPending,
+    },
   }
 }
 

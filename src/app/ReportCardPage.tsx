@@ -1,9 +1,12 @@
 // The team report card, /jazz/<game-slug> (docs/plans/jazz-first-site.md;
 // the layout chosen 2026-10-14 from the three-variant prototype: C, Season
 // context, with B's side-by-side opponent rows and the prior season behind
-// the quadrant). In order: the header with the night's title; the quadrant
-// leading, with the two answers beside it; this game's court; both sides on
-// the same terms; the players; the ruler in one line.
+// the quadrant; restyled 2026-10-29 by a second prototype, ADR-0094: the
+// poster banner and numbered acts). In order: the poster banner with the
+// score and the night's title (the game's own photograph when one is on
+// file, the typographic poster otherwise); 01 the quadrant with the two
+// answers beside it; 02 both teams' courts over one zone-count table; 03
+// both sides on the same terms; 04 the players; the ruler in one line.
 //
 // A tool page: every number is reportCard.ts's (aggregateShotMetrics over
 // persisted rows), every displayed gap subtracts its displayed anchors
@@ -17,7 +20,6 @@ import { useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { GameQuadrant } from '../chart/GameQuadrant'
 import { ShotChart } from '../chart/ShotChart'
-import type { ShotMetrics } from '../domain/aggregate'
 import type { GamePayload } from '../domain/gamePayload'
 import { buildReportCard } from '../domain/reportCard'
 import type { ReportCard, SideCard } from '../domain/reportCard'
@@ -44,11 +46,14 @@ import type { TeamConfig } from '../teams/registry'
 import {
   gamePayloadUrl,
   teamGameUrl,
+  teamLogoUrl,
   teamPageUrl,
   teamSeasonIndexUrl,
   teamSeasonUrl,
   teamShotPayloadUrl,
 } from '../teams/urls'
+import { PosterBanner } from './PosterBanner'
+import { displayedGaps, gameBannerArt } from './reportCardDisplay'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 import type { TeamRoute } from './teamRoute'
@@ -121,15 +126,6 @@ function Draft() {
   return AUTHORED ? null : <span className="draft-tag">{REPORT_COPY.draftTag}</span>
 }
 
-/** The displayed selection and making gaps (ADR-0023), as numbers: the
- * computed copy decides on what the reader sees, never on the raw delta. */
-function displayedGaps(m: ShotMetrics): { selection: number; making: number } {
-  return {
-    selection: displayGapUnits(m.selection.playerDietExpectedPps, m.selection.leagueDietExpectedPps, 2)! / 100,
-    making: displayGapUnits(m.making.actualPps, m.selection.playerDietExpectedPps, 2)! / 100,
-  }
-}
-
 function CardReady({
   team,
   game,
@@ -155,31 +151,36 @@ function CardReady({
     document.title = `${team.name} ${score} ${matchup} · ${date}`
   }, [team, score, matchup, date])
 
+  const { art, credit } = gameBannerArt(card.slug)
+  const sides = [subject, opponent] as const
+
   return (
     <>
       <main className="hero-page team-page report-card">
         <SiteNav />
-        <header className="report-header">
-          <p className="hero-kicker">{REPORT_COPY.kicker(team.name, date, matchup)}</p>
-          <h1 className="report-title">
-            <span className="report-score">{score}</span>
-            <span className="report-night">
-              {' · '}
-              {nightTitle(gaps.selection, gaps.making)}
-              <Draft />
-            </span>
-          </h1>
-          <p className="team-note">
-            <a href={seasonUrl}>← {REPORT_COPY.backToSeason(card.season)}</a>
-          </p>
-        </header>
+        <PosterBanner
+          art={art}
+          logoUrl={teamLogoUrl(team)}
+          kicker={REPORT_COPY.kicker(team.name, date, matchup)}
+          title={<GameTitle score={score} night={nightTitle(gaps.selection, gaps.making)} />}
+          cue={REPORT_COPY.cue}
+          credit={credit}
+          className="game-poster"
+        />
+        <p className="team-note report-back">
+          <a href={seasonUrl}>← {REPORT_COPY.backToSeason(card.season)}</a>
+        </p>
 
-        <div className="report-lead">
-          <section className="report-quadrant" aria-labelledby="report-quadrant-caption">
-            <header className="section-caption">
-              <h2 id="report-quadrant-caption">{REPORT_COPY.quadrantCaption}</h2>
-              <p className="section-caption-desc">{REPORT_COPY.quadrantDesc}</p>
-            </header>
+        {/* The acts, numbered like an argument's (the 2026-10-29 prototype's
+            C), each a visual beside or above its data twin. */}
+        <section className="report-section report-first" aria-labelledby="report-quadrant-caption">
+          <ActHeader
+            id="report-quadrant-caption"
+            kicker={REPORT_COPY.actNight}
+            title={REPORT_COPY.quadrantCaption}
+            desc={REPORT_COPY.quadrantDesc}
+          />
+          <div className="report-lead">
             <GameQuadrant
               dots={card.dots}
               tonight={card.tonight}
@@ -189,36 +190,48 @@ function CardReady({
               hrefOf={(d) => teamGameUrl(team, d.slug)}
               ariaLabel={`Every ${team.name} game so far, shot diet against conversion`}
             />
-          </section>
-          <Answers card={card} gaps={gaps} />
-        </div>
-
-        <section className="report-section" aria-labelledby="report-court-caption">
-          <header className="section-caption">
-            <h2 id="report-court-caption">{REPORT_COPY.courtCaption}</h2>
-            <p className="section-caption-desc">{REPORT_COPY.courtDesc}</p>
-          </header>
-          <div className="report-court-row">
-            <div className="report-court">
-              <ShotChart shots={game.sides[0].shots} ariaLabel={`Half-court shot chart: ${team.name} shots, ${date} ${matchup}`} />
-            </div>
-            <ZoneCounts metrics={subject.metrics} />
+            <Answers card={card} gaps={gaps} />
           </div>
         </section>
 
+        <section className="report-section" aria-labelledby="report-court-caption">
+          <ActHeader
+            id="report-court-caption"
+            kicker={REPORT_COPY.actFloors}
+            title={REPORT_COPY.courtCaption}
+            desc={REPORT_COPY.courtDesc}
+          />
+          <div className="report-courts">
+            {sides.map((side, i) => (
+              <figure key={side.tricode} className="report-court">
+                <figcaption>{side.tricode}</figcaption>
+                <ShotChart
+                  shots={game.sides[i].shots}
+                  ariaLabel={`Half-court shot chart: ${side.team} shots, ${date} ${matchup}`}
+                />
+              </figure>
+            ))}
+          </div>
+          <ZoneCounts subject={subject} opponent={opponent} />
+        </section>
+
         <section className="report-section" aria-labelledby="report-sides-caption">
-          <header className="section-caption">
-            <h2 id="report-sides-caption">{REPORT_COPY.sidesCaption}</h2>
-            <p className="section-caption-desc">{REPORT_COPY.sidesDesc}</p>
-          </header>
+          <ActHeader
+            id="report-sides-caption"
+            kicker={REPORT_COPY.actTerms}
+            title={REPORT_COPY.sidesCaption}
+            desc={REPORT_COPY.sidesDesc}
+          />
           <BothSides subject={subject} opponent={opponent} />
         </section>
 
         <section className="report-section" aria-labelledby="report-players-caption">
-          <header className="section-caption">
-            <h2 id="report-players-caption">{REPORT_COPY.playersCaption}</h2>
-            <p className="section-caption-desc">{REPORT_COPY.playersDesc(team.name)}</p>
-          </header>
+          <ActHeader
+            id="report-players-caption"
+            kicker={REPORT_COPY.actPlayers}
+            title={REPORT_COPY.playersCaption}
+            desc={REPORT_COPY.playersDesc(team.name)}
+          />
           <Players side={subject} />
         </section>
 
@@ -229,6 +242,35 @@ function CardReady({
         </p>
       </main>
       <SiteFooter directoryLink />
+    </>
+  )
+}
+
+/** An act's header: the hero page's recipe (ADR-0051), a numbered kicker
+ * over the caps title over the gray description, the kicker and description
+ * outside the h2 so the heading's name is the title alone. */
+function ActHeader({ id, kicker, title, desc }: { id: string; kicker: string; title: string; desc: string }) {
+  return (
+    <header className="section-caption">
+      <p className="section-kicker">{kicker}</p>
+      <h2 id={id}>{title}</h2>
+      <p className="section-caption-desc">{desc}</p>
+    </header>
+  )
+}
+
+/** The poster's h1: the score at poster scale over the night's title. The
+ * " · " between them stays in the heading's text (one sentence to a reader
+ * that hears it) and is never drawn: the line break does its work. */
+function GameTitle({ score, night }: { score: string; night: string }) {
+  return (
+    <>
+      <span className="poster-score">{score}</span>
+      <span className="poster-sep"> · </span>
+      <span className="poster-night">
+        {night}
+        <Draft />
+      </span>
     </>
   )
 }
@@ -303,31 +345,41 @@ function Answers({ card, gaps }: { card: ReportCard; gaps: { selection: number; 
   )
 }
 
-function ZoneCounts({ metrics }: { metrics: ShotMetrics }) {
+/** Both teams' makes and attempts per zone: counts only, never shading (one
+ * game is too few shots for a zone reading, ADR-0084). The Backcourt row
+ * appears when either side took a heave. */
+function ZoneCounts({ subject, opponent }: { subject: SideCard; opponent: SideCard }) {
+  const count = (s: { makes: number; attempts: number }) => `${s.makes}–${s.attempts}`
+  const zoneOf = (side: SideCard, zone: string) => side.metrics.zones.find((r) => r.zone === zone)!
   return (
-    <div className="table-panel">
-      <table className="zone-table report-table" aria-label="Attempts and makes per zone in this game">
+    <div className="table-panel report-zones">
+      <table className="zone-table report-table" aria-label="Makes and attempts per zone, both teams">
         <thead>
           <tr>
             <th scope="col">Zone</th>
-            <th scope="col">FGM–FGA</th>
+            <th scope="col">
+              {subject.tricode}
+              <span className="cell-sub">FGM–FGA</span>
+            </th>
+            <th scope="col">
+              {opponent.tricode}
+              <span className="cell-sub">FGM–FGA</span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {metrics.zones.map((z) => (
+          {subject.metrics.zones.map((z) => (
             <tr key={z.zone}>
               <th scope="row">{z.zone}</th>
-              <td>
-                {z.makes}–{z.attempts}
-              </td>
+              <td>{count(z)}</td>
+              <td>{count(zoneOf(opponent, z.zone))}</td>
             </tr>
           ))}
-          {metrics.backcourt.attempts > 0 && (
+          {(subject.metrics.backcourt.attempts > 0 || opponent.metrics.backcourt.attempts > 0) && (
             <tr>
               <th scope="row">Backcourt</th>
-              <td>
-                {metrics.backcourt.makes}–{metrics.backcourt.attempts}
-              </td>
+              <td>{count(subject.metrics.backcourt)}</td>
+              <td>{count(opponent.metrics.backcourt)}</td>
             </tr>
           )}
         </tbody>

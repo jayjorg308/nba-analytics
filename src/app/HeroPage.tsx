@@ -1,4 +1,4 @@
-import { useEffect, useMemo, type CSSProperties } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ChartPanel } from '../chart/ChartPanel'
 import { CreationValueChart } from '../chart/CreationValueChart'
 import { GrowthDietChart } from '../chart/GrowthDietChart'
@@ -30,6 +30,7 @@ import { CreationTable } from './CreationTable'
 import { FreethrowSeasonLine, FreethrowTable } from './FreethrowTable'
 import { GrowthSpineLine, GrowthTable } from './GrowthTable'
 import { HeadlineBanner } from './HeadlineBanner'
+import { PosterBanner } from './PosterBanner'
 import { Term } from './Term'
 import {
   useCreationPayload,
@@ -224,39 +225,19 @@ function HeroReady({
       <SiteNav />
       {/* The poster banner carries the h1 — question first (ADR-0018),
           just at hero scale. */}
-      <header className="hero-banner">
-        <img
-          className="hero-banner-photo"
-          src={heroImageUrl(hero)}
-          alt={hero.hero.imageAlt}
-          // Focal points as custom properties so the stylesheet can pick per
-          // layout (inline object-position would defeat the media query).
-          style={
-            {
-              '--hero-pos': hero.hero.imagePosition,
-              '--hero-pos-wide': hero.hero.imagePositionWide,
-            } as CSSProperties
-          }
-          fetchPriority="high"
-        />
-        {logoUrl && (
-          // Decorative team mark: the stylesheet ghosts it into the wide
-          // layout's dark left column and hides it on the narrow poster.
-          <img className="hero-banner-logo" src={logoUrl} alt="" aria-hidden="true" />
-        )}
-        <div className="hero-banner-overlay">
-          {/* Kicker + title flex as one block so the cue can sit outside it,
-              pinned to the banner's bottom edge in both layouts — it is a
-              scroll affordance, not part of the title. */}
-          <div className="hero-banner-text">
-            <p className="hero-kicker">{seasonConfig.kicker}</p>
-            <h1 className="hero-title">{hero.thesis}</h1>
-          </div>
-          <p className="hero-cue" aria-hidden="true">
-            ↓ The verdict
-          </p>
-        </div>
-      </header>
+      <PosterBanner
+        art={{
+          kind: 'photo',
+          src: heroImageUrl(hero),
+          alt: hero.hero.imageAlt,
+          position: hero.hero.imagePosition,
+          positionWide: hero.hero.imagePositionWide,
+        }}
+        logoUrl={logoUrl}
+        kicker={seasonConfig.kicker}
+        title={hero.thesis}
+        cue="↓ The verdict"
+      />
       <header className="hero-header">
         {/* The answer before the evidence (ADR-0017) — authored hero copy,
             kept honest by the colocated verdict guard. */}

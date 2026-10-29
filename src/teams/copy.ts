@@ -32,7 +32,18 @@ export const TEAM_COPY = {
  * qualifiers ("priced", "the same ruler", "so far") are load-bearing. */
 export const REPORT_COPY = {
   kicker: (team: string, date: string, matchup: string) => `${team} · ${date} · ${matchup}`,
+  /** The poster's scroll cue: what the scroll reaches, never a claim. */
+  cue: '↓ The card',
+  /** A game photo with no known credit (ADR-0071's banner rule). */
+  creditPending: 'photograph credit pending',
   backToSeason: (season: string) => `${season} season`,
+  // The acts' numbered kickers (ADR-0094, the hero page's ADR-0051 recipe):
+  // dimension words naming each act's cut of the game, never rhetoric. Flat
+  // strings, so the copy guard reads every one.
+  actNight: '01 · THE NIGHT',
+  actFloors: '02 · THE FLOORS',
+  actTerms: '03 · THE TERMS',
+  actPlayers: '04 · THE PLAYERS',
   // Load-bearing: "so far" — the card's quadrant and ranks stop at tonight
   // (reportCard.ts filters later games out), so a shared card never moves.
   quadrantCaption: 'THE SEASON SO FAR',
@@ -61,8 +72,13 @@ export const REPORT_COPY = {
     ]
       .filter(Boolean)
       .join(' and ') + ' not priced.',
-  courtCaption: 'THIS GAME’S SHOTS',
-  courtDesc: 'every attempt, made and missed, with counts by zone. One game is too few shots to shade a zone.',
+  courtCaption: 'BOTH TEAMS’ SHOTS',
+  // Load-bearing: "zone-point conflicts aside". A conflict is dropped from
+  // shots[] at export (ADR-0019), so it is on neither court nor in the
+  // counts; the answers' unpriced note carries it. Heaves stay in the
+  // Backcourt count though the court, like the page's, skips them.
+  courtDesc:
+    'every attempt by both teams, made and missed, with counts by zone (zone-point conflicts aside). One game is too few shots to shade a zone.',
   sidesCaption: 'BOTH SIDES',
   sidesDesc: 'each team on the same terms, priced against the same ruler',
   sidesNote:

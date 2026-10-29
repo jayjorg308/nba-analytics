@@ -249,6 +249,61 @@
     margin-top: 20px;
 }
 
+/* The typographic poster (PosterBanner's TYPE form; docs/plans/
+   jazz-home-transition.md, decisions 3 and 6): the banner with no
+   photograph. Content height in every layout, the portrait landing screen
+   included, so a phone never opens on a screen of black and the page's
+   first evidence follows directly. The overlay joins the flow with no scrim
+   (there is nothing to grade) and clears the fixed navbar itself. The team
+   mark ghosts in where the photo would sit, on phones too. Two classes, so
+   each rule here outranks the photo poster's media-queried one. */
+.hero-banner.poster-type {
+    aspect-ratio: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: clamp(300px, 32vw, 400px);
+    border-bottom: 1px solid var(--border);
+}
+
+.poster-type .hero-banner-overlay {
+    position: relative;
+    inset: auto;
+    flex: 1;
+    padding-top: 88px;
+    background: none;
+
+    @media (max-width: 1024px) and (orientation: portrait) {
+        padding-top: 76px;
+    }
+}
+
+.poster-type .hero-banner-logo {
+    display: block;
+    top: 50%;
+    right: -3%;
+    width: min(44%, 440px);
+    opacity: 0.1;
+
+    @media (max-width: 1024px) and (orientation: portrait) {
+        top: 38%;
+        right: -16%;
+        width: 66%;
+        opacity: 0.08;
+    }
+}
+
+/* A photograph's credit line, where a page credits its own photo (a game's;
+   hero banners are credited on the methodology page, ADR-0071): reference
+   gray, tucked under the banner's bottom-right edge. */
+.poster-credit {
+    margin: -20px 0 20px;
+    text-align: right;
+    font-size: 12px;
+    line-height: normal;
+    color: var(--text);
+}
+
 /* The verdict: the first thing the eye hits after the question, so it ranks
    between body (18px) and h2 (24px). Prose, not numbers — the headline
    blocks below carry the figures. */
@@ -3090,24 +3145,41 @@
    never SVG text scaled with the plot. Dense UI text opts into line-height
    normal per the house companion rule. ------------------------------------ */
 
-.report-header {
-    max-width: 960px;
-    margin: 96px auto 28px;
+/* The game's poster title: the score at the banner's poster scale over the
+   night's title (computed copy, ADR-0090) at a reading size of the same
+   face. The " · " between them is never drawn (GameTitle). The score is
+   short, so the hero title's 18ch question measure gives way to the night
+   line's own. */
+.game-poster .hero-title {
+    max-width: none;
 }
 
-.report-title {
-    font-family: var(--display);
-    font-weight: 900;
-    font-size: clamp(2rem, 6vw, 3.75rem);
-    line-height: 0.95;
-    margin: 4px 0 12px;
-    text-transform: uppercase;
+.poster-score {
+    display: block;
+}
+
+.poster-sep {
+    display: none;
+}
+
+.poster-night {
+    display: block;
+    margin-top: 14px;
+    max-width: 24ch;
+    font-size: 0.44em;
+    line-height: 1.05;
     letter-spacing: 0.01em;
-    color: var(--text-h);
+    color: rgba(255, 255, 255, 0.84);
+
+    @media (max-width: 1024px) and (orientation: portrait) {
+        font-size: 0.56em;
+    }
 }
 
-.report-night {
-    color: var(--text);
+/* The way back to the season, bound under the banner like a hero's byline. */
+.team-note.report-back {
+    max-width: 960px;
+    margin: 0 auto 28px;
 }
 
 /* The computed-copy registry's draft marker (src/teams/computedCopy.ts):
@@ -3135,14 +3207,18 @@
     align-items: start;
 }
 
-.report-lead > *,
-.report-court-row > * {
+.report-lead > * {
     min-width: 0;
 }
 
 .report-section {
     max-width: 960px;
     margin: 48px auto 0;
+}
+
+/* The first act sits under the way-back link, not a block of evidence. */
+.report-section.report-first {
+    margin-top: 8px;
 }
 
 .report-ruler {
@@ -3368,14 +3444,30 @@
     color: var(--text-h);
 }
 
-.report-court-row {
+/* 02 · THE FLOORS: both teams' courts side by side, each named by its
+   tricode in the kicker's small caps, over their one zone-count table. */
+.report-courts {
     display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
-    align-items: start;
+    margin-bottom: 20px;
 }
 
 .report-court {
+    margin: 0;
+    min-width: 0;
+}
+
+.report-court figcaption {
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: normal;
+    color: var(--text);
+}
+
+.report-zones {
     max-width: 520px;
 }
 
@@ -3407,14 +3499,8 @@
 
 @media (max-width: 760px) {
     .report-lead,
-    .report-court-row {
+    .report-courts {
         grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 1024px) {
-    .report-header {
-        margin-top: 80px;
     }
 }
 

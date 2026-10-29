@@ -214,4 +214,18 @@ sga-hero.jpg record (see its entry)._
 - `public/social-cards/*.png` — generated derivatives
   (`npm run cards:generate`, ADR-0067) composed entirely from the credited
   headshots above plus the site's own wordmark and the pinned typefaces; no
-  external imagery.
+  external imagery. The game cards under `public/social-cards/<team>/`
+  (`npm run cards:games`, ADR-0091) are composed from the game files, the
+  wordmark, and the typefaces, except a game with a photograph, whose card
+  is redrawn with it (ADR-0094, below).
+
+## Game photographs
+
+_Added 2026-10-29 (ADR-0094). A game's photograph is credited on its own
+report card and share card, never on `/methodology` (which says so in one
+sentence), so this section is the only list of them. Each entry records
+the source URL, the pull date, the photographer or "via the team", and the
+frame's game (a photograph must be from the game it illustrates).
+`npm run game:photo` writes the derivative under `public/img/games/`._
+
+None yet.

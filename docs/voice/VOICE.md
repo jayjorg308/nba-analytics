@@ -154,6 +154,8 @@ extra: it may claim only what the frame shows.
   entirely the author's.
 - The credit line beside it takes two forms and never guesses: see
   CONTEXT.md's Hero banner entry.
+- **A game's photograph takes the same form** (ADR-0094), and it may only
+  be a frame from that game.
 
 ## Computed copy (the report card)
 

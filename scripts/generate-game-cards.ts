@@ -7,6 +7,9 @@
 // (PIL) draws them, as JSON on stdin — the TS-registry/Python-assets split
 // every card family uses.
 //
+// A game with a photograph on file (src/teams/gamePhotos.ts, ADR-0094) is
+// drawn with it; a photo PR redraws that one card with `-- <game-slug>`.
+//
 // Usage: npm run cards:games [-- <game-slug> ...]   (no args = every game)
 //        npm run cards:games -- --missing            (only games without a card:
 //                                                    the season loop's step)
@@ -18,6 +21,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { parseGamePayload } from '../src/domain/gamePayload'
 import { parseTeamSeasonIndex } from '../src/domain/teamSeasonIndex'
+import { SCAFFOLD_SENTINEL } from '../src/heroes/authoring'
 import { publishedSeasons } from '../src/teams/published'
 import { TEAMS } from '../src/teams/registry'
 import { gameCardPath, gameCardSpec } from '../src/teams/shareCards'
@@ -43,6 +47,15 @@ for (const team of TEAMS) {
       specs.push(gameCardSpec(team, game, row.slug))
     }
   }
+}
+// A game photograph stubbed by game:photo but not yet authored draws
+// nothing: its focal points and credit are still sentinels (ADR-0094).
+const stubbed = specs.filter((s) => s.photo && Object.values(s.photo).some((v) => v.includes(SCAFFOLD_SENTINEL)))
+if (stubbed.length > 0) {
+  console.error(
+    `author the photograph entries in src/teams/gamePhotos.ts first: ${stubbed.map((s) => s.slug).join(', ')}`,
+  )
+  process.exit(1)
 }
 if (specs.length === 0) {
   if (missingOnly) console.log('every published game has its card')
