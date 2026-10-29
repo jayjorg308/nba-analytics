@@ -1,4 +1,6 @@
 import './App.css'
+import { lazy, Suspense } from 'react'
+import type { ReactNode } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { ComparisonPage } from './app/ComparisonPage'
 import { HeroIndexPage } from './app/HeroIndexPage'
@@ -13,12 +15,34 @@ import { parseTeamRoute } from './app/teamRoute'
 import { TeamPage } from './app/TeamPage'
 import { heroBySlug } from './heroes/registry'
 import { canonicalSeasonOf } from './heroes/types'
-import { teamBySlug } from './teams/registry'
+import { teamBySlug, utahJazz } from './teams/registry'
+
+// PROTOTYPE hook (throwaway): the Jazz home variants at /?variant= and
+// /jazz?variant=, dev builds only; the production build drops the branch.
+const PrototypeJazzHome = import.meta.env.DEV
+    ? lazy(() => import('./app/PROTOTYPE_JazzHome').then((m) => ({ default: m.PrototypeJazzHome })))
+    : null
+const PROTOTYPE_VARIANT = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('variant') : null
+
+function prototypeHome(current: ReactNode): ReactNode | null {
+    if (PrototypeJazzHome === null || PROTOTYPE_VARIANT === null) return null
+    return (
+        <Suspense fallback={null}>
+            <PrototypeJazzHome team={utahJazz} current={current} initial={PROTOTYPE_VARIANT} />
+        </Suspense>
+    )
+}
 
 function App() {
     // Read once at render: navigation between pages is full page loads
     // (plain anchors, ADR-0022), so the path never changes while mounted.
     const route = parseRoute(window.location.pathname, import.meta.env.BASE_URL)
+    if (route.slug === '' || (route.slug === 'jazz' && route.season === undefined)) {
+        const proto = prototypeHome(
+            route.slug === '' ? <HeroIndexPage /> : <TeamPage team={utahJazz} season={utahJazz.canonicalSeason} />,
+        )
+        if (proto !== null) return proto
+    }
     // The hero index is the site root (ADR-0022): the root renders the
     // directory of arguments, and each hero is a directory of season
     // arguments (ADR-0060) — /<slug> renders the canonical season in place,
