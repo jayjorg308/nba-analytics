@@ -40,6 +40,21 @@ export function teamGameUrl(team: TeamConfig, slug: string): string {
   return `${import.meta.env.BASE_URL}${team.slug}/${slug}`
 }
 
+/** A player's season page (ADR-0095): the canonical alias /<team>/<slug>
+ * for the team's canonical season, the permalink /<team>/<season>/<slug>
+ * for any other. */
+export function teamPlayerUrl(team: TeamConfig, season: string, slug: string): string {
+  return season === team.canonicalSeason
+    ? `${import.meta.env.BASE_URL}${team.slug}/${slug}`
+    : `${import.meta.env.BASE_URL}${team.slug}/${season}/${slug}`
+}
+
+/** A player's standard NBA headshot, committed under the conventional
+ * img/<slug>-headshot.png (ADR-0065; hero slugs and player slugs agree). */
+export function playerHeadshotUrl(slug: string): string {
+  return `${import.meta.env.BASE_URL}img/${slug}-headshot.png`
+}
+
 /** A committed image under public/ (a game photograph's derivative). */
 export function publicAssetUrl(publicPath: string): string {
   return `${import.meta.env.BASE_URL}${publicPath}`

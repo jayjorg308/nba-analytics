@@ -21,6 +21,7 @@ import type { ReactNode } from 'react'
 import { GameQuadrant } from '../chart/GameQuadrant'
 import { ShotChart } from '../chart/ShotChart'
 import type { GamePayload } from '../domain/gamePayload'
+import { seasonShooters } from '../domain/playerSeason'
 import { buildReportCard } from '../domain/reportCard'
 import type { ReportCard, SideCard } from '../domain/reportCard'
 import type { TeamSeasonIndex } from '../domain/teamSeasonIndex'
@@ -49,6 +50,7 @@ import {
   teamLogoUrl,
   teamPageUrl,
   teamSeasonIndexUrl,
+  teamPlayerUrl,
   teamSeasonUrl,
   teamShotPayloadUrl,
 } from '../teams/urls'
@@ -140,6 +142,9 @@ function CardReady({
   prior?: { index: TeamSeasonIndex; payload: TeamShotPayload }
 }) {
   const card = useMemo(() => buildReportCard(game, index, payload, prior), [game, index, payload, prior])
+  // Every shooter of the season has a season page (ADR-0095); a name links
+  // there, and a player with free throws but no shot all season stays text.
+  const pages = useMemo(() => new Map(seasonShooters(payload).map((p) => [p.playerId, p.slug])), [payload])
   const { subject, opponent } = card
   const gaps = displayedGaps(subject.metrics)
   const date = formatGameDate(card.gameDate)
@@ -232,7 +237,13 @@ function CardReady({
             title={REPORT_COPY.playersCaption}
             desc={REPORT_COPY.playersDesc(team.name)}
           />
-          <Players side={subject} />
+          <Players
+            side={subject}
+            hrefOf={(playerId) => {
+              const slug = pages.get(playerId)
+              return slug === undefined ? null : teamPlayerUrl(team, card.season, slug)
+            }}
+          />
         </section>
 
         <p className="report-ruler">
@@ -503,7 +514,7 @@ function BothSides({ subject, opponent }: { subject: SideCard; opponent: SideCar
   )
 }
 
-function Players({ side }: { side: SideCard }) {
+function Players({ side, hrefOf }: { side: SideCard; hrefOf: (playerId: number) => string | null }) {
   return (
     <div className="table-panel">
       <div className="zone-scroll">
@@ -523,7 +534,9 @@ function Players({ side }: { side: SideCard }) {
           <tbody>
             {side.players.map((p) => (
               <tr key={p.playerId}>
-                <th scope="row">{p.name}</th>
+                <th scope="row">
+                  {hrefOf(p.playerId) === null ? p.name : <a href={hrefOf(p.playerId)!}>{p.name}</a>}
+                </th>
                 <td>{p.points}</td>
                 <td>
                   {p.fgm}–{p.fga}

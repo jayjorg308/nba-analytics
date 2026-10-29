@@ -349,6 +349,10 @@ The raw storage layer is append-only from day one: new snapshots are added, neve
 The `/jazz` page family (docs/plans/jazz-surface.md): the Utah Jazz's season-to-date shot profile, game ledger, and roster rail, inside Good Shots. A **tool**, the class ADR-0075 opened for the comparison page, never an argument: structural copy only, no verdict, honesty carried by visible counts and local flags, rendering from the first game of the season (ADR-0081). Hero pages for Jazz players stay complete arguments at their own URLs and are linked, never duplicated.
 _Avoid_: "team verdict", "team grade", or any whole-team claim.
 
+**Player season page**:
+A team player's season on the team surface (ADR-0095): `/jazz/<player-slug>` for the canonical season, `/jazz/<season>/<player-slug>` for any registered one, for every player with a shot for the team that season. The headshot banner, his season pair, then his games on the quadrant (each against its own pre-game ruler, so a dot equals his line on that game's report card), his season zone by zone with local flags, and his game log linking each card. A tool page; his argument, when he has one, is linked both ways ("Game by game" on the argument). His **slug** is his name folded (lowercase, diacritics and punctuation dropped), the rule hero slugs share.
+_Avoid_: a page for a player with no shot, or a game number computed any way but his slice under that game's ruler.
+
 **Team shot payload**:
 The fifth typed contract (ADR-0082; `public/data/_teams/<tricode>/<season>.json`, `src/domain/teamShotPayload.ts`): every shot every player took for the team in the season, from one team-wide `shotchartdetail` pull, as the hero contract's enriched shot row plus player identity, in chronological order, with the rolled-up league baseline and the session's roster. No usage field. Fenced by the **box oracle**: per game, per player, pre-drop rows equal the box-score FGA, so a game without its pbp/box pair can never be in the payload. One grammar (`ingestion/team_payload.py`) behind two sources, the file derive (`derive_team_payload.py`, the golden path) and the record-store export, held to byte parity. Team rows live in the store's existing `shot` table; a hero's rows arrive from both his pull and the team pull and must agree.
 
@@ -371,7 +375,7 @@ One immutable committed file per team game (ADR-0088; `public/data/_teams/<trico
 _Avoid_: persisting per-game metrics in it, or pricing the two sides against different rulers.
 
 **Season index**:
-The living list of a team season's published games (ADR-0088; `public/data/_teams/<tricode>/<season>/index.json`, `src/domain/teamSeasonIndex.ts`): per game the slug, date, opponent, home, both scores, the subject's box team line, and that game's ruler with its rolled-up zones. Per-game values (the quadrant, the ledger's decomposition) are computed from it plus the team shot payload, so a dot always equals its card. Replaces the ledger facts file once the season page reads it.
+The living list of a team season's published games (ADR-0088; `public/data/_teams/<tricode>/<season>/index.json`, `src/domain/teamSeasonIndex.ts`): per game the slug, date, opponent, home, both scores, the subject's box team line, the box line of every subject player who appeared (schema v2, for the player season page's game log), and that game's ruler with its rolled-up zones. Per-game values (the quadrant, the ledger's decomposition) are computed from it plus the team shot payload, so a dot always equals its card. Replaces the ledger facts file once the season page reads it.
 
 **Game slug**:
 A team game's URL segment: the date plus the opponent's lowercase tricode (`2026-01-03-gsw`). Unique per team because a team never plays twice on one date; payload files stay keyed by game ID and the season index maps one to the other.

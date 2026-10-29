@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { RESERVED_ROUTES, TEAM_ROUTES } from '../app/routes'
-import { REPORT_COPY, TEAM_COPY } from './copy'
+import { PLAYER_COPY, REPORT_COPY, TEAM_COPY } from './copy'
 import { GAME_ID, SEASON, TEAMS, teamBySlug } from './registry'
 
 const FORBIDDEN = [
@@ -25,7 +25,7 @@ const FORBIDDEN = [
 
 function everyString(): string[] {
   const out: string[] = []
-  for (const value of [...Object.values(TEAM_COPY), ...Object.values(REPORT_COPY)]) {
+  for (const value of [...Object.values(TEAM_COPY), ...Object.values(REPORT_COPY), ...Object.values(PLAYER_COPY)]) {
     if (typeof value !== 'function') {
       out.push(value)
       continue

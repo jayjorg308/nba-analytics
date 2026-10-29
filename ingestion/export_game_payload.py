@@ -31,10 +31,12 @@ THE ORACLES (hard-fail at export):
     in every evaluation zone, with a game count from the league game log;
     the prior season's baseline only when that count is zero.
 
-THE SEASON INDEX (schema v1, <season>/index.json): the frontier fields and
+THE SEASON INDEX (schema v2, <season>/index.json): the frontier fields and
 one row per published game — slug, date, opponent, home, both scores, the
-subject's box team line, and that game's ruler with its rolled-up zones —
-small and living. Game files are immutable: export_season never rewrites a
+subject's box team line, the box line of every subject player who appeared
+(v2, ADR-0088 as amended 2026-10-29: the player season page's game log
+reads it, so a season of games is one small file, never every game file),
+and that game's ruler with its rolled-up zones — small and living. Game files are immutable: export_season never rewrites a
 published game file whose bytes would change (a correction travels by PR,
 --allow-rewrite). The season loop's team session exports into data/derived
 against the published directory and syncs from there (ADR-0091).
@@ -66,8 +68,12 @@ from load_team_season import TEAM_SOURCE
 # Pinned as literals on the TS side (src/domain/gamePayload.ts,
 # src/domain/teamSeasonIndex.ts); bump both on any breaking change.
 SCHEMA_VERSION = 1
-INDEX_SCHEMA_VERSION = 1
+INDEX_SCHEMA_VERSION = 2
 THREE = dp.THREE_POINT_ZONES
+# An index player line: the game file's box line without the technical and
+# split free-throw counts, which only a receipt itemizes.
+INDEX_PLAYER_FIELDS = ("playerId", "name", "minutes", "points", "fgm", "fga", "tpm", "tpa",
+                       "ftm", "fta", "reb", "ast")
 
 
 def fail(msg: str) -> None:
@@ -436,6 +442,7 @@ def index_row(game: dict) -> dict:
         "teamScore": subject["box"]["points"],
         "opponentScore": opponent["box"]["points"],
         "box": subject["box"],
+        "players": [{k: p[k] for k in INDEX_PLAYER_FIELDS} for p in subject["players"]],
         "ruler": {**ruler, "zoneBaseline": game["zoneBaseline"]},
     }
 

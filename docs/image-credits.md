@@ -21,13 +21,16 @@ sga-hero.jpg record (see its entry)._
   generated placeholder the real photo replaced (v2.5 Phase 4); the
   banner is and always was a real game photograph. The author identified
   the true source.
-- `public/img/<slug>-headshot.png` (all heroes) — the NBA's standard player
+- `public/img/<slug>-headshot.png` (all heroes, and every player with a
+  team season page) — the NBA's standard player
   headshots, downloaded verbatim from
   `cdn.nba.com/headshots/nba/latest/1040x760/<playerId>.png` (the `playerId`
   is in the hero's shot payload `_meta`). The directory's asset class
   (ADR-0065); pulled 2026-07-24 for the first four registered heroes, and
   fetched by `hero:add` (ADR-0066) for every hero since — Donovan Mitchell
-  2026-07-27.
+  2026-07-27. `npm run team:headshots` (ADR-0095) fetched 27 more on
+  2026-10-29, every Jazz shooter of 2025-26 and 2026-27 without one; the
+  `playerId` is in the team shot payload's rows.
 - `public/img/cle-logo.png` — the Cavaliers' glyph-only primary mark,
   downloaded from `cdn.nba.com/logos/nba/1610612739/primary/L/logo.png`
   (2026-07-27) and normalized to the shared watermark canvas by

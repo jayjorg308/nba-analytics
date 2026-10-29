@@ -293,6 +293,41 @@
     }
 }
 
+/* The headshot poster (PosterBanner's HEADSHOT form, ADR-0095): the type
+   poster with the player's standard NBA headshot (a transparent cutout,
+   ADR-0065) standing on the banner's floor at its right edge. On a portrait
+   phone it rises to the banner's upper right, clear of the name the h1
+   carries at the bottom. */
+.poster-headshot .poster-headshot-img {
+    position: absolute;
+    right: 6%;
+    bottom: 0;
+    height: 94%;
+    max-width: 46%;
+    object-fit: contain;
+    object-position: right bottom;
+    pointer-events: none;
+    /* The product's B&W identity, as the directory treats its headshots. */
+    filter: grayscale(1) contrast(1.08) brightness(0.94);
+
+    @media (max-width: 1024px) and (orientation: portrait) {
+        top: 60px;
+        bottom: auto;
+        right: 0;
+        height: 160px;
+        max-width: 64%;
+        object-position: right top;
+    }
+}
+
+/* On a portrait phone the bottom-anchored kicker and name sit below the
+   headshot, never over it: the banner grows to hold both. */
+.hero-banner.poster-type.poster-headshot {
+    @media (max-width: 1024px) and (orientation: portrait) {
+        min-height: 380px;
+    }
+}
+
 /* A photograph's credit line, where a page credits its own photo (a game's;
    hero banners are credited on the methodology page, ADR-0071): reference
    gray, tucked under the banner's bottom-right edge. */
@@ -3086,7 +3121,8 @@
 
 .team-note a,
 .team-seasons a,
-.team-ledger-table a {
+.team-ledger-table a,
+.report-table a {
     color: inherit;
     text-decoration: underline;
     text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
@@ -3098,7 +3134,9 @@
 .team-seasons a:hover,
 .team-seasons a:focus-visible,
 .team-ledger-table a:hover,
-.team-ledger-table a:focus-visible {
+.team-ledger-table a:focus-visible,
+.report-table a:hover,
+.report-table a:focus-visible {
     color: #fff;
     text-decoration-color: currentColor;
 }
@@ -3180,6 +3218,35 @@
 .team-note.report-back {
     max-width: 960px;
     margin: 0 auto 28px;
+}
+
+/* A player's season page (ADR-0095): the report card's column, its byline
+   and links under the banner, the season pair at the same width. */
+.player-header,
+.player-season .headline-pair {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.player-header .hero-byline {
+    margin-bottom: 0;
+}
+
+.player-header .team-note {
+    margin: 8px 0 28px;
+}
+
+.player-header .team-note + .team-note {
+    margin-top: -20px;
+}
+
+.player-quadrant {
+    max-width: 720px;
+}
+
+.player-log th[scope='row'] {
+    white-space: nowrap;
 }
 
 /* The computed-copy registry's draft marker (src/teams/computedCopy.ts):

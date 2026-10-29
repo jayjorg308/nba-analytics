@@ -42,6 +42,7 @@ export function GameQuadrant({
   priorSeason,
   hrefOf,
   ariaLabel,
+  tonightLabel = REPORT_COPY.legendTonight,
 }: {
   dots: readonly GameDot[]
   tonight: GameDot
@@ -50,6 +51,8 @@ export function GameQuadrant({
   priorSeason: string | null
   hrefOf: (dot: GameDot) => string
   ariaLabel: string
+  /** The highlighted dot's legend: a card's game, or a player's latest. */
+  tonightLabel?: string
 }) {
   const [readout, setReadout] = useState<GameDot | null>(null)
   const sel = (d: GameDot) => d.metrics.selection.selectionDelta!
@@ -101,7 +104,7 @@ export function GameQuadrant({
         <span className="quadrant-legend">
           <span className="quadrant-legend-item">
             <span className="quadrant-key quadrant-key-tonight" aria-hidden="true" />
-            {REPORT_COPY.legendTonight}
+            {tonightLabel}
           </span>
           <span className="quadrant-legend-item">
             <span className="quadrant-key quadrant-key-season" aria-hidden="true" />
