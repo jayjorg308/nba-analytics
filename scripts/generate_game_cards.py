@@ -14,9 +14,18 @@ baseline at y = -52.5 and half court at 417.5, NBA line-work dimensions.
 Off-court shots (heaves past half court) are skipped, never clamped, as on
 the page.
 
+A GAME WITH A PHOTOGRAPH (ADR-0094) is drawn with it in the court's place,
+as the page banner's wide layout: the site's black-and-white treatment, a
+right-anchored panel cropped at the photo's wide focal point and fading in
+from its left edge, the credit small in the bottom-right corner. Its PNG
+carries a text chunk naming the photo (PHOTO_MARKER_KEY), which the photo
+guard reads to prove the card was redrawn. A card without a photo is drawn
+exactly as before, with no chunk, so the loop's cards never change.
+
 Driven by scripts/generate-game-cards.ts; specs arrive as JSON on stdin:
   [{"slug", "out", "kicker", "score", "answers": [{"question", "number",
-    "words"}], "shots": [{"x", "y", "made"}]}]
+    "words"}], "shots": [{"x", "y", "made"}],
+    "photo"?: {"path", "position", "credit"}}]
 """
 
 from __future__ import annotations
@@ -26,6 +35,7 @@ import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw
+from PIL.PngImagePlugin import PngInfo
 
 from card_common import (
     DISPLAY_900,
@@ -34,6 +44,7 @@ from card_common import (
     WORDMARK,
     draw_tracked,
     load_font,
+    monochrome,
     radial_ground,
     read_specs,
 )
@@ -42,6 +53,16 @@ CARD_W, CARD_H = 1200, 630
 ACCENT = (192, 132, 252)  # --accent
 MUTED = (156, 163, 175)  # --text
 BG = (22, 23, 29)  # --bg
+
+# Must match PHOTO_MARKER_KEY in src/teams/gamePhotoAuthoring.ts.
+PHOTO_MARKER_KEY = "goodshots:photo"
+# The banner's wide layout (src/App.css .hero-banner-photo): the photo as a
+# right-anchored panel, transparent at its left edge, opaque from 32% in.
+# The card's panel runs wider than the page's 60% because a card has no
+# title to clear, only the text column.
+PHOTO_PANEL_W = 700
+PHOTO_FADE = 0.32
+PHOTO_TEXT_COLUMN = 600
 
 # The court frame in stats units (geometry.ts COURT plus its 2 ft pad).
 COURT_MIN_X, COURT_MAX_X = -250, 250
@@ -102,6 +123,40 @@ def draw_court(card: Image.Image, court: Court, shots: list[dict]) -> None:
     card.alpha_composite(layer)
 
 
+def focal(position: str) -> tuple[float, float]:
+    """An "x% y%" focal point as fractions (CSS object-position)."""
+    x, y = position.split()
+    return float(x.rstrip("%")) / 100, float(y.rstrip("%")) / 100
+
+
+def draw_photo(card: Image.Image, photo: dict) -> None:
+    """The game's photograph as the banner's wide panel: cover-cropped at
+    its focal point the way object-position crops it, in the site's B&W,
+    fading in from the panel's left edge."""
+    source = Image.open(Path("public") / photo["path"]).convert("RGBA")
+    pw, ph = PHOTO_PANEL_W, CARD_H
+    scale = max(pw / source.width, ph / source.height)
+    sw, sh = math.ceil(source.width * scale), math.ceil(source.height * scale)
+    scaled = source.resize((sw, sh), Image.Resampling.LANCZOS)
+    fx, fy = focal(photo["position"])
+    left, top = round((sw - pw) * fx), round((sh - ph) * fy)
+    panel = monochrome(scaled.crop((left, top, left + pw, top + ph)))
+    ramp = Image.new("L", (pw, 1))
+    ramp.putdata([min(255, round(255 * x / (PHOTO_FADE * pw))) for x in range(pw)])
+    panel.putalpha(ramp.resize((pw, ph)))
+    card.alpha_composite(panel, (CARD_W - pw, 0))
+
+
+def draw_credit(card: Image.Image, credit: str) -> None:
+    """The photograph's credit, small in the bottom-right corner, haloed so
+    it reads over any part of the frame."""
+    draw = ImageDraw.Draw(card)
+    font = load_font(SANS_500, 14)
+    x = CARD_W - 24 - font.getlength(credit)
+    draw.text((x, CARD_H - 34), credit, font=font, fill=INK + (215,),
+              stroke_width=2, stroke_fill=(0, 0, 0, 200))
+
+
 def fit(font_path: Path, text: str, size: int, max_width: float, floor: int):
     font = load_font(font_path, size)
     while font.getlength(text) > max_width and size > floor:
@@ -118,12 +173,17 @@ def compose(spec: dict) -> Image.Image:
         wordmark.resize((round(wordmark.width * wm_h / wordmark.height), wm_h),
                         Image.Resampling.LANCZOS), (64, 46))
 
-    court = Court(left=CARD_W - 64 - 400, top=0, width=400)
-    court.top = (CARD_H - court.height) / 2 + 12
-    draw_court(card, court, spec["shots"])
+    photo = spec.get("photo")
+    if photo:
+        draw_photo(card, photo)
+        column = PHOTO_TEXT_COLUMN
+    else:
+        court = Court(left=CARD_W - 64 - 400, top=0, width=400)
+        court.top = (CARD_H - court.height) / 2 + 12
+        draw_court(card, court, spec["shots"])
+        column = court.left - 64 - 48
 
     draw = ImageDraw.Draw(card)
-    column = court.left - 64 - 48
     y = 128
     draw_tracked(card, draw, spec["kicker"], load_font(SANS_500, 17), 64, y, 17 * 0.18, 0.85)
     y += 40
@@ -145,6 +205,8 @@ def compose(spec: dict) -> Image.Image:
         draw.text((x, y + 30 - round(number_size * 0.14)), answer["number"], font=number_font, fill=INK)
         draw.text((x, y + 30 + round(number_size * 0.92) + 12), answer["words"],
                   font=words_font, fill=MUTED + (255,))
+    if photo:
+        draw_credit(card, photo["credit"])
     return card
 
 
@@ -156,7 +218,12 @@ def main() -> None:
     for spec in specs:
         out = Path("public") / spec["out"]
         out.parent.mkdir(parents=True, exist_ok=True)
-        compose(spec).convert("RGB").save(out, format="PNG", optimize=True)
+        extra = {}
+        if spec.get("photo"):
+            info = PngInfo()
+            info.add_text(PHOTO_MARKER_KEY, spec["photo"]["path"])
+            extra["pnginfo"] = info
+        compose(spec).convert("RGB").save(out, format="PNG", optimize=True, **extra)
     total = sum((Path("public") / s["out"]).stat().st_size for s in specs)
     print(f"{len(specs)} game card(s) -> public/{Path(specs[0]['out']).parent.as_posix()}/ "
           f"({total:,} bytes)")

@@ -112,7 +112,11 @@ arguments moves to `/arguments`, and every hero URL keeps working.
     chosen, recorded in NOTES, deleted before the real build. Candidates: the
     banner over today's layout; plus numbered act kickers and the answers
     styled as the hero headline cards; plus the split visual and data layout
-    for the court and the both-sides table.
+    for the court and the both-sides table. _Chosen 2026-10-29: C (every act
+    a visual and its data twin, both teams' courts) without its per-player
+    expected-versus-scored chart, which repeated the players table. Built on
+    the 2025-26 Apr 10 game, since 2026-27 waited on the registry PR; the
+    verdict and the declined variants are in ADR-0094._
 17. **Stage order: 0 → 1 → 2 → 3**, below. Player pages come before the home
     because the home's cards and rail link them.
 18. **Player pages have season permalinks.** `/jazz/<slug>` is the canonical
@@ -198,6 +202,15 @@ so new decisions here start at 0094.
 - Done when a game page renders both banner forms correctly at desktop and
   375px, and a test photo PR (on a branch, not merged) shows the tripwire
   red until authored and the redrawn card.
+- _Built 2026-10-29 on `feature_GameDetailUpdate` (ADR-0094). The headshot
+  form waits for Stage 2's player pages, which are its only reader. The
+  typographic form puts the team mark where the photo would sit rather than
+  in the left column. The photo flow was rehearsed on the 2025-26 Apr 10
+  game with a stand-in image and reverted: `game:photo` stubbed the entry,
+  the guard went red on four sentinels and the generator refused the stub,
+  then the authored entry drew the photo card, the guard went green, and
+  the page showed the photo and its credit. Redrawing photo-less cards
+  produced byte-identical files._
 
 ### Stage 2: player pages
 

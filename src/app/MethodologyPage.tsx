@@ -307,14 +307,19 @@ export function MethodologyPage() {
               the card renderer opens two webfont files beside the headshot
               and the wordmark (scripts/generate_social_cards.py), so before
               this line the totality claim excluded assets it was baking in.
-              Keep the two in sync — a new face on the site belongs here. */}
+              Keep the two in sync — a new face on the site belongs here.
+              "Those photographs" is load-bearing too: a game card is redrawn
+              with its game's photograph (ADR-0094), credited on the card
+              itself (PosterBanner's credit line and the card's corner), so
+              without it the closing claim would exclude an image it bakes in. */}
           <p className="methodology-credits-note">
             Player headshots are the NBA's standard player photographs, from the league's
             media CDN. Team marks are the franchises' primary marks from the same source,
             normalized to one shared canvas. The Good Shots wordmark is the site's own
             branding, and the type is set in Public Sans, IBM Plex Mono, and Big Shoulders
-            Display, all open-licensed and self-hosted. Share cards are generated entirely
-            from the assets credited here.
+            Display, all open-licensed and self-hosted. A game's own photograph, when it has
+            one, is credited on that game's report card and on its share card. Share cards
+            are generated entirely from the assets credited here and those photographs.
           </p>
         </section>
       </main>

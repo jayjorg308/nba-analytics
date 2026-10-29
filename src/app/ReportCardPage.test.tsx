@@ -104,6 +104,27 @@ describe('ReportCardPage', () => {
     await waitFor(() => expect(document.title).toBe('Utah Jazz L 30–39 @ GSW · Jan 3, 2026'))
   })
 
+  it('opens on the poster and numbers its acts, both teams on the floors (ADR-0094)', async () => {
+    stubFetch(READY)
+    const { container } = render(<ReportCardPage team={jazz} route={routeOf('2026-01-03-gsw')} />)
+    await screen.findByRole('heading', { level: 1 })
+    // No photograph on file for the fixture game: the typographic poster,
+    // with no photo and no credit line, never another game's photograph.
+    const banner = container.querySelector('header.hero-banner')!
+    expect(banner.classList.contains('poster-type')).toBe(true)
+    expect(container.querySelector('.hero-banner-photo')).toBeNull()
+    expect(container.querySelector('.poster-credit')).toBeNull()
+    // The acts in order, each kicker over its title.
+    const kickers = [...container.querySelectorAll('.section-kicker')].map((k) => k.textContent)
+    expect(kickers).toEqual(['01 · THE NIGHT', '02 · THE FLOORS', '03 · THE TERMS', '04 · THE PLAYERS'])
+    // Both teams' courts, and one zone table with a column per side.
+    expect(screen.getByRole('img', { name: /Utah Jazz shots/ })).toBeTruthy()
+    expect(screen.getByRole('img', { name: /Golden State Warriors shots/ })).toBeTruthy()
+    const zones = screen.getByRole('table', { name: 'Makes and attempts per zone, both teams' })
+    const header = within(zones).getAllByRole('columnheader').map((h) => h.textContent)
+    expect(header).toEqual(['Zone', 'UTAFGM–FGA', 'GSWFGM–FGA'])
+  })
+
   it('opens the same card from the first team page’s game-id link', async () => {
     stubFetch(READY)
     render(<ReportCardPage team={jazz} route={routeOf('0022500492')} />)
