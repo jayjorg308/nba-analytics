@@ -7,6 +7,7 @@ import { MethodologyPage } from './app/MethodologyPage'
 import { GameCardPage } from './app/GameCardPage'
 import { GameLandingPage } from './app/GameLandingPage'
 import { COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
+import { PlayerSeasonPage } from './app/PlayerSeasonPage'
 import { ReportCardPage } from './app/ReportCardPage'
 import { parseTeamRoute } from './app/teamRoute'
 import { TeamPage } from './app/TeamPage'
@@ -81,14 +82,35 @@ function App() {
         )
     }
     // The team surface (ADR-0081/0082): a reserved team slug resolved before
-    // the registry. teamRoute.ts reads the second segment: /jazz renders the
-    // canonical team season in place, /jazz/<season> a season with deployed
-    // payloads, /jazz/<game-slug> a report card, and /jazz/<gameId> (the
-    // first team page's links) the same card. Anything else under the slug
-    // is nobody's page.
-    const team = teamBySlug(route.slug)
+    // the registry. teamRoute.ts reads the segments after it: /jazz renders
+    // the canonical team season in place, /jazz/<season> a season with
+    // deployed payloads, /jazz/<game-slug> a report card, /jazz/<gameId>
+    // (the first team page's links) the same card, /jazz/<player-slug> a
+    // player's canonical season and /jazz/<season>/<player-slug> its
+    // permalink (ADR-0095). A three-segment path arrives whole in the
+    // route's slug (parseRoute keeps deeper paths together). Anything else
+    // under the team slug is nobody's page.
+    const [teamSegment, ...deeper] = route.slug.split('/')
+    const team = teamBySlug(teamSegment!)
     if (team !== undefined) {
-        const teamRoute = parseTeamRoute(route.season)
+        const teamRoute =
+            deeper.length === 0
+                ? parseTeamRoute(route.season)
+                : deeper.length === 2
+                  ? parseTeamRoute(deeper[0], deeper[1])
+                  : ({ kind: 'unknown' } as const)
+        if (teamRoute.kind === 'player' || teamRoute.kind === 'seasonPlayer') {
+            return (
+                <>
+                    <PlayerSeasonPage
+                        team={team}
+                        season={teamRoute.kind === 'player' ? team.canonicalSeason : teamRoute.season}
+                        slug={teamRoute.slug}
+                    />
+                    <Analytics />
+                </>
+            )
+        }
         if (teamRoute.kind === 'canonical') {
             return (
                 <>
@@ -115,7 +137,7 @@ function App() {
         }
         return (
             <>
-                <HeroIndexPage unknownPath={`${route.slug}/${route.season}`} />
+                <HeroIndexPage unknownPath={route.season === undefined ? route.slug : `${route.slug}/${route.season}`} />
                 <Analytics />
             </>
         )

@@ -114,3 +114,40 @@ export const REPORT_COPY = {
   noSuchGame: (team: string, segment: string) => `No ${team} game on file for ${segment}.`,
   seasonNotOnFile: (team: string, segment: string) => `No ${team} season on file for ${segment}.`,
 } as const
+
+/** A player's season page's STRUCTURAL copy (ADR-0095): the tool class, so
+ * no verdict, no grade, no reading of the numbers. Each sentence was checked
+ * against src/domain/playerSeason.ts; the qualifiers are load-bearing. */
+export const PLAYER_COPY = {
+  kicker: (team: string, number: string, season: string) =>
+    number === '' ? `${team} · ${season}` : `${team} · Nº ${number} · ${season}`,
+  cue: '↓ The season',
+  // Load-bearing: "this season's roster as last pulled". The roster is a
+  // current-state snapshot (CONTEXT.md, Roster snapshot), so the note shows
+  // only on the team's canonical, living season.
+  departed: (team: string) => `Not on the ${team} roster as last pulled.`,
+  argument: (season: string) => `His ${season} argument`,
+  priorSeason: (season: string) => `His ${season} season`,
+  backToTeam: (team: string, season: string) => `${team} ${season}`,
+  actGames: '01 · THE GAMES',
+  actSeason: '02 · THE SEASON',
+  actLog: '03 · THE LOG',
+  // Load-bearing: "a priced shot". The quadrant draws a game only with an
+  // evaluation-zone attempt (playerSeason.ts gameDots); a night of free
+  // throws or heaves has no diet to place.
+  quadrantCaption: 'HIS GAMES',
+  quadrantDesc:
+    'every game he took a priced shot in, his shot diet against the league’s across and his conversion against expected up, each priced against the league as it stood that day',
+  legendLatest: 'his latest game',
+  noPricedShot: 'No game with a priced shot yet, so nothing to place on the chart.',
+  // Load-bearing: the season's own league average. The season view uses the
+  // team payload's frontier ruler, as the team page does (ADR-0089).
+  zoneCaption: 'ZONE BY ZONE',
+  zoneDesc: (season: string) =>
+    `his season’s shot diet and shot making against the ${season} league average (making Δ in FG percentage points)`,
+  logCaption: 'GAME LOG',
+  logDesc: 'every game he appeared in, newest first: his box line and his priced shots, against the league as it stood that day',
+  logNote:
+    'Expected and scored count priced field goals only, each attempt at that game’s league rate for its zone. Heaves, zone-point conflicts, and free throws are outside both.',
+  notOnFile: (team: string, slug: string, season: string) => `No ${team} player on file for ${slug} in ${season}.`,
+} as const

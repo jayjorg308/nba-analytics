@@ -42,6 +42,7 @@ export const aceBailey: HeroConfig = {
     {
       season: '2025-26',
       kicker: 'Ace Bailey · Utah Jazz · Nº 19 · 2025-26',
+      teamPage: 'jazz',
       // The verdict (ADR-0017): the answer before the evidence. AUTHORED
       // COPY — when the data moves, rewrite this; the committed guard
       // (./ace-bailey.2025-26.guard.test.ts) fails if any directional claim stops

@@ -76,6 +76,12 @@ describe.skipIf(published.length === 0)('deployed game payloads', () => {
             row.gameId,
           ).toEqual([row.gameDate, row.opponent, row.home])
           expect([subject.box, opponent.box.points], row.gameId).toEqual([row.box, row.opponentScore])
+          // The index's player lines are the game file's, in its order, less
+          // the technical and split counts only a receipt itemizes (v2).
+          const lines = subject.players.map((p) =>
+            omit(omit(omit(omit(p, 'technicalFtm'), 'technicalFta'), 'splitFtm'), 'splitFta'),
+          )
+          expect(row.players, row.gameId).toEqual(lines)
           const ruler = omit(game._meta.ruler, 'sourceSnapshot')
           expect({ ...ruler, zoneBaseline: game.zoneBaseline }, row.gameId).toEqual(row.ruler)
         }

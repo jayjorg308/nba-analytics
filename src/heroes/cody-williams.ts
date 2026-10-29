@@ -44,6 +44,7 @@ export const codyWilliams: HeroConfig = {
     {
       season: '2025-26',
       kicker: 'Cody Williams · Utah Jazz · Nº 5 · 2025-26',
+      teamPage: 'jazz',
       // The verdict (ADR-0017): the answer before the evidence. AUTHORED
       // COPY — when the data moves, rewrite this; the committed guard
       // (./cody-williams.2025-26.guard.test.ts) fails if any directional claim

@@ -49,6 +49,13 @@ export interface HeroSeasonConfig {
    * <slug>.<season>.guard.test.ts (one guard file per season argument,
    * ADR-0063) — when the data moves, rewrite both together. */
   verdict: string
+  /** The team slug whose season page this player has for this season
+   * (ADR-0095): the argument links it, "Game by game", the tool and
+   * argument split. Structural, so a frozen argument may carry it (a
+   * second structural link beside ADR-0060's forward link). Guarded both
+   * ways by src/teams/playerPages.real.test.ts: set exactly when the
+   * player shot for that team in that season. */
+  teamPage?: string
 }
 
 export interface HeroConfig {

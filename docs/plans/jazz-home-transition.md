@@ -236,6 +236,18 @@ so new decisions here start at 0094.
   rule); CONTEXT entries; methodology structural copy.
 - Done when every Jazz shooter of both seasons has a page that resolves, and
   every report card's player names link.
+- _Built 2026-10-29 on `feature_PlayerPages` (ADR-0095, ADR-0088 as
+  amended). 30 players have pages across the two seasons; 27 headshots
+  fetched (5 MB), every one a real photograph. The index re-export left all
+  82 2025-26 game files unchanged and matched the five 2026-27 files. The
+  deployed guard holds every player's game numbers equal to his report card
+  line in both seasons, and Cody Williams's 2025-26 page counts the same
+  509 shots as his argument's payload. Decided in the build: his prior
+  season's games sit faded behind his quadrant (an open detail above), the
+  cue reads "↓ The season", and on a portrait phone the headshot banner
+  grows to 380px so the headshot stands above the name, never under it.
+  Player pages have no emitted share page yet; that joins Stage 3's share
+  work._
 
 ### Stage 3: the Jazz home
 

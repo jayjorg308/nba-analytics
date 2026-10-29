@@ -10,9 +10,10 @@ import type { TeamShotPayload } from './teamShotPayload'
 
 export function indexFromLedger(payload: TeamShotPayload, ledger: LedgerFacts): TeamSeasonIndex {
   const pm = payload._meta
+  const nameOf = new Map(payload.shots.map((s) => [s.playerId, s.playerName]))
   return {
     _meta: {
-      schemaVersion: 1,
+      schemaVersion: 2,
       team: pm.team,
       teamId: pm.teamId,
       tricode: pm.tricode,
@@ -30,6 +31,22 @@ export function indexFromLedger(payload: TeamShotPayload, ledger: LedgerFacts): 
       teamScore: g.teamScore,
       opponentScore: g.opponentScore,
       box: { points: g.teamScore, fgm: g.fgm, fga: g.fga, tpm: 0, tpa: 0, ftm: g.ftm, fta: g.fta, ast: 0 },
+      // The ledger's shooters only (its lines carry no threes, minutes,
+      // rebounds, or assists): enough for tests that never parse the index.
+      players: g.players.map((p) => ({
+        playerId: p.playerId,
+        name: nameOf.get(p.playerId) ?? String(p.playerId),
+        minutes: '',
+        points: p.points,
+        fgm: p.fgm,
+        fga: p.fga,
+        tpm: 0,
+        tpa: 0,
+        ftm: p.ftm,
+        fta: p.fta,
+        reb: 0,
+        ast: 0,
+      })),
       ruler: {
         kind: 'pre-game',
         season: pm.season,

@@ -254,6 +254,16 @@ export function MethodologyPage() {
             verdict on top. The season view is that arithmetic over the whole season. Each game
             row is the same arithmetic over that game’s shots alone, beside the box score.
           </p>
+          {/* Player season pages (ADR-0095). "With a shot for the team that
+              season" is load-bearing: seasonShooters lists shot rows only,
+              so a player with free throws alone has no page. "Exactly as his
+              line on that game's report card" is guarded over every
+              published season by playerSeason.real.test.ts. */}
+          <p>
+            Every player with a shot for the team that season has a page of his own: the same
+            arithmetic over his shots, his season against the league and each of his games
+            priced exactly as his line on that game’s report card.
+          </p>
           {/* "Every game" is load-bearing: a game whose box score is missing
               cannot be in the payload at all (reconcile_box fails the
               derive and the export), so the frontier and the ledger agree by

@@ -21,6 +21,7 @@
     "hero:report": "tsx scripts/hero-report.ts",
     "hero:scaffold": "tsx scripts/hero-scaffold.ts",
     "team:sync": "tsx scripts/sync-team-payload.ts",
+    "team:headshots": "tsx scripts/fetch-team-headshots.ts",
     "team:derive": "python ingestion/derive_team_payload.py",
     "season:update": "python ingestion/season_update.py",
     "logo:normalize": "python scripts/normalize_team_logo.py"

@@ -30,6 +30,8 @@ import { CreationTable } from './CreationTable'
 import { FreethrowSeasonLine, FreethrowTable } from './FreethrowTable'
 import { GrowthSpineLine, GrowthTable } from './GrowthTable'
 import { HeadlineBanner } from './HeadlineBanner'
+import { teamBySlug } from '../teams/registry'
+import { teamPlayerUrl } from '../teams/urls'
 import { PosterBanner } from './PosterBanner'
 import { Term } from './Term'
 import {
@@ -207,6 +209,8 @@ function HeroReady({
   if (computed.status === 'error') return <PageError message={computed.message} />
   const { metrics, creationMetrics, contextMetrics, freethrowMetrics, growthMetrics } = computed
   const logoUrl = teamLogoUrl(hero)
+  // The team whose player page carries this season's games (ADR-0095).
+  const teamOfArgument = seasonConfig.teamPage === undefined ? undefined : teamBySlug(seasonConfig.teamPage)
   // The line-vs-floor chart's reference ticks (ADR-0056): the league's PPS
   // from the floor's canonical bands — rim, three, mid — read off the shot
   // aggregation. A mapping over existing outputs, not a computation
@@ -255,13 +259,20 @@ function HeroReady({
           {formatDataThrough(payload._meta.dataThrough, payload._meta.gamesIncluded)} · vs
           league average
         </p>
-        {seasonConfig.season !== hero.canonicalSeason && (
-          // The structural forward link (ADR-0060): a prior season argument
-          // points at the hero's current one. The season labels above carry
-          // the temporal frame — this is navigation, never a hedge on the
-          // frozen verdict.
+        {(seasonConfig.season !== hero.canonicalSeason || teamOfArgument !== undefined) && (
+          // The structural links, one line: the forward link (ADR-0060), a
+          // prior season argument pointing at the hero's current one, and
+          // the tool page link (ADR-0095), the same season's games on his
+          // team's player page. The season labels above carry the temporal
+          // frame — this is navigation, never a hedge on the frozen verdict.
           <p className="hero-forward">
-            <a href={heroPageUrl(hero)}>His {hero.canonicalSeason} season →</a>
+            {seasonConfig.season !== hero.canonicalSeason && (
+              <a href={heroPageUrl(hero)}>His {hero.canonicalSeason} season →</a>
+            )}
+            {seasonConfig.season !== hero.canonicalSeason && teamOfArgument !== undefined && ' · '}
+            {teamOfArgument !== undefined && (
+              <a href={teamPlayerUrl(teamOfArgument, seasonConfig.season, hero.slug)}>Game by game →</a>
+            )}
           </p>
         )}
       </header>

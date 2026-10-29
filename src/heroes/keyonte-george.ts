@@ -37,6 +37,7 @@ export const keyonteGeorge: HeroConfig = {
     {
       season: '2025-26',
       kicker: 'Keyonte George · Utah Jazz · Nº 3 · 2025-26',
+      teamPage: 'jazz',
       // The verdict (ADR-0017): the answer before the evidence. AUTHORED
       // COPY — when the data moves, rewrite this; the committed guard
       // (./keyonte-george.2025-26.guard.test.ts) fails if any directional claim
