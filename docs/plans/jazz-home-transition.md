@@ -174,7 +174,9 @@ so new decisions here start at 0094.
   and failed on the move, so this PR pins them to a fixed 2025-26 config;
   with that, the registry change alone is green (vitest 800, build emitting
   86 report card pages), and `/jazz` and `/jazz/2026-10-23-nop` rendered the
-  2026-27 season with the 2025-26 games behind the quadrant._
+  2026-27 season with the 2025-26 games behind the quadrant._ _Landed
+  2026-10-29 on `task_JazzRegistry`, after the first data commit
+  (`b45c655`, the night of 10-28: five games through 10-28, cards included)._
 - Done when `/jazz` renders 2026-27 and each published game's card and share
   page resolve.
 

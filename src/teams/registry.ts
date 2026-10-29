@@ -33,10 +33,12 @@ export const utahJazz: TeamConfig = {
   name: 'Utah Jazz',
   teamId: 1610612762,
   teamLogoPath: 'img/utah-logo.png',
-  // 2025-26 is the completed season the surface opens on; 2026-27 joins the
-  // list the day its first payloads deploy and becomes canonical then.
-  seasons: ['2025-26'],
-  canonicalSeason: '2025-26',
+  // 2026-27 joined and became canonical 2026-10-29, the morning after its
+  // first data commit (five games through 10-28); never before one, since a
+  // registered season without a published index fails the loop's gate.
+  // 2025-26 stays at its season permalink, /jazz/2025-26.
+  seasons: ['2025-26', '2026-27'],
+  canonicalSeason: '2026-27',
 }
 
 /** Ordered; today one team. */
