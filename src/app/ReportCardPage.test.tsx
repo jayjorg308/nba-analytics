@@ -10,7 +10,7 @@
 
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { parseGamePayload } from '../domain/gamePayload'
 import { relabelIndex, teamPayloadFromGame } from '../domain/teamPayloadFromGame.testutil'
@@ -98,7 +98,10 @@ describe('ReportCardPage', () => {
     // The ruler line states its game count.
     expect(screen.getByText(/as it stood entering the day, 2 games through Jan 2, 2026\./)).toBeTruthy()
     expect(screen.queryAllByText('draft copy').length > 0).toBe(!AUTHORED)
-    expect(document.title).toBe('Utah Jazz L 30–39 @ GSW · Jan 3, 2026')
+    // The title waits on the score, so it is set by an effect of the commit
+    // the fetch resolves, outside act: the heading can be found before that
+    // effect runs (1 in 20 locally, two main pushes in CI, 2026-10-29).
+    await waitFor(() => expect(document.title).toBe('Utah Jazz L 30–39 @ GSW · Jan 3, 2026'))
   })
 
   it('opens the same card from the first team page’s game-id link', async () => {
