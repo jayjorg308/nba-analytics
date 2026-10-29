@@ -7,9 +7,6 @@
 // Team-agnostic on purpose: the team's name and season arrive as arguments.
 
 export const TEAM_COPY = {
-  /** The h1: names the surface as a tool. */
-  title: (team: string) => `${team} shot profile`,
-  kicker: (team: string, season: string) => `${team} · ${season}`,
   /** The one line of self-explanation, closing with the methodology cue. */
   toolNote:
     'A tool, not an argument. Counts and flags, with no judgment on top. Every number here is the same arithmetic the player pages use, over the team’s shots.',
@@ -22,6 +19,77 @@ export const TEAM_COPY = {
   ledgerThinNote:
     '† fewer than 50 attempts in the game. The pair still renders, with its count, and reads as noise, not as a result.',
   seasonsLabel: 'Seasons',
+} as const
+
+const COUNT_WORDS = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX']
+
+/** The team home's STRUCTURAL copy (ADR-0087; the site root, `/jazz`, and
+ * `/jazz/<season>`): the season banner, the acts' kickers and captions, the
+ * game tiles' labels, and the featured cards' lines. The tool class, so no
+ * verdict and no reading of the numbers: the only directional words on the
+ * page are the report card's computed copy (./computedCopy.ts), repeated on
+ * the game tiles exactly as each card shows them. Each sentence was checked
+ * against src/domain/teamHome.ts; the qualifiers are load-bearing. */
+export const HOME_COPY = {
+  /** Decision 8: the season and its frontier, true every day. */
+  kicker: (season: string, through: string, games: number) =>
+    `${season} · through ${through} · ${games} game${games === 1 ? '' : 's'}`,
+  cue: '↓ The latest game',
+  actLatest: '01 · THE LATEST GAME',
+  // Load-bearing: "in brief". The tile repeats the card's score, title,
+  // and two answers (seasonDots, the card's own numbers), nothing more.
+  latestDesc: (previous: number) =>
+    previous === 0 ? 'the newest report card in brief' : 'the newest report card in brief, then the games before it',
+  latestCue: 'The card →',
+  previousLabel: (n: number) => (n === 1 ? 'The game before' : `The ${['', 'one', 'two', 'three'][n] ?? n} before`),
+  pricedShots: (n: number) => `${n} priced shots`,
+  actPlayers: '02 · THE PLAYERS',
+  playersTitle: (n: number) => (COUNT_WORDS[n] ? `THE ${COUNT_WORDS[n]}` : 'THE PLAYERS'),
+  // Load-bearing: "to date" and "priced". A card's numbers are his season
+  // page's (buildPlayerSeason against the season's frontier ruler), over
+  // evaluation-zone attempts only.
+  playersDesc:
+    'the players this season is about, each with his priced shots to date against the league average',
+  cardMeta: (number: string | null, games: number, priced: number) =>
+    `${number === null ? '' : `Nº ${number} · `}${games} game${games === 1 ? '' : 's'} · ${priced} priced shots`,
+  cardDiet: 'shot diet vs the league’s',
+  cardConversion: 'conversion vs expected',
+  // Load-bearing: SMALL_SAMPLE_MAKING_ATTEMPTS (constants.ts) is the bar.
+  cardFlagNote: (bar: number) => `† conversion on fewer than ${bar} priced shots: treat as uncertain`,
+  noShotsYet: 'No shots yet',
+  // The argument's one status line (an open detail of the plan, settled in
+  // ADR-0087). Load-bearing: "yet". The card belongs to a living argument
+  // (the featured guard holds every card to one), so the season's argument
+  // is pending, never declined; the line flips by itself when the flip PR
+  // registers the season argument.
+  statusPublished: (season: string) => `${season} argument published`,
+  statusNotYet: (season: string) => `No ${season} argument yet`,
+  railTitle: 'Everyone else',
+  railTitleAll: 'Every player',
+  // Load-bearing: "as last pulled". The roster is a current-state snapshot
+  // (CONTEXT.md, Roster snapshot), so the caption shows on the canonical,
+  // living season only.
+  railDeparted: 'Not on the roster as last pulled',
+  actGames: '03 · THE GAMES',
+  quadrantDesc:
+    'every game so far, its shot diet against the league’s across and its conversion against expected up, each priced against the league as it stood that day',
+  legendLatest: 'the latest game',
+  actFloor: '04 · THE FLOOR',
+  actLedger: '05 · THE LEDGER',
+  actArguments: '06 · THE ARGUMENTS',
+  argumentsTitle: 'ARGUMENTS',
+  // Load-bearing: "Jazz players first". The section reads directoryOrder,
+  // which puts every hero with a season argument naming this team's page
+  // first, each group in registry order.
+  argumentsDesc: (team: string) =>
+    `every player argument on file, ${team} players first, each a complete page about one season`,
+  allArguments: 'All arguments →',
+  // The season card and the emitted share pages (ADR-0087). Load-bearing:
+  // "every shooter's season". A player with free throws but no shot has no
+  // season page (ADR-0095).
+  cardCue: 'The latest game →',
+  shareDescription: (team: string, season: string) =>
+    `${team} ${season}, game by game. Every game’s report card and every shooter’s season, each game priced against the league as it stood that day.`,
 } as const
 
 /** The team report card's STRUCTURAL copy (docs/plans/jazz-first-site.md):

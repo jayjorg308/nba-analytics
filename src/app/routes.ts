@@ -1,12 +1,14 @@
-// Path-based routing without a router (ADR-0022/0060): the directory of
-// arguments is real pages at real URLs — the index at BASE_URL, each hero's
-// canonical alias at BASE_URL<slug>, each season argument at its
-// BASE_URL<slug>/<season> permalink. Navigation is plain <a> full-page
+// Path-based routing without a router (ADR-0022/0060/0087): real pages at
+// real URLs — the home team's canonical season at BASE_URL, the directory
+// of arguments at BASE_URL<arguments>, each hero's canonical alias at
+// BASE_URL<slug>, each season argument at its BASE_URL<slug>/<season>
+// permalink. Navigation is plain <a> full-page
 // loads, so the app reads the path once at mount; there is no history
 // handling to do.
 
 export interface HeroRoute {
-  /** '' for the index; otherwise the hero segment. */
+  /** '' for the site root; otherwise the first segment (a hero's, or a
+   * reserved route's). */
   slug: string
   /** The season permalink segment, when the path carries one (ADR-0060). */
   season?: string
@@ -15,6 +17,10 @@ export interface HeroRoute {
 /** The one static page route (ADR-0071): the site's self-explanation
  * surface, resolved by the app before any registry lookup. */
 export const METHODOLOGY_ROUTE = 'methodology'
+
+/** The directory of arguments (ADR-0087): the site root until the Jazz home
+ * took it, now a reserved route of its own. */
+export const ARGUMENTS_ROUTE = 'arguments'
 
 /** The comparison page (ADR-0076): comparison state is owned by the URL's
  * query string; this reserves the path segment. Query interpretation lives
@@ -36,17 +42,18 @@ export const TEAM_ROUTES: readonly string[] = ['jazz']
 
 export const RESERVED_ROUTES: readonly string[] = [
   METHODOLOGY_ROUTE,
+  ARGUMENTS_ROUTE,
   COMPARE_ROUTE,
   GAME_ROUTE,
   ...TEAM_ROUTES,
 ]
 
 /**
- * The route after BASE_URL: { slug: '' } for the index, { slug } for a
+ * The route after BASE_URL: { slug: '' } for the root, { slug } for a
  * canonical alias, { slug, season } for a season permalink. Tolerates
  * trailing and doubled slashes; never throws on odd input — an unknown or
  * malformed path is the caller's "no such page" case, not an error. A path
- * deeper than two segments stays whole in `slug`, so the index's
+ * deeper than two segments stays whole in `slug`, so the directory's
  * unknown-path note names what the reader typed.
  */
 export function parseRoute(pathname: string, baseUrl: string): HeroRoute {

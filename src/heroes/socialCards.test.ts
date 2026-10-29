@@ -15,6 +15,7 @@ import {
   fontPreloadLinks,
   heroPageHtml,
   heroPageMeta,
+  argumentsPageMeta,
   methodologyPageMeta,
   payloadPreloadPaths,
   SITE_ORIGIN,
@@ -182,6 +183,20 @@ describe('methodologyPageMeta (the one non-hero emitted page, ADR-0071)', () => 
     // The product-wide card survives the swap (unlike hero pages, which
     // must never point at it).
     expect(html).toContain('social-card.png')
+  })
+})
+
+describe('argumentsPageMeta (the directory at /arguments, ADR-0087)', () => {
+  const meta = argumentsPageMeta()
+
+  it('takes the root’s former meta and card, with its own url', () => {
+    expect(meta.url).toBe(`${SITE_ORIGIN}/arguments`)
+    expect(meta.imageUrl).toBe(`${SITE_ORIGIN}/social-card.png`)
+    expect(meta.preloadPaths).toEqual([])
+    // Mirrors HeroIndexPage's runtime document.title.
+    expect(meta.title).toBe('Arguments · Good Shots')
+    const html = heroPageHtml(indexHtml, meta)
+    expect(html).toContain(`<meta property="og:url" content="${meta.url}" />`)
   })
 })
 

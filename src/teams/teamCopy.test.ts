@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { RESERVED_ROUTES, TEAM_ROUTES } from '../app/routes'
-import { PLAYER_COPY, REPORT_COPY, TEAM_COPY } from './copy'
+import { HOME_COPY, PLAYER_COPY, REPORT_COPY, TEAM_COPY } from './copy'
 import { GAME_ID, SEASON, TEAMS, teamBySlug } from './registry'
 
 const FORBIDDEN = [
@@ -25,7 +25,12 @@ const FORBIDDEN = [
 
 function everyString(): string[] {
   const out: string[] = []
-  for (const value of [...Object.values(TEAM_COPY), ...Object.values(REPORT_COPY), ...Object.values(PLAYER_COPY)]) {
+  for (const value of [
+    ...Object.values(TEAM_COPY),
+    ...Object.values(REPORT_COPY),
+    ...Object.values(PLAYER_COPY),
+    ...Object.values(HOME_COPY),
+  ]) {
     if (typeof value !== 'function') {
       out.push(value)
       continue
@@ -35,6 +40,7 @@ function everyString(): string[] {
     out.push(fill('Utah Jazz', '2025-26', '@ GSW', 'L 114–123', '+0.02', '−0.05'))
     out.push(fill(2, 1))
     out.push(fill(1, 0))
+    out.push(fill(3, 3))
   }
   return out
 }
@@ -51,8 +57,15 @@ describe('team surface structural copy', () => {
     }
   })
 
-  it('names the surface as a tool in its title', () => {
-    expect(TEAM_COPY.title('Utah Jazz')).toBe('Utah Jazz shot profile')
+  it('names the home by its team and counts its parts in words', () => {
+    // Decision 8: the h1 is the team's name (the page renders it), and the
+    // kicker carries the season and its frontier.
+    expect(HOME_COPY.kicker('2026-27', 'Oct 28', 5)).toBe('2026-27 · through Oct 28 · 5 games')
+    expect(HOME_COPY.kicker('2026-27', 'Oct 21', 1)).toBe('2026-27 · through Oct 21 · 1 game')
+    expect(HOME_COPY.playersTitle(3)).toBe('THE THREE')
+    expect(HOME_COPY.playersTitle(0)).toBe('THE PLAYERS')
+    expect(HOME_COPY.previousLabel(3)).toBe('The three before')
+    expect(HOME_COPY.previousLabel(1)).toBe('The game before')
   })
 })
 

@@ -77,6 +77,21 @@ export function methodologyPageMeta(): HeroPageMeta {
   }
 }
 
+/** The directory's share meta (ADR-0087): the root's former meta, moved
+ * with the directory to /arguments, keeping the product-wide card. */
+export function argumentsPageMeta(): HeroPageMeta {
+  return {
+    // Mirrors HeroIndexPage's runtime document.title.
+    title: 'Arguments · Good Shots',
+    description:
+      'One question, one player at a time: is he taking good shots? An NBA shot-selection argument, verdict first and evidence after.',
+    imageUrl: `${SITE_ORIGIN}/social-card.png`,
+    imageAlt: 'Good Shots wordmark beside a basketball',
+    url: `${SITE_ORIGIN}/arguments`,
+    preloadPaths: [],
+  }
+}
+
 export function heroPageMeta(
   hero: HeroConfig,
   season: HeroSeasonConfig,
@@ -161,9 +176,9 @@ function swapMeta(html: string, attr: 'name' | 'property', key: string, content:
   )
 }
 
-/** The built index.html with its share meta re-pointed at one hero page.
- * The og:image:width/height stay: every card ships at the same 1200x630. */
-export function heroPageHtml(indexHtml: string, meta: HeroPageMeta): string {
+/** The built index.html with its title, description, and card swapped. The
+ * og:image:width/height stay: every card ships at the same 1200x630. */
+function withShareMeta(indexHtml: string, meta: Omit<HeroPageMeta, 'url' | 'preloadPaths'>): string {
   let html = swap(
     indexHtml,
     /<title>[^<]*<\/title>/,
@@ -178,16 +193,33 @@ export function heroPageHtml(indexHtml: string, meta: HeroPageMeta): string {
   html = swapMeta(html, 'name', 'twitter:title', meta.title)
   html = swapMeta(html, 'name', 'twitter:description', meta.description)
   html = swapMeta(html, 'name', 'twitter:image', meta.imageUrl)
-  // Payload preloads (ADR-0067 amendment): `crossorigin` is required for
-  // as="fetch" to match fetch()'s default credentials mode — without it
-  // the browser fetches twice and warns the preload went unused.
-  const preloads = meta.preloadPaths
-    .map((p) => `<link rel="preload" href="${escapeAttr(p)}" as="fetch" crossorigin />`)
-    .join('')
+  return html
+}
+
+/** Payload preloads (ADR-0067 amendment): `crossorigin` is required for
+ * as="fetch" to match fetch()'s default credentials mode — without it the
+ * browser fetches twice and warns the preload went unused. */
+function preloadLinks(paths: string[]): string {
+  return paths.map((p) => `<link rel="preload" href="${escapeAttr(p)}" as="fetch" crossorigin />`).join('')
+}
+
+/** The built index.html with its share meta re-pointed at one page, plus
+ * that page's own og:url and payload preloads. */
+export function heroPageHtml(indexHtml: string, meta: HeroPageMeta): string {
   return swap(
-    html,
+    withShareMeta(indexHtml, meta),
     /<\/head>/,
-    `${preloads}<meta property="og:url" content="${escapeAttr(meta.url)}" /></head>`,
+    `${preloadLinks(meta.preloadPaths)}<meta property="og:url" content="${escapeAttr(meta.url)}" /></head>`,
     'head close',
   )
+}
+
+/** The site root's page (ADR-0087): the home's meta and preloads, and
+ * deliberately NO og:url. The static host serves this one file for the root
+ * AND as the fallback for every route without an emitted page (a player's
+ * season page, the comparison tool), and scrapers treat og:url as
+ * canonical, so a root og:url would collapse every such shared link back to
+ * the front page (index.html's original rule). */
+export function rootPageHtml(indexHtml: string, meta: Omit<HeroPageMeta, 'url'>): string {
+  return swap(withShareMeta(indexHtml, meta), /<\/head>/, `${preloadLinks(meta.preloadPaths)}</head>`, 'head close')
 }

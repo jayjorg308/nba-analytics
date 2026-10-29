@@ -252,6 +252,20 @@ so new decisions here start at 0094.
 ### Stage 3: the Jazz home
 
 - A two-variant prototype of the home first, since it is the front door.
+  _Chosen 2026-10-29: A, Acts (one column of numbered acts in the report
+  card's recipe; the latest game as a full-width tile with the score at
+  poster scale and the two answers beside it, the three before it as a row
+  of tiles; the featured three as portrait headshot cards, a swipe rail on
+  phones; the arguments closing as the directory's headshot rail). Declined:
+  B, Front page (the latest game and the players side by side in two
+  columns, a scoreboard strip, landscape player rows, a typographic argument
+  list), which fit more above the fold on desktop but broke the
+  single-column rhythm every other page keeps and collapsed to the same
+  stack on a phone. Built on the five published 2026-27 games; the
+  prototype was deleted before the build. The root's share card is a static
+  Jazz season card in the directory card's grammar (the team mark where a
+  headshot sits), chosen over the latest game's card, whose cached previews
+  would go stale._
 - **ADR-0087**: `/` renders the Jazz home, `/jazz` its alias, `/arguments`
   the directory (Jazz arguments first by registry order), the footer's
   Arguments link, the root's share card and emitted page. Amends ADR-0022
@@ -269,6 +283,25 @@ so new decisions here start at 0094.
   the code and the deployed files.
 - Done when the root opens on the Jazz, `/arguments` lists every argument,
   and every hero URL that resolves on main today still resolves.
+- _Built 2026-10-29 on `feature_JazzHome` (ADR-0087). `TeamPage` became
+  the home for `/`, `/jazz`, and `/jazz/<season>`, over a new pure module
+  (`teamHome.ts`); the team registry gained `homes` per season (the
+  featured list and an optional banner photograph). Decided in the build:
+  the featured list is the season's arguments living AND frozen (the
+  default named only the living), so 2025-26 features Cody Williams,
+  Keyonte George, and Ace Bailey; the status line reads "2026-27 argument
+  published" or "No 2026-27 argument yet"; a featured player with no shot
+  keeps a named, unlinked "No shots yet" card; the season's pair moved
+  into 04 · THE FLOOR beside ZONE BY ZONE; the footer's "All players"
+  became "Arguments" to `/arguments`, with a four-tile glyph. The root's
+  card is a static season card (the team mark where a headshot stands),
+  and the root's emitted page has no og:url because it is every
+  unemitted route's fallback. The ledger file retired from the deployment
+  (`aggregateTeam` reads the index; `team:sync` skips it); its producer
+  retires in a follow-up PR. Player pages still have no emitted share
+  page: they fall back to the root's, now the Jazz season card. Checked:
+  all 22 hero URLs, `/methodology`, `/compare`, `/game`, every team route
+  kind, and the home at 1280px and 375px._
 
 ### Later
 
@@ -304,6 +337,9 @@ Small enough to settle inside their stage, recorded so they are not lost.
 - Whether a player's quadrant shows his prior season's games faded behind,
   as the team quadrant does.
 - The featured card for a player with no shots yet (an injury, a late
-  return): a structural "no shots yet" line, never a hidden card.
+  return): a structural "no shots yet" line, never a hidden card. _Settled
+  in Stage 3: "No shots yet", the card named and unlinked._
 - The status line's words for a featured player whose argument has not
-  flipped (Peterson until his gates pass).
+  flipped (Peterson until his gates pass). _Settled in Stage 3: "No
+  2026-27 argument yet", flipping by itself to "2026-27 argument
+  published" when the flip PR registers the season._

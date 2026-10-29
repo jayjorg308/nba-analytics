@@ -5,14 +5,14 @@
 // ring grammar carries both ends, with one adaptive rule: a utility that
 // stands ALONE in its zone spells itself out as a labeled pill (the ring
 // recipe stretched), while utilities in company compress to icon rings —
-// so a single unlabeled glyph never floats by itself. The way back to the
-// directory (ADR-0022: after the argument, never chrome above it) and the
-// methodology page (ADR-0071) are the two utilities. Rendered as a SIBLING
-// of <main>, so it lands as a real contentinfo landmark and spans the
-// shell edge-to-edge on every page. Outward links live here and never in
-// the navbar (ADR-0065); the index IS the directory and renders no back
-// link, and the methodology page renders no self-link.
-import { indexUrl, methodologyUrl } from '../heroes/urls'
+// so a single unlabeled glyph never floats by itself. The directory of
+// arguments (ADR-0022: after the page, never chrome above it; at
+// /arguments since ADR-0087) and the methodology page (ADR-0071) are the
+// two utilities, on every page but their own. Rendered as a SIBLING of
+// <main>, so it lands as a real contentinfo landmark and spans the shell
+// edge-to-edge on every page. Outward links live here and never in the
+// navbar (ADR-0065); the way home is the navbar's wordmark.
+import { argumentsUrl, methodologyUrl } from '../heroes/urls'
 import { SocialLinks } from './SocialLinks'
 
 const ICON_PROPS = {
@@ -29,11 +29,15 @@ const STROKE_PROPS = {
   strokeLinejoin: 'round',
 } as const
 
-/* The way back: a plain left arrow. */
-const BACK_ICON = (
+/* The directory: four rounded tiles, the headshot rail's grid at glyph
+   scale (ADR-0087; it replaced the back arrow when the directory left the
+   root, since a link from the home is not a way back). */
+const ARGUMENTS_ICON = (
   <svg {...ICON_PROPS} {...STROKE_PROPS}>
-    <path d="M19.5 12h-15" />
-    <path d="m10.6 5.9-6.1 6.1 6.1 6.1" />
+    <rect x="4" y="4" width="6.5" height="6.5" rx="1.4" />
+    <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4" />
+    <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4" />
+    <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4" />
   </svg>
 )
 
@@ -77,22 +81,24 @@ function UtilityLink({
 }
 
 export function SiteFooter({
-  directoryLink = false,
+  argumentsLink = true,
   methodologyLink = true,
 }: {
-  directoryLink?: boolean
+  /** Default-on so every page carries the way to the directory; the
+   * directory itself opts out (never-links-to-itself). */
+  argumentsLink?: boolean
   /** Default-on so every page carries the way to the methodology page; the
-   * methodology page itself opts out (never-links-to-itself, the index's
-   * own rule — its side guarded by the page test, the index's by the
-   * chrome-link count). */
+   * methodology page itself opts out (never-links-to-itself, the
+   * directory's own rule — its side guarded by the page test, the
+   * directory's by the chrome-link count). */
   methodologyLink?: boolean
 }) {
-  const solo = Number(directoryLink) + Number(methodologyLink) === 1
+  const solo = Number(argumentsLink) + Number(methodologyLink) === 1
   return (
     <footer className="site-footer">
       <div className="footer-utility">
-        {directoryLink && (
-          <UtilityLink href={indexUrl()} label="All players" icon={BACK_ICON} solo={solo} />
+        {argumentsLink && (
+          <UtilityLink href={argumentsUrl()} label="Arguments" icon={ARGUMENTS_ICON} solo={solo} />
         )}
         {methodologyLink && (
           <UtilityLink

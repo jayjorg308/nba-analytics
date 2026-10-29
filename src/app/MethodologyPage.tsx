@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { HEROES } from '../heroes/registry'
+import { TEAMS } from '../teams/registry'
 import { GLOSSARY } from './glossary'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
@@ -238,12 +239,14 @@ export function MethodologyPage() {
             <p className="section-caption-desc">the same arithmetic, over a team’s shots, with no verdict</p>
           </header>
           {/* Structural copy (ADR-0081), verified against the code, not a
-              description of it: the /jazz surface is TeamPage over
+              description of it: the team surface (the site root, /jazz, and
+              /jazz/<season>, ADR-0087) is TeamPage over teamHome.ts and
               aggregateTeam; every number is aggregateShotMetrics over a slice
               of the team shot payload (season, game); the box oracle is
               team_payload.reconcile_box (per player, per game, at derive/load
-              and export); the ledger is ledger_facts.build_ledger; the
-              per-game zone view is counts only (ReportCardPage's ZoneCounts).
+              and export); each game row's box facts are the season index's
+              (the ledger file retired with ADR-0087); the per-game zone view
+              is counts only (ReportCardPage's ZoneCounts).
               Each game row is priced against its own pre-game ruler since
               the report card (ADR-0089); the sentence below names no
               ruler, so it stays true. The ruler's own paragraph is phase
@@ -267,7 +270,8 @@ export function MethodologyPage() {
           {/* "Every game" is load-bearing: a game whose box score is missing
               cannot be in the payload at all (reconcile_box fails the
               derive and the export), so the frontier and the ledger agree by
-              construction. */}
+              construction. "A mark" is the ledger's † under the making bar
+              (TeamLedgerTable). */}
           <p>
             The team record is held to the box score before it is published. In every game,
             every shooter’s attempts in the shot record must equal his attempts in the box
@@ -312,6 +316,19 @@ export function MethodologyPage() {
                 {hero.playerName} banner: {hero.hero.imageCredit ?? 'photograph credit pending'}
               </li>
             ))}
+            {/* A team season's banner photograph (ADR-0087, decision 7):
+                credited here like a hero banner, and only once one is on
+                file; a season on the typographic poster has none. */}
+            {TEAMS.flatMap((team) =>
+              team.seasons
+                .filter((season) => team.homes[season]?.banner !== undefined)
+                .map((season) => (
+                  <li key={`${team.slug}-${season}`}>
+                    {team.name} {season} banner:{' '}
+                    {team.homes[season]!.banner!.imageCredit ?? 'photograph credit pending'}
+                  </li>
+                )),
+            )}
           </ul>
           {/* The typeface credit is what makes the closing "entirely" true:
               the card renderer opens two webfont files beside the headshot
@@ -334,8 +351,8 @@ export function MethodologyPage() {
         </section>
       </main>
       {/* The shared sign-off, a sibling of main (the contentinfo rule). The
-          way back leads; the page never links to itself. */}
-      <SiteFooter directoryLink methodologyLink={false} />
+          directory's link leads; the page never links to itself. */}
+      <SiteFooter methodologyLink={false} />
     </>
   )
 }

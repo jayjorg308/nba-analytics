@@ -15,7 +15,6 @@ import { TEAMS } from '../teams/registry'
 import type { ShotMetrics } from './aggregate'
 import { aggregateTeam } from './aggregateTeam'
 import { parseGamePayload } from './gamePayload'
-import { parseLedgerFacts } from './ledgerFacts'
 import { buildReportCard, SEASON_RANK_MIN_GAMES } from './reportCard'
 import { parseTeamSeasonIndex } from './teamSeasonIndex'
 import { parseTeamShotPayload } from './teamShotPayload'
@@ -40,8 +39,7 @@ describe.skipIf(published.length === 0)('deployed report cards', () => {
     it(`${team.slug} ${season}: every card equals its dot and its ledger row, as displayed`, () => {
       const index = parseTeamSeasonIndex(readJson(path.join(root, season, 'index.json')))
       const payload = parseTeamShotPayload(readJson(path.join(root, `${season}.json`)))
-      const ledger = parseLedgerFacts(readJson(path.join(root, `${season}.ledger.json`)))
-      const rows = aggregateTeam(payload, ledger, index).gameById
+      const rows = aggregateTeam(payload, index).gameById
       index.games.forEach((g, i) => {
         const game = parseGamePayload(readJson(path.join(root, season, 'games', `${g.gameId}.json`)))
         const card = buildReportCard(game, index, payload)

@@ -133,7 +133,7 @@ export function HeroPage({
           navigation is links between pages, not a switcher on this one. A
           sibling of the argument's main, so it lands as a real contentinfo
           landmark, like the index's. */}
-      <SiteFooter directoryLink />
+      <SiteFooter />
     </>
   )
 }

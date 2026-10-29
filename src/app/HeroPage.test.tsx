@@ -273,11 +273,12 @@ describe('HeroPage over the golden fixture', () => {
     expect(footer).not.toBeNull()
     expect(footer!.closest('main')).toBeNull()
 
-    // The way back to the directory (ADR-0022): after the argument, never
-    // chrome above it. An icon ring since the ADR-0071 footer re-form;
-    // the aria-label carries the name.
-    const back = screen.getByRole('link', { name: 'All players' })
-    expect(back.getAttribute('href')).toBe('/')
+    // The way to the directory (ADR-0022): after the argument, never chrome
+    // above it, at /arguments since the Jazz home took the root (ADR-0087).
+    // An icon ring since the ADR-0071 footer re-form; the aria-label
+    // carries the name.
+    const directory = screen.getByRole('link', { name: 'Arguments' })
+    expect(directory.getAttribute('href')).toBe('/arguments')
     // The methodology link rides the shared footer on every page (ADR-0071).
     expect(
       screen.getByRole('link', { name: 'Methodology' }).getAttribute('href'),

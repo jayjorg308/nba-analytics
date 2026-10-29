@@ -30,7 +30,20 @@ export interface GamePhotoContext {
 }
 
 export function gamePhotoProblems(slug: string, photo: GamePhoto, ctx: GamePhotoContext): string[] {
-  const problems: string[] = []
+  const problems = photoSentinelProblems(slug, photo)
+  if (problems.length > 0) return problems
+  if (!ctx.published.has(slug)) problems.push(`${slug} is not a published game`)
+  problems.push(...photoFieldProblems(slug, photo, ctx.fileExists))
+  if (ctx.cardMarker(slug) !== photo.imagePath) {
+    problems.push(`${slug}'s share card is not drawn with ${photo.imagePath}: run npm run cards:games -- ${slug}`)
+  }
+  return problems
+}
+
+/** Every field of an authored photograph still carrying the scaffold
+ * sentinel. Shared with the season banner tripwire (ADR-0087), which holds
+ * a season's photograph to the same house forms. */
+export function photoSentinelProblems(label: string, photo: GamePhoto): string[] {
   const fields: [string, string | undefined][] = [
     ['imagePath', photo.imagePath],
     ['imageAlt', photo.imageAlt],
@@ -38,31 +51,35 @@ export function gamePhotoProblems(slug: string, photo: GamePhoto, ctx: GamePhoto
     ['imagePosition', photo.imagePosition],
     ['imagePositionWide', photo.imagePositionWide],
   ]
-  for (const [field, value] of fields) {
-    if (value !== undefined && value.includes(SCAFFOLD_SENTINEL)) {
-      problems.push(`${slug}.${field} still contains ${SCAFFOLD_SENTINEL}`)
-    }
-  }
-  if (problems.length > 0) return problems
-  if (!ctx.published.has(slug)) problems.push(`${slug} is not a published game`)
-  if (!ctx.fileExists(photo.imagePath)) problems.push(`${slug}.imagePath ${photo.imagePath} is not under public/`)
+  return fields
+    .filter(([, value]) => value !== undefined && value.includes(SCAFFOLD_SENTINEL))
+    .map(([field]) => `${label}.${field} still contains ${SCAFFOLD_SENTINEL}`)
+}
+
+/** An authored photograph's file and house forms: the image on disk, no em
+ * dash in its copy, the credit in one of the two forms, both focal points
+ * in the "x% y%" form. */
+export function photoFieldProblems(
+  label: string,
+  photo: GamePhoto,
+  fileExists: (publicPath: string) => boolean,
+): string[] {
+  const problems: string[] = []
+  if (!fileExists(photo.imagePath)) problems.push(`${label}.imagePath ${photo.imagePath} is not under public/`)
   for (const [field, value] of [
     ['imageAlt', photo.imageAlt],
     ['imageCredit', photo.imageCredit],
   ] as const) {
-    if (value !== undefined && value.includes('—')) problems.push(`${slug}.${field} contains an em dash`)
+    if (value !== undefined && value.includes('—')) problems.push(`${label}.${field} contains an em dash`)
   }
   if (photo.imageCredit !== undefined && !CREDIT_FORMS.some((form) => form.test(photo.imageCredit!))) {
-    problems.push(`${slug}.imageCredit is not "photograph by <Name>, <Org>" or "photograph via the <Team>"`)
+    problems.push(`${label}.imageCredit is not "photograph by <Name>, <Org>" or "photograph via the <Team>"`)
   }
   for (const [field, value] of [
     ['imagePosition', photo.imagePosition],
     ['imagePositionWide', photo.imagePositionWide],
   ] as const) {
-    if (!FOCAL.test(value)) problems.push(`${slug}.${field} "${value}" is not "x% y%"`)
-  }
-  if (ctx.cardMarker(slug) !== photo.imagePath) {
-    problems.push(`${slug}'s share card is not drawn with ${photo.imagePath}: run npm run cards:games -- ${slug}`)
+    if (!FOCAL.test(value)) problems.push(`${label}.${field} "${value}" is not "x% y%"`)
   }
   return problems
 }

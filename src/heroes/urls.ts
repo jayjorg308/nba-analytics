@@ -8,7 +8,7 @@
 
 import type { ComparisonRequest } from '../app/comparisonRoute'
 import { serializeComparison } from '../app/comparisonRoute'
-import { COMPARE_ROUTE, GAME_ROUTE, METHODOLOGY_ROUTE } from '../app/routes'
+import { ARGUMENTS_ROUTE, COMPARE_ROUTE, GAME_ROUTE, METHODOLOGY_ROUTE } from '../app/routes'
 import type { HeroConfig } from './types'
 
 export function payloadUrl(hero: HeroConfig, season: string): string {
@@ -57,8 +57,16 @@ export function seasonPageUrl(hero: HeroConfig, season: string): string {
   return `${import.meta.env.BASE_URL}${hero.slug}/${season}`
 }
 
+/** The site root: the home team's canonical season since ADR-0087 (the
+ * navbar wordmark's one destination). */
 export function indexUrl(): string {
   return import.meta.env.BASE_URL
+}
+
+/** The directory of arguments (ADR-0087): moved from the root to its own
+ * reserved route when the Jazz home took the root. */
+export function argumentsUrl(): string {
+  return `${import.meta.env.BASE_URL}${ARGUMENTS_ROUTE}`
 }
 
 /** The methodology page (ADR-0071): the site's one self-explanation

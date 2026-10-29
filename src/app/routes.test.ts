@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { METHODOLOGY_ROUTE, parseRoute } from './routes'
+import { ARGUMENTS_ROUTE, METHODOLOGY_ROUTE, parseRoute, RESERVED_ROUTES } from './routes'
 
 describe('parseRoute', () => {
-  it('resolves the root to the index (empty slug)', () => {
+  it('resolves the root to the empty slug (the home team’s season, ADR-0087)', () => {
     expect(parseRoute('/', '/')).toEqual({ slug: '' })
   })
 
@@ -10,6 +10,11 @@ describe('parseRoute', () => {
     // The parser stays route-table-free: App.tsx resolves the reserved
     // slug before the registry lookup.
     expect(parseRoute('/methodology', '/')).toEqual({ slug: METHODOLOGY_ROUTE })
+  })
+
+  it('reserves the directory of arguments, moved off the root (ADR-0087)', () => {
+    expect(parseRoute('/arguments', '/')).toEqual({ slug: ARGUMENTS_ROUTE })
+    expect(RESERVED_ROUTES).toContain(ARGUMENTS_ROUTE)
   })
 
   it('resolves a hero path to its canonical alias (no season)', () => {

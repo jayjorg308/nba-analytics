@@ -11,10 +11,6 @@ export function teamShotPayloadUrl(team: TeamConfig, season: string): string {
   return `${import.meta.env.BASE_URL}data/_teams/${key(team)}/${season}.json`
 }
 
-export function ledgerFactsUrl(team: TeamConfig, season: string): string {
-  return `${import.meta.env.BASE_URL}data/_teams/${key(team)}/${season}.ledger.json`
-}
-
 /** The bare team route: renders the canonical season in place. */
 export function teamPageUrl(team: TeamConfig): string {
   return `${import.meta.env.BASE_URL}${team.slug}`

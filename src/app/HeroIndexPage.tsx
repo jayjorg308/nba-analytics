@@ -1,34 +1,38 @@
 import { useEffect } from 'react'
-import { HEROES } from '../heroes/registry'
+import { directoryOrder } from '../heroes/registry'
 import { indexMetaOf } from '../heroes/types'
 import { compareUrl, headshotUrl, heroPageUrl, methodologyUrl } from '../heroes/urls'
+import { HOME_TEAM } from '../teams/registry'
 import { SiteFooter } from './SiteFooter'
 import { SiteNav } from './SiteNav'
 
-// The hero index (ADR-0022/0065): a directory of arguments, deliberately not
-// a switcher (ADR-0018). The directory shows WHO is on file — the first
-// registered hero as a full-width marquee (registry order is the directory
-// order, so first place is the cover story), the rest as a name-only rail —
-// built from each hero's standard NBA headshot on a controlled dark ground.
+// The hero index (ADR-0022/0065), at /arguments since the Jazz home took the
+// root (ADR-0087): a directory of arguments, deliberately not a switcher
+// (ADR-0018). The directory shows WHO is on file — the first hero as a
+// full-width marquee (the home team's arguments first, then everyone else,
+// each in registry order, so first place is the cover story), the rest as a
+// name-only rail — built from each hero's standard NBA headshot on a
+// controlled dark ground.
 // The action poster stays the hero page's asset: faces answer "who's here",
 // the poster argues the thesis. Everything reads straight off the registry:
 // registering a hero is what publishes its face here.
 
 export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
   useEffect(() => {
-    document.title = 'Good Shots'
+    document.title = 'Arguments · Good Shots'
   }, [])
 
-  const featured = HEROES[0]!
-  const rest = HEROES.slice(1)
+  const heroes = directoryOrder(HOME_TEAM.slug)
+  const featured = heroes[0]!
+  const rest = heroes.slice(1)
 
   return (
     <>
       <main className="index-page">
         <SiteNav />
-        {/* The document-outline h1 is the site name; the marquee name below is
+        {/* The document-outline h1 names the page; the marquee name below is
             the visual headline. */}
-        <h1 className="sr-only">Good Shots</h1>
+        <h1 className="sr-only">Arguments</h1>
         {unknownPath !== undefined && (
           <p className="page-status index-miss">
             No player lives at “/{unknownPath}”. The directory is below.
@@ -97,8 +101,8 @@ export function HeroIndexPage({ unknownPath }: { unknownPath?: string }) {
         </p>
       </main>
       {/* The shared sign-off (a sibling of main — a real contentinfo
-          landmark). The index is the directory, so no back link here. */}
-      <SiteFooter />
+          landmark). The page is the directory, so it never links to itself. */}
+      <SiteFooter argumentsLink={false} />
     </>
   )
 }

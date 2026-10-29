@@ -42,3 +42,11 @@ export const HEROES: readonly HeroConfig[] = [
 export function heroBySlug(slug: string): HeroConfig | undefined {
     return HEROES.find((h) => h.slug === slug)
 }
+
+/** The directory's order (ADR-0087): the home team's arguments first, every
+ * hero with a season argument naming that team's page (teamPage, ADR-0095),
+ * then everyone else, each group in registry order. */
+export function directoryOrder(teamSlug: string): HeroConfig[] {
+    const isTeam = (h: HeroConfig) => h.seasons.some((s) => s.teamPage === teamSlug)
+    return [...HEROES.filter(isTeam), ...HEROES.filter((h) => !isTeam(h))]
+}
