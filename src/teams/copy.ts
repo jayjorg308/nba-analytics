@@ -218,4 +218,11 @@ export const PLAYER_COPY = {
   logNote:
     'Expected and scored count priced field goals only, each attempt at that game’s league rate for its zone. Heaves, zone-point conflicts, and free throws are outside both.',
   notOnFile: (team: string, slug: string, season: string) => `No ${team} player on file for ${slug} in ${season}.`,
+  // The emitted share page's meta (ADR-0095 as amended 2026-10-29), over
+  // the season card. Load-bearing: "priced" and "that day". Heaves and
+  // zone-point conflicts are outside every number, and each game is priced
+  // against its own pre-game ruler (playerSeason.ts); the zone view uses the
+  // season's frontier ruler, so "that day" stays off it.
+  shareDescription: (name: string, team: string, season: string) =>
+    `${name}, ${team} ${season}, game by game. Each game’s priced shots against the league as it stood that day, and his season zone by zone.`,
 } as const
