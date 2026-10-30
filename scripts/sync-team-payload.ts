@@ -49,12 +49,10 @@ if (targets.length === 0) {
 
 // The team contracts sync together, from ONE session (ADR-0082/0088/0091):
 // the team shot payload and the game export (the season index plus the game
-// files with no published copy yet). The ledger facts no longer deploy
-// (ADR-0087: the season index carries every ledger row), so the session's
-// ledger output stays under data/derived/ until its producer retires. A
-// target with either missing, or with the two from different sessions,
-// fails before anything is copied, so a one-sided deployment update can
-// never ship. Game files are immutable: a published game file the export
+// files with no published copy yet; it carries every game ledger row since
+// ADR-0087 retired the ledger facts). A target with either missing, or with
+// the two from different sessions, fails before anything is copied, so a
+// one-sided deployment update can never ship. Game files are immutable: a published game file the export
 // would change fails the sync (the export refuses first; this is the
 // backstop), and every index row must name a game file that is published or
 // in the export.

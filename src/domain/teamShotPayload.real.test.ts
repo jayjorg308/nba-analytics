@@ -2,8 +2,8 @@
 // every deployed team shot payload must strict-parse, and its roster and
 // rows must be coherent (every shooter is a real player id; the payload's
 // season is the file's season). Skips cleanly on clones without synced
-// team files. Sibling team contracts (feeding, ledger) join this guard as
-// they ship — their frontier fields must then equal this payload's.
+// team files. Sibling team contracts (feeding) join this guard as they
+// ship — their frontier fields must then equal this payload's.
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
