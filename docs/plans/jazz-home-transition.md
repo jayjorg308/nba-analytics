@@ -298,7 +298,9 @@ so new decisions here start at 0094.
   and the root's emitted page has no og:url because it is every
   unemitted route's fallback. The ledger file retired from the deployment
   (`aggregateTeam` reads the index; `team:sync` skips it); its producer
-  retires in a follow-up PR. Player pages still have no emitted share
+  retired the same day in a follow-up PR (ADR-0084 as amended: the loop's
+  ledger steps, the three ledger modules, `ledgerFacts.ts`, and the golden
+  pair). Player pages still have no emitted share
   page: they fall back to the root's, now the Jazz season card. Checked:
   all 22 hero URLs, `/methodology`, `/compare`, `/game`, every team route
   kind, and the home at 1280px and 375px._

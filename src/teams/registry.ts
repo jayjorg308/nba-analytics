@@ -58,7 +58,8 @@ export interface TeamConfig {
   /** The normalized team mark (ADR-0021's watermark treatment), path under
    * public/, no leading slash. */
   teamLogoPath?: string
-  /** Seasons with deployed team payloads (shot + ledger), oldest first. */
+  /** Seasons with deployed team payloads (shot payload + season index),
+   * oldest first. */
   seasons: readonly string[]
   /** The season the bare /<slug> renders — moved by a config change when a
    * new season's payloads deploy (the team surface's flip), never by the
