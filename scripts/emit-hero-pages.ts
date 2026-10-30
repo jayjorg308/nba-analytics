@@ -13,7 +13,10 @@
 // serves that file as every unemitted route's fallback), /arguments gets
 // the directory's page, and every registered team season gets its page
 // (/jazz for the canonical one, /jazz/<season> for the rest), each needing
-// its committed season card. Team report cards follow
+// its committed season card. Every shooter of a registered season gets his
+// season page beneath it (/jazz/<player-slug> for the canonical season,
+// /jazz/<season>/<player-slug> for the rest, ADR-0095) over that same
+// card, so a debut never needs new art. Team report cards follow
 // the same rule at game grain (docs/plans/jazz-first-site.md, "Share
 // cards"): every published game — every row of a committed season index —
 // gets dist/<team>/<game-slug>/index.html with its own card as og:image,
@@ -22,7 +25,9 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { seasonShooters } from '../src/domain/playerSeason'
 import { parseTeamSeasonIndex } from '../src/domain/teamSeasonIndex'
+import { parseTeamShotPayload } from '../src/domain/teamShotPayload'
 import { HEROES } from '../src/heroes/registry'
 import {
   argumentsPageMeta,
@@ -35,7 +40,7 @@ import {
 } from '../src/heroes/socialCards'
 import { canonicalSeasonOf } from '../src/heroes/types'
 import { HOME_TEAM, TEAMS } from '../src/teams/registry'
-import { gameCardPath, gamePageMeta, seasonCardPath, seasonPageMeta } from '../src/teams/shareCards'
+import { gameCardPath, gamePageMeta, playerPageMeta, seasonCardPath, seasonPageMeta } from '../src/teams/shareCards'
 
 function fail(message: string): never {
   console.error(message)
@@ -91,6 +96,7 @@ mkdirSync(join('dist', 'arguments'), { recursive: true })
 writeFileSync(join('dist', 'arguments', 'index.html'), heroPageHtml(indexHtml, argumentsPageMeta()))
 let gamePages = 0
 let seasonPages = 0
+let playerPages = 0
 for (const team of TEAMS) {
   for (const season of team.seasons) {
     const card = join('public', seasonCardPath(team, season))
@@ -104,6 +110,18 @@ for (const team of TEAMS) {
     mkdirSync(dir, { recursive: true })
     writeFileSync(join(dir, 'index.html'), heroPageHtml(indexHtml, seasonPageMeta(team, season)))
     seasonPages += 1
+    // Every shooter's season page (ADR-0095 as amended 2026-10-29), under the
+    // season's own directory, so his alias for the canonical season and his
+    // permalink for the rest, over the season card checked above. A
+    // registered season has a deployed payload by the registry's contract.
+    const payloadPath = join('public', 'data', '_teams', team.tricode.toLowerCase(), `${season}.json`)
+    if (!existsSync(payloadPath)) fail(`${team.slug} ${season}: registered season with no ${payloadPath}`)
+    for (const player of seasonShooters(parseTeamShotPayload(JSON.parse(readFileSync(payloadPath, 'utf-8'))))) {
+      const playerDir = join(dir, player.slug)
+      mkdirSync(playerDir, { recursive: true })
+      writeFileSync(join(playerDir, 'index.html'), heroPageHtml(indexHtml, playerPageMeta(team, season, player)))
+      playerPages += 1
+    }
   }
   for (const season of team.seasons) {
     const indexPath = join('public', 'data', '_teams', team.tricode.toLowerCase(), season, 'index.json')
@@ -126,5 +144,5 @@ for (const team of TEAMS) {
 // og:url, so the season meta's url is left behind).
 writeFileSync(distIndex, rootPageHtml(indexHtml, seasonPageMeta(HOME_TEAM, HOME_TEAM.canonicalSeason)))
 console.log(
-  `emitted ${pages} hero share pages for ${HEROES.length} heroes, ${seasonPages} team season page(s) with ${gamePages} report card pages, the arguments and methodology pages, and the root, into dist/`,
+  `emitted ${pages} hero share pages for ${HEROES.length} heroes, ${seasonPages} team season page(s) with ${playerPages} player season pages and ${gamePages} report card pages, the arguments and methodology pages, and the root, into dist/`,
 )

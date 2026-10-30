@@ -6,16 +6,20 @@
 // og:image at that card. Both read committed files only — the game payload
 // and the season index — never the NBA API.
 //
+// The season homes' pages (ADR-0087) and the player season pages (ADR-0095)
+// share one static card per season, so neither ever needs new art.
+//
 // Node-safe and DOM-free, like src/heroes/socialCards.ts, whose meta shape
 // and HTML transform it reuses.
 
 import { aggregateShotMetrics } from '../domain/aggregate'
 import type { GamePayload } from '../domain/gamePayload'
+import type { PlayerOnFile } from '../domain/playerSeason'
 import type { IndexGame } from '../domain/teamSeasonIndex'
 import { displayGapUnits, formatGameDate, formatMatchup, formatSignedGap } from '../format'
 import { SITE_ORIGIN, type HeroPageMeta } from '../heroes/socialCards'
 import { makingAnswer, QUESTIONS, selectionAnswer } from './computedCopy'
-import { HOME_COPY, REPORT_COPY } from './copy'
+import { HOME_COPY, PLAYER_COPY, REPORT_COPY } from './copy'
 import { gamePhotoOf } from './gamePhotos'
 import type { TeamConfig } from './registry'
 
@@ -164,6 +168,29 @@ export function seasonPageMeta(team: TeamConfig, season: string): HeroPageMeta {
     // stands where a headshot would.
     imageAlt: `${team.name} mark beside the Good Shots wordmark, ${season}`,
     url: season === team.canonicalSeason ? `${SITE_ORIGIN}/${team.slug}` : `${SITE_ORIGIN}/${team.slug}/${season}`,
+    preloadPaths: seasonPreloadPaths(team, season),
+  }
+}
+
+/** A player season page's share meta (ADR-0095 as amended 2026-10-29): his
+ * canonical alias (/jazz/<slug>, the canonical season) or his season
+ * permalink (/jazz/<season>/<slug>). The card is his season's card, not one
+ * of his own: it is committed before his first shot, so a debut can never
+ * fail the build the way a missing per-player card would. */
+export function playerPageMeta(team: TeamConfig, season: string, player: Pick<PlayerOnFile, 'name' | 'slug'>): HeroPageMeta {
+  const card = seasonPageMeta(team, season)
+  return {
+    // Mirrors PlayerSeasonPage's runtime document.title.
+    title: `${player.name} · ${season} · ${team.name}`,
+    description: PLAYER_COPY.shareDescription(player.name, team.name, season),
+    imageUrl: card.imageUrl,
+    imageAlt: card.imageAlt,
+    url:
+      season === team.canonicalSeason
+        ? `${SITE_ORIGIN}/${team.slug}/${player.slug}`
+        : `${SITE_ORIGIN}/${team.slug}/${season}/${player.slug}`,
+    // The player page fetches what the season home does: the season's index
+    // and payload, and the prior season's when that season is registered.
     preloadPaths: seasonPreloadPaths(team, season),
   }
 }

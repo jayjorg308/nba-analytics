@@ -304,6 +304,11 @@ so new decisions here start at 0094.
   page: they fall back to the root's, now the Jazz season card. Checked:
   all 22 hero URLs, `/methodology`, `/compare`, `/game`, every team route
   kind, and the home at 1280px and 375px._
+- _Player share pages, 2026-10-29 (ADR-0095 as amended): every shooter of
+  every registered season gets an emitted page at his alias or permalink,
+  his name in the title and description over his season's card. Chosen
+  over a per-player card, which the loop would have to draw before each
+  debut or the build would fail._
 
 ### Later
 
