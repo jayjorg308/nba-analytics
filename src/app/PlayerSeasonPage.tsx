@@ -5,8 +5,9 @@
 // quadrant (each priced against its own day's ruler, so a dot equals his
 // line on that game's card), 02 his season zone by zone against the
 // season's league average with the local flags (ADR-0075), 03 the game log,
-// newest first, each row linking its report card. His argument, when he has
-// one, is linked, never duplicated (the tool and argument split).
+// newest first. Each row and each dot opens his night in that game
+// (ADR-0096), whose byline links the game's report card. His argument, when
+// he has one, is linked, never duplicated (the tool and argument split).
 //
 // Every number is playerSeason.ts's; this component formats.
 
@@ -21,11 +22,11 @@ import type { TeamShotPayload } from '../domain/teamShotPayload'
 import { formatDataThrough, formatGameDate, formatMatchup, formatSignedGap } from '../format'
 import { heroBySlug } from '../heroes/registry'
 import { heroPageUrl, seasonPageUrl } from '../heroes/urls'
-import { PLAYER_COPY } from '../teams/copy'
+import { NIGHT_COPY, PLAYER_COPY } from '../teams/copy'
 import type { TeamConfig } from '../teams/registry'
 import {
   playerHeadshotUrl,
-  teamGameUrl,
+  teamNightUrl,
   teamPageUrl,
   teamPlayerUrl,
   teamSeasonIndexUrl,
@@ -181,9 +182,10 @@ function SeasonPage({ team, ps, payload }: { team: TeamConfig; ps: PlayerSeason;
                 priorDots={ps.priorDots}
                 season={season}
                 priorSeason={ps.priorSeason}
-                hrefOf={(d) => teamGameUrl(team, d.slug)}
+                hrefOf={(d) => teamNightUrl(team, d.slug, player.slug)}
                 ariaLabel={`Every ${team.name} game ${player.name} took a priced shot in, shot diet against conversion`}
                 tonightLabel={PLAYER_COPY.legendLatest}
+                opens={NIGHT_COPY.opens}
               />
             </div>
           )}
@@ -244,7 +246,7 @@ function GameLog({ team, ps }: { team: TeamConfig; ps: PlayerSeason }) {
             {[...ps.games].reverse().map((g) => (
               <tr key={g.gameId}>
                 <th scope="row">
-                  <a href={teamGameUrl(team, g.slug)}>{formatGameDate(g.gameDate)}</a>
+                  <a href={teamNightUrl(team, g.slug, ps.player.slug)}>{formatGameDate(g.gameDate)}</a>
                 </th>
                 <td>{formatMatchup(g.opponent, g.home)}</td>
                 <td>

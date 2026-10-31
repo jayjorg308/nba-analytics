@@ -7,7 +7,8 @@
 // card per registered season, the meta pointing at it, the root's page
 // without an og:url. The player season pages (ADR-0095) show their season's
 // card under their own title and og:url, one page per shooter, each landing
-// on the route that renders him.
+// on the route that renders him. A player's night (ADR-0096) shows its
+// game's card, one page per appearance.
 
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -27,6 +28,7 @@ import {
   gameCardSpec,
   gamePageMeta,
   gamePreloadPaths,
+  nightPageMeta,
   playerPageMeta,
   seasonCardPath,
   seasonCardSpec,
@@ -63,6 +65,31 @@ describe('gamePageMeta', () => {
     const html = heroPageHtml(readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8'), meta)
     expect(html).toContain(`<meta property="og:url" content="${meta.url}" />`)
     expect(html).toContain(meta.imageUrl)
+  })
+})
+
+describe('nightPageMeta (ADR-0096)', () => {
+  const keyonte = row.players.find((p) => p.name === 'Keyonte George')!
+  const meta = nightPageMeta(utahJazz, '2025-26', row, keyonte)
+
+  it('names him and the night over the game’s card, at his night’s url', () => {
+    expect(meta.url).toBe(`${SITE_ORIGIN}/jazz/2026-01-03-gsw/keyonte-george`)
+    expect(meta.title).toBe('Keyonte George · Jan 3, 2026 · Utah Jazz')
+    expect(meta.description).toBe(
+      'Keyonte George, Utah Jazz Jan 3, 2026 @ GSW. His shots priced against the league as it stood that day, every attempt and trip down to his box score.',
+    )
+    const game = gamePageMeta(utahJazz, '2025-26', row)
+    expect([meta.imageUrl, meta.imageAlt]).toEqual([game.imageUrl, game.imageAlt])
+  })
+
+  it('preloads exactly what the report card does, the files the night fetches', () => {
+    expect(meta.preloadPaths).toEqual(gamePreloadPaths(utahJazz, '2025-26', row.gameId))
+  })
+
+  it('emits into the real index.html with its own og:url', () => {
+    const html = heroPageHtml(readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8'), meta)
+    expect(html).toContain('<title>Keyonte George · Jan 3, 2026 · Utah Jazz</title>')
+    expect(html).toContain(`<meta property="og:url" content="${meta.url}" />`)
   })
 })
 
@@ -181,6 +208,32 @@ describe.skipIf(shooters.length === 0)('player share pages (one per shooter of e
           : { kind: 'seasonPlayer', season, slug: player.slug },
       )
     }
+  })
+})
+
+// Every appearance of every registered season, read from the committed
+// indexes the build's emission step reads. Skips on clean clones.
+const appearances = TEAMS.flatMap((team) =>
+  team.seasons.flatMap((season) => {
+    const file = path.join(TEAMS_ROOT, team.tricode.toLowerCase(), season, 'index.json')
+    if (!existsSync(file)) return []
+    return parseTeamSeasonIndex(JSON.parse(readFileSync(file, 'utf-8'))).games.flatMap((g) =>
+      g.players.map((player) => ({ team, season, row: g, player })),
+    )
+  }),
+)
+
+describe.skipIf(appearances.length === 0)('night share pages (one per appearance of every registered season)', () => {
+  it('each lands on the route that renders his night, and no two collide', () => {
+    const urls = new Set<string>()
+    for (const { team, season, row, player } of appearances) {
+      const url = nightPageMeta(team, season, row, player).url
+      urls.add(url)
+      const [teamSegment, segment, third] = new URL(url).pathname.split('/').filter((s) => s !== '')
+      expect(teamSegment).toBe(team.slug)
+      expect(parseTeamRoute(segment, third), url).toMatchObject({ kind: 'night', season, game: row.slug })
+    }
+    expect(urls.size).toBe(appearances.length)
   })
 })
 

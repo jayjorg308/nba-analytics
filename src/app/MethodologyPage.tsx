@@ -267,6 +267,22 @@ export function MethodologyPage() {
             arithmetic over his shots, his season against the league and each of his games
             priced exactly as his line on that game’s report card.
           </p>
+          {/* A player's night (ADR-0096). "Who appears in a game" is
+              load-bearing: a night exists for every subject box line,
+              attempts or not (buildPlayersNight), never an opponent's. "The
+              way that game's report card prices them" names no ruler on
+              purpose: a game before any league game this season is priced on
+              the prior season (ADR-0089). "Down to his points in the box
+              score" is the game file's receipt identity, re-asserted at its
+              load boundary. "Field-goal rates only" is the ruler's
+              zoneBaseline, which carries no free-throw rate. */}
+          <p>
+            Every one of the team’s players who appears in a game has a night of his own: his
+            shots in that game priced the way that game’s report card prices them, the same two
+            numbers as his dot on his season page, and every attempt and free throw itemized
+            down to his points in the box score. Free throws are counted, not priced, because the
+            league rates a game is priced against cover field goals only.
+          </p>
           {/* "Every game" is load-bearing: a game whose box score is missing
               cannot be in the payload at all (reconcile_box fails the
               derive and the export), so the frontier and the ledger agree by

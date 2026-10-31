@@ -6,7 +6,16 @@
 
 import { describe, expect, it } from 'vitest'
 import { RESERVED_ROUTES, TEAM_ROUTES } from '../app/routes'
-import { HOME_COPY, PLAYER_COPY, REPORT_COPY, TEAM_COPY } from './copy'
+import {
+  HOME_COPY,
+  NIGHT_COPY,
+  NIGHT_TRIP_COUNTS,
+  NIGHT_TRIP_LABELS,
+  NIGHT_ZONE_LABELS,
+  PLAYER_COPY,
+  REPORT_COPY,
+  TEAM_COPY,
+} from './copy'
 import { GAME_ID, SEASON, TEAMS, teamBySlug } from './registry'
 
 const FORBIDDEN = [
@@ -30,6 +39,10 @@ function everyString(): string[] {
     ...Object.values(REPORT_COPY),
     ...Object.values(PLAYER_COPY),
     ...Object.values(HOME_COPY),
+    ...Object.values(NIGHT_COPY),
+    ...Object.values(NIGHT_TRIP_LABELS),
+    ...Object.values(NIGHT_TRIP_COUNTS),
+    ...Object.values(NIGHT_ZONE_LABELS),
   ]) {
     if (typeof value !== 'function') {
       out.push(value)

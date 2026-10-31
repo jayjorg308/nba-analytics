@@ -7,19 +7,21 @@
 // and the season index — never the NBA API.
 //
 // The season homes' pages (ADR-0087) and the player season pages (ADR-0095)
-// share one static card per season, so neither ever needs new art.
+// share one static card per season, so neither ever needs new art; a
+// player's night (ADR-0096) shows its game's card.
 //
 // Node-safe and DOM-free, like src/heroes/socialCards.ts, whose meta shape
 // and HTML transform it reuses.
 
 import { aggregateShotMetrics } from '../domain/aggregate'
 import type { GamePayload } from '../domain/gamePayload'
+import { playerSlug } from '../domain/playerSeason'
 import type { PlayerOnFile } from '../domain/playerSeason'
-import type { IndexGame } from '../domain/teamSeasonIndex'
+import type { IndexGame, IndexPlayer } from '../domain/teamSeasonIndex'
 import { displayGapUnits, formatGameDate, formatMatchup, formatSignedGap } from '../format'
 import { SITE_ORIGIN, type HeroPageMeta } from '../heroes/socialCards'
 import { makingAnswer, QUESTIONS, selectionAnswer } from './computedCopy'
-import { HOME_COPY, PLAYER_COPY, REPORT_COPY } from './copy'
+import { HOME_COPY, NIGHT_COPY, PLAYER_COPY, REPORT_COPY } from './copy'
 import { gamePhotoOf } from './gamePhotos'
 import type { TeamConfig } from './registry'
 
@@ -120,6 +122,25 @@ export function gamePageMeta(team: TeamConfig, season: string, row: IndexGame): 
     imageAlt: REPORT_COPY.shareImageAlt(team.name, score, date, matchup),
     url: `${SITE_ORIGIN}/${team.slug}/${row.slug}`,
     preloadPaths: gamePreloadPaths(team, season, row.gameId),
+  }
+}
+
+/** A player's night's share meta (ADR-0096): his name and the night in the
+ * title and description over the game's committed card. Chosen over a card
+ * per night, which would be a committed PNG per appearance (about 90 MB a
+ * season) drawn by the loop every game night. The night fetches what the
+ * report card does, so it preloads the same files. */
+export function nightPageMeta(team: TeamConfig, season: string, row: IndexGame, player: Pick<IndexPlayer, 'name'>): HeroPageMeta {
+  const card = gamePageMeta(team, season, row)
+  const date = formatGameDate(row.gameDate)
+  return {
+    // Mirrors PlayersNightPage's runtime document.title.
+    title: `${player.name} · ${date} · ${team.name}`,
+    description: NIGHT_COPY.shareDescription(player.name, team.name, date, formatMatchup(row.opponent, row.home)),
+    imageUrl: card.imageUrl,
+    imageAlt: card.imageAlt,
+    url: `${SITE_ORIGIN}/${team.slug}/${row.slug}/${playerSlug(player.name)}`,
+    preloadPaths: card.preloadPaths,
   }
 }
 

@@ -54,11 +54,16 @@ import { Term } from './Term'
 import { useOptionalTeamSeasonIndex, useOptionalTeamShotPayload, useTeamSeasonIndex, useTeamShotPayload } from './usePayload'
 import { ZoneTable } from './ZoneTable'
 
-export function TeamPageError({ message }: { message: string }) {
+export function TeamPageError({ message, link }: { message: string; link?: { href: string; label: string } }) {
   return (
     <main className="hero-page team-page">
       <SiteNav />
       <p className="page-status page-error">{message}</p>
+      {link !== undefined && (
+        <p className="team-note">
+          <a href={link.href}>{link.label} →</a>
+        </p>
+      )}
     </main>
   )
 }

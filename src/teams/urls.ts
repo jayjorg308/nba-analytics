@@ -45,6 +45,12 @@ export function teamPlayerUrl(team: TeamConfig, season: string, slug: string): s
     : `${import.meta.env.BASE_URL}${team.slug}/${season}/${slug}`
 }
 
+/** A player's night (ADR-0096): his slug under the game's, one URL for
+ * every season since a game slug names its own. */
+export function teamNightUrl(team: TeamConfig, gameSlug: string, slug: string): string {
+  return `${import.meta.env.BASE_URL}${team.slug}/${gameSlug}/${slug}`
+}
+
 /** A player's standard NBA headshot, committed under the conventional
  * img/<slug>-headshot.png (ADR-0065; hero slugs and player slugs agree). */
 export function playerHeadshotUrl(slug: string): string {

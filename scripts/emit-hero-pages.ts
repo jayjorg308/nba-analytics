@@ -21,11 +21,13 @@
 // cards"): every published game — every row of a committed season index —
 // gets dist/<team>/<game-slug>/index.html with its own card as og:image,
 // and a published game without its card (npm run cards:games) fails the
-// build.
+// build. Every appearance in it gets its player's night beneath,
+// dist/<team>/<game-slug>/<player-slug>/index.html, over the game's card
+// (ADR-0096).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { seasonShooters } from '../src/domain/playerSeason'
+import { playerSlug, seasonShooters } from '../src/domain/playerSeason'
 import { parseTeamSeasonIndex } from '../src/domain/teamSeasonIndex'
 import { parseTeamShotPayload } from '../src/domain/teamShotPayload'
 import { HEROES } from '../src/heroes/registry'
@@ -40,7 +42,14 @@ import {
 } from '../src/heroes/socialCards'
 import { canonicalSeasonOf } from '../src/heroes/types'
 import { HOME_TEAM, TEAMS } from '../src/teams/registry'
-import { gameCardPath, gamePageMeta, playerPageMeta, seasonCardPath, seasonPageMeta } from '../src/teams/shareCards'
+import {
+  gameCardPath,
+  gamePageMeta,
+  nightPageMeta,
+  playerPageMeta,
+  seasonCardPath,
+  seasonPageMeta,
+} from '../src/teams/shareCards'
 
 function fail(message: string): never {
   console.error(message)
@@ -95,6 +104,7 @@ writeFileSync(
 mkdirSync(join('dist', 'arguments'), { recursive: true })
 writeFileSync(join('dist', 'arguments', 'index.html'), heroPageHtml(indexHtml, argumentsPageMeta()))
 let gamePages = 0
+let nightPages = 0
 let seasonPages = 0
 let playerPages = 0
 for (const team of TEAMS) {
@@ -136,6 +146,15 @@ for (const team of TEAMS) {
       mkdirSync(dir, { recursive: true })
       writeFileSync(join(dir, 'index.html'), heroPageHtml(indexHtml, gamePageMeta(team, season, row)))
       gamePages += 1
+      // Every appearance's night beneath its game (ADR-0096), over the game's
+      // card checked above: the index row names every subject player who
+      // appeared, the same box the night resolves against.
+      for (const player of row.players) {
+        const nightDir = join(dir, playerSlug(player.name))
+        mkdirSync(nightDir, { recursive: true })
+        writeFileSync(join(nightDir, 'index.html'), heroPageHtml(indexHtml, nightPageMeta(team, season, row, player)))
+        nightPages += 1
+      }
     }
   }
 }
@@ -144,5 +163,5 @@ for (const team of TEAMS) {
 // og:url, so the season meta's url is left behind).
 writeFileSync(distIndex, rootPageHtml(indexHtml, seasonPageMeta(HOME_TEAM, HOME_TEAM.canonicalSeason)))
 console.log(
-  `emitted ${pages} hero share pages for ${HEROES.length} heroes, ${seasonPages} team season page(s) with ${playerPages} player season pages and ${gamePages} report card pages, the arguments and methodology pages, and the root, into dist/`,
+  `emitted ${pages} hero share pages for ${HEROES.length} heroes, ${seasonPages} team season page(s) with ${playerPages} player season pages, ${gamePages} report card pages, and ${nightPages} player night pages, the arguments and methodology pages, and the root, into dist/`,
 )

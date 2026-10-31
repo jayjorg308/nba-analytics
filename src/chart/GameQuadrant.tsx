@@ -1,6 +1,7 @@
 // The game quadrant (docs/plans/jazz-first-site.md, the team report card):
 // selection delta across, making delta up, one dot per game from its card,
-// this game highlighted, every dot a link to its own card. The prior
+// this game highlighted (when it has a dot), every dot a link to its own
+// card, or on a player's chart to his night (ADR-0096). The prior
 // season's games sit behind as faded dots, so the chart is full from
 // opening night; the seasons share these axes because every dot is priced
 // against its own pre-game ruler (ADR-0089).
@@ -43,9 +44,11 @@ export function GameQuadrant({
   hrefOf,
   ariaLabel,
   tonightLabel = REPORT_COPY.legendTonight,
+  opens = REPORT_COPY.opens,
 }: {
   dots: readonly GameDot[]
-  tonight: GameDot
+  /** The ringed dot; null on a player's night without a priced shot. */
+  tonight: GameDot | null
   priorDots: readonly GameDot[]
   season: string
   priorSeason: string | null
@@ -53,6 +56,8 @@ export function GameQuadrant({
   ariaLabel: string
   /** The highlighted dot's legend: a card's game, or a player's latest. */
   tonightLabel?: string
+  /** What a dot opens, for the hint line: a card, or a player's night. */
+  opens?: string
 }) {
   const [readout, setReadout] = useState<GameDot | null>(null)
   const sel = (d: GameDot) => d.metrics.selection.selectionDelta!
@@ -91,8 +96,8 @@ export function GameQuadrant({
           <line x1={x(0)} x2={x(0)} y1={PAD} y2={H - PAD} className="quadrant-zero" />
           <line x1={PAD} x2={W - PAD} y1={y(0)} y2={y(0)} className="quadrant-zero" />
           {priorDots.map((d) => dot(d, 'prior'))}
-          {dots.filter((d) => d.gameId !== tonight.gameId).map((d) => dot(d, 'season'))}
-          {dot(tonight, 'tonight')}
+          {dots.filter((d) => d.gameId !== tonight?.gameId).map((d) => dot(d, 'season'))}
+          {tonight !== null && dot(tonight, 'tonight')}
         </svg>
         <span className="quadrant-corner quadrant-corner-tl">{CORNER_LABELS['down-up']}</span>
         <span className="quadrant-corner quadrant-corner-tr">{CORNER_LABELS['up-up']}</span>
@@ -102,10 +107,12 @@ export function GameQuadrant({
       <p className="quadrant-axis quadrant-axis-x">{REPORT_COPY.xAxis}</p>
       <figcaption className="quadrant-caption">
         <span className="quadrant-legend">
-          <span className="quadrant-legend-item">
-            <span className="quadrant-key quadrant-key-tonight" aria-hidden="true" />
-            {tonightLabel}
-          </span>
+          {tonight !== null && (
+            <span className="quadrant-legend-item">
+              <span className="quadrant-key quadrant-key-tonight" aria-hidden="true" />
+              {tonightLabel}
+            </span>
+          )}
           <span className="quadrant-legend-item">
             <span className="quadrant-key quadrant-key-season" aria-hidden="true" />
             {REPORT_COPY.legendSeason(season)}
@@ -122,8 +129,8 @@ export function GameQuadrant({
             describe(readout)
           ) : (
             <>
-              <span className="quadrant-hint-pointer">{REPORT_COPY.hintPointer}</span>
-              <span className="quadrant-hint-touch">{REPORT_COPY.hintTouch}</span>
+              <span className="quadrant-hint-pointer">{REPORT_COPY.hintPointer(opens)}</span>
+              <span className="quadrant-hint-touch">{REPORT_COPY.hintTouch(opens)}</span>
             </>
           )}
         </span>

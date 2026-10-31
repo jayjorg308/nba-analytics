@@ -91,10 +91,16 @@ describe('ReportCardPage', () => {
     const sides = screen.getByRole('table', { name: 'Both teams on the same terms' })
     expect(within(sides).getByText('Conversion vs expected')).toBeTruthy()
     expect(within(sides).getByText(/1 technical/)).toBeTruthy()
-    // Players: the shotless free-throw trip shows no expected value.
+    // Players: the shotless free-throw trip shows no expected value, and
+    // every name opens that player's night (ADR-0096), his included.
     const players = screen.getByRole('table', { name: 'Each player’s night' })
     const hendricks = within(players).getByText('Taylor Hendricks').closest('tr')!
     expect(within(hendricks).getAllByText('—')).toHaveLength(3)
+    expect(within(players).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual([
+      '/jazz/2026-01-03-gsw/keyonte-george',
+      '/jazz/2026-01-03-gsw/kyle-filipowski',
+      '/jazz/2026-01-03-gsw/taylor-hendricks',
+    ])
     // The ruler line states its game count.
     expect(screen.getByText(/as it stood entering the day, 2 games through Jan 2, 2026\./)).toBeTruthy()
     expect(screen.queryAllByText('draft copy').length > 0).toBe(!AUTHORED)
