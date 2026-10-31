@@ -6,6 +6,9 @@
 //
 // Team-agnostic on purpose: the team's name and season arrive as arguments.
 
+import type { BasicZone } from '../domain/constants'
+import type { TripClass } from '../domain/freethrowPayload'
+
 export const TEAM_COPY = {
   /** The one line of self-explanation, closing with the methodology cue. */
   toolNote:
@@ -122,8 +125,11 @@ export const REPORT_COPY = {
   legendTonight: 'this game',
   legendSeason: (season: string) => `${season} games so far`,
   legendPrior: (season: string) => `${season} games`,
-  hintPointer: 'Hover a game to read it. Click to open its card.',
-  hintTouch: 'Tap a game to open its card.',
+  // What a dot opens: a game's card here, a player's night on his charts
+  // (NIGHT_COPY.opens).
+  opens: 'its card',
+  hintPointer: (opens: string) => `Hover a game to read it. Click to open ${opens}.`,
+  hintTouch: (opens: string) => `Tap a game to open ${opens}.`,
   dotLabel: (date: string, matchup: string, result: string, diet: string, conversion: string) =>
     `${date} ${matchup}, ${result}. Diet ${diet}, conversion ${conversion}.`,
   dietAnchor: 'their diet at league rates',
@@ -168,11 +174,14 @@ export const REPORT_COPY = {
   playersNote:
     'Expected and scored count priced field goals only, each attempt at the ruler’s league rate for its zone. Heaves, zone-point conflicts, and free throws are outside both.',
   // Load-bearing: "through" is inclusive (the ruler's DateTo), and the game
-  // count comes from the league game log (ADR-0089).
+  // count comes from the league game log (ADR-0089). The dots sentence
+  // follows wherever a chart is drawn; a player's night without one (no
+  // priced shot all season) states the ruler alone.
   rulerPreGame: (through: string, games: string) =>
-    `Priced against the league as it stood entering the day, ${games} games through ${through}. Each dot on the chart is priced against its own day’s league.`,
+    `Priced against the league as it stood entering the day, ${games} games through ${through}.`,
   rulerPriorSeason: (season: string, games: string) =>
-    `Priced against the full ${season} season, ${games} games, since no league game had been played before this one. Each dot on the chart is priced against its own day’s league.`,
+    `Priced against the full ${season} season, ${games} games, since no league game had been played before this one.`,
+  rulerDots: 'Each dot on the chart is priced against its own day’s league.',
   draftTag: 'draft copy',
   // The emitted share page's meta (the ADR-0067 pattern at game grain).
   shareDescription: (team: string, date: string, matchup: string) =>
@@ -226,3 +235,98 @@ export const PLAYER_COPY = {
   shareDescription: (name: string, team: string, season: string) =>
     `${name}, ${team} ${season}, game by game. Each game’s priced shots against the league as it stood that day, and his season zone by zone.`,
 } as const
+
+/** A player's night's STRUCTURAL copy (ADR-0096): the tool class, so no
+ * verdict, no grade, no reading of the numbers. The two answers' words and
+ * the questions are the report card's computed copy at player grain
+ * (./computedCopy.ts), never here. Each sentence was checked against
+ * src/domain/playersNight.ts; the qualifiers are load-bearing. */
+export const NIGHT_COPY = {
+  cue: '↓ The night',
+  seasonLink: (season: string) => `His ${season} season`,
+  cardLink: 'The game’s report card',
+  posterLabel: 'His night, priced',
+  dietAnchor: 'his diet at league rates',
+  expectedAnchor: 'expected from his diet',
+  // Load-bearing: "field-goal or free-throw". A box line with neither (the
+  // appearances decision 1 keeps) still has minutes, rebounds, and assists.
+  noAttempt: 'No field-goal or free-throw attempt this game, so nothing to price.',
+  // Load-bearing: "priced". Heaves, zone-point conflicts, and free throws
+  // are outside both answers (playersNight.ts), so a night of any of them
+  // alone has attempts and no numbers.
+  noPricedShot: 'No priced shot this game, so neither question has a number.',
+  lineLabel: 'THE LINE',
+  creditLabel: 'THE CREDIT',
+  noMakes: 'no makes',
+  drillOpen: (lines: number) => `The night in game order, ${lines} lines`,
+  drillClose: 'Close the receipt',
+  receiptCaption: 'Every attempt and trip in game order, each field goal priced at the ruler’s league rate for its zone',
+  colTime: 'Time',
+  colEvent: 'Event',
+  colExpected: 'Exp',
+  colPoints: 'Pts',
+  // Load-bearing: ADR-0019. The shot's charted zone disagrees with its point
+  // value, so it is never priced; its points are real and count.
+  conflictLine: (value: number, zone: string) => `a ${value} charted in ${zone}, zone-point conflict`,
+  splitLine: 'split-trip free throws',
+  technicalLine: 'technical free throws',
+  pricedSubtotal: (n: number) => `${n} priced attempt${n === 1 ? '' : 's'}`,
+  gameTotal: 'Game total',
+  // Load-bearing: "so far". The quadrant stops at this game
+  // (playersNight.ts filters later games out), so a shared night never moves.
+  seasonCaption: (season: string) => `His ${season} so far`,
+  quadrantAria: (team: string, name: string) =>
+    `Every ${team} game ${name} took a priced shot in through this one, this one ringed`,
+  quadrantNoDot: 'No priced shot this game, so no dot of its own.',
+  quadrantEmpty: 'No game with a priced shot through this one, so nothing to place on the chart.',
+  // Load-bearing: "on file". A season page needs a shot for the team that
+  // season (ADR-0095); in a living season his first shot may still come.
+  noSeasonPage: 'No shot on file for him this season, so no season page and no chart.',
+  /** The quadrant's hint: what a dot opens on a player's chart. */
+  opens: 'his night',
+  notInBox: (team: string, slug: string, game: string) => `No ${team} player ${slug} in the box score for ${game}.`,
+  // The emitted share page's meta, over the game's card. Load-bearing:
+  // "that day" (the game's pre-game ruler) and "his box score" (the receipt
+  // closes on his box points).
+  shareDescription: (name: string, team: string, date: string, matchup: string) =>
+    `${name}, ${team} ${date} ${matchup}. His shots priced against the league as it stood that day, every attempt and trip down to his box score.`,
+} as const
+
+/** The receipt's trip labels, one per trip class (ADR-0053). */
+export const NIGHT_TRIP_LABELS: Record<TripClass, string> = {
+  shootingFoul2: 'shooting foul',
+  shootingFoul3: 'shooting foul on a three',
+  bonus: 'bonus',
+  andOne: 'and-1',
+  flagrant: 'flagrant',
+  awayFromPlay: 'away from play',
+  transitionTake: 'transition take',
+  clearPath: 'clear path',
+  fouledDuringMake: 'fouled during a make',
+}
+
+/** THE LINE's trip classes with their counts ("2 shooting fouls"). */
+const plural = (n: number) => (n === 1 ? '' : 's')
+export const NIGHT_TRIP_COUNTS: Record<TripClass, (n: number) => string> = {
+  shootingFoul2: (n) => `${n} shooting foul${plural(n)}`,
+  shootingFoul3: (n) => `${n} shooting foul${plural(n)} on a three`,
+  bonus: (n) => `${n} bonus`,
+  andOne: (n) => `${n} and-1`,
+  flagrant: (n) => `${n} flagrant${plural(n)}`,
+  awayFromPlay: (n) => `${n} away from play`,
+  transitionTake: (n) => `${n} transition take${plural(n)}`,
+  clearPath: (n) => `${n} clear path${plural(n)}`,
+  fouledDuringMake: (n) => `${n} fouled during a make`,
+}
+
+/** The receipt's zone labels: the court's zones in sentence case, a heave
+ * named as one. */
+export const NIGHT_ZONE_LABELS: Record<BasicZone, string> = {
+  'Restricted Area': 'Restricted area',
+  'In The Paint (Non-RA)': 'Paint (non-RA)',
+  'Mid-Range': 'Mid-range',
+  'Left Corner 3': 'Left corner 3',
+  'Right Corner 3': 'Right corner 3',
+  'Above the Break 3': 'Above the break 3',
+  Backcourt: 'Backcourt heave',
+}

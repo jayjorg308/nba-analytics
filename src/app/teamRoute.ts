@@ -7,8 +7,9 @@
 // team page published, kept working), and a player slug starts with a
 // letter. A player's canonical alias is /<team>/<player-slug> (his current
 // season, rendered in place); his season permalink is
-// /<team>/<season>/<player-slug>, ADR-0060's pattern at team grain. The
-// third segment after a game slug is reserved for the player's night.
+// /<team>/<season>/<player-slug>, ADR-0060's pattern at team grain. A
+// player slug after a game slug is his night in that game,
+// /<team>/<game-slug>/<player-slug> (ADR-0096).
 
 import { seasonOfGameId } from '../domain/aggregateTeam'
 import { GAME_ID, SEASON } from '../teams/registry'
@@ -24,6 +25,7 @@ export type TeamRoute =
   | { kind: 'gameId'; season: string; gameId: string }
   | { kind: 'player'; slug: string }
   | { kind: 'seasonPlayer'; season: string; slug: string }
+  | { kind: 'night'; season: string; game: string; slug: string }
   | { kind: 'unknown' }
 
 /** The team route for the segments after the team slug (none for the bare
@@ -32,9 +34,12 @@ export type TeamRoute =
 export function parseTeamRoute(segment: string | undefined, third?: string): TeamRoute {
   if (segment === undefined) return { kind: 'canonical' }
   if (third !== undefined) {
-    return SEASON.test(segment) && PLAYER_SLUG.test(third)
-      ? { kind: 'seasonPlayer', season: segment, slug: third }
-      : { kind: 'unknown' }
+    if (!PLAYER_SLUG.test(third)) return { kind: 'unknown' }
+    if (SEASON.test(segment)) return { kind: 'seasonPlayer', season: segment, slug: third }
+    const game = GAME_SLUG.exec(segment)
+    return game === null
+      ? { kind: 'unknown' }
+      : { kind: 'night', season: seasonOfGameDate(game[1]!), game: segment, slug: third }
   }
   if (SEASON.test(segment)) return { kind: 'season', season: segment }
   const slug = GAME_SLUG.exec(segment)

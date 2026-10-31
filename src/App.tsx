@@ -8,6 +8,7 @@ import { GameCardPage } from './app/GameCardPage'
 import { GameLandingPage } from './app/GameLandingPage'
 import { ARGUMENTS_ROUTE, COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
 import { PlayerSeasonPage } from './app/PlayerSeasonPage'
+import { PlayersNightPage } from './app/PlayersNightPage'
 import { ReportCardPage } from './app/ReportCardPage'
 import { parseTeamRoute } from './app/teamRoute'
 import { TeamPage } from './app/TeamPage'
@@ -96,7 +97,8 @@ function App() {
     // deployed payloads, /jazz/<game-slug> a report card, /jazz/<gameId>
     // (the first team page's links) the same card, /jazz/<player-slug> a
     // player's canonical season and /jazz/<season>/<player-slug> its
-    // permalink (ADR-0095). A three-segment path arrives whole in the
+    // permalink (ADR-0095), and /jazz/<game-slug>/<player-slug> his night in
+    // that game (ADR-0096). A three-segment path arrives whole in the
     // route's slug (parseRoute keeps deeper paths together). Anything else
     // under the team slug is nobody's page.
     const [teamSegment, ...deeper] = route.slug.split('/')
@@ -116,6 +118,14 @@ function App() {
                         season={teamRoute.kind === 'player' ? team.canonicalSeason : teamRoute.season}
                         slug={teamRoute.slug}
                     />
+                    <Analytics />
+                </>
+            )
+        }
+        if (teamRoute.kind === 'night') {
+            return (
+                <>
+                    <PlayersNightPage team={team} route={teamRoute} />
                     <Analytics />
                 </>
             )

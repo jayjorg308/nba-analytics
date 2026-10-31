@@ -2,7 +2,8 @@
 
 _Decided 2026-10-28 in a grilling session. Refines the Jazz-first site plan
 (`docs/plans/jazz-first-site.md`) for its remaining page work: the report
-card's restyle, player pages, and the Jazz home at the root (ADR-0087).
+card's restyle, player pages, and the Jazz home at the root (ADR-0087);
+the player's night (Stage 4) was decided in a second session, 2026-10-30.
 Where the two plans disagree, this one wins; everything the Jazz-first plan
 decided and this one does not mention still stands._
 
@@ -310,18 +311,126 @@ so new decisions here start at 0094.
   over a per-player card, which the loop would have to draw before each
   debut or the build would fail._
 
+### Stage 4: the player's night
+
+_Decided 2026-10-30 in a grilling session._ One player's game as a tool
+page at `/jazz/<game-slug>/<player-slug>`, read from the game file the
+report card already reads; then the game cards (`/game`, ADR-0086) retire.
+
+1. **Every appearance gets a night.** Every row of a Jazz player's
+   season-page game log has one, the no-attempt appearances included (14
+   of 813 in 2025-26, 1 of 55 in 2026-27 by 10-28; _corrected in the
+   build: 14 is the appearances with no field-goal attempt, of which 11
+   had no attempt at all_). A night with no attempt
+   shows his box line and a structural no-attempts line. Jazz players only:
+   the game files carry both teams, but an opponent's night is not a page.
+2. **The poster leads with the two answers** at player grain, "Good
+   shots?" and "Did they fall?": the per-shot gaps his season-page dot
+   plots, worded by the report card's computed-copy templates (ADR-0090).
+   The points arithmetic (expected from his diet against scored) is the
+   receipt's total line. Declined: the old card's points poster, whose
+   numbers his dot never shows.
+3. **THE LINE and THE CREDIT stay, unpriced.** The ruler carries zone
+   field-goal rates only, so free throws read as counts, as on the report
+   card: trips, free-throw points, the FT line, FTA rate; assisted,
+   unassisted, and unknown makes. The receipt's trip rows carry no expected
+   value. Declined: pricing trips at a league free-throw rate, which needs
+   a new pull per ruler date and a reviewed rewrite of every immutable game
+   file.
+4. **The banner is his headshot**, the season page's form, every night. A
+   game photograph stays the report card's; it may not show him.
+5. **Content**: the poster, the two chips, the receipt (every attempt and
+   trip in game order down to the box total; heaves and zone-point
+   conflicts struck; technical and split free throws on their own lines),
+   his court, and his season quadrant with tonight's dot ringed
+   (`GameQuadrant`'s `tonightLabel`). Declined: a zone-count table (the
+   receipt prices every attempt) and prev/next links (the quadrant's dots
+   open his other nights).
+6. **Links in**: the report card's PLAYERS names open that player's night
+   (Stage 2 linked them to season pages); his season page's game-log rows
+   and quadrant dots open his nights (decision 13's intent); the night's
+   byline links up to his season page.
+7. **Share pages**: the build emits one per night, his name and the night
+   in the title and description over the game's committed card. Declined:
+   a card per night, about 90 MB of committed PNGs a season, drawn by the
+   loop every game night.
+8. **A two-variant prototype first.** A, the acts recipe: 01 the night, 02
+   the floor, 03 the receipt open, 04 his season with tonight ringed. B,
+   the old card's composite restyled: the answers and chips as one poster
+   block beside his court, the receipt as a drill-in, the season quadrant
+   closing. Real 2026-27 nights, the house `?variant=` switcher, deleted
+   after the pick. _Chosen 2026-10-31: B, Composite (the banner names him
+   only; one poster block holds the two answers and the chips beside his
+   court, with the receipt behind a drill-in inside it; his season
+   quadrant closes under a plain caption). Declined: A, Acts (the night's
+   title on the banner, then four numbered acts with the receipt open).
+   Checked on six real nights (and-ones and overtime, a zone-point
+   conflict, technical and split free throws, an appearance with no
+   attempt) at 1280px and 375px; the prototype was deleted before the
+   build._
+9. **`/game` retires, with Jazz redirects.** The game-log contract goes
+   with it: the card page and landing, the payload files (2.5 MB, eleven
+   heroes' 2025-26 nights), `export_gamelog_payload.py`,
+   `regen_gamelog_golden.py`, the card-roster import
+   (`import_card_roster.py`, `CARD_ROSTER_MIN_FGA`), the golden pair, and
+   the deployed guard. The three Jazz heroes' card URLs (Ace Bailey, Cody
+   Williams, Keyonte George) forward to their nights and the `/game`
+   landing to the Jazz home; the other eight heroes' card URLs land on the
+   not-found note, since the game files cover Jazz games only. Nothing links
+   to `/game` today, and `nba-exact-trips` reads none of its files
+   (checked 2026-10-30).
+
+Defaults taken:
+
+- **Pricing**: each night on its game's pre-game ruler (ADR-0089), so it
+  equals his dot. A deployed guard holds every night's two numbers equal to
+  his dot and his game-log row as displayed, and every game-log row's link
+  to a route that renders.
+- **Route**: `teamRoute.ts`'s reserved third segment after a game slug. A
+  player slug absent from that game's Jazz box gets the not-found note,
+  linking his season page when he has one.
+- **No new data**: the night reads the game file, plus the season index
+  and the team shot payload for the quadrant (the share page preloads all
+  three).
+- **Two PRs**: the night (prototype, then build), then the retirement and
+  its redirects, which need the night routes live.
+- **Docs**: ADR-0096 (the night as a tool page over the game file; the game
+  cards retire), amending ADR-0086 and ADR-0095; CONTEXT (a Player's night
+  entry, Game card marked retired), README, CLAUDE.md, the methodology
+  page. The new structural copy (kicker, cue, act headers, the no-attempts
+  line) comes to the red pen in the PR.
+- Done when every game-log row of both seasons opens a night that renders,
+  the report card's names open nights, and no `/game` route or game-log
+  file remains.
+- _PR 1 built 2026-10-31 on `feature_PlayersNight` (ADR-0096): the night
+  route, `playersNight.ts` and `PlayersNightPage`, `NIGHT_COPY`, the links
+  in, and a share page per appearance (868 across the two seasons, 813 and
+  55). The deployed guard builds every one of them against its dot and its
+  game-log row. Decided in the build: the night's quadrant stops at the
+  game, the report card's rule, so a shared night never moves; a night with
+  no priced shot draws the quadrant with no ring and says why; a player
+  with free throws but no shot all season gets his nights with no chart
+  and no season link; the quadrant's hint names what a dot opens ("his
+  night" on a player's chart, "its card" elsewhere); the ruler line's dots
+  sentence shows only where a chart is drawn; a slug outside the box gets
+  the not-found note linking his season page when he has one. The draft
+  structural copy in `NIGHT_COPY` comes to the red pen in the PR. Fixed
+  in review: on a portrait phone the headshot banner raised the cutout
+  above the name, where its chest-cut edge hung mid-banner and read as a
+  floating head; it now stands on the banner's floor below the name, as
+  in the wide layout, on the night and the season page alike. PR 2, the
+  retirement, is next._
+
 ### Later
 
-- The player's night, `/jazz/<game-slug>/<player-slug>`: the poster and
-  receipt from the retired game cards over the player's slice of the game
-  payload; then `/game` and the game-log contract retire.
 - The Jazz-first plan's phase 4 (league context, feeding) and phase 5 (one
   derive engine) are unchanged.
 
 ## Human tasks
 
-- **The 2026-27 season photo**, with its credit and alt text, before Stage 3
-  ships.
+- **The 2026-27 season photo**, with its credit and alt text. Stage 3
+  shipped on the typographic banner without it; the photo replaces that
+  banner whenever it lands (the team registry's `homes` entry).
 - **Game photos** whenever you want them, from Stage 1 on, through
   `game:photo`.
 - **Darryn Peterson's banner photo** before his flip (his headshot comes
@@ -340,9 +449,10 @@ so new decisions here start at 0094.
 Small enough to settle inside their stage, recorded so they are not lost.
 
 - The banner cue's words on game and player pages ("↓ The verdict" is an
-  argument's cue).
+  argument's cue). _Settled in Stages 1 and 2: "↓ The card" and "↓ The
+  season"; the night's cue joins them in Stage 4._
 - Whether a player's quadrant shows his prior season's games faded behind,
-  as the team quadrant does.
+  as the team quadrant does. _Settled in Stage 2: it does._
 - The featured card for a player with no shots yet (an injury, a late
   return): a structural "no shots yet" line, never a hidden card. _Settled
   in Stage 3: "No shots yet", the card named and unlinked._

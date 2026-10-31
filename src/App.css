@@ -295,9 +295,10 @@
 
 /* The headshot poster (PosterBanner's HEADSHOT form, ADR-0095): the type
    poster with the player's standard NBA headshot (a transparent cutout,
-   ADR-0065) standing on the banner's floor at its right edge. On a portrait
-   phone it rises to the banner's upper right, clear of the name the h1
-   carries at the bottom. */
+   ADR-0065) standing on the banner's floor at its right edge, in every
+   layout. The cutout ends at the chest, so it must meet the floor: raised
+   to the upper right on a phone (the first build, 2026-10-29), its cut edge
+   hung in mid-banner and read as a floating head. */
 .poster-headshot .poster-headshot-img {
     position: absolute;
     right: 6%;
@@ -311,20 +312,32 @@
     filter: grayscale(1) contrast(1.08) brightness(0.94);
 
     @media (max-width: 1024px) and (orientation: portrait) {
-        top: 60px;
-        bottom: auto;
         right: 0;
-        height: 160px;
-        max-width: 64%;
-        object-position: right top;
+        height: var(--headshot-height);
+        max-width: 84%;
     }
 }
 
-/* On a portrait phone the bottom-anchored kicker and name sit below the
-   headshot, never over it: the banner grows to hold both. */
+/* On a portrait phone the kicker and name top-anchor under the navbar and
+   the headshot stands below them, never under the white name: the text
+   block reserves the headshot's height (less the cue's line, which sits
+   beside his shoulder at the bottom left), so the banner grows to hold
+   both and a two-line name pushes the headshot down rather than into it. */
 .hero-banner.poster-type.poster-headshot {
+    --headshot-height: clamp(200px, 56vw, 300px);
+}
+
+.poster-headshot .hero-banner-text {
     @media (max-width: 1024px) and (orientation: portrait) {
-        min-height: 380px;
+        flex: 0 0 auto;
+        justify-content: flex-start;
+        margin-bottom: calc(var(--headshot-height) - 36px);
+    }
+}
+
+.poster-headshot .hero-cue {
+    @media (max-width: 1024px) and (orientation: portrait) {
+        margin-top: auto;
     }
 }
 
@@ -3247,6 +3260,192 @@
 
 .player-log th[scope='row'] {
     white-space: nowrap;
+}
+
+/* A player's night (ADR-0096), chosen 2026-10-31 from a two-variant
+   prototype (B, Composite): one poster block holds the two answers and the
+   chips beside his court, the receipt a drill-in inside it; his season
+   closes under a plain caption. The receipt is dense UI text and opts into
+   line-height normal per the house companion rule. */
+.night-poster {
+    max-width: 960px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    background: var(--code-bg);
+
+    @media (max-width: 760px) {
+        padding: 16px;
+    }
+}
+
+.night-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 32px;
+    align-items: start;
+
+    @media (max-width: 760px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.night-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.night-answers .answer:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.night-answers .answer-number {
+    font-size: clamp(2.25rem, 5vw, 3rem);
+}
+
+.night-court {
+    margin: 0;
+    min-width: 0;
+}
+
+.night-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+}
+
+.night-chips p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.night-chips b {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    margin-right: 6px;
+    color: var(--text);
+}
+
+.night-drill {
+    margin-top: 16px;
+    width: 100%;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text);
+    font: 13px/normal var(--sans);
+    padding: 8px;
+    cursor: pointer;
+}
+
+.night-drill:hover {
+    color: var(--text-h);
+    border-color: var(--accent-border);
+}
+
+.night-receipt {
+    margin-top: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.night-receipt table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.night-receipt th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    padding: 2px 4px 6px;
+}
+
+.night-receipt td {
+    padding: 3px 4px;
+    font-size: 13px;
+    line-height: normal;
+    border-bottom: 1px dotted var(--border);
+}
+
+.night-receipt th:nth-child(n + 3),
+.night-receipt td:nth-child(n + 3) {
+    text-align: right;
+}
+
+.night-when {
+    white-space: nowrap;
+    color: var(--text);
+}
+
+.night-assist {
+    font-size: 11px;
+    color: var(--text);
+    opacity: 0.8;
+}
+
+.night-price {
+    color: var(--text);
+    opacity: 0.8;
+}
+
+.night-made {
+    color: #f0a860;
+    font-weight: 600;
+}
+
+.night-miss {
+    opacity: 0.55;
+}
+
+.night-unpriced td {
+    opacity: 0.45;
+    text-decoration: line-through;
+}
+
+.night-receipt tfoot td {
+    border-bottom: none;
+    border-top: 2px solid var(--border);
+    padding-top: 8px;
+    font-size: 14px;
+    color: var(--text-h);
+}
+
+.night-receipt tfoot td:last-child,
+.night-receipt .night-subtotal td:nth-child(n + 2) {
+    text-align: right;
+}
+
+.night-receipt .night-subtotal td {
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text);
+}
+
+.night-season {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.night-caption {
+    margin: 0 0 12px;
+    font: 500 12px/normal var(--sans);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
 }
 
 /* --- A team season's home (ADR-0087): the site root, /jazz, and
