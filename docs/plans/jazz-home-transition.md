@@ -414,8 +414,12 @@ Defaults taken:
   night" on a player's chart, "its card" elsewhere); the ruler line's dots
   sentence shows only where a chart is drawn; a slug outside the box gets
   the not-found note linking his season page when he has one. The draft
-  structural copy in `NIGHT_COPY` comes to the red pen in the PR. PR 2,
-  the retirement, is next._
+  structural copy in `NIGHT_COPY` comes to the red pen in the PR. Fixed
+  in review: on a portrait phone the headshot banner raised the cutout
+  above the name, where its chest-cut edge hung mid-banner and read as a
+  floating head; it now stands on the banner's floor below the name, as
+  in the wide layout, on the night and the season page alike. PR 2, the
+  retirement, is next._
 
 ### Later
 

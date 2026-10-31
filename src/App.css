@@ -295,9 +295,10 @@
 
 /* The headshot poster (PosterBanner's HEADSHOT form, ADR-0095): the type
    poster with the player's standard NBA headshot (a transparent cutout,
-   ADR-0065) standing on the banner's floor at its right edge. On a portrait
-   phone it rises to the banner's upper right, clear of the name the h1
-   carries at the bottom. */
+   ADR-0065) standing on the banner's floor at its right edge, in every
+   layout. The cutout ends at the chest, so it must meet the floor: raised
+   to the upper right on a phone (the first build, 2026-10-29), its cut edge
+   hung in mid-banner and read as a floating head. */
 .poster-headshot .poster-headshot-img {
     position: absolute;
     right: 6%;
@@ -311,20 +312,32 @@
     filter: grayscale(1) contrast(1.08) brightness(0.94);
 
     @media (max-width: 1024px) and (orientation: portrait) {
-        top: 60px;
-        bottom: auto;
         right: 0;
-        height: 160px;
-        max-width: 64%;
-        object-position: right top;
+        height: var(--headshot-height);
+        max-width: 84%;
     }
 }
 
-/* On a portrait phone the bottom-anchored kicker and name sit below the
-   headshot, never over it: the banner grows to hold both. */
+/* On a portrait phone the kicker and name top-anchor under the navbar and
+   the headshot stands below them, never under the white name: the text
+   block reserves the headshot's height (less the cue's line, which sits
+   beside his shoulder at the bottom left), so the banner grows to hold
+   both and a two-line name pushes the headshot down rather than into it. */
 .hero-banner.poster-type.poster-headshot {
+    --headshot-height: clamp(200px, 56vw, 300px);
+}
+
+.poster-headshot .hero-banner-text {
     @media (max-width: 1024px) and (orientation: portrait) {
-        min-height: 380px;
+        flex: 0 0 auto;
+        justify-content: flex-start;
+        margin-bottom: calc(var(--headshot-height) - 36px);
+    }
+}
+
+.poster-headshot .hero-cue {
+    @media (max-width: 1024px) and (orientation: portrait) {
+        margin-top: auto;
     }
 }
 
