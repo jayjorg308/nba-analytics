@@ -925,12 +925,20 @@ backup bucket, set the task's power settings (done 2026-09-24).
   game files rebuilt, each differing from the committed file only in the
   subject's source line; the index identical; all 82 cards byte-identical;
   the full gate green inside the session._
-- A player's night, a player's season, the roster rail.
+- A player's night, a player's season, the roster rail. _Built through
+  `docs/plans/jazz-home-transition.md`: player season pages (ADR-0095,
+  #79), the home's rail (#81), the player's night (ADR-0096, #84)._
 - ADR-0090 and the first templates: the two answers, then superlatives.
+  _Authored 2026-10-22 (#73); the rank lines appear from a season's tenth
+  game._
 - Retire `/game` and the game-log contract; the receipt components move to
-  the player's night.
+  the player's night. _Done 2026-11-01 (#85), with the three Jazz heroes'
+  card URLs redirected to their nights._
 - Methodology additions: the tool class, the pre-game ruler, computed copy,
-  freshness. Structural copy, verified against the code.
+  freshness. Structural copy, verified against the code. _Done 2026-11-01:
+  the tool class was already in THE TEAM PAGE; the rest is a new THE REPORT
+  CARD section, each claim checked against the code and noted in a source
+  comment. Phase 3 is complete with it._
 
 ### Phase 4: league context and feeding (November 9 to December 6)
 
