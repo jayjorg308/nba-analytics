@@ -242,4 +242,35 @@ the source URL, the pull date, the photographer or "via the team", and the
 frame's game (a photograph must be from the game it illustrates).
 `npm run game:photo` writes the derivative under `public/img/games/`._
 
-None yet.
+The first three were found by `docs/research/jazz-2026-27-game-photos.md`
+and chosen 2026-11-01 from the Jazz's own site. This season the Jazz post
+no game galleries; each is the header photo of a game article on
+nba.com/jazz, uncaptioned and uncredited, with no embedded credit or
+capture metadata, so each is credited "photograph via the Utah Jazz".
+Sources pulled 2026-11-01 and retained in `data/game-sources/<slug>.jpg`;
+each derivative is 2048px on the long side with the metadata dropped.
+
+- `public/img/games/2026-10-31-por.jpg`, Peterson (22, black) sizing up
+  Lillard (0) with the ball: the Jazz's recap header,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/103126_UTA-vs-POR_ED_Edits-22.jpg`
+  (5000x3469). **The game is verified by the filename**, which names the
+  date and the matchup. "ED" is likely Emma Decasa, Utah Jazz (a preseason
+  file named the same way is captioned with her name), but the page names
+  no one, so the credit stays the team form until the Jazz confirm it.
+- `public/img/games/2026-10-25-lal.jpg`, Jackson (20, purple) driving
+  against Walker Kessler (14, Lakers white): the Jazz's recap header,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/DSC05370.jpg`
+  (5000x2985). **The game is verified by the defender**: Kessler, a Jazz
+  player in 2025-26, is in a Lakers jersey at the Delta Center, the
+  Lakers' only visit this season, and the Jazz played no Lakers preseason
+  game (Denver, San Antonio, Phoenix). The Deseret News gallery of the
+  night (Lukas Katilius) shows the same uniforms and the same matchup.
+- `public/img/games/2026-10-23-nop.jpg`, Markkanen (23, white) holding his
+  follow-through as Dejounte Murray closes out: the Jazz's recap header,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/DSC04301.jpg`
+  (5000x3079). **The game is a strong inference, not verified**: both
+  teams' uniforms match the night's Deseret News gallery (Kristin Murphy),
+  the Jazz played no Pelicans preseason game, and the camera's frame
+  number sits between the 10-21 and 10-25 frames from the same site. A
+  2025-26 home game against the Pelicans would look the same; the author
+  accepted the inference 2026-11-01.
