@@ -154,7 +154,7 @@ v1 through v2.6 are shipped: the selection/making argument, verdict-first presen
 
 **The Jazz home** (2026-10-28 → 2026-10-29, ADRs 0087, 0094, 0095): the 2026-27 season went live through the season loop, which publishes each new game's report card in its nightly sessions. The report card gained the poster banner and numbered acts, every Jazz shooter gained a season page, and the site root became the Jazz home, chosen from a two-variant prototype, with the directory of arguments moved to `/arguments` and every argument URL unchanged.
 
-**The player's night** (2026-10-30 → 2026-10-31, ADR-0096): every Jazz appearance gained a page of its own, one player's game read from the same game file as its report card and priced against the same day's league, so its numbers are his dot on his season page. The layout was chosen from a two-variant prototype; the earlier game cards, which it replaces, retire next.
+**The player's night** (2026-10-30 → 2026-10-31, ADR-0096): every Jazz appearance gained a page of its own, one player's game read from the same game file as its report card and priced against the same day's league, so its numbers are his dot on his season page. The layout was chosen from a two-variant prototype. The earlier game cards it replaced retired the next day with their game-log files, and the three Jazz heroes' card links now forward to their nights.
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for phase details, the activation checklist, and the standing constraints.
 

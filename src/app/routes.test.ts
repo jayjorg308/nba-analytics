@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARGUMENTS_ROUTE, METHODOLOGY_ROUTE, parseRoute, RESERVED_ROUTES } from './routes'
+import { ARGUMENTS_ROUTE, GAME_ROUTE, METHODOLOGY_ROUTE, parseRoute, RESERVED_ROUTES, seasonOfGameDate } from './routes'
 
 describe('parseRoute', () => {
   it('resolves the root to the empty slug (the home team’s season, ADR-0087)', () => {
@@ -58,5 +58,19 @@ describe('parseRoute', () => {
 
   it('keeps a too-deep path whole so the unknown-path note can name it', () => {
     expect(parseRoute('/a/b/c', '/')).toEqual({ slug: 'a/b/c' })
+  })
+
+  it('keeps the retired game cards reserved, since vercel.json redirects under them (ADR-0096)', () => {
+    expect(RESERVED_ROUTES).toContain(GAME_ROUTE)
+  })
+})
+
+describe('seasonOfGameDate', () => {
+  it('maps dates to the season they belong to (October–June, August boundary)', () => {
+    expect(seasonOfGameDate('2025-10-23')).toBe('2025-26')
+    expect(seasonOfGameDate('2026-03-15')).toBe('2025-26')
+    expect(seasonOfGameDate('2026-06-19')).toBe('2025-26')
+    expect(seasonOfGameDate('2026-10-21')).toBe('2026-27')
+    expect(seasonOfGameDate('2029-12-31')).toBe('2029-30')
   })
 })

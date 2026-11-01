@@ -27,9 +27,10 @@ export const ARGUMENTS_ROUTE = 'arguments'
  * in comparisonRoute.ts, not here. */
 export const COMPARE_ROUTE = 'compare'
 
-/** Game cards (ADR-0086): /game is the landing with the roster picker,
- * /game/<player-slug>/<date> a card — the season-permalink ordering (player,
- * then time qualifier). Card state is owned entirely by the path. */
+/** The retired game cards (ADR-0086, retired by ADR-0096): no page renders
+ * here any more. vercel.json forwards /game to the site root and the three
+ * Jazz heroes' cards to their nights; the segment stays reserved so no hero
+ * slug can sit under those redirects. */
 export const GAME_ROUTE = 'game'
 
 /** Single-segment paths owned by static pages. A hero slug may never
@@ -65,29 +66,6 @@ export function parseRoute(pathname: string, baseUrl: string): HeroRoute {
   if (segments.length === 1) return { slug: segments[0]! }
   if (segments.length === 2) return { slug: segments[0]!, season: segments[1]! }
   return { slug: segments.join('/') }
-}
-
-export type GameRoute =
-  | { kind: 'landing' }
-  | { kind: 'card'; slug: string; date: string }
-
-/**
- * The game routes (ADR-0086), resolved before the registry like every
- * reserved route: /game is the landing, /game/<slug>/<date> a card.
- * Undefined for anything else — including a malformed date or a deeper
- * path, which fall to the directory's unknown-path note like any bad URL.
- */
-export function parseGameRoute(pathname: string, baseUrl: string): GameRoute | undefined {
-  const rest = pathname.startsWith(baseUrl)
-    ? pathname.slice(baseUrl.length)
-    : pathname.replace(/^\//, '')
-  const segments = rest.split('/').filter((s) => s !== '')
-  if (segments[0] !== GAME_ROUTE) return undefined
-  if (segments.length === 1) return { kind: 'landing' }
-  if (segments.length === 3 && /^\d{4}-\d{2}-\d{2}$/.test(segments[2]!)) {
-    return { kind: 'card', slug: segments[1]!, date: segments[2]! }
-  }
-  return undefined
 }
 
 /** The NBA season a game date belongs to: seasons run October–June, so
