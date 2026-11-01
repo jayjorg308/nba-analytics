@@ -4,9 +4,7 @@ import { ComparisonPage } from './app/ComparisonPage'
 import { HeroIndexPage } from './app/HeroIndexPage'
 import { HeroPage } from './app/HeroPage'
 import { MethodologyPage } from './app/MethodologyPage'
-import { GameCardPage } from './app/GameCardPage'
-import { GameLandingPage } from './app/GameLandingPage'
-import { ARGUMENTS_ROUTE, COMPARE_ROUTE, METHODOLOGY_ROUTE, parseGameRoute, parseRoute } from './app/routes'
+import { ARGUMENTS_ROUTE, COMPARE_ROUTE, METHODOLOGY_ROUTE, parseRoute } from './app/routes'
 import { PlayerSeasonPage } from './app/PlayerSeasonPage'
 import { PlayersNightPage } from './app/PlayersNightPage'
 import { ReportCardPage } from './app/ReportCardPage'
@@ -55,30 +53,9 @@ function App() {
             </>
         )
     }
-    // Game cards (ADR-0086): the third reserved route family — /game is the
-    // landing, /game/<slug>/<date> a card. Resolved before the registry like
-    // every reserved route; a malformed game path falls through to the
-    // directory's unknown-path note. Deliberately UNLINKED from the directory
-    // since the Jazz-site integration: the family retires in phase 3 of
-    // docs/plans/jazz-first-site.md (the Jazz player's night replaces it), so
-    // no page advertises URLs that are about to go. Reachable by URL only.
-    const gameRoute = parseGameRoute(window.location.pathname, import.meta.env.BASE_URL)
-    if (gameRoute?.kind === 'landing') {
-        return (
-            <>
-                <GameLandingPage />
-                <Analytics />
-            </>
-        )
-    }
-    if (gameRoute?.kind === 'card') {
-        return (
-            <>
-                <GameCardPage slug={gameRoute.slug} date={gameRoute.date} />
-                <Analytics />
-            </>
-        )
-    }
+    // The retired game cards (ADR-0096) render nothing here: vercel.json
+    // forwards /game and the three Jazz heroes' cards before the app loads,
+    // and any other /game path falls to the directory's unknown-path note.
     // The comparison page (ADR-0076): the second reserved static route,
     // resolved before the registry like the methodology page. Its state
     // lives entirely in the query string — comparisonRoute.ts reads it; the

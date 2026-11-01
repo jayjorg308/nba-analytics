@@ -418,8 +418,19 @@ Defaults taken:
   in review: on a portrait phone the headshot banner raised the cutout
   above the name, where its chest-cut edge hung mid-banner and read as a
   floating head; it now stands on the banner's floor below the name, as
-  in the wide layout, on the night and the season page alike. PR 2, the
-  retirement, is next._
+  in the wide layout, on the night and the season page alike. Merged as
+  PR #84 on 2026-10-31._
+- _PR 2 built 2026-11-01 on `task_RetireGameCards`: the card page and
+  landing, the game-log schema and its eleven files, the export, golden,
+  and card-roster scripts, `CARD_ROSTER_MIN_FGA`, the golden pair, the
+  deployed guard, and the card styles are deleted. Decided in the build:
+  the redirects are permanent `vercel.json` lines, served before the app
+  loads, because a card URL carries no opponent and a night URL needs one,
+  so no pattern rule can map them; 188 lines (Ace 72, Cody 62, Keyonte 54)
+  generated once from the game-log files before deletion, plus `/game` to
+  the site root; `src/app/retiredGameCards.real.test.ts` pins the counts
+  and lands every line on a night that resolves; `game` stays reserved so
+  no hero slug sits under a redirect. Stage 4 is done when it merges._
 
 ### Later
 

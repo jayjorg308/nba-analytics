@@ -142,17 +142,6 @@ payload out. Bump the schema version on any breaking change (shot:
 `ingestion/derive_shot_context.py` + `src/domain/shotContextPayload.ts`;
 free throw: `ingestion/derive_freethrow.py` + `src/domain/freethrowPayload.ts`).
 
-- **`gamelog.golden.json`** — the game-log contract (ADR-0086), the game-log payload
-  over the fixture store: the truncated snapshot + advanced artifact loaded
-  through the real record-store loaders, the one fixture game pair through
-  the corpus loader, exported with --allow-missing-games (one complete game
-  of six; a deployed export is always total). DB-native: regenerate via
-  `python ingestion/regen_gamelog_golden.py` (needs Docker), never
-  `golden:regen`. `ingestion/test_gamelog.py` asserts the byte-identical
-  roundtrip and that a doctored box line hard-fails the export;
-  `src/domain/gameLogPayload.test.ts` strict-parses it and proves the
-  receipt identity bites.
-
 ## Game payload (ADR-0088; schema v1 — both teams, one file per game)
 
 One real game, trimmed: 0022500492, the 2025-26 Jazz at Golden State

@@ -1,9 +1,9 @@
 """Regenerate the game payload golden (ADR-0088).
 
 The game payload is born DB-native (no file derive), so its golden comes
-from the record-store path, the regen_gamelog_golden.py pattern: spin a
-throwaway Dockerized Postgres, load the truncated two-team fixture game
-through the real loaders, run the real export, and write
+from the record-store path: spin a throwaway Dockerized Postgres, load the
+truncated two-team fixture game through the real loaders, run the real
+export, and write
 tests/fixtures/game.golden.json plus the one-game season index,
 tests/fixtures/team-index.golden.json. Deterministic: same fixtures in,
 byte-identical goldens out.
