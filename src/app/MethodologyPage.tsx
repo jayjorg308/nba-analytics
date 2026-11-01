@@ -249,8 +249,8 @@ export function MethodologyPage() {
               is counts only (ReportCardPage's ZoneCounts).
               Each game row is priced against its own pre-game ruler since
               the report card (ADR-0089); the sentence below names no
-              ruler, so it stays true. The ruler's own paragraph is phase
-              3's methodology work. */}
+              ruler, so it stays true. The rulers are THE REPORT CARD
+              section's, below. */}
           <p>
             The team page is a tool, not an argument. It takes every shot a team’s players took,
             runs the same two-axis arithmetic the player pages run, and shows the result with no
@@ -295,6 +295,101 @@ export function MethodologyPage() {
             hidden while a sample is small. A game with few attempts shows its count and a
             mark, and zones in a single game show counts only, because no zone reaches the
             fifteen attempts the shading needs in one night.
+          </p>
+        </section>
+
+        <section className="methodology-section" aria-labelledby="methodology-report-card">
+          <header className="section-caption">
+            <h2 id="methodology-report-card">THE REPORT CARD</h2>
+            <p className="section-caption-desc">
+              one game, priced against the league as it stood entering the day
+            </p>
+          </header>
+          {/* ReportCardPage: the two answers are the subject side's only
+              (selectionAnswer and makingAnswer over card.subject), so "for
+              the team"; BOTH SIDES is each team's numbers on the same ruler;
+              PLAYERS lists every subject player with a field-goal or
+              free-throw attempt, so "who took a shot or a free throw", not
+              every box line; the quadrant stops at this game (reportCard.ts
+              filters later games out). */}
+          <p>
+            Every published game has a report card. It answers two questions for the team,
+            “Good shots?” and “Did they fall?”, sets both teams side by side on the same terms,
+            lists the line of every player who took a shot or a free throw, and places the game
+            among the season’s games so far.
+          </p>
+          {/* The pre-game ruler (ADR-0089): the LeagueAverages frame through
+              the day before the game, inclusive, this season's games only;
+              one ruler per date, pulled once, and a re-pull that disagrees
+              halts (load_rulers.py). "On the league's opening night" is
+              load-bearing: the fallback is for an EMPTY ruler only (no
+              league game before the date), never a thin one; the
+              measurement behind that is the ADR's. Every card's
+              ruler line (REPORT_COPY.rulerPreGame / rulerPriorSeason) states
+              the ruler and its game count, from the league game log. */}
+          <p>
+            Each game is priced against the league as it stood entering the day, its rates by
+            zone over every game played this season before that day. Every game on a date shares
+            that ruler, pulled once and never changed, so a card reads the same long after it is
+            shared. A game on the league’s opening night has nothing before it to price against,
+            so it uses the whole prior season and says so. Every card names its ruler and how
+            many league games it holds.
+          </p>
+          {/* Two rulers coexist, and this is where the page says so (the
+              CONTEXT entry's "Avoid: the baseline unqualified"). Season
+              views price against the team payload's zoneBaseline, the
+              frontier ruler (aggregateTeam's profile, buildPlayerSeason's
+              metrics), as hero arguments price against their payload's
+              season baseline. Per-game rows and dots use g.ruler.zoneBaseline
+              (aggregateTeam's games, buildPlayerSeason's games), guarded
+              equal to the card by reportCard.real.test.ts and
+              playersNight.real.test.ts. */}
+          <p>
+            Season numbers use a different ruler. A team’s season and each player’s season are
+            measured against the league’s rates for the season so far, the way a player’s
+            argument is. Every single game, whether a dot on a chart or a row in a list, is
+            priced against its own day’s ruler, so it always matches its card.
+          </p>
+          {/* Computed copy (ADR-0090, src/teams/computedCopy.ts): templates
+              authored once and picked by band (bandOf on the displayed
+              gap). Selection uses the verdict ladder's bars unchanged and
+              making twice them (MAKING_BAND_SCALE), so "clear the same
+              floors" holds for both: a card's word never promises less than
+              the ladder's. "A formula writes them" is the contrast with THE
+              VERDICTS' "No formula writes these"; keep the two in step. "Never grade the game or say why" is the
+              computed-copy guard's banned grade and causal vocabulary.
+              "From the season's tenth game" is SEASON_RANK_MIN_GAMES, counted
+              over the season's games through this one. */}
+          <p>
+            The words on a report card work the other way from a verdict. A formula writes them.
+            Each answer is chosen from a fixed set by where its number falls, so the same number
+            gets the same words on every card. The magnitude words are the verdicts’ own, from
+            “a bit” to “far”, and clear the same floors, with making held to bands twice as wide
+            because one game’s shooting swings much wider than a season’s. The words describe the
+            numbers and never grade the game or say why it went that way. From the season’s tenth
+            game on, a card also ranks the game among the season’s games so far.
+          </p>
+          {/* Freshness (ADR-0091). "A run late each night and another each
+              morning" is the operations schedule, not code: the two Task
+              Scheduler tasks in CLAUDE.md and docs/plans/jazz-first-site.md
+              (Operations), "game night" at 23:45 with --team UTA and the
+              06:30 run of every session. Change this sentence when the
+              schedule changes. The source list is the team session's
+              (season_update.py): the pbp/box pair, the pre-game ruler, both
+              teams' one-day pulls reconciled to the box FGA, and a league
+              game log naming the game; a lagging source defers the game.
+              "Later runs cannot change its numbers" is the export's and
+              team:sync's refusal to rewrite a published game file; the
+              reviewed correction is export_game_payload.py's
+              --allow-rewrite, by PR. */}
+          <p>
+            The site does not update live. A scheduled run late each night and another each
+            morning look for new games. A game is published by the first run that finds every
+            source it needs. Those are its box score and play-by-play, its ruler, both teams’
+            shots matching the box score, and the league’s own record of the game. A game missing
+            any of them waits for a later run, and nothing is published until every check passes.
+            Once a game is published, later runs cannot change its numbers. A run that would
+            change them stops instead, and only a reviewed correction can.
           </p>
         </section>
 

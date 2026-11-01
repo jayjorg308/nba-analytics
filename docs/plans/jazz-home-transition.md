@@ -7,6 +7,14 @@ the player's night (Stage 4) was decided in a second session, 2026-10-30.
 Where the two plans disagree, this one wins; everything the Jazz-first plan
 decided and this one does not mention still stands._
 
+_Complete 2026-11-01: every stage merged. Stage 0 as #74; Stage 1 and the
+registry as #77 and #78; Stage 2 as #79, with Peterson's banner (#80) and
+the player share pages (#83); Stage 3 as #81, with the ledger producer's
+retirement (#82); Stage 4 as #84 and #85. "Where things stand" below is the
+starting point the plan was decided from, kept as it was. The human tasks
+at the end are still open, and the remaining work is the Jazz-first plan's
+phases 4 and 5._
+
 ## Outcome
 
 Good Shots opens on the Utah Jazz's 2026-27 season. The root is the Jazz
