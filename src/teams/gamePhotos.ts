@@ -32,6 +32,27 @@ export interface GamePhoto {
 
 export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
   // game:photo appends entries here, one per game slug.
+  '2026-10-23-nop': {
+    imagePath: 'img/games/2026-10-23-nop.jpg',
+    imageAlt: 'Lauri Markkanen holds his follow-through on a jumper as a New Orleans defender closes out, in the white Jazz number 23 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '54% 40%',
+    imagePositionWide: '54% 10%',
+  },
+  '2026-10-25-lal': {
+    imagePath: 'img/games/2026-10-25-lal.jpg',
+    imageAlt: 'Jaren Jackson Jr. drives against a Lakers defender with the ball low, in the purple Jazz number 20 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '62% 50%',
+    imagePositionWide: '50% 50%',
+  },
+  '2026-10-31-por': {
+    imagePath: 'img/games/2026-10-31-por.jpg',
+    imageAlt: 'Darryn Peterson sizes up a Portland defender with the ball, in the black Jazz number 22 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '34% 40%',
+    imagePositionWide: '22% 40%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
