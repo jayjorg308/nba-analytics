@@ -673,3 +673,26 @@ def test_accepted_player_renames_reach_the_report_and_the_status_record():
     report = []
     assert su.accepted_player_renames({"player": {"changed": 0}}, report) is None
     assert report == []
+
+
+def test_accepted_tracking_changes_reach_the_report_and_the_status_record():
+    # ADR-0080 as amended 2026-11-02: the tracking baseline under the frame's rule.
+    record = {"through": "2026-10-31", "snapshot": "data/raw/t.json",
+              "changes": ["league_creation_team {...}: fg3a 1 -> 0"]}
+    report: list[str] = []
+    assert su.accepted_frame_changes({"_leagueTrackingChanges": record}, report,
+                                     key="_leagueTrackingChanges",
+                                     label="league tracking") == record
+    assert report == ["league tracking: 1 change(s) accepted (frame through 2026-10-31)"]
+
+
+def test_accepted_season_fact_changes_reach_the_report_and_the_status_record():
+    # ADR-0080 as amended 2026-11-02: other players' season facts.
+    changes = ["player_season {'player_id': 1643417, ...}: fga 17 -> 16"]
+    report: list[str] = []
+    assert su.accepted_season_fact_changes(
+        {"_leagueSeasonFactChanges": changes}, report) == changes
+    assert report == ["league season facts: 1 change(s) accepted"]
+    report = []
+    assert su.accepted_season_fact_changes({"player_season": {"changed": 0}}, report) is None
+    assert report == []

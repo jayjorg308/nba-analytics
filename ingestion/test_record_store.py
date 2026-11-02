@@ -261,6 +261,88 @@ def test_the_loop_flag_never_accepts_a_subject_correction(store, tmp_path):
                              accept_frame_changes=True)
 
 
+# The league tracking baseline and other players' season facts (ADR-0080 as
+# amended 2026-11-02): the frame's rule again. Each test raises a stored row
+# by one attempt, so the unchanged incoming snapshot reads as a shrink.
+
+HERO_ID = json.loads(
+    (FIXTURES / "snapshot.truncated.json").read_text(encoding="utf-8"))["_meta"]["player_id"]
+
+
+def _raise_one_row(conn, table: str, where: str, *cols: str) -> None:
+    sets = ", ".join(f"{c} = {c} + 1" for c in cols)
+    with conn.cursor() as cur:
+        cur.execute(f"UPDATE {table} SET {sets} WHERE ctid ="
+                    f" (SELECT ctid FROM {table} WHERE {where} LIMIT 1)")
+    conn.commit()
+
+
+def load_tracking_fixtures(conn, **kwargs):
+    return lt.load_tracking(
+        conn, "Cody Williams", "2025-26",
+        snapshot_path=FIXTURES / "tracking.truncated.json",
+        league_path=FIXTURES / "tracking.league.truncated.json",
+        **kwargs,
+    )
+
+
+def test_a_league_tracking_correction_still_halts_outside_the_loop(store):
+    load_fixtures(store)
+    load_tracking_fixtures(store)
+    _raise_one_row(store, "league_creation_team", "TRUE", "fga", "fg2a")
+    with pytest.raises(lhs.LoadHalt, match="league_creation_team"):
+        load_tracking_fixtures(store)
+
+
+def test_the_loop_accepts_a_league_tracking_correction_and_records_it(store):
+    import derive_payload as dp
+
+    load_fixtures(store)
+    load_tracking_fixtures(store)
+    _raise_one_row(store, "league_creation_team", "TRUE", "fga", "fg2a")
+    report = load_tracking_fixtures(store, accept_frame_changes=True)
+    assert report["league_creation_team"]["changed"] == 1
+    record = report["_leagueTrackingChanges"]
+    assert record["snapshot"] == dp.repo_relative(FIXTURES / "tracking.league.truncated.json")
+    assert len(record["changes"]) == 2  # the row's fga and fg2a
+    assert all(c.startswith("league_creation_team") for c in record["changes"])
+    # The incoming baseline stands: the export is the golden again.
+    payload = ecr.export_payload(store, "Cody Williams", "2025-26")
+    assert ecr.payload_text(payload) == CREATION_GOLDEN.read_text(encoding="utf-8")
+
+
+def test_the_loop_flag_never_accepts_a_hero_tracking_correction(store):
+    load_fixtures(store)
+    load_tracking_fixtures(store)
+    _raise_one_row(store, "creation_split", "TRUE", "fga", "fg2a")
+    with pytest.raises(lhs.LoadHalt, match="creation_split"):
+        load_tracking_fixtures(store, accept_frame_changes=True)
+
+
+def test_another_players_season_fact_correction_still_halts_outside_the_loop(store):
+    load_fixtures(store)
+    _raise_one_row(store, "player_season", f"player_id <> {HERO_ID}", "fga")
+    with pytest.raises(lhs.LoadHalt, match="player_season"):
+        load_fixtures(store)
+
+
+def test_the_loop_accepts_another_players_season_fact_correction_and_records_it(store):
+    load_fixtures(store)
+    _raise_one_row(store, "player_season", f"player_id <> {HERO_ID}", "fga")
+    report = load_fixtures(store, accept_frame_changes=True)
+    assert report["player_season:league"]["changed"] == 1
+    assert report["player_season"]["unchanged"] == 1  # the hero's own row
+    (change,) = report["_leagueSeasonFactChanges"]
+    assert change.startswith("player_season ") and " fga " in change
+
+
+def test_the_loop_flag_never_accepts_the_heros_season_fact_correction(store):
+    load_fixtures(store)
+    _raise_one_row(store, "player_season", f"player_id = {HERO_ID}", "fga")
+    with pytest.raises(lhs.LoadHalt, match=f"player_season {{'player_id': {HERO_ID}"):
+        load_fixtures(store, accept_frame_changes=True)
+
+
 @pytest.mark.skipif(
     not DEPLOYED.exists(), reason="deployed payload absent (clean clone)"
 )

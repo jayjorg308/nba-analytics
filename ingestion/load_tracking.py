@@ -16,7 +16,10 @@ WHAT THIS DOES:
   load: the General identity against the sibling shots' pre-drop season FGA
   (a negative shortfall is contradiction and hard-fails), coverage families
   against the tracking Overall, and the league residual/coverage checks.
-  Change detection and --allow-changed behave as everywhere else.
+  Change detection and --allow-changed behave as everywhere else, and the
+  season loop accepts league baseline corrections as it accepts the zone
+  frame's (load_tracking's accept_frame_changes, ADR-0080 as amended
+  2026-11-02).
 
 USAGE:
   python ingestion/load_tracking.py --player "Cody Williams" --season 2025-26
@@ -79,7 +82,19 @@ def load_tracking(
     snapshot_path: Path | None = None,
     league_path: Path | None = None,
     allow_changed: bool = False,
+    accept_frame_changes: bool = False,
 ) -> dict:
+    """Load the hero-season's tracking; return the change-detection report.
+
+    accept_frame_changes (the season loop's loads, never the CLI): a change
+    to league_creation_team is applied without halting and returned as
+    `_leagueTrackingChanges` (lhs.frame_change_record), the zone frame's rule
+    (ADR-0080 as amended 2026-11-02). The baseline is the league's aggregate,
+    not an observation of the subject: the NBA reclassifies tracked shots
+    after games (a Celtics catch-and-shoot two and a made Lakers three from
+    under 10 feet left their cells), and those halted every hero session on
+    2026-11-02. The hero's own creation_split rows still halt.
+    """
     slug = player.lower().replace(" ", "-")
     if snapshot_path is None:
         snapshot_path = dc.latest_snapshot(
@@ -236,10 +251,17 @@ def load_tracking(
                 "player_id = %s AND season = %s AND season_type = %s",
                 [player_id, season, season_type],
             ))
+            mark = len(changed_detail)
             league_rows.flush(cur, report, changed_detail, scope=(
                 "season = %s AND season_type = %s", [season, season_type],
             ))
+            frame_detail = changed_detail[mark:]
+            if accept_frame_changes:
+                del changed_detail[mark:]
             halting = sum(c["changed"] + c["deleted"] for c in report.values())
+            if accept_frame_changes:
+                frame = report["league_creation_team"]
+                halting -= frame["changed"] + frame["deleted"]
             if halting and not allow_changed:
                 raise lhs.LoadHalt(
                     f"{halting} row(s) changed or deleted against current state. "
@@ -252,6 +274,9 @@ def load_tracking(
             rs.set_head(cur, rs.scope_key("tracking-league", season=season,
                                           season_type=season_type),
                         league_snap, run_id)
+            if accept_frame_changes and frame_detail:
+                report["_leagueTrackingChanges"] = lhs.frame_change_record(
+                    league_snapshot["_meta"], league_path, frame_detail)
             cur.execute("UPDATE load_run SET report = %s WHERE run_id = %s",
                         (lhs.Jsonb(report), run_id))
         conn.commit()
