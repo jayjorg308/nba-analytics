@@ -70,6 +70,9 @@ class TableUpsert:
     fill_cols: a column whose stored value is NULL becoming observed is
     growth, not correction (a corpus-only game row learns its date from the
     team shot pull); a non-NULL value changing still halts.
+
+    report_key: the report entry the counts land under (default the table),
+    for one table flushed as two scopes the caller treats differently.
     """
 
     PROV_COLS = ("snapshot_id", "run_id")
@@ -77,12 +80,14 @@ class TableUpsert:
     def __init__(self, table: str, key_cols: tuple[str, ...],
                  monotone_cols: tuple[str, ...] = (),
                  free_cols: tuple[str, ...] = (),
-                 fill_cols: tuple[str, ...] = ()):
+                 fill_cols: tuple[str, ...] = (),
+                 report_key: str | None = None):
         self.table = table
         self.key_cols = key_cols
         self.monotone_cols = monotone_cols
         self.free_cols = free_cols
         self.fill_cols = fill_cols
+        self.report_key = report_key or table
         self.staged: dict[tuple, dict] = {}
 
     def stage(self, row: dict) -> None:
@@ -95,7 +100,7 @@ class TableUpsert:
         from it are deletions."""
         counts = {"inserted": 0, "unchanged": 0, "grown": 0, "changed": 0,
                   "deleted": 0}
-        report[self.table] = counts
+        report[self.report_key] = counts
         if self.staged:
             sample = next(iter(self.staged.values()))
             content_cols = [
@@ -245,13 +250,15 @@ def catalog_snapshot(cur, source: str, path: Path, meta: dict) -> int:
 
 
 def frame_change_record(meta: dict, snapshot_path: Path, changes: list[str]) -> dict:
-    """What a loop session records when the season-to-date league frame
-    changed against current state (ADR-0080 as amended 2026-10-22): the
-    incoming frame's through-date and snapshot, and every cell that shrank
-    (a cell that grew is ordinary growth and is not listed, so a shot moved
-    between zones shows as its losing cell only). The same through-date as
-    the previous session's frame means an NBA correction; an earlier one
-    means this session's frontier trails the session that loaded last."""
+    """What a loop session records when a season-to-date league frame (the
+    zone baseline, ADR-0080 as amended 2026-10-22; the tracking baseline, as
+    amended 2026-11-02) changed against current state: the incoming frame's
+    through-date and snapshot, and every diff of each cell that shrank (a
+    cell that only grew is ordinary growth and is not listed, so a shot
+    moved between zones shows as its losing cell only). The same
+    through-date as the previous session's frame means an NBA correction; an
+    earlier one means this session's frontier trails the session that
+    loaded last."""
     return {"through": meta.get("date_to"),
             "snapshot": dp.repo_relative(snapshot_path),
             "changes": changes}
@@ -279,8 +286,12 @@ def load_hero_season(
     amended 2026-10-28): the Advanced artifact restages every player in the
     league, and stats.nba.com renames people ('Moussa Cisse' became 'Moussa
     Cissé' and 'Terrence Shannon Jr.' 'Terrence Shannon Jr', halting every
-    hero session from 2026-10-27). Every other table's corrections still
-    halt.
+    hero session from 2026-10-27). So is a correction to another player's
+    season facts, returned as `_leagueSeasonFactChanges` (as amended
+    2026-11-02): the artifact restages every player's GP, FGA, and usage,
+    and Nate Ament's FGA falling from 17 to 16 halted every hero session on
+    2026-10-31. The hero's own season facts are the subject and still halt.
+    Every other table's corrections still halt.
     """
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     meta, _post_drop, _league, _conflicts = dp.validate_snapshot(snapshot)
@@ -338,6 +349,13 @@ def load_hero_season(
                 "player_season", ("player_id", "season", "season_type"),
                 monotone_cols=("gp", "fga"), free_cols=("usg_pct",),
             )
+            # Everyone else's season facts, flushed as their own scope: the
+            # loop accepts their corrections, never the hero's.
+            league_seasons = TableUpsert(
+                "player_season", ("player_id", "season", "season_type"),
+                monotone_cols=("gp", "fga"), free_cols=("usg_pct",),
+                report_key="player_season:league",
+            )
 
             # League-wide roster + sourced season facts from the Advanced
             # artifact. Staged before the snapshot's hero row so the scorer's
@@ -349,7 +367,8 @@ def load_hero_season(
                     "snapshot_id": adv_snap,
                     "run_id": run_id,
                 })
-                player_seasons.stage({
+                seasons = player_seasons if int(row.PLAYER_ID) == player_id else league_seasons
+                seasons.stage({
                     "player_id": int(row.PLAYER_ID),
                     "season": season,
                     "season_type": season_type,
@@ -454,13 +473,19 @@ def load_hero_season(
             frame_detail = changed_detail[mark:]
             if accept_frame_changes:
                 del changed_detail[mark:]
-            player_seasons.flush(cur, report, changed_detail,
-                                 scope=(season_scope_sql, [season, season_type]))
+            player_seasons.flush(cur, report, changed_detail, scope=(
+                "player_id = %s AND " + season_scope_sql, [player_id, season, season_type]))
+            mark = len(changed_detail)
+            league_seasons.flush(cur, report, changed_detail, scope=(
+                "player_id <> %s AND " + season_scope_sql, [player_id, season, season_type]))
+            season_fact_detail = changed_detail[mark:]
+            if accept_frame_changes:
+                del changed_detail[mark:]
 
             halting = sum(c["changed"] + c["deleted"] for c in report.values())
             if accept_frame_changes:
-                frame = report["league_zone_baseline"]
-                halting -= frame["changed"] + frame["deleted"]
+                for accepted in ("league_zone_baseline", "player_season:league"):
+                    halting -= report[accepted]["changed"] + report[accepted]["deleted"]
                 halting -= report["player"]["changed"]
             if halting and not allow_changed:
                 raise LoadHalt(
@@ -482,6 +507,8 @@ def load_hero_season(
                     meta, snapshot_path, frame_detail)
             if accept_frame_changes and rename_detail:
                 report["_playerRenames"] = rename_detail
+            if accept_frame_changes and season_fact_detail:
+                report["_leagueSeasonFactChanges"] = season_fact_detail
             cur.execute(
                 "UPDATE load_run SET report = %s WHERE run_id = %s",
                 (Jsonb(report), run_id),

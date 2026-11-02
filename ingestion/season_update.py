@@ -284,13 +284,18 @@ def guard_publish() -> None:
                    + "\n".join(dirty))
 
 
-def accepted_frame_changes(load_report: dict, report: list[str]) -> dict | None:
+def accepted_frame_changes(load_report: dict, report: list[str],
+                           key: str = "_leagueFrameChanges",
+                           label: str = "league frame") -> dict | None:
     """The league frame changes a loop load accepted (ADR-0080 as amended
     2026-10-22), reported in the session's lines; the caller records the
-    returned record in the session's status file as leagueFrameChanges."""
-    record = load_report.get("_leagueFrameChanges")
+    returned record in the session's status file as leagueFrameChanges. The
+    tracking baseline's (key _leagueTrackingChanges, label "league tracking",
+    as amended 2026-11-02) are recorded the same way as
+    leagueTrackingChanges."""
+    record = load_report.get(key)
     if record:
-        line = (f"league frame: {len(record['changes'])} change(s) accepted "
+        line = (f"{label}: {len(record['changes'])} change(s) accepted "
                 f"(frame through {record['through'] or 'today'})")
         log(f"  {line}")
         report.append(line)
@@ -309,6 +314,21 @@ def accepted_player_renames(load_report: dict, report: list[str]) -> list[str] |
             log(f"    {rename}")
         report.append(line)
     return renames
+
+
+def accepted_season_fact_changes(load_report: dict, report: list[str]) -> list[str] | None:
+    """Other players' season-fact corrections a loop hero load accepted
+    (ADR-0080 as amended 2026-11-02), reported in the session's lines with
+    each diff; the caller records them in the session's status file as
+    leagueSeasonFactChanges."""
+    changes = load_report.get("_leagueSeasonFactChanges")
+    if changes:
+        line = f"league season facts: {len(changes)} change(s) accepted"
+        log(f"  {line}")
+        for change in changes:
+            log(f"    {change}")
+        report.append(line)
+    return changes
 
 
 def store_shots_after(args: argparse.Namespace, player_id: int, season: str,
@@ -342,9 +362,10 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
               report: list[str]) -> dict:
     """The DB-engine derive phase (ADR-0080): load the session's snapshots
     into the record store (every reconciliation live; change detection halts
-    on corrections, growth flows, and a league frame change or a player
-    rename is accepted and returned for the status file, keyed by its status
-    field), then export the four payloads to the same derived paths the
+    on corrections, growth flows, and a league frame or tracking baseline
+    change, a player rename, or another player's season-fact correction is
+    accepted and returned for the status file, keyed by its status field),
+    then export the four payloads to the same derived paths the
     file derives use. A LoadHalt or any loader/export hard-fail is a session
     Halt."""
     guard_production_store(args)
@@ -367,10 +388,15 @@ def db_derive(args: argparse.Namespace, player: str, season: str,
             records = {
                 "leagueFrameChanges": accepted_frame_changes(hero_report, report),
                 "playerRenames": accepted_player_renames(hero_report, report),
+                "leagueSeasonFactChanges": accepted_season_fact_changes(hero_report, report),
             }
-            lt.load_tracking(conn, player, season,
-                             snapshot_path=tracking_path,
-                             league_path=league_tracking_path)
+            tracking_report = lt.load_tracking(conn, player, season,
+                                               snapshot_path=tracking_path,
+                                               league_path=league_tracking_path,
+                                               accept_frame_changes=True)
+            records["leagueTrackingChanges"] = accepted_frame_changes(
+                tracking_report, report,
+                key="_leagueTrackingChanges", label="league tracking")
             lgc.load_game_corpus(conn, player, season,
                                  totals_path=totals_path,
                                  universe_games=universe)
