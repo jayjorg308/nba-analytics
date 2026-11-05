@@ -449,9 +449,14 @@ Defaults taken:
 
 - **The 2026-27 season photo**, with its credit and alt text. Stage 3
   shipped on the typographic banner without it; the photo replaces that
-  banner whenever it lands (the team registry's `homes` entry).
+  banner whenever it lands (the team registry's `homes` entry). _Chosen
+  2026-11-05 and committed at `public/img/jazz-2026-27-banner.jpg`: Bailey
+  and George slapping hands, a Jazz team-site frame, credited "photograph
+  via the Utah Jazz" (provenance in `docs/image-credits.md`). The alt text
+  is drafted for the author's red pen._
 - **Game photos** whenever you want them, from Stage 1 on, through
-  `game:photo`.
+  `game:photo`. Since 2026-11-05 the 06:30 session lists each unphotographed
+  game's candidates (`ingestion/find_game_photos.py`, ADR-0094 as amended).
 - **Darryn Peterson's banner photo** before his flip (his headshot comes
   from the Stage 2 script). _Chosen 2026-10-29 and committed at
   `public/img/darryn-peterson-hero.jpg`, the path `hero:scaffold` emits

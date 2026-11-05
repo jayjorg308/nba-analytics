@@ -42,7 +42,7 @@ export interface TeamSeasonHome {
    * disagree. */
   featured: readonly FeaturedPlayer[]
   /** The season's banner photograph; absent renders the typographic
-   * poster (2025-26, and 2026-27 until its photo lands). */
+   * poster (2025-26). */
   banner?: SeasonBanner
 }
 
@@ -92,13 +92,31 @@ export const utahJazz: TeamConfig = {
       ],
     },
     // The three living arguments (season.config.json's 2026-27 hero
-    // seasons). The banner photograph is the user's to supply.
+    // seasons).
     '2026-27': {
       featured: [
         { slug: 'keyonte-george', playerName: 'Keyonte George' },
         { slug: 'ace-bailey', playerName: 'Ace Bailey' },
         { slug: 'darryn-peterson', playerName: 'Darryn Peterson' },
       ],
+      // Chosen 2026-11-05: a Jazz team-site frame (the 10-26 recap's
+      // header, a raw camera filename with no credit on the page), so the
+      // credit stays at team grain. Provenance, and why the frame is
+      // 2026-27's, in docs/image-credits.md. Two featured players in one
+      // frame, which suits a name-led banner that argues nothing.
+      banner: {
+        imagePath: 'img/jazz-2026-27-banner.jpg',
+        imageAlt:
+          'Ace Bailey slaps hands with Keyonte George in the purple Jazz number 19 and number 3 jerseys, two teammates beside them',
+        imageCredit: 'photograph via the Utah Jazz',
+        // The 3:2 frame is wider than both layouts, so only x moves. The
+        // portrait poster keeps about a third of the width: Bailey, his
+        // face right of center. The wide panel keeps three quarters, and
+        // 40% puts Bailey's face just past the panel's left fade, the
+        // slapped hands at center, and George's face inside the right edge.
+        imagePosition: '20% 30%',
+        imagePositionWide: '40% 30%',
+      },
     },
   },
 }
