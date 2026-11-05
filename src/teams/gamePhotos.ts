@@ -53,6 +53,34 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '34% 40%',
     imagePositionWide: '22% 40%',
   },
+  '2026-10-21-mem': {
+    imagePath: 'img/games/2026-10-21-mem.jpg',
+    imageAlt: 'Darryn Peterson points across the floor as two teammates and a Memphis player run the court, in the white Jazz number 22 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '46% 40%',
+    imagePositionWide: '55% 40%',
+  },
+  '2026-10-28-sas': {
+    imagePath: 'img/games/2026-10-28-sas.jpg',
+    imageAlt: 'Isaiah Collier looks over his shoulder on the dribble, in the white Jazz number 8 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '55% 40%',
+    imagePositionWide: '45% 40%',
+  },
+  '2026-11-02-sas': {
+    imagePath: 'img/games/2026-11-02-sas.jpg',
+    imageAlt: 'Lauri Markkanen slaps hands with the Jazz bench, in the white Jazz number 23 jersey',
+    imageCredit: 'photograph by Emma Decasa, Utah Jazz',
+    imagePosition: '20% 40%',
+    imagePositionWide: '0% 40%',
+  },
+  '2026-11-04-nop': {
+    imagePath: 'img/games/2026-11-04-nop.jpg',
+    imageAlt: 'Keyonte George dribbles against a New Orleans defender, in the white Jazz number 3 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '56% 40%',
+    imagePositionWide: '20% 40%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
