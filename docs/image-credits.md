@@ -300,3 +300,45 @@ each derivative is 2048px on the long side with the metadata dropped.
   number sits between the 10-21 and 10-25 frames from the same site. A
   2025-26 home game against the Pelicans would look the same; the author
   accepted the inference 2026-11-01.
+
+The next four were listed by the photo finder (`ingestion/find_game_photos.py`,
+ADR-0094 as amended) or, for 10-21, by the research doc, and chosen
+2026-11-05. Each is a Jazz camera original from the team site, pulled
+2026-11-05 by `game:photo` from its URL and retained in
+`data/game-sources/<slug>.<ext>`; each derivative is 2048px on the long
+side with the metadata dropped. 10-26 has no photograph: its recap header
+(`DSC06907.jpg`) is the 2026-27 home banner, and its other team frame
+(`ZMR03509-1.jpg`) could be 10-25 or 10-26.
+
+- `public/img/games/2026-10-21-mem.jpg`, Peterson (22, white) pointing
+  across the floor beside George (3) and a teammate in a headband, a
+  Grizzlies player (23) at right:
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/DSC01389.jpeg`
+  (3995x2542), a header the research doc found 2026-11-01; by 11-05 it
+  was older than the news page reaches, so no record was read and the
+  credit is the team form. **The game is verified by the venue**: the
+  "Get Your Grizz Card" board and the Grizzlies jerseys in the crowd put
+  it at FedExForum, Peterson puts it in 2026-27, and 10-21 is the Jazz's
+  only game at Memphis (no Memphis preseason game).
+- `public/img/games/2026-10-28-sas.jpg`, Isaiah Collier (8, white) on the
+  dribble at Delta Center, no defender in the frame: the 10-30 Portland
+  preview's header, `.../2026/10/DSC07954.jpg` (5458x3718), with an empty
+  credit on its record. **The game is a strong inference, not verified**:
+  white at home is 10-23 or 10-28, and the camera counter decides between
+  them, since this body's frames run monotone through the month (`DSC04301`
+  on 10-23, `DSC06907` on 10-26, then this one, then the wrap to
+  `DSC00504` on 11-02). 10-31 was black.
+- `public/img/games/2026-11-02-sas.jpg`, Markkanen (23, white) slapping
+  hands with the Jazz bench: the recap header,
+  `.../2026/11/DSC00608.jpg` (6471x4512). **Credited by name**: its record
+  carries "Emma Decasa" in the credit field, so the credit is "photograph
+  by Emma Decasa, Utah Jazz". **The game is a strong inference**: the same
+  camera's `DSC00504`, 104 frames earlier, shows the San Antonio arena
+  ("Made the Texas Way" behind the court, a Spurs player in black), the
+  Jazz's only game there.
+- `public/img/games/2026-11-04-nop.jpg`, George (3, white) on the dribble
+  against a Pelicans defender in navy: the recap header,
+  `.../2026/11/DSC01661.jpg` (5243x3647), with an empty credit on its
+  record. **The game is a strong inference**: the Pelicans also wore navy
+  at Delta Center on 10-23, but this frame's counter follows the 11-02
+  San Antonio frames, and 11-04 is the only Pelicans game after 11-02.
