@@ -233,6 +233,32 @@ sga-hero.jpg record (see its entry)._
   wordmark, and the typefaces, except a game with a photograph, whose card
   is redrawn with it (ADR-0094, below).
 
+## Season banners
+
+_A team season's home banner (ADR-0087, decision 7 of
+`docs/plans/jazz-home-transition.md`): one authored photograph per season,
+credited on `/methodology`'s SOURCES like a hero banner. 2025-26 has none and
+renders the typographic poster._
+
+- `public/img/jazz-2026-27-banner.jpg`, Ace Bailey (19) slapping hands with
+  Keyonte George (3), both in purple, with two teammates partly in frame:
+  the header photo of the Jazz's 10-26 Grizzlies recap,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/DSC06907.jpg`
+  (4956x3295, pulled 2026-11-05). The page's embedded image record has an
+  empty credit, copyright, and caption, and the file carries no EXIF credit,
+  so the credit is "photograph via the Utah Jazz". Chosen 2026-11-05 over
+  `ZMR05905.jpg` (the same two from behind, in white) and `DSC06111.jpg`
+  (George, Markkanen, and Peterson). **The season is an inference, not read
+  off the frame**: Bailey and George were both Jazz players in 2025-26 and
+  the jersey is the same design. It rests on the frame heading a 2026-27
+  recap, and on its camera counter falling inside this October's run from
+  the same camera (`DSC01389` at Memphis 10-21, with Peterson in frame,
+  through `DSC05370` and `DSC06111` on 10-25 to `DSC07954`). Its game is
+  10-25 or 10-26 (purple fits both), which is why it was never used as a
+  game photograph. Committed as a 2048px q85 progressive JPEG with the
+  metadata dropped (`scripts/game_photo.py`); source retained in
+  `data/banner-sources/jazz-2026-27-DSC06907.jpg`.
+
 ## Game photographs
 
 _Added 2026-10-29 (ADR-0094). A game's photograph is credited on its own

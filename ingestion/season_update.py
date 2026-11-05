@@ -47,7 +47,10 @@ THE TEAM SESSION (ADR-0081/0082, per liveTeams entry, after the heroes):
   and in live mode team:sync -> cards:games for the new games -> full gate
   -> a data-only commit of public/data/_teams/<tricode>/ and those cards.
   A tool surface renders from game one, so there is no volume gate; dark
-  mode still pulls and derives daily.
+  mode still pulls and derives daily. After each team session, whatever its
+  outcome, the photo finder writes the unphotographed games' candidate
+  frames to a contact sheet (find_game_photos.py, report-only; skipped
+  under --as-of).
 
 LOCAL-ONLY: stats.nba.com blocks cloud IPs. Run on the dev machine, via
 scripts/season-update.ps1 under Task Scheduler for the daily cadence.
@@ -64,6 +67,7 @@ import time
 from datetime import date, datetime
 from pathlib import Path
 
+import find_game_photos
 import live_pulls
 import pull_opponent_games as pog
 from pull_rulers import day_before
@@ -762,6 +766,8 @@ def main() -> None:
                       "error": str(halt)}
             log(f"  HALT: {halt}")
             halted = True
+        if args.as_of is None:  # a replay reads no live page
+            status["photoCandidates"] = photo_candidates_step(entry)
         status_path = STATUS_DIR / f"{session}-{slug}-{entry['season']}.json"
         status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
         log(f"  status -> {status_path}")
@@ -774,6 +780,23 @@ def main() -> None:
 def team_slug(entry: dict) -> str:
     """The status-file and commit-subject key for a team entry."""
     return f"team-{entry['tricode'].lower()}"
+
+
+def photo_candidates_step(entry: dict) -> dict:
+    """The game photo finder after every team session, whatever its outcome
+    (ADR-0094 as amended 2026-11-05): it lists each unphotographed game's
+    candidate frames in a contact sheet under data/season-loop/, and that
+    is all. Report-only, so it never halts a session and never touches a
+    published file: a photograph is still added by a person, by PR."""
+    try:
+        summary = find_game_photos.run(entry["team"], entry["tricode"], entry["season"])
+    except Exception as exc:  # report-only: no finder failure halts a session
+        log(f"  photo finder: {exc}")
+        return {"error": str(exc)}
+    ready = [slug for slug, g in summary["games"].items() if g["best"] is not None]
+    log(f"  photo finder: {summary['unphotographed']} game(s) without a photograph, "
+        f"{len(ready)} with a new team frame -> {summary['file']}")
+    return summary
 
 
 # --- Game publishing (ADR-0088/0089/0091) ---------------------------------------

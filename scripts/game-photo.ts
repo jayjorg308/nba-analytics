@@ -7,10 +7,16 @@
 // credit are a person's (VOICE.md's banner rules; the credit's two forms in
 // CONTEXT.md's Hero banner entry), and the photo must be from this game.
 //
-// Usage: npm run game:photo -- <game-slug> <source-image>
+// Usage: npm run game:photo -- <game-slug> <source-image | https URL>
+//
+// A URL (the form the photo finder's contact sheet prints,
+// ingestion/find_game_photos.py) is downloaded first, its query string
+// dropped so a CDN preview URL still fetches the original, and kept as the
+// game's retained source, data/game-sources/<slug>.<ext> (gitignored, like
+// every source).
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { parseTeamSeasonIndex } from '../src/domain/teamSeasonIndex'
 import { SCAFFOLD_SENTINEL } from '../src/heroes/authoring'
@@ -20,13 +26,14 @@ import { TEAMS } from '../src/teams/registry'
 
 const CONFIG = path.join('src', 'teams', 'gamePhotos.ts')
 
-const [slug, source] = process.argv.slice(2)
-if (slug === undefined || source === undefined) {
-  console.error('usage: npm run game:photo -- <game-slug> <source-image>')
+const [slug, sourceArg] = process.argv.slice(2)
+if (slug === undefined || sourceArg === undefined) {
+  console.error('usage: npm run game:photo -- <game-slug> <source-image | https URL>')
   process.exit(1)
 }
-if (!existsSync(source)) {
-  console.error(`no such image: ${source}`)
+const sourceUrl = /^https?:\/\//i.test(sourceArg) ? new URL(sourceArg) : undefined
+if (sourceUrl === undefined && !existsSync(sourceArg)) {
+  console.error(`no such image: ${sourceArg}`)
   process.exit(1)
 }
 const published = TEAMS.some((team) =>
@@ -42,6 +49,26 @@ if (!published) {
 if (GAME_PHOTOS[slug] !== undefined) {
   console.error(`${slug} already has a photograph in ${CONFIG}; edit that entry, or remove it first`)
   process.exit(1)
+}
+
+let source = sourceArg
+if (sourceUrl !== undefined) {
+  sourceUrl.search = ''
+  const ext = (path.extname(sourceUrl.pathname) || '.jpg').toLowerCase()
+  source = path.join('data', 'game-sources', `${slug}${ext}`)
+  if (existsSync(source)) {
+    console.error(`${source} is already on disk; pass it as the source, or remove it first`)
+    process.exit(1)
+  }
+  const response = await fetch(sourceUrl, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; goodshots)' } })
+  const type = response.headers.get('content-type') ?? ''
+  if (!response.ok || !type.startsWith('image/')) {
+    console.error(`could not fetch ${sourceUrl.href}: HTTP ${response.status} ${type}`)
+    process.exit(1)
+  }
+  mkdirSync(path.dirname(source), { recursive: true })
+  writeFileSync(source, Buffer.from(await response.arrayBuffer()))
+  console.log(`source kept: ${source} (from ${sourceUrl.href})`)
 }
 
 const imagePath = `img/games/${slug}.jpg`
@@ -77,6 +104,6 @@ console.log(`stubbed ${slug} in ${CONFIG}. Next:
   1. Author the entry: the alt text (the frame only, VOICE.md's banner rules), the
      credit ("photograph by <Name>, <Org>" or "photograph via the <Team>"), and both
      focal points ("x% y%"; check the wide panel and the 375px poster in the browser).
-  2. Record the provenance in docs/image-credits.md.
+  2. Record the provenance in docs/image-credits.md${sourceUrl ? ` (the source URL: ${sourceUrl.href})` : ''}.
   3. npm run cards:games -- ${slug}   (redraws the share card with the photograph)
   4. npm test                         (gamePhotos.test.ts is red until 1 and 3 are done)`)

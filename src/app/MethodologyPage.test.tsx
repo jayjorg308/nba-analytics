@@ -31,7 +31,7 @@ describe('MethodologyPage (the self-explanation surface, ADR-0071)', () => {
     render(<MethodologyPage />)
     const rows = [...document.querySelectorAll('.methodology-credits li')]
     // Every hero banner, plus every team season's banner photograph on file
-    // (ADR-0087; none until the user supplies one, so zero today).
+    // (ADR-0087; the Jazz 2026-27 banner since 2026-11-05).
     const seasonBanners = TEAMS.flatMap((t) => Object.values(t.homes).filter((h) => h.banner !== undefined))
     expect(rows).toHaveLength(HEROES.length + seasonBanners.length)
     for (const hero of HEROES) {
