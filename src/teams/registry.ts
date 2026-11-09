@@ -99,23 +99,22 @@ export const utahJazz: TeamConfig = {
         { slug: 'ace-bailey', playerName: 'Ace Bailey' },
         { slug: 'darryn-peterson', playerName: 'Darryn Peterson' },
       ],
-      // Chosen 2026-11-05: a Jazz team-site frame (the 10-26 recap's
-      // header, a raw camera filename with no credit on the page), so the
-      // credit stays at team grain. Provenance, and why the frame is
-      // 2026-27's, in docs/image-credits.md. Two featured players in one
-      // frame, which suits a name-led banner that argues nothing.
+      // Swapped 2026-11-09 to Peterson's jumper at Minnesota, the same
+      // frame as the 11-08 report card (a Jazz team-site recap header with
+      // no credit on its record), so the credit stays at team grain. The
+      // frame proves its own season: Peterson is a 2026-27 rookie. It
+      // replaced Bailey and George slapping hands (chosen 2026-11-05).
+      // Provenance for both in docs/image-credits.md.
       banner: {
         imagePath: 'img/jazz-2026-27-banner.jpg',
-        imageAlt:
-          'Ace Bailey slaps hands with Keyonte George in the purple Jazz number 19 and number 3 jerseys, two teammates beside them',
+        imageAlt: 'Darryn Peterson holds his follow-through on a jumper, in the white Jazz number 22 jersey',
         imageCredit: 'photograph via the Utah Jazz',
-        // The 3:2 frame is wider than both layouts, so only x moves. The
-        // portrait poster keeps about a third of the width: Bailey, his
-        // face right of center. The wide panel keeps three quarters, and
-        // 40% puts Bailey's face just past the panel's left fade, the
-        // slapped hands at center, and George's face inside the right edge.
-        imagePosition: '20% 30%',
-        imagePositionWide: '40% 30%',
+        // The frame is wider than both layouts, so only x moves. The
+        // portrait poster keeps about a third of the width: 53% centers
+        // Peterson with the ball in the air at its top. The wide panel
+        // keeps three quarters, and 50% puts him clear of its left fade.
+        imagePosition: '53% 40%',
+        imagePositionWide: '50% 40%',
       },
     },
   },
