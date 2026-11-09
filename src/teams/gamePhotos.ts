@@ -81,6 +81,20 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '56% 40%',
     imagePositionWide: '20% 40%',
   },
+  '2026-11-06-dal': {
+    imagePath: 'img/games/2026-11-06-dal.jpg',
+    imageAlt: 'Lauri Markkanen holds his follow-through as a Dallas defender contests the jumper, in the white Jazz number 23 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '24% 40%',
+    imagePositionWide: '0% 40%',
+  },
+  '2026-11-08-min': {
+    imagePath: 'img/games/2026-11-08-min.jpg',
+    imageAlt: 'Darryn Peterson holds his follow-through on a jumper, in the white Jazz number 22 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '53% 40%',
+    imagePositionWide: '50% 40%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
