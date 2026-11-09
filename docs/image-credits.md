@@ -342,3 +342,26 @@ side with the metadata dropped. 10-26 has no photograph: its recap header
   record. **The game is a strong inference**: the Pelicans also wore navy
   at Delta Center on 10-23, but this frame's counter follows the 11-02
   San Antonio frames, and 11-04 is the only Pelicans game after 11-02.
+
+The next two were listed by the photo finder after the 06:30 session of
+2026-11-09 and chosen the same day, each its game's recap header, pulled
+2026-11-09 by `game:photo` and retained in `data/game-sources/<slug>.jpg`.
+Both records carry an empty credit, so both are credited "photograph via
+the Utah Jazz". **Both games are verified by the opponent or venue**, the
+first since 10-21 not to rest on the camera counter: each is the Jazz's
+only game against that team so far, and the Jazz played neither in the
+preseason (Denver, San Antonio, Phoenix). 10-26 remains without a
+photograph and is now older than the news page reaches.
+
+- `public/img/games/2026-11-06-dal.jpg`, Markkanen (23, white) holding his
+  follow-through on a jumper as Dallas's number 14 contests with a raised
+  hand: the header of the Jazz's NBA Cup recap,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC03457.jpg`
+  (5301x3427). The same night's `DSC03951.jpg` (George and Markkanen
+  slapping hands, Dallas players behind them) headed the 11-07 preview and
+  was passed over for the jumper.
+- `public/img/games/2026-11-08-min.jpg`, Peterson (22, white) holding his
+  follow-through with the ball in the air, Timberwolves shirts in the
+  crowd behind him: the recap header,
+  `.../2026/11/DSC04513.jpg` (5335x3657). A blurred figure fills the
+  frame's left edge, unidentifiable, so the alt text names no defender.
