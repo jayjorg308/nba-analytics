@@ -452,8 +452,9 @@ Defaults taken:
   banner whenever it lands (the team registry's `homes` entry). _Chosen
   2026-11-05 and committed at `public/img/jazz-2026-27-banner.jpg`: Bailey
   and George slapping hands, a Jazz team-site frame, credited "photograph
-  via the Utah Jazz" (provenance in `docs/image-credits.md`). The alt text
-  is drafted for the author's red pen._
+  via the Utah Jazz" (provenance in `docs/image-credits.md`). Swapped
+  2026-11-09, at the author's pick, to Peterson's jumper at Minnesota, the
+  11-08 report card's frame, at the same path and with the same credit._
 - **Game photos** whenever you want them, from Stage 1 on, through
   `game:photo`. Since 2026-11-05 the 06:30 session lists each unphotographed
   game's candidates (`ingestion/find_game_photos.py`, ADR-0094 as amended).

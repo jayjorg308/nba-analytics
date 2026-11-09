@@ -240,24 +240,28 @@ _A team season's home banner (ADR-0087, decision 7 of
 credited on `/methodology`'s SOURCES like a hero banner. 2025-26 has none and
 renders the typographic poster._
 
-- `public/img/jazz-2026-27-banner.jpg`, Ace Bailey (19) slapping hands with
-  Keyonte George (3), both in purple, with two teammates partly in frame:
-  the header photo of the Jazz's 10-26 Grizzlies recap,
+- `public/img/jazz-2026-27-banner.jpg`, Darryn Peterson (22, white) holding
+  his follow-through on a jumper at Minnesota, the ball in the air: the
+  same frame as the 11-08 report card (see its entry under Game
+  photographs), the Jazz's recap header
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC04513.jpg`
+  (5335x3657), its record's credit empty, so "photograph via the Utah
+  Jazz". **The frame proves its season**: Peterson is a 2026-27 rookie.
+  Chosen by the author 2026-11-09. Committed as a 2048px q85 progressive
+  JPEG with the metadata dropped (`scripts/game_photo.py`), byte-identical
+  to `public/img/games/2026-11-08-min.jpg` since both are derived from the
+  same source, retained in `data/game-sources/2026-11-08-min.jpg`; the
+  banner keeps its own file so a later change to the game's photograph
+  never moves the home banner. **Swap note (2026-11-09):** this replaced
+  the first 2026-27 banner, Ace Bailey (19) slapping hands with Keyonte
+  George (3) in purple, two teammates partly in frame: the header photo of
+  the Jazz's 10-26 Grizzlies recap,
   `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/DSC06907.jpg`
-  (4956x3295, pulled 2026-11-05). The page's embedded image record has an
-  empty credit, copyright, and caption, and the file carries no EXIF credit,
-  so the credit is "photograph via the Utah Jazz". Chosen 2026-11-05 over
-  `ZMR05905.jpg` (the same two from behind, in white) and `DSC06111.jpg`
-  (George, Markkanen, and Peterson). **The season is an inference, not read
-  off the frame**: Bailey and George were both Jazz players in 2025-26 and
-  the jersey is the same design. It rests on the frame heading a 2026-27
-  recap, and on its camera counter falling inside this October's run from
-  the same camera (`DSC01389` at Memphis 10-21, with Peterson in frame,
-  through `DSC05370` and `DSC06111` on 10-25 to `DSC07954`). Its game is
-  10-25 or 10-26 (purple fits both), which is why it was never used as a
-  game photograph. Committed as a 2048px q85 progressive JPEG with the
-  metadata dropped (`scripts/game_photo.py`); source retained in
-  `data/banner-sources/jazz-2026-27-DSC06907.jpg`.
+  (4956x3295, pulled and chosen 2026-11-05, credited "photograph via the
+  Utah Jazz" from an empty record). That frame's season rested on
+  inference (its recap placement and its camera counter, since Bailey and
+  George were both Jazz players in 2025-26), and its game is 10-25 or
+  10-26. Source retained in `data/banner-sources/jazz-2026-27-DSC06907.jpg`.
 
 ## Game photographs
 
@@ -307,8 +311,9 @@ ADR-0094 as amended) or, for 10-21, by the research doc, and chosen
 2026-11-05 by `game:photo` from its URL and retained in
 `data/game-sources/<slug>.<ext>`; each derivative is 2048px on the long
 side with the metadata dropped. 10-26 has no photograph: its recap header
-(`DSC06907.jpg`) is the 2026-27 home banner, and its other team frame
-(`ZMR03509-1.jpg`) could be 10-25 or 10-26.
+(`DSC06907.jpg`) was then the 2026-27 home banner (until the 2026-11-09
+swap, see Season banners), and its other team frame (`ZMR03509-1.jpg`)
+could be 10-25 or 10-26.
 
 - `public/img/games/2026-10-21-mem.jpg`, Peterson (22, white) pointing
   across the floor beside George (3) and a teammate in a headband, a
