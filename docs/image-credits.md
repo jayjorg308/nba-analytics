@@ -392,3 +392,24 @@ recap header. Chosen by the author the same day.
   checked (10-21, 10-25, 10-28, 10-31, 11-06, 11-08) came from its own
   game, and the author accepted the inference 2026-11-11. Focal points
   carried over from its banner use, the same poster layout.
+
+The photo finder listed two team frames for 11-10 after the session that
+published the game (2026-11-11, a day late behind the 11-02 correction),
+and the one that shows its opponent was picked the same day. Pulled
+2026-11-11 by `game:photo` and retained in
+`data/game-sources/2026-11-10-mia.jpg`; the record carries an empty
+credit and the file no embedded metadata, so it is credited "photograph
+via the Utah Jazz".
+
+- `public/img/games/2026-11-10-mia.jpg`, Ace Bailey (19, purple) driving
+  with the ball low as a Heat defender in white reaches across him, Josh
+  Green (Jazz) and a second Heat player behind them: the header of the
+  Jazz's 11-11 Orlando preview,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC05310.jpg`
+  (5762x4372). **The game is verified by the opponent**: Heat players are
+  in the frame, 11-10 is the Jazz's only game against Miami so far, and
+  the Jazz played no Heat preseason game (Denver, San Antonio, Phoenix).
+  The counter agrees, after 11-08's `DSC04513`. The game's recap header,
+  `.../2026/11/DSC05158.jpg` (Peterson, 22, purple, bringing the ball up
+  with no opponent in frame), is 152 frames earlier from the same camera
+  and was passed over because nothing in it proves its game.
