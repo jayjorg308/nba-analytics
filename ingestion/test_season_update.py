@@ -7,8 +7,9 @@ frontiers, the Gate 2 mechanical reading, stuck detection, the branch
 guard's decisions (git itself is faked), and the team session's game
 publishing: what each new game pulls, lag deferring the frontier, and the
 live publish's order (pulls, git, and npm faked; the record-store steps
-stubbed, plus one run of the game step against a real store); and an
-upstream failure halting only its own session.
+stubbed, plus one run of the game step against a real store); the
+no-change early exit, which a correction a halted session already saw never
+passes; and an upstream failure halting only its own session.
 """
 
 from __future__ import annotations
@@ -271,14 +272,33 @@ def write_pair(raw, game_id, home, away):
                                 "awayTeam": {**away, "players": players}}}})
 
 
+def shot_snapshot(rows):
+    """A shotchartdetail snapshot as the raw layer holds one."""
+    return {"_meta": {}, "response": {"resultSets": [{
+        "name": "Shot_Chart_Detail", "headers": ["GAME_ID", "GAME_DATE", "SHOT_TYPE"],
+        "rowSet": rows}]}}
+
+
+def night_rows(date_to=None, corrected=()):
+    """Two threes a game through date_to. A corrected game's first shot reads
+    as a two: the 2026-11-09 shape (game 0022600168, event 278, reclassified
+    3PT to 2PT), the same games and the same count with one row's content
+    changed."""
+    return [[gid, d.replace("-", ""),
+             "2PT Field Goal" if gid in corrected and i == 0 else "3PT Field Goal"]
+            for gid, (d, _, _) in NIGHTS.items()
+            for i in range(2) if date_to is None or d <= date_to]
+
+
 class FakePulls:
     """Every live_pulls call the team session makes, recorded. `short`
     names (game_id, tricode) one-day pulls that land a row short of the box;
-    `logged` the games a fresh league game log names (default: all)."""
+    `logged` the games a fresh league game log names (default: all);
+    `corrected` the games whose shots upstream has corrected (night_rows)."""
 
-    def __init__(self, monkeypatch, *, short=(), logged=None):
+    def __init__(self, monkeypatch, *, short=(), logged=None, corrected=()):
         self.calls: list[tuple] = []
-        self.short, self.logged = set(short), logged
+        self.short, self.logged, self.corrected = set(short), logged, set(corrected)
         for name in ("pull_ruler_snapshot", "pull_team_game_snapshot",
                      "pull_league_game_log_snapshot", "pull_roster_snapshot",
                      "pull_team_shot_snapshot"):
@@ -310,11 +330,8 @@ class FakePulls:
     def pull_team_shot_snapshot(self, team, team_id, season, out_dir, *, date_to, stamp,
                                 pull_date):
         self.calls.append(("team", date_to))
-        rows = [[gid, d.replace("-", "")] for gid, (d, _, _) in NIGHTS.items()
-                for _ in range(2) if date_to is None or d <= date_to]
-        return write_json(out_dir / f"{pull_date}{stamp}.json", {"_meta": {}, "response": {
-            "resultSets": [{"name": "Shot_Chart_Detail", "headers": ["GAME_ID", "GAME_DATE"],
-                            "rowSet": rows}]}})
+        return write_json(out_dir / f"{pull_date}{stamp}.json",
+                          shot_snapshot(night_rows(date_to, self.corrected)))
 
 
 def test_unpublished_games_are_paired_through_the_date_without_a_file(tmp_path):
@@ -497,7 +514,8 @@ def test_the_no_change_exit_needs_the_index_at_the_candidate(jazz_world, monkeyp
                                           stamp="T000000-discovery", pull_date="2026-10-23")
     deployed = jazz_world["tmp"] / "public" / "data" / "_teams" / "uta"
     write_json(deployed / "2026-27.json", {"_meta": {
-        "dataThrough": "2026-10-23", "totalShots": 4, "zoneConflictsDropped": 0}})
+        "dataThrough": "2026-10-23", "totalShots": 4, "zoneConflictsDropped": 0,
+        "sourceSnapshot": "data/raw/_teams/uta/2026-27/2026-10-23T000000-discovery.json"}})
     # The team payload already stands at the candidate, but no season index
     # does (a session that never published its games): no early exit.
     assert su.run_team(LIVE_UTA, session_args())["outcome"] == "published"
@@ -507,6 +525,105 @@ def test_the_no_change_exit_needs_the_index_at_the_candidate(jazz_world, monkeyp
     status = su.run_team(LIVE_UTA, session_args())
     assert status["outcome"] == "no-change"
     assert pulls.calls == [("team", None)]  # the discovery pull alone
+
+
+# The no-change exit after a halt (2026-11-09/10). Upstream corrected one
+# row's content (game 0022600168, event 278, 3PT to 2PT) with the frontier and
+# the count unchanged. The 23:45 session halted at the store on the changed
+# row, so the store and the deployed payload kept the old one; the 06:30
+# session's discovery then equaled the halted session's, and it exited
+# no-change with the correction still unloaded. The exit now compares against
+# the rows the deployed payload was built from.
+
+DEPLOYED_SOURCE = "data/raw/_teams/uta/2026-27/2026-10-24T091545-discovery.json"
+
+
+def deploy_opening_week(world, source):
+    """The deployed team payload, season index, and both game files at
+    2026-10-23, the payload built from the snapshot `source` names."""
+    deployed = world["tmp"] / "public" / "data" / "_teams" / "uta"
+    write_json(deployed / "2026-27.json", {"_meta": {
+        "dataThrough": "2026-10-23", "totalShots": 4, "zoneConflictsDropped": 0,
+        "sourceSnapshot": source}})
+    write_json(deployed / "2026-27" / "index.json", {"_meta": {"dataThrough": "2026-10-23"}})
+    for gid in NIGHTS:
+        write_json(deployed / "2026-27" / "games" / f"{gid}.json", {})
+
+
+def test_a_correction_a_halted_session_saw_is_never_no_change(jazz_world, monkeypatch):
+    write_json(jazz_world["tmp"] / DEPLOYED_SOURCE, shot_snapshot(night_rows()))
+    deploy_opening_week(jazz_world, DEPLOYED_SOURCE)
+    FakePulls(monkeypatch, corrected={"0022600011"})
+    stamps = iter(["T234500", "T234501", "T234502"])
+    monkeypatch.setattr(su.live_pulls, "stamp_now", lambda: next(stamps))
+
+    def refuse(*_args):
+        raise su.Halt("record-store load halted: shot 0022600011 #1 changed")
+
+    monkeypatch.setattr(su, "db_derive_team", refuse)
+    # The session that first sees the correction halts at the store; the
+    # next one, whose discovery equals the halted session's, halts again.
+    for _ in range(2):
+        with pytest.raises(su.Halt, match="changed"):
+            su.run_team(LIVE_UTA, session_args())
+    # Once a published payload is built from the corrected rows, the exit
+    # holds again.
+    team_root = jazz_world["tmp"] / "data" / "raw" / "_teams" / "uta" / "2026-27"
+    (halted,) = team_root.glob("*T234500-discovery.json")
+    deploy_opening_week(jazz_world, halted.relative_to(jazz_world["tmp"]).as_posix())
+    assert su.run_team(LIVE_UTA, session_args())["outcome"] == "no-change"
+
+
+class PastTheExit(Exception):
+    """The hero session went on to its coherence search: no early exit."""
+
+
+def test_a_hero_session_never_reads_an_unloaded_correction_as_no_change(
+        jazz_world, monkeypatch):
+    hero = {"slug": "keyonte-george", "player": "Keyonte George", "playerId": 1641718,
+            "season": "2026-27", "mode": "live"}
+    season_dir = jazz_world["tmp"] / "data" / "raw" / "keyonte-george" / "2026-27"
+    published = write_json(season_dir / "2026-10-24T091545-discovery.json",
+                           shot_snapshot(night_rows()))
+    # The halted session's discovery, which already carries the correction.
+    halted = write_json(season_dir / "2026-10-24T234500-discovery.json",
+                        shot_snapshot(night_rows(corrected={"0022600011"})))
+    deployed = jazz_world["tmp"] / "public" / "data" / "keyonte-george" / "2026-27.json"
+
+    def deploy(source):
+        write_json(deployed, {"_meta": {
+            "dataThrough": "2026-10-23", "totalShots": 4, "zoneConflictsDropped": 0,
+            "sourceSnapshot": source.relative_to(jazz_world["tmp"]).as_posix()}})
+
+    def pull_shot(player, player_id, season, out_dir, *, date_to, stamp, pull_date):
+        return write_json(out_dir / f"{pull_date}{stamp}.json",
+                          shot_snapshot(night_rows(date_to, {"0022600011"})))
+
+    def pull_tracking(*_args, **_kwargs):
+        raise PastTheExit
+
+    monkeypatch.setattr(su.live_pulls, "pull_shot_snapshot", pull_shot)
+    monkeypatch.setattr(su.live_pulls, "pull_tracking_snapshot", pull_tracking)
+    stamps = iter(["T063007", "T063008"])
+    monkeypatch.setattr(su.live_pulls, "stamp_now", lambda: next(stamps))
+    deploy(published)
+    with pytest.raises(PastTheExit):
+        su.run_season(hero, {}, session_args())
+    deploy(halted)
+    assert su.run_season(hero, {}, session_args())["outcome"] == "no-change"
+
+
+def test_the_no_change_exit_needs_the_deployed_source_on_disk(jazz_world):
+    meta = {"dataThrough": "2026-10-23", "totalShots": 4, "zoneConflictsDropped": 0}
+    rows = night_rows()
+    assert not su.upstream_matches_deployed(meta, "2026-10-23", rows)  # names none
+    meta["sourceSnapshot"] = DEPLOYED_SOURCE
+    assert not su.upstream_matches_deployed(meta, "2026-10-23", rows)  # not on disk
+    write_json(jazz_world["tmp"] / DEPLOYED_SOURCE, shot_snapshot(rows))
+    assert su.upstream_matches_deployed(meta, "2026-10-23", rows)
+    assert not su.upstream_matches_deployed(meta, "2026-10-24", rows)
+    assert not su.upstream_matches_deployed(
+        meta, "2026-10-23", night_rows(corrected={"0022600025"}))
 
 
 def test_a_live_team_session_on_the_files_engine_halts_first(jazz_world, monkeypatch):

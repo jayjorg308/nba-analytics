@@ -216,6 +216,32 @@ def tracking_general_fga(snapshot: dict) -> int:
     return -1
 
 
+def upstream_matches_deployed(deployed_meta: dict, candidate: str,
+                              rows: list[list]) -> bool:
+    """The no-change early exit's test (both sessions): the deployed payload
+    stands at the candidate frontier with the discovery's pre-drop count, and
+    the discovery's shot rows equal, row for row, those of the snapshot the
+    deployed payload was built from (its _meta.sourceSnapshot). A payload
+    that names no source, or names one the raw layer no longer holds, never
+    matches.
+
+    Measured against the deployed payload, never the previous session's
+    discovery: a session that halts on a content correction (same frontier,
+    same count, one row's fields changed) loads and publishes nothing, so
+    the next session's discovery equals the halted one's while the store and
+    the deployed payload still hold the old row (team-uta 2026-27, the
+    2026-11-09 halt on 0022600168 event 278 and the 2026-11-10 06:30
+    no-change)."""
+    pre_drop = deployed_meta["totalShots"] + deployed_meta["zoneConflictsDropped"]
+    if deployed_meta["dataThrough"] != candidate or pre_drop != len(rows):
+        return False
+    source = deployed_meta.get("sourceSnapshot")
+    if not source or not (REPO / source).is_file():
+        return False
+    _, source_rows = shot_rows(read_json(REPO / source))
+    return source_rows == rows
+
+
 def paired_game_exists(raw_root: Path, game_id: str) -> bool:
     pbp = raw_root / "play-by-play" / game_id
     box = raw_root / "box-score" / game_id
@@ -481,30 +507,27 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
         log("  DEFERRED: no publishable frontier yet")
         return status
 
-    # No-change early exit (live mode): if upstream is byte-identical to the
-    # previous session's discovery AND the deployed payload already sits at
-    # the candidate frontier, there is nothing to publish — most off-day
-    # mornings end here, before any anchored pull. A halted prior session
-    # cannot slip through: its deployed payload is stale, failing the
-    # frontier/count checks. Content-only upstream corrections always change
-    # the discovery rowset, so they run the full session; --force skips this
-    # exit entirely.
+    # No-change early exit (live mode): the session ends before any anchored
+    # pull when the deployed payload already stands at the candidate
+    # frontier and the discovery's shot rows equal, row for row, the rows of
+    # the snapshot that payload was built from (upstream_matches_deployed).
+    # Most off-day mornings end here. Any upstream change to the shot rows
+    # the deployed payload has not absorbed (a new game, or a content-only
+    # correction, including one a halted session already saw) fails that
+    # identity and runs the full session, which halts again until a human
+    # resolves it. The exit reads the shot rows alone: a correction in a
+    # sibling source (tracking, the league frames) waits for the next
+    # session that runs past it, on a new game or with --force, which skips
+    # this exit entirely.
     deployed_shot = REPO / "public" / "data" / slug / f"{season}.json"
-    prior_discoveries = sorted(p for p in season_dir.glob("*-discovery.json")
-                               if p != discovery_path)
     if (mode == "live" and not args.force and deployed_shot.exists()
-            and prior_discoveries):
-        deployed_meta = read_json(deployed_shot)["_meta"]
-        _, prior_rows = shot_rows(read_json(prior_discoveries[-1]))
-        pre_drop = (deployed_meta["totalShots"]
-                    + deployed_meta["zoneConflictsDropped"])
-        if (deployed_meta["dataThrough"] == candidate
-                and pre_drop == len(rows) and prior_rows == rows):
-            status.update(outcome="no-change", frontier=candidate,
-                          note="upstream identical to previous session; "
-                               "deployed already at the candidate frontier")
-            log("  no change upstream — session ends before anchored pulls")
-            return status
+            and upstream_matches_deployed(read_json(deployed_shot)["_meta"],
+                                          candidate, rows)):
+        status.update(outcome="no-change", frontier=candidate,
+                      note="upstream identical to the deployed payload's source; "
+                           "deployed already at the candidate frontier")
+        log("  no change upstream — session ends before anchored pulls")
+        return status
 
     frontier = candidate
     tracking_path: Path | None = None
@@ -1062,23 +1085,26 @@ def run_team(entry: dict, args: argparse.Namespace) -> dict:
         log("  DEFERRED: no publishable frontier yet")
         return status
 
+    # No-change early exit (live mode), the hero session's test plus the
+    # season index: the team payload and the index both stand at the
+    # candidate, and the discovery's rows equal those of the snapshot the
+    # deployed team payload was built from (upstream_matches_deployed). A
+    # content-only correction a halted session already saw still fails that
+    # identity, so the session runs and halts again. Only the shot rows are
+    # compared: a roster change waits for the next session that runs past
+    # this exit, on a new game or with --force.
     deployed = REPO / "public" / "data" / "_teams" / tricode / f"{season}.json"
     deployed_index = published_dir / "index.json"
-    prior_discoveries = sorted(p for p in team_root.glob("*-discovery.json")
-                               if p != discovery_path)
     if (mode == "live" and not args.force and deployed.exists()
-            and deployed_index.exists() and prior_discoveries):
-        deployed_meta = read_json(deployed)["_meta"]
-        _, prior_rows = shot_rows(read_json(prior_discoveries[-1]))
-        pre_drop = deployed_meta["totalShots"] + deployed_meta["zoneConflictsDropped"]
-        if (deployed_meta["dataThrough"] == candidate
-                and read_json(deployed_index)["_meta"]["dataThrough"] == candidate
-                and pre_drop == len(rows) and prior_rows == rows):
-            status.update(outcome="no-change", frontier=candidate,
-                          note="upstream identical to previous session; "
-                               "deployed already at the candidate frontier")
-            log("  no change upstream — session ends before anchored pulls")
-            return status
+            and deployed_index.exists()
+            and read_json(deployed_index)["_meta"]["dataThrough"] == candidate
+            and upstream_matches_deployed(read_json(deployed)["_meta"],
+                                          candidate, rows)):
+        status.update(outcome="no-change", frontier=candidate,
+                      note="upstream identical to the deployed payload's source; "
+                           "deployed already at the candidate frontier")
+        log("  no change upstream — session ends before anchored pulls")
+        return status
 
     # 5. Each unpublished game's own sources (ADR-0091). A source that lags
     #    defers its game, and the frontier, being whole dates, stops before it.
