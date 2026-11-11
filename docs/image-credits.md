@@ -370,3 +370,25 @@ photograph and is now older than the news page reaches.
   crowd behind him: the recap header,
   `.../2026/11/DSC04513.jpg` (5335x3657). A blurred figure fills the
   frame's left edge, unidentifiable, so the alt text names no defender.
+
+The last 2026-27 game without a photograph through 11-08 got one on
+2026-11-11, when the home banner's swap (see Season banners) freed its
+recap header. Chosen by the author the same day.
+
+- `public/img/games/2026-10-26-mem.jpg`, Ace Bailey (19) slapping hands
+  with Keyonte George (3), both in purple, two teammates partly in frame:
+  the header of the Jazz's 10-26 Grizzlies recap,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/10/DSC06907.jpg`
+  (4956x3295), the 2026-27 home banner from 11-05 to 11-09, credited
+  "photograph via the Utah Jazz" from an empty record. Pulled again
+  2026-11-11 by `game:photo` from its URL and retained in
+  `data/game-sources/2026-10-26-mem.jpg` (the same bytes as
+  `data/banner-sources/jazz-2026-27-DSC06907.jpg`). **The game is an
+  inference from the recap placement alone, the weakest placement on
+  file**: purple fits both 10-25 and 10-26, no opponent is in the frame,
+  and the camera counter cannot separate the two nights (the 10-25
+  frames run at least `DSC05370` to `DSC06111`, and this one is 796
+  frames later). Every recap header this season whose game could be
+  checked (10-21, 10-25, 10-28, 10-31, 11-06, 11-08) came from its own
+  game, and the author accepted the inference 2026-11-11. Focal points
+  carried over from its banner use, the same poster layout.
