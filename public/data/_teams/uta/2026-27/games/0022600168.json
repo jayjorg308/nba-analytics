@@ -17,8 +17,8 @@
       "games": 92,
       "sourceSnapshot": "data/raw/_league/2026-27/rulers/2026-11-01/2026-11-02T234522.json"
     },
-    "sourcePlayByPlay": "data/raw/play-by-play/0022600168/2026-11-02.json",
-    "sourceBoxScore": "data/raw/box-score/0022600168/2026-11-02.json"
+    "sourcePlayByPlay": "data/raw/play-by-play/0022600168/2026-11-11.json",
+    "sourceBoxScore": "data/raw/box-score/0022600168/2026-11-11.json"
   },
   "sides": [
     {
@@ -31,12 +31,12 @@
         "fgm": 34,
         "fga": 96,
         "tpm": 12,
-        "tpa": 34,
+        "tpa": 33,
         "ftm": 17,
         "fta": 22,
         "ast": 16
       },
-      "sourceShotSnapshot": "data/raw/_teams/uta/2026-27/games/0022600168/2026-11-02T234522.json",
+      "sourceShotSnapshot": "data/raw/_teams/uta/2026-27/games/0022600168/2026-11-11T110509.json",
       "players": [
         {
           "playerId": 1628374,
@@ -190,11 +190,11 @@
           "fgm": 2,
           "fga": 10,
           "tpm": 1,
-          "tpa": 6,
+          "tpa": 5,
           "ftm": 2,
           "fta": 2,
           "reb": 2,
-          "ast": 1,
+          "ast": 2,
           "technicalFtm": 0,
           "technicalFta": 0,
           "splitFtm": 0,
@@ -266,7 +266,7 @@
           "ftm": 2,
           "fta": 2,
           "reb": 4,
-          "ast": 6,
+          "ast": 5,
           "technicalFtm": 0,
           "technicalFta": 0,
           "splitFtm": 0,
@@ -1024,13 +1024,13 @@
           "minutesRemaining": 6,
           "secondsRemaining": 12,
           "made": false,
-          "pointValue": 3,
-          "zoneBasic": "Above the Break 3",
+          "pointValue": 2,
+          "zoneBasic": "Mid-Range",
           "zoneArea": "Right Side Center(RC)",
-          "zoneRange": "24+ ft",
-          "distanceFt": 25,
-          "locX": 118,
-          "locY": 230,
+          "zoneRange": "16-24 ft",
+          "distanceFt": 23,
+          "locX": 100,
+          "locY": 209,
           "playerId": 1641729,
           "assistStatus": "notApplicable"
         },
@@ -2334,7 +2334,7 @@
         "fta": 30,
         "ast": 27
       },
-      "sourceShotSnapshot": "data/raw/_teams/sas/2026-27/games/0022600168/2026-11-02T234522.json",
+      "sourceShotSnapshot": "data/raw/_teams/sas/2026-27/games/0022600168/2026-11-11T110509.json",
       "players": [
         {
           "playerId": 203084,
