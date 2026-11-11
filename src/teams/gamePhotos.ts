@@ -102,6 +102,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '20% 30%',
     imagePositionWide: '40% 30%',
   },
+  '2026-11-10-mia': {
+    imagePath: 'img/games/2026-11-10-mia.jpg',
+    imageAlt: 'Ace Bailey drives with the ball low as a Miami defender reaches across him, in the purple Jazz number 19 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '84% 40%',
+    imagePositionWide: '50% 22%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
