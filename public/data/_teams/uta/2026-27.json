@@ -6,10 +6,10 @@
     "tricode": "UTA",
     "season": "2026-27",
     "seasonType": "Regular Season",
-    "pullDate": "2026-11-09",
+    "pullDate": "2026-11-10",
     "dataThrough": "2026-11-08",
     "gamesIncluded": 10,
-    "sourceSnapshot": "data/raw/_teams/uta/2026-27/2026-11-09T091545-discovery.json",
+    "sourceSnapshot": "data/raw/_teams/uta/2026-27/2026-11-10T063213-discovery.json",
     "rosterSnapshot": "data/raw/_teams/uta/2026-27/roster/2026-11-09T091545.json",
     "totalShots": 875,
     "zoneConflictsDropped": 0
@@ -11215,13 +11215,13 @@
       "minutesRemaining": 6,
       "secondsRemaining": 12,
       "made": false,
-      "pointValue": 3,
-      "zoneBasic": "Above the Break 3",
+      "pointValue": 2,
+      "zoneBasic": "Mid-Range",
       "zoneArea": "Right Side Center(RC)",
-      "zoneRange": "24+ ft",
-      "distanceFt": 25,
-      "locX": 118,
-      "locY": 230
+      "zoneRange": "16-24 ft",
+      "distanceFt": 23,
+      "locX": 100,
+      "locY": 209
     },
     {
       "gameId": "0022600168",
@@ -17648,38 +17648,38 @@
     {
       "grain": "basic",
       "zone": "Restricted Area",
-      "fga": 7114,
-      "fgm": 4695
+      "fga": 7500,
+      "fgm": 4939
     },
     {
       "grain": "basic",
       "zone": "In The Paint (Non-RA)",
-      "fga": 4956,
-      "fgm": 2195
+      "fga": 5236,
+      "fgm": 2328
     },
     {
       "grain": "basic",
       "zone": "Mid-Range",
-      "fga": 2599,
-      "fgm": 1035
+      "fga": 2757,
+      "fgm": 1103
     },
     {
       "grain": "basic",
       "zone": "Left Corner 3",
-      "fga": 1598,
-      "fgm": 571
+      "fga": 1681,
+      "fgm": 602
     },
     {
       "grain": "basic",
       "zone": "Right Corner 3",
-      "fga": 1370,
-      "fgm": 486
+      "fga": 1447,
+      "fgm": 517
     },
     {
       "grain": "basic",
       "zone": "Above the Break 3",
-      "fga": 8086,
-      "fgm": 2777
+      "fga": 8488,
+      "fgm": 2930
     },
     {
       "grain": "basic",
@@ -17690,14 +17690,14 @@
     {
       "grain": "midRangeBand",
       "band": "8-16 ft",
-      "fga": 1438,
-      "fgm": 581
+      "fga": 1536,
+      "fgm": 622
     },
     {
       "grain": "midRangeBand",
       "band": "16-24 ft",
-      "fga": 1161,
-      "fgm": 454
+      "fga": 1221,
+      "fgm": 481
     }
   ]
 }
