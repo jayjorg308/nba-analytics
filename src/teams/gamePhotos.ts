@@ -95,6 +95,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '53% 40%',
     imagePositionWide: '50% 40%',
   },
+  '2026-10-26-mem': {
+    imagePath: 'img/games/2026-10-26-mem.jpg',
+    imageAlt: 'Ace Bailey slaps hands with Keyonte George in the purple Jazz number 19 and number 3 jerseys, two teammates beside them',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '20% 30%',
+    imagePositionWide: '40% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
