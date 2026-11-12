@@ -109,6 +109,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '84% 40%',
     imagePositionWide: '50% 22%',
   },
+  '2026-11-11-orl': {
+    imagePath: 'img/games/2026-11-11-orl.jpg',
+    imageAlt: 'Brice Sensabaugh keeps his dribble low as an Orlando defender reaches across him, in the white Jazz number 28 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '40% 40%',
+    imagePositionWide: '40% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {

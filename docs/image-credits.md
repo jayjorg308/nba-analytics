@@ -413,3 +413,26 @@ via the Utah Jazz".
   `.../2026/11/DSC05158.jpg` (Peterson, 22, purple, bringing the ball up
   with no opponent in frame), is 152 frames earlier from the same camera
   and was passed over because nothing in it proves its game.
+
+The photo finder listed two team frames for 11-11 after the game-night
+session that published it (2026-11-11), and the one that shows its
+opponent was picked 2026-11-12. Pulled 2026-11-12 by `game:photo` and
+retained in `data/game-sources/2026-11-11-orl.jpg`; the record carries an
+empty credit and the file no embedded metadata, so it is credited
+"photograph via the Utah Jazz".
+
+- `public/img/games/2026-11-11-orl.jpg`, Brice Sensabaugh (28, white)
+  keeping his dribble low as Jevon Carter (2, Orlando's black pinstripes)
+  reaches across him, a second Orlando player's arm at the left edge: the
+  header of the Jazz's 11-11 Orlando recap,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/ZMR04178.jpg`
+  (4521x3148). **The game is verified by the opponent**: 11-11 is the
+  Jazz's only game against Orlando so far, and the Jazz played no Magic
+  preseason game (Denver, San Antonio, Phoenix). The one look-alike, the
+  2025-12-20 home game against Orlando, is ruled out by the defender: the
+  nameplate reads "CARTER" over a 2, Jevon Carter's number on the NBA's
+  Magic roster, and Jevon Carter is not in that night's box score (the
+  only Carter in it is Wendell Carter Jr.). The finder's other frame,
+  `.../2026/11/DSC03877.jpg` (Markkanen, 23, white, shooting), headed the
+  pre-game Markkanen injury update and was passed over: Markkanen is not
+  in the 11-11 box score.
