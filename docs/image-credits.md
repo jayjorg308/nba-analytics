@@ -436,3 +436,23 @@ empty credit and the file no embedded metadata, so it is credited
   `.../2026/11/DSC03877.jpg` (Markkanen, 23, white, shooting), headed the
   pre-game Markkanen injury update and was passed over: Markkanen is not
   in the 11-11 box score.
+
+The photo finder listed one team frame for 11-13 after the game-night
+session that published it (2026-11-13), picked 2026-11-14. Pulled
+2026-11-14 by `game:photo` and retained in
+`data/game-sources/2026-11-13-hou.jpg`; the record carries an empty credit
+and the file no embedded metadata, so it is credited "photograph via the
+Utah Jazz". The finder's only other frame for the night, `2304192198.jpg`,
+names Getty on its record and is not a candidate.
+
+- `public/img/games/2026-11-13-hou.jpg`, Darryn Peterson (22, white)
+  releasing a jumper over the raised hands of Houston's 17, a second
+  Houston player at the left edge: the header of the Jazz's NBA Cup
+  recap, `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/ELD08235.jpg`
+  (4155x2765). **The game is verified by the venue and the clock**: the
+  Rockets' boards and stanchion put it in Houston, Peterson puts it in
+  2026-27, and 11-13 is the Jazz's only game at Houston so far (no
+  Houston preseason game: Denver, San Antonio, Phoenix). The game clock
+  behind him reads 9:52 over a 12 on the shot clock, and Peterson's only
+  field goal attempt within seconds of 9:52 in any period is his made
+  25-foot three at 9:51 of the third quarter.
