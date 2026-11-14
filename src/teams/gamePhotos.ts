@@ -116,6 +116,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '40% 40%',
     imagePositionWide: '40% 30%',
   },
+  '2026-11-13-hou': {
+    imagePath: 'img/games/2026-11-13-hou.jpg',
+    imageAlt: 'Darryn Peterson releases a jumper over a Houston defender’s raised hands, in the white Jazz number 22 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '52% 40%',
+    imagePositionWide: '30% 40%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
