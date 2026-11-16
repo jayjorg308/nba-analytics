@@ -17,8 +17,8 @@
       "games": 160,
       "sourceSnapshot": "data/raw/_league/2026-27/rulers/2026-11-10/2026-11-11T234507.json"
     },
-    "sourcePlayByPlay": "data/raw/play-by-play/0022600224/2026-11-11.json",
-    "sourceBoxScore": "data/raw/box-score/0022600224/2026-11-11.json"
+    "sourcePlayByPlay": "data/raw/play-by-play/0022600224/2026-11-16.json",
+    "sourceBoxScore": "data/raw/box-score/0022600224/2026-11-16.json"
   },
   "sides": [
     {
@@ -27,13 +27,13 @@
       "team": "Utah Jazz",
       "home": true,
       "box": {
-        "points": 106,
+        "points": 108,
         "fgm": 33,
         "fga": 81,
         "tpm": 14,
         "tpa": 44,
-        "ftm": 26,
-        "fta": 32,
+        "ftm": 28,
+        "fta": 34,
         "ast": 21
       },
       "sourceShotSnapshot": "data/raw/_teams/uta/2026-27/games/0022600224/2026-11-11T234507.json",
@@ -204,13 +204,13 @@
           "playerId": 1643408,
           "name": "Darryn Peterson",
           "minutes": "32:50",
-          "points": 20,
+          "points": 22,
           "fgm": 7,
           "fga": 19,
           "tpm": 2,
           "tpa": 9,
-          "ftm": 4,
-          "fta": 4,
+          "ftm": 6,
+          "fta": 6,
           "reb": 4,
           "ast": 5,
           "technicalFtm": 0,
@@ -1942,6 +1942,16 @@
           "fta": 1,
           "shotId": 414,
           "playerId": 1629637
+        },
+        {
+          "gameId": "0022600224",
+          "period": 3,
+          "clock": "PT07M46.00S",
+          "tripClass": "bonus",
+          "ftm": 2,
+          "fta": 2,
+          "shotId": null,
+          "playerId": 1643408
         },
         {
           "gameId": "0022600224",
