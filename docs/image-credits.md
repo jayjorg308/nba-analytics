@@ -456,3 +456,28 @@ names Getty on its record and is not a candidate.
   behind him reads 9:52 over a 12 on the shot clock, and Peterson's only
   field goal attempt within seconds of 9:52 in any period is his made
   25-foot three at 9:51 of the third quarter.
+
+The photo finder listed two team frames for 11-15 after the morning
+catch-up session that published it (2026-11-16), and the one that shows
+its opponent was picked the same day. Pulled 2026-11-16 by `game:photo`
+and retained in `data/game-sources/2026-11-15-sas.jpg`; the record carries
+an empty credit and the file no embedded metadata, so it is credited
+"photograph via the Utah Jazz".
+
+- `public/img/games/2026-11-15-sas.jpg`, Mo Bamba (44, purple) flashing
+  three fingers (thumb and two) with his arm out wide as Victor
+  Wembanyama (1, San Antonio's silver) jogs behind him, a crowd in Jazz
+  gear beyond: the header of the Jazz's 11-15 recap,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/ZMR02727.jpg`
+  (3391x2437). **The game is verified by the uniforms**: the Jazz have
+  hosted San Antonio three times in 2026-27, the 10-12 preseason game in
+  white (the Peterson banner from that night, above), 10-28 in white (an
+  NBAE frame captioned for it, `docs/research/jazz-2026-27-game-photos.md`),
+  and 11-15; the 11-02 game was at San Antonio. Bamba rules out the one
+  earlier look-alike, the 2026-01-22 home game against San Antonio: he is
+  not in that night's box score (his two 2025-26 Jazz games were 03-04
+  and 03-05, against Philadelphia and Washington). The finder's other
+  frame, `.../2026/11/DSC09153.jpg` (Bamba, 44, purple, jogging back past
+  the Jazz bench with no opponent in frame), headed the 11-16 Bamba
+  feature and was passed over: purple at home also fits 10-25, 10-26, and
+  11-10, and nothing in it proves its game.
