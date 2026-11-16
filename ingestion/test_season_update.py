@@ -9,7 +9,10 @@ publishing: what each new game pulls, lag deferring the frontier, and the
 live publish's order (pulls, git, and npm faked; the record-store steps
 stubbed, plus one run of the game step against a real store); the
 no-change early exit, which a correction a halted session already saw never
-passes; and an upstream failure halting only its own session.
+passes; an upstream failure halting only its own session; and the
+published-game drift check (a real game log fixture against published
+lines: a match, a post-publish correction, and a game the log does not list
+yet), report-only after every team session.
 """
 
 from __future__ import annotations
@@ -18,6 +21,7 @@ import argparse
 import json
 import shutil
 import subprocess
+from pathlib import Path
 
 import pytest
 
@@ -752,6 +756,7 @@ def test_upstream_failure_halts_only_its_own_session(monkeypatch, tmp_path):
 
     monkeypatch.setattr(su, "run_season", fake_season)
     monkeypatch.setattr(su, "run_team", fake_team)
+    monkeypatch.setattr(su, "published_drift_step", lambda _entry, _args: {})  # no live log
     monkeypatch.setattr(su, "STATUS_DIR", tmp_path / "status")
     monkeypatch.setattr(su.sys, "argv", ["season_update.py", "--config", str(config_path)])
     with pytest.raises(SystemExit) as exited:
@@ -813,3 +818,241 @@ def test_accepted_season_fact_changes_reach_the_report_and_the_status_record():
     report = []
     assert su.accepted_season_fact_changes({"player_season": {"changed": 0}}, report) is None
     assert report == []
+
+
+# --- Published game drift (ADR-0091 as amended 2026-11-16) ------------------------
+#
+# The real league game log of 2026-11-16 cut to two published Jazz games:
+# Miami, unchanged since it published, and Orlando, whose Utah line the NBA
+# corrected afterward (a Darryn Peterson trip, two of two, added: 106 to 108).
+# The published lines below are the committed ones of that morning; the
+# 2026-11-15 game is published too, and the cut leaves it out of the log.
+
+FIXTURES = Path(__file__).resolve().parents[1] / "tests" / "fixtures"
+DRIFT_LOG = FIXTURES / "game-log.drift.truncated.json"
+UTA_ID = 1610612762
+
+
+def box(points, fgm, fga, tpm, tpa, ftm, fta, ast):
+    return {"points": points, "fgm": fgm, "fga": fga, "tpm": tpm, "tpa": tpa,
+            "ftm": ftm, "fta": fta, "ast": ast}
+
+
+# gameId: (slug, opponent, opponent's team id, Jazz line, opponent's line)
+PUBLISHED = {
+    "0022600214": ("2026-11-10-mia", "MIA", 1610612748,
+                   box(109, 41, 84, 13, 33, 14, 22, 28), box(115, 35, 89, 12, 41, 33, 44, 24)),
+    "0022600224": ("2026-11-11-orl", "ORL", 1610612753,
+                   box(106, 33, 81, 14, 44, 26, 32, 21), box(123, 41, 87, 18, 46, 23, 28, 24)),
+    "0022600239": ("2026-11-15-sas", "SAS", 1610612759,
+                   box(102, 41, 89, 17, 40, 3, 6, 26), box(110, 41, 85, 10, 33, 18, 20, 27)),
+}
+
+
+def publish(published_dir, game_ids, *, opponent_lines=None, game_files=True):
+    """A published season as the check reads it: the season index (schema
+    v2) and each game file (schema v1), cut to the fields the check reads.
+    `opponent_lines` overrides an opponent's published line by game id."""
+    opponent_lines = opponent_lines or {}
+    rows = []
+    for gid in game_ids:
+        slug, opponent, opponent_id, jazz, theirs = PUBLISHED[gid]
+        theirs = opponent_lines.get(gid, theirs)
+        rows.append({"gameId": gid, "slug": slug, "gameDate": slug[:10],
+                     "opponent": opponent, "home": True, "teamScore": jazz["points"],
+                     "opponentScore": theirs["points"], "box": jazz, "players": []})
+        if game_files:
+            write_json(published_dir / "games" / f"{gid}.json", {
+                "_meta": {"gameId": gid, "teamId": UTA_ID, "tricode": "UTA",
+                          "opponentTeamId": opponent_id, "opponentTricode": opponent},
+                "sides": [{"teamId": UTA_ID, "tricode": "UTA", "box": jazz},
+                          {"teamId": opponent_id, "tricode": opponent, "box": theirs}]})
+    write_json(published_dir / "index.json", {
+        "_meta": {"schemaVersion": 2, "team": "Utah Jazz", "teamId": UTA_ID,
+                  "tricode": "UTA", "season": "2026-27"},
+        "games": rows})
+    return published_dir
+
+
+def drift_log(**meta):
+    """The fixture log, its _meta overridden (a pull's date, a replay's bound)."""
+    snapshot = json.loads(DRIFT_LOG.read_text(encoding="utf-8"))
+    snapshot["_meta"].update(meta)
+    return snapshot
+
+
+ORL_DRIFT = {"gameId": "0022600224", "slug": "2026-11-11-orl", "gameDate": "2026-11-11",
+             "diffs": ["UTA points 106 -> 108", "UTA ftm 26 -> 28", "UTA fta 32 -> 34"]}
+
+
+def test_a_published_game_the_log_agrees_with_is_no_drift(tmp_path):
+    published = publish(tmp_path, ["0022600214"])
+    result = su.published_game_drift(published, drift_log())
+    assert result == {"checked": 1, "unlisted": [], "drifted": []}
+    assert su.drift_report_lines({"gameLog": "game-log/2026-11-16T094524.json", **result}) == [
+        "published games: 1 match the league game log (2026-11-16T094524)"]
+
+
+def test_a_correction_after_publishing_is_drift_named_stat_by_stat(tmp_path):
+    published = publish(tmp_path, list(PUBLISHED))
+    result = su.published_game_drift(published, drift_log())
+    assert result == {"checked": 2, "unlisted": ["2026-11-15-sas"], "drifted": [ORL_DRIFT]}
+    assert su.drift_report_lines({"gameLog": "game-log/2026-11-16T094524.json", **result}) == [
+        "!! PUBLISHED GAME DRIFT: 1 of 2 published game(s) differ from the league game log "
+        "(2026-11-16T094524), 1 not in it yet; a correction travels by PR",
+        "   2026-11-11-orl (0022600224): UTA points 106 -> 108, UTA ftm 26 -> 28, "
+        "UTA fta 32 -> 34",
+    ]
+
+
+def test_a_game_the_log_does_not_list_yet_is_lag_never_drift(tmp_path):
+    # The log trails the box score on a game night (ADR-0058): the game is
+    # compared next session, never reported as drift.
+    published = publish(tmp_path, ["0022600239"])
+    assert su.published_game_drift(published, drift_log()) == {
+        "checked": 0, "unlisted": ["2026-11-15-sas"], "drifted": []}
+
+
+def test_the_opponents_whole_line_is_read_from_its_game_file(tmp_path):
+    # The index carries only the opponent's score; the game file carries
+    # its box team line, which the report card shows.
+    wrong = {"0022600214": {**PUBLISHED["0022600214"][4], "fga": 88}}
+    published = publish(tmp_path / "files", ["0022600214"], opponent_lines=wrong)
+    assert su.published_game_drift(published, drift_log())["drifted"] == [{
+        "gameId": "0022600214", "slug": "2026-11-10-mia", "gameDate": "2026-11-10",
+        "diffs": ["MIA fga 88 -> 89"]}]
+    # Without its game file the opponent is held to the log on its score alone.
+    wrong = {"0022600214": {**PUBLISHED["0022600214"][4], "points": 114, "fga": 88}}
+    published = publish(tmp_path / "index", ["0022600214"], opponent_lines=wrong,
+                        game_files=False)
+    assert su.published_game_drift(published, drift_log())["drifted"][0]["diffs"] == [
+        "MIA points 114 -> 115"]
+
+
+def test_a_team_the_log_does_not_name_in_a_listed_game_is_drift(tmp_path):
+    published = publish(tmp_path, ["0022600214"])
+    snapshot = drift_log()
+    rows = snapshot["response"]["resultSets"][0]["rowSet"]
+    rows[:] = [r for r in rows if r[1] != 1610612748]  # the Miami row vanishes
+    assert su.published_game_drift(published, snapshot)["drifted"][0]["diffs"] == [
+        "MIA has no row in the league game log for this game"]
+
+
+class LogPulls:
+    """The drift check's one possible pull, recorded: it lands the fixture
+    log stamped with the pull's date, as live_pulls would."""
+
+    def __init__(self, monkeypatch, *, fail=False):
+        self.calls: list[tuple] = []
+        self.fail = fail
+        monkeypatch.setattr(su.live_pulls, "pull_league_game_log_snapshot", self.pull)
+        monkeypatch.setattr(su.live_pulls, "stamp_now", lambda: "T063500")
+
+    def pull(self, season, out_dir, *, date_to, stamp, pull_date):
+        self.calls.append((season, date_to, pull_date))
+        if self.fail:
+            raise su.live_pulls.UpstreamUnavailable(
+                "leaguegamelog: stats.nba.com failed 4 attempts")
+        return write_json(out_dir / f"{pull_date}{stamp}.json", drift_log(pull_date=pull_date))
+
+
+def test_the_drift_log_is_todays_on_disk_or_one_fresh_pull(tmp_path, monkeypatch):
+    raw = tmp_path / "raw"
+    log_dir = raw / "_league" / "2026-27" / "game-log"
+    pulls = LogPulls(monkeypatch)
+    # Pulled today with no date bound (a game night's game step): reused.
+    todays = write_json(log_dir / "2026-11-16T000100.json", drift_log(pull_date="2026-11-16"))
+    assert su.drift_game_log("2026-27", raw, today="2026-11-16", sleep=0) == todays
+    assert pulls.calls == []
+    # A replay's bounded log of today is not the league's current record.
+    write_json(log_dir / "2026-11-16T000200.json",
+               drift_log(pull_date="2026-11-16", date_to="2026-11-10"))
+    pulled = su.drift_game_log("2026-27", raw, today="2026-11-16", sleep=0)
+    assert pulled.name == "2026-11-16T063500.json"
+    assert pulls.calls == [("2026-27", None, "2026-11-16")]
+    # Yesterday's log is stale: one fresh pull; none at all on disk: one pull.
+    pulls.calls.clear()
+    assert su.drift_game_log("2026-27", raw, today="2026-11-17", sleep=0).name == (
+        "2026-11-17T063500.json")
+    assert su.drift_game_log("2026-27", tmp_path / "empty", today="2026-11-17",
+                             sleep=0).name == "2026-11-17T063500.json"
+    assert pulls.calls == [("2026-27", None, "2026-11-17")] * 2
+
+
+UTA_ENTRY = {"tricode": "UTA", "teamId": UTA_ID, "team": "Utah Jazz",
+             "season": "2026-27", "mode": "live"}
+
+
+@pytest.fixture()
+def drift_repo(tmp_path, monkeypatch):
+    """A repo in tmp_path with the 2026-11-16 morning's three games published
+    and the calendar reading 2026-11-16."""
+    class Today(su.date):
+        @classmethod
+        def today(cls):
+            return cls(2026, 11, 16)
+
+    monkeypatch.setattr(su, "REPO", tmp_path)
+    monkeypatch.setattr(su, "date", Today)
+    publish(tmp_path / "public" / "data" / "_teams" / "uta" / "2026-27", list(PUBLISHED))
+    return tmp_path
+
+
+def test_the_drift_step_names_the_drift_against_one_pull(drift_repo, monkeypatch):
+    pulls = LogPulls(monkeypatch)
+    result = su.published_drift_step(UTA_ENTRY, session_args())
+    assert result == {"gameLog": "data/raw/_league/2026-27/game-log/2026-11-16T063500.json",
+                      "checked": 2, "unlisted": ["2026-11-15-sas"], "drifted": [ORL_DRIFT]}
+    # The game-night session later that day reads the same log: no second pull.
+    assert su.published_drift_step(UTA_ENTRY, session_args()) == result
+    assert pulls.calls == [("2026-27", None, "2026-11-16")]
+
+
+def test_the_drift_step_never_halts_a_session(drift_repo, monkeypatch):
+    pulls = LogPulls(monkeypatch, fail=True)
+    assert su.published_drift_step(UTA_ENTRY, session_args()) == {
+        "error": "leaguegamelog: stats.nba.com failed 4 attempts"}
+    # A season with nothing published reads no log at all.
+    dark = {**UTA_ENTRY, "season": "2027-28", "mode": "dark"}
+    assert su.published_drift_step(dark, session_args()) == {
+        "checked": 0, "unlisted": [], "drifted": []}
+    assert len(pulls.calls) == 1
+
+
+def test_every_team_session_records_its_drift_and_a_replay_skips_it(monkeypatch, tmp_path):
+    # Whatever the session's outcome (here a halt), its status file carries
+    # the check; under --as-of the check never runs (a replay reads no live log).
+    config_path = write_json(tmp_path / "season.config.json", {
+        "liveSeasons": [], "liveTeams": [{**UTA_ENTRY, "mode": "dark"}]})
+    checked: list[str] = []
+
+    def fake_team(entry, _args):
+        raise su.Halt("discovery pull contradicted the store")
+
+    def fake_drift(entry, _args):
+        checked.append(entry["tricode"])
+        return {"gameLog": "data/raw/_league/2026-27/game-log/2026-11-16T063500.json",
+                "checked": 2, "unlisted": ["2026-11-15-sas"], "drifted": [ORL_DRIFT]}
+
+    monkeypatch.setattr(su, "run_team", fake_team)
+    monkeypatch.setattr(su, "published_drift_step", fake_drift)
+    monkeypatch.setattr(su, "photo_candidates_step", lambda _entry: {})
+    monkeypatch.setattr(su, "STATUS_DIR", tmp_path / "status")
+
+    def run_main(*extra) -> dict:
+        monkeypatch.setattr(su.sys, "argv", ["season_update.py", "--config",
+                                             str(config_path), *extra])
+        with pytest.raises(SystemExit):
+            su.main()
+        (path,) = (tmp_path / "status").glob("*-team-uta-2026-27.json")
+        status = json.loads(path.read_text(encoding="utf-8"))
+        path.unlink()
+        return status
+
+    status = run_main()
+    assert status["outcome"] == "halt"
+    assert status["publishedGameDrift"]["drifted"] == [ORL_DRIFT]
+    assert checked == ["UTA"]
+    status = run_main("--as-of", "2026-11-12")
+    assert "publishedGameDrift" not in status and "photoCandidates" not in status
+    assert checked == ["UTA"]

@@ -177,6 +177,15 @@ script from the real raw artifacts; every file carries a `fixture_note`.
   league's opening night (two games) plus the fixture game, so the golden's
   ruler states a game count of 2. The pytest prior-season test empties the
   log before the date to exercise the fallback.
+- **`game-log.drift.truncated.json`** — not a golden input: the real 2026-27
+  league game log of 2026-11-16 cut to two published Jazz games, Miami
+  (0022600214, unchanged since it published) and Orlando (0022600224, whose
+  Utah line the NBA corrected afterward: points 106 to 108, free throws 26
+  of 32 to 28 of 34). `ingestion/test_season_update.py` holds the published
+  lines of those two games and of the 2026-11-15 game the cut leaves out to
+  it, exercising the season loop's published-game drift check (ADR-0091 as
+  amended 2026-11-16): a match, a drift, and a game the log does not list
+  yet.
 - **`game.golden.json`** — the game payload export over the fixture store
   (pair, team season, opponent pull, ruler and log, in the production load
   order). DB-native: regenerate via `python ingestion/regen_game_golden.py`
