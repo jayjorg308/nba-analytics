@@ -2687,16 +2687,16 @@
       "gameDate": "2026-11-11",
       "opponent": "ORL",
       "home": true,
-      "teamScore": 106,
+      "teamScore": 108,
       "opponentScore": 123,
       "box": {
-        "points": 106,
+        "points": 108,
         "fgm": 33,
         "fga": 81,
         "tpm": 14,
         "tpa": 44,
-        "ftm": 26,
-        "fta": 32,
+        "ftm": 28,
+        "fta": 34,
         "ast": 21
       },
       "players": [
@@ -2830,13 +2830,13 @@
           "playerId": 1643408,
           "name": "Darryn Peterson",
           "minutes": "32:50",
-          "points": 20,
+          "points": 22,
           "fgm": 7,
           "fga": 19,
           "tpm": 2,
           "tpa": 9,
-          "ftm": 4,
-          "fta": 4,
+          "ftm": 6,
+          "fta": 6,
           "reb": 4,
           "ast": 5
         }
