@@ -123,6 +123,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '52% 40%',
     imagePositionWide: '30% 40%',
   },
+  '2026-11-15-sas': {
+    imagePath: 'img/games/2026-11-15-sas.jpg',
+    imageAlt: 'Mo Bamba flashes three fingers as a San Antonio player jogs behind him, in the purple Jazz number 44 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '54% 40%',
+    imagePositionWide: '50% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
