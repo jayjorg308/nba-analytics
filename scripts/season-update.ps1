@@ -1,6 +1,8 @@
 # The season loop's Task Scheduler wrapper (ADR-0057): runs the daily
 # session and raises a Windows toast when it halts, because a publish that
-# silently stops is a freshness bug, not a quiet day. All real logic lives
+# silently stops is a freshness bug, not a quiet day, and when a team
+# session finds a published game the NBA has since corrected (ADR-0091 as
+# amended 2026-11-16), because a stale page is too. All real logic lives
 # in ingestion/season_update.py — this file only pulls main first, runs the
 # session, copies the raw layer to the R2 backup, and notifies.
 #
@@ -127,6 +129,7 @@ if ($exitCode -eq 0 -and $anyLive -and -not (Test-DockerUp)) {
     }
 }
 
+$sessionStart = Get-Date
 if ($exitCode -eq 0) {
     npm run season:update -- @loopArgs 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log -Append
     $exitCode = $LASTEXITCODE
@@ -181,6 +184,31 @@ if ($exitCode -ne 0) {
     # off-machine copy failed, so the message says exactly that.
     Show-Toast "nba-analytics raw backup FAILED" "The session ran; the R2 copy did not. See $log"
     $exitCode = $backupExit
+}
+
+# Published game drift (ADR-0091 as amended 2026-11-16): each team session
+# holds every published game to the league game log and records what differs
+# in its status file as publishedGameDrift. The check is report-only, so a
+# session that finds drift still exits 0, halted or not, and this toast is
+# how it gets noticed. It names the games, and it repeats every session
+# until the correction lands by PR.
+$drifted = @()
+$statusFiles = @(Get-ChildItem $logDir -File -Filter "*.json" |
+    Where-Object { $_.LastWriteTime -ge $sessionStart })
+foreach ($statusFile in $statusFiles) {
+    try {
+        $status = Get-Content $statusFile.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($status.publishedGameDrift -and $status.publishedGameDrift.drifted) {
+            foreach ($game in $status.publishedGameDrift.drifted) { $drifted += $game.slug }
+        }
+    } catch {
+        "could not read $($statusFile.Name) for published game drift ($_)" | Tee-Object -FilePath $log -Append
+    }
+}
+if ($drifted.Count -gt 0) {
+    $names = $drifted -join ", "
+    "published game drift: $names" | Tee-Object -FilePath $log -Append
+    Show-Toast "nba-analytics published game DRIFT" "The league game log differs from $names. A correction travels by PR. See $log"
 }
 
 exit $exitCode

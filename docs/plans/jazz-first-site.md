@@ -452,6 +452,18 @@ Each of these is small, and all of them land before opening night.
   error rather than an overwrite (append-only). A failed copy after a good
   session raises its own toast. The first full copy was run by hand; after
   that each run adds only new snapshots.
+- **Published game drift.** _Added 2026-11-16._ A published game's pair is
+  pulled once, so a stat the NBA corrects after the game publishes never
+  reaches the loop on its own (the Jazz and Magic game of 2026-11-11 still
+  read 106 when the league's line read 108). After every team session the
+  loop holds each published game's two box team lines to the league game
+  log (one more pull a day at most) and writes what differs to the status
+  file as `publishedGameDrift`. Nothing halts and nothing is rewritten: the
+  wrapper reads this run's status files and raises a toast naming each
+  drifted game, every session until the correction lands. The correction is
+  by hand, by PR: re-pull the game's pair (`pull_play_by_play.py
+  --game-ids <id> --repull`), review the change, and re-export with
+  `--allow-rewrite` (ADR-0091 as amended).
 - **Store headroom.** The store is 269 MB. Check the Neon plan's storage
   cap before phase 4 adds a season of league-wide shots.
 - **Config.** `liveSeasons` gains `keyonte-george` and `darryn-peterson`

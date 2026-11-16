@@ -48,9 +48,13 @@ THE TEAM SESSION (ADR-0081/0082, per liveTeams entry, after the heroes):
   -> a data-only commit of public/data/_teams/<tricode>/ and those cards.
   A tool surface renders from game one, so there is no volume gate; dark
   mode still pulls and derives daily. After each team session, whatever its
-  outcome, the photo finder writes the unphotographed games' candidate
-  frames to a contact sheet (find_game_photos.py, report-only; skipped
-  under --as-of).
+  outcome, two report-only steps run (both skipped under --as-of): the
+  published-game drift check holds every published game's two box team
+  lines to the league game log, so a post-game NBA correction to a game
+  already published is named (ADR-0091 as amended 2026-11-16; the status
+  file's publishedGameDrift, and the wrapper's toast), and the photo finder
+  writes the unphotographed games' candidate frames to a contact sheet
+  (find_game_photos.py).
 
 LOCAL-ONLY: stats.nba.com blocks cloud IPs. Run on the dev machine, via
 scripts/season-update.ps1 under Task Scheduler for the daily cadence.
@@ -789,7 +793,8 @@ def main() -> None:
                       "error": str(halt)}
             log(f"  HALT: {halt}")
             halted = True
-        if args.as_of is None:  # a replay reads no live page
+        if args.as_of is None:  # a replay reads no live log and no live page
+            status["publishedGameDrift"] = published_drift_step(entry, args)
             status["photoCandidates"] = photo_candidates_step(entry)
         status_path = STATUS_DIR / f"{session}-{slug}-{entry['season']}.json"
         status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
@@ -820,6 +825,136 @@ def photo_candidates_step(entry: dict) -> dict:
     log(f"  photo finder: {summary['unphotographed']} game(s) without a photograph, "
         f"{len(ready)} with a new team frame -> {summary['file']}")
     return summary
+
+
+# --- Published game drift (ADR-0091 as amended 2026-11-16) ---------------------
+#
+# A published game's pbp/box pair is pulled once, the night the game goes
+# final, and never again, so a post-game NBA stat correction reaches no load
+# and halts nothing: ADR-0088's "first a changed row at load" needs a re-pull
+# no session makes. The league game log is the one source the loop re-reads
+# that states every game's team box line, so after every team session each
+# published game's two lines are held to it. The check names drift and
+# changes nothing: a correction is a person's call (a re-pull, then a
+# reviewed --allow-rewrite, by PR).
+
+# (published box field, league game log column). A team's score is its
+# points: the deployed guard holds the index's scores to the game file's lines.
+DRIFT_STATS = (("points", "PTS"), ("fgm", "FGM"), ("fga", "FGA"), ("tpm", "FG3M"),
+               ("tpa", "FG3A"), ("ftm", "FTM"), ("fta", "FTA"), ("ast", "AST"))
+
+
+def game_log_lines(snapshot: dict) -> dict[str, dict[int, dict[str, int]]]:
+    """{game_id: {team_id: line}} from a team-grain league game log snapshot,
+    each line in the published box's field names."""
+    headers, rows = live_pulls.result_rows(snapshot["response"], "LeagueGameLog")
+    if not headers:
+        raise ValueError("the game log snapshot has no LeagueGameLog result set")
+    gid_i, team_i = headers.index("GAME_ID"), headers.index("TEAM_ID")
+    columns = [(field, headers.index(column)) for field, column in DRIFT_STATS]
+    lines: dict[str, dict[int, dict[str, int]]] = {}
+    for r in rows:
+        lines.setdefault(str(r[gid_i]), {})[int(r[team_i])] = {
+            field: int(r[i]) for field, i in columns}
+    return lines
+
+
+def published_game_drift(published_dir: Path, log_snapshot: dict) -> dict:
+    """Hold every published game's two box team lines to a league game log:
+    the subject's from its season-index row, the opponent's from its game
+    file (the index carries only the opponent's score, which stands in when
+    the file is absent). A game the log does not list yet is lag, never drift
+    (ADR-0058): it is listed as unlisted and compared next session. Returns
+    {checked, unlisted: [slug], drifted: [{gameId, slug, gameDate, diffs}]},
+    each diff reading "<TRI> <field> <published> -> <logged>"."""
+    index = read_json(published_dir / "index.json")
+    subject_id, subject = int(index["_meta"]["teamId"]), index["_meta"]["tricode"]
+    logged = game_log_lines(log_snapshot)
+    unlisted: list[str] = []
+    drifted: list[dict] = []
+    for row in index["games"]:
+        teams = logged.get(row["gameId"])
+        if not teams:
+            unlisted.append(row["slug"])
+            continue
+        opponent_id = next((t for t in teams if t != subject_id), None)
+        opponent_line = {"points": row["opponentScore"]}
+        game_path = published_dir / "games" / f"{row['gameId']}.json"
+        if game_path.exists():
+            side = next((s for s in read_json(game_path)["sides"]
+                         if int(s["teamId"]) != subject_id), None)
+            if side is not None:
+                opponent_id, opponent_line = int(side["teamId"]), side["box"]
+        diffs: list[str] = []
+        for team_id, tricode, line in ((subject_id, subject, row["box"]),
+                                       (opponent_id, row["opponent"], opponent_line)):
+            logged_line = teams.get(team_id)
+            if logged_line is None:
+                diffs.append(f"{tricode} has no row in the league game log for this game")
+                continue
+            diffs += [f"{tricode} {field} {line[field]} -> {logged_line[field]}"
+                      for field, _ in DRIFT_STATS
+                      if field in line and line[field] != logged_line[field]]
+        if diffs:
+            drifted.append({"gameId": row["gameId"], "slug": row["slug"],
+                            "gameDate": row["gameDate"], "diffs": diffs})
+    return {"checked": len(index["games"]) - len(unlisted), "unlisted": unlisted,
+            "drifted": drifted}
+
+
+def drift_game_log(season: str, raw_root: Path, *, today: str, sleep: float) -> Path:
+    """The league game log the drift check reads: the latest on disk when it
+    was pulled today with no date bound (on a game night, the one this
+    session's game step pulled), else one fresh pull, so at most one more
+    call a day."""
+    log_dir = raw_root / "_league" / season / "game-log"
+    latest = latest_json(log_dir)
+    if latest is not None:
+        meta = read_json(latest)["_meta"]
+        if meta.get("pull_date") == today and meta.get("date_to") is None:
+            return latest
+    time.sleep(sleep)
+    return live_pulls.pull_league_game_log_snapshot(
+        season, log_dir, date_to=None, stamp=live_pulls.stamp_now(), pull_date=today)
+
+
+def drift_report_lines(result: dict) -> list[str]:
+    """The run log's lines for a drift check: one when nothing drifted; an
+    alarm, then one line per drifted game, when something did."""
+    source = Path(result["gameLog"]).stem
+    lag = f", {len(result['unlisted'])} not in it yet" if result["unlisted"] else ""
+    if not result["drifted"]:
+        return [f"published games: {result['checked']} match the league game log "
+                f"({source}){lag}"]
+    return [f"!! PUBLISHED GAME DRIFT: {len(result['drifted'])} of {result['checked']} "
+            f"published game(s) differ from the league game log ({source}){lag}; "
+            "a correction travels by PR"] + [
+        f"   {g['slug']} ({g['gameId']}): {', '.join(g['diffs'])}"
+        for g in result["drifted"]]
+
+
+def published_drift_step(entry: dict, args: argparse.Namespace) -> dict:
+    """The published-game drift check after every team session, whatever its
+    outcome (ADR-0091 as amended 2026-11-16). Report-only: it never halts a
+    session and never touches a published file. A drifted game is named in
+    the run log, in the status file (publishedGameDrift), and by the
+    wrapper's toast, every session until its correction lands."""
+    tricode, season = entry["tricode"].lower(), entry["season"]
+    published_dir = REPO / "public" / "data" / "_teams" / tricode / season
+    if not (published_dir / "index.json").exists():
+        log("  published games: none yet, no drift to check")
+        return {"checked": 0, "unlisted": [], "drifted": []}
+    try:
+        log_path = drift_game_log(season, REPO / "data" / "raw",
+                                  today=date.today().isoformat(), sleep=args.sleep)
+        result = {"gameLog": log_path.relative_to(REPO).as_posix(),
+                  **published_game_drift(published_dir, read_json(log_path))}
+    except Exception as exc:  # report-only: no check failure halts a session
+        log(f"  published game drift check failed: {exc}")
+        return {"error": str(exc)}
+    for line in drift_report_lines(result):
+        log(f"  {line}")
+    return result
 
 
 # --- Game publishing (ADR-0088/0089/0091) ---------------------------------------
