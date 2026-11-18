@@ -481,3 +481,31 @@ an empty credit and the file no embedded metadata, so it is credited
   the Jazz bench with no opponent in frame), headed the 11-16 Bamba
   feature and was passed over: purple at home also fits 10-25, 10-26, and
   11-10, and nothing in it proves its game.
+
+The photo finder listed two team frames for 11-17 after the 06:30 session
+of 2026-11-18, and the one that shows its opponent was picked the same
+day. Pulled 2026-11-18 by `game:photo` and retained in
+`data/game-sources/2026-11-17-lac.jpg`; the record carries an empty credit
+and the file no embedded metadata, so it is credited "photograph via the
+Utah Jazz".
+
+- `public/img/games/2026-11-17-lac.jpg`, Brice Sensabaugh (28, white)
+  sizing up a Clippers defender in navy on the dribble, the defender
+  crouched low at left with no number in view, a blurred hand across the
+  frame's upper left corner: the header of the Jazz's preview of the 11-18
+  Lakers game, posted 11-18 07:18 UTC, before any later Jazz game,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC00328.jpg`
+  (8732x5821). **The game is verified by the opponent and the jersey
+  patch**: the Clippers jersey and the Kia stanchion put it at the
+  Clippers, 11-17 is the Jazz's only game against them so far, and the
+  Jazz played no Clippers preseason game (Denver, San Antonio, Phoenix).
+  Sensabaugh was a Jazz player in 2025-26 too, and the patch rules out
+  that season's games at the Clippers: his jersey carries the HealthEquity
+  patch the 2026-27 frames carry (the 11-11 Orlando photograph, above),
+  where the 2025-26 white jersey of the same mountain design carries LVT
+  (the Cody Williams banner, Jazz vs San Antonio, 2025-26, above). The
+  counter agrees, following the night's recap header past the camera's
+  wrap at 9999. That header, `.../2026/11/DSC09950.jpg` (Peterson, 22,
+  white, slapping hands with George, 3, Sensabaugh behind them, no
+  opponent in frame), was passed over: white fits nine earlier games, and
+  nothing in it proves its game.
