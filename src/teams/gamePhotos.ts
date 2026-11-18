@@ -130,6 +130,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '54% 40%',
     imagePositionWide: '50% 30%',
   },
+  '2026-11-17-lac': {
+    imagePath: 'img/games/2026-11-17-lac.jpg',
+    imageAlt: 'Brice Sensabaugh sizes up a Clippers defender on the dribble, in the white Jazz number 28 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '55% 40%',
+    imagePositionWide: '35% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
