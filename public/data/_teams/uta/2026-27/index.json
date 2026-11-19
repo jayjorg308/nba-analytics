@@ -6,8 +6,8 @@
     "tricode": "UTA",
     "season": "2026-27",
     "seasonType": "Regular Season",
-    "dataThrough": "2026-11-17",
-    "gamesIncluded": 15
+    "dataThrough": "2026-11-18",
+    "gamesIncluded": 16
   },
   "games": [
     {
@@ -3569,6 +3569,243 @@
             "band": "16-24 ft",
             "fga": 1662,
             "fgm": 658
+          }
+        ]
+      }
+    },
+    {
+      "gameId": "0022600268",
+      "slug": "2026-11-18-lal",
+      "gameDate": "2026-11-18",
+      "opponent": "LAL",
+      "home": false,
+      "teamScore": 109,
+      "opponentScore": 97,
+      "box": {
+        "points": 109,
+        "fgm": 37,
+        "fga": 77,
+        "tpm": 14,
+        "tpa": 37,
+        "ftm": 21,
+        "fta": 27,
+        "ast": 29
+      },
+      "players": [
+        {
+          "playerId": 1628964,
+          "name": "Mo Bamba",
+          "minutes": "22:39",
+          "points": 6,
+          "fgm": 3,
+          "fga": 5,
+          "tpm": 0,
+          "tpa": 1,
+          "ftm": 0,
+          "fta": 0,
+          "reb": 16,
+          "ast": 0
+        },
+        {
+          "playerId": 1629004,
+          "name": "Svi Mykhailiuk",
+          "minutes": "34:20",
+          "points": 15,
+          "fgm": 4,
+          "fga": 10,
+          "tpm": 4,
+          "tpa": 10,
+          "ftm": 3,
+          "fta": 4,
+          "reb": 3,
+          "ast": 5
+        },
+        {
+          "playerId": 1629006,
+          "name": "Josh Okogie",
+          "minutes": "15:24",
+          "points": 3,
+          "fgm": 1,
+          "fga": 2,
+          "tpm": 0,
+          "tpa": 1,
+          "ftm": 1,
+          "fta": 2,
+          "reb": 0,
+          "ast": 0
+        },
+        {
+          "playerId": 1629637,
+          "name": "Jaxson Hayes",
+          "minutes": "25:21",
+          "points": 6,
+          "fgm": 2,
+          "fga": 7,
+          "tpm": 0,
+          "tpa": 0,
+          "ftm": 2,
+          "fta": 2,
+          "reb": 7,
+          "ast": 2
+        },
+        {
+          "playerId": 1630182,
+          "name": "Josh Green",
+          "minutes": "28:12",
+          "points": 11,
+          "fgm": 4,
+          "fga": 4,
+          "tpm": 2,
+          "tpa": 2,
+          "ftm": 1,
+          "fta": 1,
+          "reb": 2,
+          "ast": 2
+        },
+        {
+          "playerId": 1641718,
+          "name": "Keyonte George",
+          "minutes": "38:53",
+          "points": 30,
+          "fgm": 9,
+          "fga": 17,
+          "tpm": 5,
+          "tpa": 10,
+          "ftm": 7,
+          "fta": 9,
+          "reb": 1,
+          "ast": 10
+        },
+        {
+          "playerId": 1641729,
+          "name": "Brice Sensabaugh",
+          "minutes": "13:51",
+          "points": 8,
+          "fgm": 4,
+          "fga": 8,
+          "tpm": 0,
+          "tpa": 3,
+          "ftm": 0,
+          "fta": 0,
+          "reb": 3,
+          "ast": 2
+        },
+        {
+          "playerId": 1642268,
+          "name": "Isaiah Collier",
+          "minutes": "9:34",
+          "points": 0,
+          "fgm": 0,
+          "fga": 0,
+          "tpm": 0,
+          "tpa": 0,
+          "ftm": 0,
+          "fta": 0,
+          "reb": 1,
+          "ast": 2
+        },
+        {
+          "playerId": 1642271,
+          "name": "Kyle Filipowski",
+          "minutes": "6:25",
+          "points": 0,
+          "fgm": 0,
+          "fga": 0,
+          "tpm": 0,
+          "tpa": 0,
+          "ftm": 0,
+          "fta": 0,
+          "reb": 3,
+          "ast": 0
+        },
+        {
+          "playerId": 1642846,
+          "name": "Ace Bailey",
+          "minutes": "26:47",
+          "points": 19,
+          "fgm": 7,
+          "fga": 19,
+          "tpm": 2,
+          "tpa": 7,
+          "ftm": 3,
+          "fta": 3,
+          "reb": 8,
+          "ast": 3
+        },
+        {
+          "playerId": 1643408,
+          "name": "Darryn Peterson",
+          "minutes": "18:34",
+          "points": 11,
+          "fgm": 3,
+          "fga": 5,
+          "tpm": 1,
+          "tpa": 3,
+          "ftm": 4,
+          "fta": 6,
+          "reb": 1,
+          "ast": 3
+        }
+      ],
+      "ruler": {
+        "kind": "pre-game",
+        "season": "2026-27",
+        "through": "2026-11-17",
+        "games": 210,
+        "zoneBaseline": [
+          {
+            "grain": "basic",
+            "zone": "Restricted Area",
+            "fga": 10181,
+            "fgm": 6715
+          },
+          {
+            "grain": "basic",
+            "zone": "In The Paint (Non-RA)",
+            "fga": 7035,
+            "fgm": 3115
+          },
+          {
+            "grain": "basic",
+            "zone": "Mid-Range",
+            "fga": 3768,
+            "fgm": 1526
+          },
+          {
+            "grain": "basic",
+            "zone": "Left Corner 3",
+            "fga": 2341,
+            "fgm": 846
+          },
+          {
+            "grain": "basic",
+            "zone": "Right Corner 3",
+            "fga": 2036,
+            "fgm": 731
+          },
+          {
+            "grain": "basic",
+            "zone": "Above the Break 3",
+            "fga": 11616,
+            "fgm": 4046
+          },
+          {
+            "grain": "basic",
+            "zone": "Backcourt",
+            "fga": 8,
+            "fgm": 6
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "8-16 ft",
+            "fga": 2073,
+            "fgm": 856
+          },
+          {
+            "grain": "midRangeBand",
+            "band": "16-24 ft",
+            "fga": 1695,
+            "fgm": 670
           }
         ]
       }
