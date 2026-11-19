@@ -137,6 +137,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '55% 40%',
     imagePositionWide: '35% 30%',
   },
+  '2026-11-18-lal': {
+    imagePath: 'img/games/2026-11-18-lal.jpg',
+    imageAlt: 'Keyonte George raises the ball for a jumper as a Lakers defender reaches to contest, in the purple Jazz number 3 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '40% 40%',
+    imagePositionWide: '50% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {

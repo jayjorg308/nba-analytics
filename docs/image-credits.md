@@ -509,3 +509,28 @@ Utah Jazz".
   white, slapping hands with George, 3, Sensabaugh behind them, no
   opponent in frame), was passed over: white fits nine earlier games, and
   nothing in it proves its game.
+
+The photo finder listed one team frame for 11-18 after the 06:30 session
+of 2026-11-19, and a rerun that morning found no other. Pulled 2026-11-19
+by `game:photo` and retained in `data/game-sources/2026-11-18-lal.jpg`;
+the record carries an empty credit and the file no embedded metadata, so
+it is credited "photograph via the Utah Jazz".
+
+- `public/img/games/2026-11-18-lal.jpg`, Keyonte George (3, purple)
+  raising the ball for a jumper as a Lakers defender in gold reaches to
+  contest, a second Lakers player (4) out of focus in the foreground with
+  his back to the camera: the header of the Jazz's 11-18 recap, posted
+  11-19 06:02 UTC,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC01358.jpg`
+  (5834x4208). **The game is verified by the uniforms and the jersey
+  patch**: the Jazz have met the Lakers twice in 2026-27, at the Delta
+  Center on 10-25, where the Lakers wore white (the Jackson photograph,
+  above), and at the Lakers on 11-18, and the Jazz played no Lakers
+  preseason game (Denver, San Antonio, Phoenix). The Lakers in gold rule
+  out 10-25. George was a Jazz player in 2025-26 too, and the patch rules
+  out that season's Lakers games: his jersey carries the HealthEquity
+  patch of the 2026-27 frames, where the 2025-26 purple jersey of the
+  same mountain design carries LVT (the Ace Bailey banner, Jazz at
+  Orlando, 2026-02-07, above). The counter agrees, following the 11-17
+  photograph's `DSC00328`. The game clock at the right edge is cut off,
+  so the frame gives no time to match to a shot.
