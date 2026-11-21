@@ -534,3 +534,28 @@ it is credited "photograph via the Utah Jazz".
   Orlando, 2026-02-07, above). The counter agrees, following the 11-17
   photograph's `DSC00328`. The game clock at the right edge is cut off,
   so the frame gives no time to match to a shot.
+
+The photo finder listed one team frame for 11-20 after the 06:30 session
+of 2026-11-21; the night's other frame, `.../2026/11/2305929204.jpg`,
+names Getty on its record and is not a candidate. Pulled 2026-11-21 by
+`game:photo` and retained in `data/game-sources/2026-11-20-phx.jpg`; the
+record carries an empty credit and the file no embedded metadata, so it
+is credited "photograph via the Utah Jazz".
+
+- `public/img/games/2026-11-20-phx.jpg`, Darryn Peterson (22, black)
+  driving with the ball low as a Suns defender in white (11) reaches
+  across him, a second Suns player (0) in the foreground with his back to
+  the camera, a third trailing the play behind Peterson, and Brice
+  Sensabaugh (28) out of focus at the right edge with his back to the
+  camera: the header of the Jazz's 11-20 recap, posted 11-21 05:35 UTC,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC02080.jpg`
+  (7447x4965). **The game is verified by the venue and the player**: the
+  frame is on the Jazz's purple home floor, 11-20 is the Suns' only
+  regular-season visit so far, and the Jazz's one Suns preseason game was
+  at Phoenix (10-16, Mortgage Matchup Center, per the Fox Sports and SI
+  box scores; the four-game preseason was Denver home and away, San
+  Antonio at home, Phoenix away). Peterson is a 2026-27 rookie, in no
+  2025-26 Jazz game, so no earlier season's Suns game fits, and his
+  jersey carries the HealthEquity patch of the 2026-27 frames. The
+  counter agrees, following the 11-18 photograph's `DSC01358`. No game
+  clock is in frame, so no shot is matched.
