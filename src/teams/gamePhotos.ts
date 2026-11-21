@@ -144,6 +144,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '40% 40%',
     imagePositionWide: '50% 30%',
   },
+  '2026-11-20-phx': {
+    imagePath: 'img/games/2026-11-20-phx.jpg',
+    imageAlt: 'Darryn Peterson drives with the ball low as a Phoenix defender reaches across him, in the black Jazz number 22 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '44% 40%',
+    imagePositionWide: '50% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
