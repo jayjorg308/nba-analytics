@@ -17,8 +17,8 @@
       "games": 226,
       "sourceSnapshot": "data/raw/_league/2026-27/rulers/2026-11-19/2026-11-20T234509.json"
     },
-    "sourcePlayByPlay": "data/raw/play-by-play/0022600049/2026-11-20.json",
-    "sourceBoxScore": "data/raw/box-score/0022600049/2026-11-20.json"
+    "sourcePlayByPlay": "data/raw/play-by-play/0022600049/2026-11-23.json",
+    "sourceBoxScore": "data/raw/box-score/0022600049/2026-11-23.json"
   },
   "sides": [
     {
@@ -139,7 +139,7 @@
           "tpa": 7,
           "ftm": 6,
           "fta": 7,
-          "reb": 3,
+          "reb": 2,
           "ast": 6,
           "technicalFtm": 0,
           "technicalFta": 0,
@@ -2085,14 +2085,14 @@
       "box": {
         "points": 111,
         "fgm": 42,
-        "fga": 93,
+        "fga": 92,
         "tpm": 10,
         "tpa": 34,
         "ftm": 17,
         "fta": 25,
         "ast": 26
       },
-      "sourceShotSnapshot": "data/raw/_teams/phx/2026-27/games/0022600049/2026-11-20T234509.json",
+      "sourceShotSnapshot": "data/raw/_teams/phx/2026-27/games/0022600049/2026-11-23T094243.json",
       "players": [
         {
           "playerId": 1626164,
@@ -2100,7 +2100,7 @@
           "minutes": "37:48",
           "points": 23,
           "fgm": 9,
-          "fga": 22,
+          "fga": 21,
           "tpm": 1,
           "tpa": 4,
           "ftm": 4,
@@ -3873,26 +3873,6 @@
           "locY": 126,
           "playerId": 1631221,
           "assistStatus": "unassisted"
-        },
-        {
-          "gameId": "0022600049",
-          "gameEventId": 624,
-          "gameDate": "2026-11-20",
-          "opponent": "UTA",
-          "home": false,
-          "period": 4,
-          "minutesRemaining": 6,
-          "secondsRemaining": 34,
-          "made": false,
-          "pointValue": 2,
-          "zoneBasic": "In The Paint (Non-RA)",
-          "zoneArea": "Left Side(L)",
-          "zoneRange": "8-16 ft",
-          "distanceFt": 8,
-          "locX": -60,
-          "locY": 60,
-          "playerId": 1626164,
-          "assistStatus": "notApplicable"
         },
         {
           "gameId": "0022600049",
