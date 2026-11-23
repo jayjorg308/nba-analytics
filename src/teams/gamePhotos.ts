@@ -151,6 +151,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '44% 40%',
     imagePositionWide: '50% 30%',
   },
+  '2026-11-22-dal': {
+    imagePath: 'img/games/2026-11-22-dal.jpg',
+    imageAlt: 'Svi Mykhailiuk holds his follow-through, in the white Jazz number 10 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '48% 30%',
+    imagePositionWide: '20% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {

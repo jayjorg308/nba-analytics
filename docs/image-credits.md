@@ -559,3 +559,30 @@ is credited "photograph via the Utah Jazz".
   jersey carries the HealthEquity patch of the 2026-27 frames. The
   counter agrees, following the 11-18 photograph's `DSC01358`. No game
   clock is in frame, so no shot is matched.
+
+The photo finder listed two team frames for 11-22 after the 06:30 session
+of 2026-11-23, both from the same camera body, and the recap's was picked
+the same day. Pulled 2026-11-23 by `game:photo` and retained in
+`data/game-sources/2026-11-22-dal.jpg`; the record carries an empty credit
+and the file no embedded metadata, so it is credited "photograph via the
+Utah Jazz".
+
+- `public/img/games/2026-11-22-dal.jpg`, Svi Mykhailiuk (10, white)
+  holding his follow-through with his shooting arm out and his wrist
+  dropped, an official at the left edge, a Dallas player in royal blue
+  partly in frame at the right edge, and courtside fans in Jazz purple
+  behind him: the header of the Jazz's 11-22 recap, posted 11-23 02:50
+  UTC, `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/ZMR08575.jpg`
+  (4359x3006). **The game is verified by the opponent and the venue**:
+  the Dallas player wears the Mavericks' royal blue with navy trim, the
+  crowd behind Mykhailiuk is in Jazz purple with purple lanyards, and
+  11-22 is the Mavericks' only visit so far (the 11-06 NBA Cup game was
+  at Dallas, and the Jazz played no Dallas preseason game: Denver home
+  and away, San Antonio at home, Phoenix away). Mykhailiuk was a Jazz
+  player in 2025-26 too, but his jersey carries the HealthEquity patch of
+  the 2026-27 frames. The finder's other frame, `.../2026/11/ZMR08122.jpg`
+  (Ace Bailey, 19, white, on the dribble against a Dallas defender in
+  royal blue, the purple sideline of the home floor behind him), is the
+  same body 453 frames earlier and headed the 11-23 Lakers preview; it
+  agrees on the game and was passed over for the recap's frame. No game
+  clock is in frame, so no shot is matched.
