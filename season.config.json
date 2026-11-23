@@ -8,6 +8,7 @@
     "pull/derive/report daily, publish nothing (pre-flip, ADR-0059); mode",
     "'live' = sync + full gate + data commit on green (ADR-0057). The live",
     "flip PR moves a season dark->live alongside the authored verdict.",
+    "Ace Bailey 2026-27 flipped live 2026-11-23 (gates first passing 11-18).",
     "",
     "liveTeams: the team surfaces the season loop runs a TEAM SESSION for",
     "(ADR-0081/0082, docs/plans/jazz-surface.md): roster + team-wide shot",
@@ -54,7 +55,7 @@
       "player": "Ace Bailey",
       "playerId": 1642846,
       "season": "2026-27",
-      "mode": "dark"
+      "mode": "live"
     },
     {
       "slug": "keyonte-george",

@@ -18,15 +18,17 @@ import type { FreethrowMetrics } from '../domain/aggregateFreethrow'
 import type { GrowthMetrics } from '../domain/aggregateGrowth'
 import type { ShotContextMetrics } from '../domain/aggregateShotContext'
 
-/** Growth vocabulary (ADR-0061): staged UNSHIPPED until the first authored
- * growth-sentence ships (the first flip PR with a prior argued season) —
- * then these terms MOVE to a backed growth lexicon licensed by GrowthClaim
- * declarations, the free-throw graduation path (ADR-0053/0056, third use).
- * Stems on purpose: 'grow' covers growth/grows/growing/grown, 'improve'
- * covers improved/improvement ('improvise' shares no substring), 'regress'
- * covers regressed/regression. The season-reference phrases are growth
- * vocabulary too: a single-season verdict has no business invoking another
- * season. */
+/** Growth vocabulary (ADR-0061): legal in a verdict only when the hero's
+ * guard declares at least one GrowthClaim (unbackedGrowthTerms). Staged
+ * unshipped until the first authored growth-sentence shipped (Ace Bailey's
+ * 2026-27 flip, 2026-11-23), then moved here, the free-throw graduation
+ * path (ADR-0053/0056, third use). Stems on purpose: 'grow' covers
+ * growth/grows/growing/grown, 'improve' covers improved/improvement
+ * ('improvise' shares no substring), 'regress' covers regressed/regression.
+ * The season-reference phrases are growth vocabulary too: a single-season
+ * verdict has no business invoking another season, which heroCopy.test.ts
+ * holds for every registered argument (the frozen guards predate the
+ * graduation and check only the unshipped list). */
 export const GROWTH_TERMS = [
   'grow',
   'grew',
@@ -45,17 +47,17 @@ export const GROWTH_TERMS = [
 /** Vocabulary with no shipped data behind it — forbidden in any verdict
  * regardless of claims, until its family ships (then it MOVES to a backed
  * lexicon, never just gets deleted). The defender-distance terms moved out
- * in v2.1, 'assisted' in v2.5, and the v2.6 free-throw terms graduated to
- * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056). What
- * remains: CONTEXT.md's reserved 'scoring attempt' (no product surface may
- * use it until the widened decomposition ships — the ADR-0053 destination),
- * the ADR-0061 growth terms, staged here until the first hero ships a
- * growth-sentence over a rendered growth coda, and 'usage' (ADR-0069):
+ * in v2.1, 'assisted' in v2.5, the v2.6 free-throw terms graduated to
+ * FREETHROW_LEXICON when THE LINE's copy shipped (ADR-0053/0056), and the
+ * ADR-0061 growth terms graduated to GROWTH_TERMS at the first authored
+ * growth-sentence (2026-11-23). What remains: CONTEXT.md's reserved
+ * 'scoring attempt' (no product surface may use it until the widened
+ * decomposition ships — the ADR-0053 destination), and 'usage' (ADR-0069):
  * usage rate ships as byline context with NO claim kind — a sourced number
  * the product cannot verify describes, never argues — so the word (covering
  * 'high-usage', 'usage rate') stays out of verdicts until a graduation ADR
  * defines a UsageClaim first. */
-export const UNSHIPPED_TERMS = ['scoring attempt', 'usage', ...GROWTH_TERMS] as const
+export const UNSHIPPED_TERMS = ['scoring attempt', 'usage'] as const
 
 /** Free-throw vocabulary (v2.6, THE LINE — ADR-0053/0056): legal only when
  * the hero's guard declares at least one free-throw claim asserted against
@@ -143,8 +145,7 @@ export interface FreethrowClaim {
  * never two static per-season facts a reader must subtract (ADR-0023's
  * lesson: two true anchors can bracket a false movement as displayed).
  * Canonical verdict only; the prior season's verdict stays frozen verbatim.
- * Declaring these will license the GROWTH_TERMS vocabulary once it
- * graduates from the unshipped list at the first authored growth-sentence. */
+ * Declaring these licenses the GROWTH_TERMS vocabulary (unbackedGrowthTerms). */
 export interface GrowthClaim {
   name: string
   assert: (growth: GrowthMetrics) => void
@@ -179,6 +180,15 @@ export function unbackedAssistTerms(verdict: string, assistClaimCount: number): 
 export function unbackedFreethrowTerms(verdict: string, freethrowClaimCount: number): string[] {
   const found = termsIn(verdict, FREETHROW_LEXICON)
   return freethrowClaimCount > 0 ? [] : found
+}
+
+/** Growth vocabulary that lacks backing — empty when the verdict uses no
+ * growth vocabulary, or when >=1 growth claim is declared. A single-season
+ * claim cannot license it: growth is movement across two seasons' payloads,
+ * a different claim kind (ADR-0061). */
+export function unbackedGrowthTerms(verdict: string, growthClaimCount: number): string[] {
+  const found = termsIn(verdict, GROWTH_TERMS)
+  return growthClaimCount > 0 ? [] : found
 }
 
 /** The scorer-credit boundary (ADR-0049): when assist vocabulary is used,

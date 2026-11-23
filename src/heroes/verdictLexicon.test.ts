@@ -9,6 +9,7 @@ import {
   unbackedAssistTerms,
   unbackedCreationTerms,
   unbackedFreethrowTerms,
+  unbackedGrowthTerms,
   unshippedTermsIn,
 } from './verdictLexicon'
 
@@ -72,8 +73,8 @@ describe('the ADR-0029 tripwire', () => {
   it('the unshipped list guards the reserved scoring-attempt term (ADR-0029)', () => {
     // What remains unshipped: CONTEXT.md's reserved future vocabulary,
     // forbidden regardless of claims until the scoring-attempt model ships,
-    // and the staged ADR-0061 growth terms. Future vocabulary with no
-    // shipped signal enters this list first, as the free-throw terms did.
+    // and 'usage' (ADR-0069). Future vocabulary with no shipped signal
+    // enters this list first, as the free-throw and growth terms did.
     expect(unshippedTermsIn('free throws, fouls, trips to the line, and-one, the line')).toEqual([])
     expect(unshippedTermsIn('a scoring attempt is the widened denominator')).toEqual([
       'scoring attempt',
@@ -83,24 +84,33 @@ describe('the ADR-0029 tripwire', () => {
     ])
   })
 
-  it('growth vocabulary is staged unshipped until the first growth-sentence ships (ADR-0061)', () => {
-    // The stems catch the family: growth/grew/improved/regressed and every
-    // cross-season season reference are growth claims by nature, and no
-    // hero has a rendered growth coda to back them yet. The flip PR that
-    // authors the first growth-sentence moves these to a backed lexicon
-    // licensed by GrowthClaim declarations — the free-throw path.
-    expect(unshippedTermsIn('his diet improved over his rookie season')).toEqual([
+  it('growth vocabulary graduated at the first growth-sentence, and demands its own claim (ADR-0061)', () => {
+    // Ace Bailey's 2026-27 flip moved the terms off the unshipped list, the
+    // free-throw path: nothing growth-shaped is unshipped anymore, but
+    // every use requires a declared growth claim. The stems catch the
+    // family: growth/grew/improved/regressed and every cross-season season
+    // reference are growth claims by nature.
+    expect(unshippedTermsIn('his diet improved over his rookie season')).toEqual([])
+    expect(unbackedGrowthTerms('his diet improved over his rookie season', 0)).toEqual([
       'improve',
       'rookie season',
     ])
-    expect(unshippedTermsIn('the mid-range share grew; real growth')).toEqual(['grow', 'grew'])
-    expect(unshippedTermsIn('he regressed from last season')).toEqual([
+    expect(unbackedGrowthTerms('the mid-range share grew; real growth', 0)).toEqual([
+      'grow',
+      'grew',
+    ])
+    expect(unbackedGrowthTerms('he regressed from last season', 0)).toEqual([
       'regress',
       'last season',
     ])
+    expect(unbackedGrowthTerms('he regressed from last season', 1)).toEqual([])
+    // A single-season claim cannot license growth language: the count
+    // passed here is GROWTH claims only.
+    expect(unbackedCreationTerms('last season', 1)).toEqual([])
+    expect(unbackedFreethrowTerms('last season', 1)).toEqual([])
     // Near-misses stay legal: 'improvise' does not contain 'improve', and
     // single-season 'this season' phrasing is ordinary verdict language.
-    expect(unshippedTermsIn('he improvises late in the clock this season')).toEqual([])
+    expect(unbackedGrowthTerms('he improvises late in the clock this season', 0)).toEqual([])
   })
 
   it('phrase forms keep near-miss words legal', () => {

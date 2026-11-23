@@ -7,10 +7,11 @@
 // nonzero tracking shortfall (8 attempts across two documented outage games
 // — ADR-0030 as amended), reported in the creation act's notes.
 //
-// The designated live hero for 2026-27 (ADR-0059): his flip PR will append
-// the living season's argument here and move canonicalSeason — the 2025-26
-// argument below stays at its /ace-bailey/2025-26 permalink, frozen
-// verbatim (ADR-0060/0061).
+// The first live flip (ADR-0059, 2026-11-23, gates first passing 11-18):
+// 2026-27 is canonical and living, its claims held daily by
+// ace-bailey.2026-27.guard.test.ts, and its verdict carries the first
+// growth-sentence (ADR-0061). The 2025-26 argument below stays at its
+// /ace-bailey/2025-26 permalink, frozen verbatim (ADR-0060/0061).
 
 import type { HeroConfig } from './types'
 
@@ -37,7 +38,7 @@ export const aceBailey: HeroConfig = {
     imagePosition: '50% 28%',
     imagePositionWide: '50% 18%',
   },
-  canonicalSeason: '2025-26',
+  canonicalSeason: '2026-27',
   seasons: [
     {
       season: '2025-26',
@@ -59,6 +60,30 @@ export const aceBailey: HeroConfig = {
         'flip the usual script. His pull-ups convert above average, while the easier ' +
         'catch-and-shoot looks land far below. And the free throw line compounds the problem. ' +
         'Bailey gets there at well under half the league rate, so the cheapest points available ' +
+        'barely factor into his scoring.',
+    },
+    {
+      season: '2026-27',
+      // Season-owned copy (ADR-0060): the kicker embeds the season string.
+      kicker: 'Ace Bailey · Utah Jazz · Nº 19 · 2026-27',
+      teamPage: 'jazz',
+      // The verdict (ADR-0017): the answer before the evidence. AUTHORED
+      // COPY on a LIVING season: the colocated guard
+      // (./ace-bailey.2026-27.guard.test.ts) runs in every daily publish,
+      // and a claim the data walks away from halts the publish until this
+      // copy and its claim mapping are rewritten together. The second
+      // sentence is the growth-sentence (ADR-0061), licensed by the guard's
+      // growth claims; the why-sentences (ADR-0029) and the line sentence
+      // (ADR-0056) carry their own claim kinds, as in 2025-26.
+      verdict:
+        'Yes, Ace Bailey trades some rim looks for corner threes, and that tradeoff nets out ' +
+        'to an essentially league-average shot diet. The mid-range habit that defined last ' +
+        'season is mostly gone. The problem now is his shot making. He converts a bit below ' +
+        'what that diet should yield, and the gap comes from beyond the arc. Inside ten feet ' +
+        'he finishes well above average. The creation numbers flip the usual script. His ' +
+        'pull-ups convert above average, while the catch-and-shoot looks that carry most of ' +
+        'his threes land far below. And the free throw line compounds the problem. Bailey ' +
+        'gets there at well under half the league rate, so the cheapest points available ' +
         'barely factor into his scoring.',
     },
   ],
