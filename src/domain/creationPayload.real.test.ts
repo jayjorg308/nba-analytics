@@ -36,6 +36,20 @@ const EXPECTED_TRACKING_SHORTFALL: Record<string, number> = Object.fromEntries(
   ).map(([key, games]) => [key, Object.values(games).reduce((t, n) => t + n, 0)]),
 )
 
+// The living hero-seasons (season.config.json's liveSeasons, dark or live):
+// seasons still accruing games, where a product-grain band can sit under
+// the small-sample bar for weeks (Ace Bailey 2026-27 flipped at 18 games
+// with 32 late-clock attempts, 2026-11-23). The page flags those bands,
+// never suppresses them; the grain-choice premise below is a completed-
+// season claim and binds each season again once it leaves the list.
+const LIVING = new Set(
+  (
+    JSON.parse(readFileSync(path.resolve(process.cwd(), 'season.config.json'), 'utf-8')) as {
+      liveSeasons: { slug: string; season: string }[]
+    }
+  ).liveSeasons.map((e) => `${e.slug}/${e.season}`),
+)
+
 // Every deployed creation payload, whether or not its hero is registered
 // (an unregistered hero's committed payloads stay guarded — the
 // TEMPORARY(single-hero) stance).
@@ -98,18 +112,21 @@ describe('deployed creation payloads', () => {
         expect(creation._meta.gamesIncluded).toBe(shot._meta.gamesIncluded)
       })
 
-      it('aggregates without flags on the product grains (the rollups earn their keep)', () => {
-        const creation = parseCreationPayload(
-          JSON.parse(readFileSync(creationPath, 'utf-8')),
-        )
-        const m = aggregateCreationMetrics(creation)
-        // The product grains were chosen (ADR-0030 / v2.1) because they
-        // clear the small-sample bar for both current heroes — the NBA's
-        // finer bands do not.
-        for (const band of [...m.shotClock, ...m.closestDefender]) {
-          expect(band.smallSamplePps, `${band.band} flagged`).toBe(false)
-        }
-      })
+      it.skipIf(LIVING.has(`${slug}/${season}`))(
+        'aggregates without flags on the product grains (the rollups earn their keep)',
+        () => {
+          const creation = parseCreationPayload(
+            JSON.parse(readFileSync(creationPath, 'utf-8')),
+          )
+          const m = aggregateCreationMetrics(creation)
+          // The product grains were chosen (ADR-0030 / v2.1) because they
+          // clear the small-sample bar for both current heroes — the NBA's
+          // finer bands do not.
+          for (const band of [...m.shotClock, ...m.closestDefender]) {
+            expect(band.smallSamplePps, `${band.band} flagged`).toBe(false)
+          }
+        },
+      )
 
       it('matches the latest derived creation payload when data/ is present', () => {
         const derivedDir = path.resolve(

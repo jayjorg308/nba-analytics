@@ -85,6 +85,9 @@ describe('emitGuardFile', () => {
     expect(source).toContain('unshippedTermsIn(seasonConfig.verdict)')
     expect(source).toContain('unbackedCreationTerms(seasonConfig.verdict, creationClaims.length)')
     expect(source).toContain('unbackedFreethrowTerms(seasonConfig.verdict, freethrowClaims.length)')
+    // Growth graduated off the unshipped list (ADR-0061, 2026-11-23): a new
+    // guard holds growth vocabulary at zero until it declares growth claims.
+    expect(source).toContain('unbackedGrowthTerms(seasonConfig.verdict, 0)')
     expect(source).toContain('unbackedAssistTerms(seasonConfig.verdict, 0)')
     expect(source).toContain('invalidAssistInterpretationsIn(seasonConfig.verdict)')
   })
@@ -106,19 +109,28 @@ describe('emitGuardFile', () => {
 
 describe('appendSeasonEntry (against the real ace module)', () => {
   const aceSource = readFileSync('src/heroes/ace-bailey.ts', 'utf-8')
-  const aceId = { slug: 'ace-bailey', season: '2026-27', playerName: 'Ace Bailey' }
+  // The real module moves with every flip (2026-27 appended and made
+  // canonical 2026-11-23), so the fixture reads its own state: the season
+  // appended is the one after the module's latest, and the pointer is
+  // whatever the module says now.
+  const argued = [...aceSource.matchAll(/^\s*season: '(\d{4})-\d{2}',/gm)].map((m) => Number(m[1]))
+  const last = Math.max(...argued)
+  const lastSeason = `${last}-${String((last + 1) % 100).padStart(2, '0')}`
+  const next = `${last + 1}-${String((last + 2) % 100).padStart(2, '0')}`
+  const canonical = /canonicalSeason: '([^']+)'/.exec(aceSource)![1]
+  const aceId = { slug: 'ace-bailey', season: next, playerName: 'Ace Bailey' }
 
   it('inserts the new entry inside seasons[], leaving the frozen argument and pointer alone', () => {
     const appended = appendSeasonEntry(aceSource, aceId)
-    expect(appended).toContain("season: '2025-26',")
-    expect(appended).toContain("season: '2026-27',")
-    // The new entry lands before the seasons[] close, after the old one.
-    expect(appended.indexOf("season: '2026-27',")).toBeGreaterThan(
-      appended.indexOf("season: '2025-26',"),
+    expect(appended).toContain(`season: '${lastSeason}',`)
+    expect(appended).toContain(`season: '${next}',`)
+    // The new entry lands before the seasons[] close, after the latest one.
+    expect(appended.indexOf(`season: '${next}',`)).toBeGreaterThan(
+      appended.indexOf(`season: '${lastSeason}',`),
     )
     // The flip's human step stays human: canonicalSeason is untouched.
-    expect(appended).toContain("canonicalSeason: '2025-26',")
-    expect(appended).not.toContain("canonicalSeason: '2026-27'")
+    expect(appended).toContain(`canonicalSeason: '${canonical}',`)
+    expect(appended).not.toContain(`canonicalSeason: '${next}'`)
   })
 
   it('refuses a season the hero already argues', () => {

@@ -16,7 +16,7 @@ flags, authored-and-guarded copy — on a new axis._
 | v2.5 — creation at the shot grain | ✅ built 2026-07-16 (ADRs 0032–0050): official assisted-make context for all three heroes; estimated shot clock gated out |
 | v2.6 — the line (free throws at trip grain) | ✅ shipped 2026-07-21 (ADRs 0053–0056): contract, league pull, metrics + report, THE LINE act + four-payload sync, guarded line-sentences + lexicon graduation + fourth deployed-pair guard |
 | v3 — living seasons | ✅ machinery proven 2026-07-23 (ADRs 0057–0059; replay oracles exact; activation = October config flip) |
-| Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip |
+| Season-over-season | ✅ built 2026-07-23 (ADRs 0060–0062): per-season pages live, growth coda ships dark, first instance at Ace's flip (shipped 2026-11-23) |
 | Hero scaffolding | ✅ built 2026-07-23 (ADR-0063): `hero:scaffold` emits the season-argument skeleton; the authoring tripwire holds the suite red until authored |
 | Hero add orchestration | ✅ built 2026-07-27 (ADR-0066): `hero:add` runs the standing add recipe end to end from a name + season (pulls → derives → corpus completion → scaffold → headshot → share card → sync → report), resumable, ending red on the authoring tripwire. Proven the same day on the fifth hero add: **Donovan Mitchell 2025-26, complete** — data, verdict + guarded claims, banner, and the CLE team mark all landed 2026-07-27, suite fully green. Adds six and seven — **Nique Clifford + Maxime Raynaud 2025-26, both complete 2026-07-29**: the first verdicts authored under the voice guide (ADR-0070), and Clifford's add triggered the first real Gate 5 shotless-free-throw failure, completing ADR-0054's remedy mechanically (the free-throw derive now consumes explicitly pulled corpus games). Adds eight and nine — **Bub Carrington + Alex Sarr 2025-26, complete 2026-08-08/09** — brought the first Washington heroes, the WAS team mark, and (2026-08-09/10) the blank-watermark incident that put teeth in the team-mark content guard and produced the bisected shortfall localization (ADR-0072). Add ten — **Austin Reaves 2025-26, complete 2026-08-10**: the LAL mark, a third same-day shortfall characterization, and the first hero whose banner was matched to an exact shot in his own payload (the scoreboard in the frame dated the photograph, and the committed play-by-play named the layup) |
 | Archetype-adjusted selection | ⛔ declined 2026-07-24 (ADR-0064): a role-normalization that softens the current roster's sharpest verdicts; the selection axis stays absolute (ADR-0002 reaffirmed). Closes the "Beyond v3" forward list. |
@@ -511,6 +511,14 @@ claim headroom), declare the growth claims and graduate the growth
 vocabulary from the unshipped lexicon, and flip dark→live in
 `season.config.json` — his 2025-26 argument stays frozen at its
 permalink, and the SEASON OVER SEASON coda lights up that day.
+_Shipped 2026-11-23 (gates first passing 11-18; the halts of 11-22/23
+hid the signal two days): authored at 18 games through 11-22, the
+growth-sentence on the mid-range lean (+12.1 to +1.6 share points),
+the growth terms graduated with a registry-level rule keeping them out
+of every first season argument (the frozen guards check only the
+unshipped list), and the creation grain-premise test scoped to completed
+seasons. The guard's header names the thin live claims (the diet inside
+the neutral band by 0.004, making "a bit below" by 0.014)._
 **Stretch:** Peterson's raw pulls begin when his season does (configured
 2026-09-25: Darryn Peterson and Keyonte George 2026-27 join Ace in dark
 mode, the Jazz-first site plan's three living arguments);

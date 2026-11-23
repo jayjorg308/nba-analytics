@@ -61,19 +61,29 @@ describe('emitted hero module', () => {
 })
 
 describe('append mode over the real ace module', () => {
-  it('compiles with both season arguments and the canonical pointer unmoved', async () => {
+  it('compiles with every season argument and the canonical pointer unmoved', async () => {
     const aceSource = readFileSync('src/heroes/ace-bailey.ts', 'utf-8')
+    // The real module moves with every flip (2026-27 appended and made
+    // canonical 2026-11-23): import it as it stands, then append the season
+    // after its latest.
+    const before = (await importEmitted('ace-before.ts', aceSource))['aceBailey']!
+    const seasons = before.seasons.map((s) => s.season)
+    const last = Number(seasons.at(-1)!.slice(0, 4))
+    const next = `${last + 1}-${String((last + 2) % 100).padStart(2, '0')}`
     const appended = appendSeasonEntry(aceSource, {
       slug: 'ace-bailey',
-      season: '2026-27',
+      season: next,
       playerName: 'Ace Bailey',
     })
     const mod = await importEmitted('ace-appended.ts', appended)
     const hero = mod['aceBailey']!
-    expect(hero.seasons.map((s) => s.season)).toEqual(['2025-26', '2026-27'])
-    expect(hero.canonicalSeason).toBe('2025-26')
-    // The frozen argument survives verbatim; the new one is a scaffold.
-    expect(seasonArgumentOf(hero, '2025-26').verdict).not.toContain(SCAFFOLD_SENTINEL)
-    expect(seasonArgumentOf(hero, '2026-27').verdict).toContain(SCAFFOLD_SENTINEL)
+    expect(hero.seasons.map((s) => s.season)).toEqual([...seasons, next])
+    expect(hero.canonicalSeason).toBe(before.canonicalSeason)
+    // The existing arguments survive verbatim; the new one is a scaffold.
+    for (const season of seasons) {
+      expect(seasonArgumentOf(hero, season).verdict).toBe(seasonArgumentOf(before, season).verdict)
+      expect(seasonArgumentOf(hero, season).verdict).not.toContain(SCAFFOLD_SENTINEL)
+    }
+    expect(seasonArgumentOf(hero, next).verdict).toContain(SCAFFOLD_SENTINEL)
   })
 })

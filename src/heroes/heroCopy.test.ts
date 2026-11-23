@@ -21,6 +21,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { HEROES } from './registry'
+import { GROWTH_TERMS } from './verdictLexicon'
 
 describe('authored hero copy (CONTEXT.md punctuation style)', () => {
   for (const hero of HEROES) {
@@ -44,5 +45,22 @@ describe('authored hero copy (CONTEXT.md punctuation style)', () => {
         expect(seasonConfig.verdict).not.toContain(';')
       })
     }
+  }
+})
+
+// Growth vocabulary needs a prior argued season (ADR-0061): a hero's first
+// season argument has no other season to invoke. Registry-level because the
+// growth terms graduated off the unshipped list at Ace Bailey's 2026-27 flip
+// (2026-11-23), and every guard frozen before then checks only that list, so
+// without this rule their verdicts would lose the protection. A guarded
+// second-or-later argument additionally licenses the words with declared
+// growth claims (unbackedGrowthTerms, in its own guard).
+describe('growth vocabulary only where a prior argued season exists (ADR-0061)', () => {
+  for (const hero of HEROES) {
+    const first = hero.seasons[0]!
+    it(`${hero.slug} ${first.season}: the first argument invokes no other season`, () => {
+      const verdict = first.verdict.toLowerCase()
+      expect(GROWTH_TERMS.filter((t) => verdict.includes(t))).toEqual([])
+    })
   }
 })
