@@ -88,9 +88,15 @@ for (const t of targets) {
     continue
   }
 
-  const exported = readdirSync(join(gamesDir!, 'games'), { withFileTypes: true })
-    .filter((e) => e.isFile() && isJson(e.name))
-    .map((e) => e.name)
+  // A session with no new game exports the index alone and writes no games/
+  // directory: zero exported files, not an error. Reading the missing
+  // directory crashed the 2026-11-21 and 2026-11-22 06:30 team sessions.
+  const exportedDir = join(gamesDir!, 'games')
+  const exported = existsSync(exportedDir)
+    ? readdirSync(exportedDir, { withFileTypes: true })
+        .filter((e) => e.isFile() && isJson(e.name))
+        .map((e) => e.name)
+    : []
   const index = JSON.parse(readFileSync(join(gamesDir!, 'index.json'), 'utf-8')) as {
     games: { gameId: string }[]
   }

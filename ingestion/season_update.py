@@ -224,8 +224,8 @@ def upstream_matches_deployed(deployed_meta: dict, candidate: str,
                               rows: list[list]) -> bool:
     """The no-change early exit's test (both sessions): the deployed payload
     stands at the candidate frontier with the discovery's pre-drop count, and
-    the discovery's shot rows equal, row for row, those of the snapshot the
-    deployed payload was built from (its _meta.sourceSnapshot). A payload
+    the discovery holds the same shot rows, field for field, as the snapshot
+    the deployed payload was built from (its _meta.sourceSnapshot). A payload
     that names no source, or names one the raw layer no longer holds, never
     matches.
 
@@ -235,7 +235,14 @@ def upstream_matches_deployed(deployed_meta: dict, candidate: str,
     the next session's discovery equals the halted one's while the store and
     the deployed payload still hold the old row (team-uta 2026-27, the
     2026-11-09 halt on 0022600168 event 278 and the 2026-11-10 06:30
-    no-change)."""
+    no-change).
+
+    Compared as a multiset, never in order: stats.nba.com returns tied rows
+    in no fixed order, and the loaders already read a reorder as no change
+    (source_row is a free column; existing ordinals stay). An ordered
+    comparison read the swap of 0022600168 events 93 and 95 as an upstream
+    change, so the 2026-11-21 and 2026-11-22 06:30 team sessions ran past
+    the exit with no new game and halted in team:sync."""
     pre_drop = deployed_meta["totalShots"] + deployed_meta["zoneConflictsDropped"]
     if deployed_meta["dataThrough"] != candidate or pre_drop != len(rows):
         return False
@@ -243,7 +250,7 @@ def upstream_matches_deployed(deployed_meta: dict, candidate: str,
     if not source or not (REPO / source).is_file():
         return False
     _, source_rows = shot_rows(read_json(REPO / source))
-    return source_rows == rows
+    return sorted(map(json.dumps, source_rows)) == sorted(map(json.dumps, rows))
 
 
 def paired_game_exists(raw_root: Path, game_id: str) -> bool:
@@ -513,7 +520,7 @@ def run_season(entry: dict, pins_all: dict, args: argparse.Namespace) -> dict:
 
     # No-change early exit (live mode): the session ends before any anchored
     # pull when the deployed payload already stands at the candidate
-    # frontier and the discovery's shot rows equal, row for row, the rows of
+    # frontier and the discovery holds the same shot rows, in any order, as
     # the snapshot that payload was built from (upstream_matches_deployed).
     # Most off-day mornings end here. Any upstream change to the shot rows
     # the deployed payload has not absorbed (a new game, or a content-only
