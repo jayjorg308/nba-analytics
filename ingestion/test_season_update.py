@@ -630,6 +630,24 @@ def test_the_no_change_exit_needs_the_deployed_source_on_disk(jazz_world):
         meta, "2026-10-23", night_rows(corrected={"0022600025"}))
 
 
+def test_the_no_change_exit_reads_a_reorder_as_no_change(jazz_world):
+    # The 2026-11-21 shape: the same rows with two tied shots swapped
+    # (0022600168 events 93 and 95) ran a no-game team session past the exit.
+    meta = {"dataThrough": "2026-10-23", "totalShots": 4, "zoneConflictsDropped": 0,
+            "sourceSnapshot": DEPLOYED_SOURCE}
+    rows = night_rows()
+    write_json(jazz_world["tmp"] / DEPLOYED_SOURCE, shot_snapshot(rows))
+    swapped = [rows[0], rows[2], rows[1], *rows[3:]]  # across the two games
+    assert swapped != rows
+    assert su.upstream_matches_deployed(meta, "2026-10-23", swapped)
+    assert su.upstream_matches_deployed(meta, "2026-10-23", list(reversed(rows)))
+    # A reorder never hides a change: one row's field still fails it.
+    corrected = night_rows(corrected={"0022600025"})
+    assert not su.upstream_matches_deployed(meta, "2026-10-23", list(reversed(corrected)))
+    # Nor a duplicate standing in for a row (same count, different multiset).
+    assert not su.upstream_matches_deployed(meta, "2026-10-23", [rows[0], *rows[:-1]])
+
+
 def test_a_live_team_session_on_the_files_engine_halts_first(jazz_world, monkeypatch):
     pulls = FakePulls(monkeypatch)
     with pytest.raises(su.Halt, match="DB-native"):
