@@ -158,6 +158,13 @@ export const GAME_PHOTOS: Readonly<Record<string, GamePhoto>> = {
     imagePosition: '48% 30%',
     imagePositionWide: '20% 30%',
   },
+  '2026-11-23-lal': {
+    imagePath: 'img/games/2026-11-23-lal.jpg',
+    imageAlt: 'Kyle Filipowski dribbles against a crouched Lakers defender, in the white Jazz number 2 jersey',
+    imageCredit: 'photograph via the Utah Jazz',
+    imagePosition: '75% 40%',
+    imagePositionWide: '55% 30%',
+  },
 }
 
 export function gamePhotoOf(slug: string): GamePhoto | undefined {
