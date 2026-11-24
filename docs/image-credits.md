@@ -586,3 +586,36 @@ Utah Jazz".
   same body 453 frames earlier and headed the 11-23 Lakers preview; it
   agrees on the game and was passed over for the recap's frame. No game
   clock is in frame, so no shot is matched.
+
+The photo finder listed one team frame for 11-23 after the 06:30 session
+of 2026-11-24; the night's other frame, `.../2026/11/2305957836.jpg`,
+names Getty on its record and is not a candidate. Pulled 2026-11-24 by
+`game:photo` and retained in `data/game-sources/2026-11-23-lal.jpg`; the
+record carries an empty credit and the file no embedded metadata, so it
+is credited "photograph via the Utah Jazz".
+
+- `public/img/games/2026-11-23-lal.jpg`, Kyle Filipowski (2, white)
+  dribbling at the hip against a crouched Lakers defender in purple, a
+  second Lakers player (5) in purple behind them, Darryn Peterson (22,
+  white) out of focus at the upper right, an official at the upper left,
+  and out-of-focus courtside heads across the bottom: the header of the
+  Jazz's 11-23 recap, posted 11-24 05:54 UTC,
+  `cdn.nba.com/teams/uploads/sites/1610612762/2026/11/DSC04181.jpg`
+  (5407x3609 on the record; the CDN serves 5000x3337). **The game is
+  verified by the uniforms and the jersey patch**: the Jazz have met the
+  Lakers three times in 2026-27, at the Delta Center on 10-25, where the
+  Lakers wore white (the Jackson photograph, above), at the Lakers on
+  11-18, where they wore gold and the Jazz purple (the George photograph,
+  above), and at the Lakers on 11-23, and the Jazz played no Lakers
+  preseason game (Denver home and away, San Antonio at home, Phoenix
+  away). The Lakers in purple against the Jazz in white rule out both
+  earlier meetings; the gold apron and the fans in Lakers gold behind the
+  play agree on the venue. Filipowski was a Jazz player in 2025-26 too,
+  and the patch rules out that season's Lakers games: his jersey carries
+  the HealthEquity patch of the 2026-27 frames. His number is mostly
+  hidden behind his right arm, with only the top curve of the 2 showing
+  beside the wordmark; he is named by his face against his NBA headshot
+  (`public/img/kyle-filipowski-headshot.png`) and the roster's 2, and the
+  box score has him on the floor for 23:35. The counter agrees, following
+  the 11-20 photograph's `DSC02080` on the same body (the 11-22 frames
+  came from another). No game clock is in frame, so no shot is matched.
