@@ -5,45 +5,45 @@
     "playerId": 1642846,
     "season": "2026-27",
     "seasonType": "Regular Season",
-    "pullDate": "2026-11-23",
-    "dataThrough": "2026-11-22",
-    "gamesIncluded": 18,
-    "sourceSnapshot": "data/raw/ace-bailey/2026-27/tracking/2026-11-23T094736-c0.json",
-    "leagueSourceSnapshot": "data/raw/_league/2026-27/tracking/2026-11-23T094736.json",
-    "seasonFga": 213,
+    "pullDate": "2026-11-25",
+    "dataThrough": "2026-11-23",
+    "gamesIncluded": 19,
+    "sourceSnapshot": "data/raw/ace-bailey/2026-27/tracking/2026-11-25T063009-c0.json",
+    "leagueSourceSnapshot": "data/raw/_league/2026-27/tracking/2026-11-25T063009.json",
+    "seasonFga": 229,
     "trackingShortfall": 0,
     "shotClockUnattributed": 0,
-    "defenderUnattributed": 11,
-    "leagueFga": 43552,
+    "defenderUnattributed": 12,
+    "leagueFga": 45354,
     "leagueShotClockUnattributed": 147,
-    "leagueDefenderUnattributed": 1834
+    "leagueDefenderUnattributed": 1865
   },
   "general": {
     "player": [
       {
         "context": "Catch and Shoot",
-        "fga": 93,
-        "fgm": 23,
-        "fg2a": 7,
-        "fg2m": 3,
-        "fg3a": 86,
-        "fg3m": 20
+        "fga": 98,
+        "fgm": 25,
+        "fg2a": 10,
+        "fg2m": 4,
+        "fg3a": 88,
+        "fg3m": 21
       },
       {
         "context": "Pull Ups",
-        "fga": 51,
-        "fgm": 25,
-        "fg2a": 34,
-        "fg2m": 18,
-        "fg3a": 17,
+        "fga": 55,
+        "fgm": 26,
+        "fg2a": 37,
+        "fg2m": 19,
+        "fg3a": 18,
         "fg3m": 7
       },
       {
         "context": "Less than 10 ft",
-        "fga": 65,
-        "fgm": 45,
-        "fg2a": 65,
-        "fg2m": 45,
+        "fga": 72,
+        "fgm": 50,
+        "fg2a": 72,
+        "fg2m": 50,
         "fg3a": 0,
         "fg3m": 0
       },
@@ -60,39 +60,39 @@
     "league": [
       {
         "context": "Catch and Shoot",
-        "fga": 14131,
-        "fgm": 5197,
-        "fg2a": 885,
-        "fg2m": 386,
-        "fg3a": 13246,
-        "fg3m": 4811
+        "fga": 14684,
+        "fgm": 5402,
+        "fg2a": 921,
+        "fg2m": 398,
+        "fg3a": 13763,
+        "fg3m": 5004
       },
       {
         "context": "Pull Ups",
-        "fga": 10750,
-        "fgm": 4042,
-        "fg2a": 5482,
-        "fg2m": 2301,
-        "fg3a": 5268,
-        "fg3m": 1741
+        "fga": 11213,
+        "fgm": 4224,
+        "fg2a": 5721,
+        "fg2m": 2406,
+        "fg3a": 5492,
+        "fg3m": 1818
       },
       {
         "context": "Less than 10 ft",
-        "fga": 18143,
-        "fgm": 10626,
-        "fg2a": 18134,
-        "fg2m": 10624,
+        "fga": 18916,
+        "fgm": 11074,
+        "fg2a": 18907,
+        "fg2m": 11072,
         "fg3a": 9,
         "fg3m": 2
       },
       {
         "context": "Other",
-        "fga": 528,
-        "fgm": 196,
-        "fg2a": 210,
-        "fg2m": 85,
-        "fg3a": 318,
-        "fg3m": 111
+        "fga": 541,
+        "fgm": 204,
+        "fg2a": 215,
+        "fg2m": 88,
+        "fg3a": 326,
+        "fg3m": 116
       }
     ]
   },
@@ -100,113 +100,113 @@
     "player": [
       {
         "context": "24-22",
-        "fga": 10,
-        "fgm": 4,
-        "fg2a": 10,
-        "fg2m": 4,
+        "fga": 11,
+        "fgm": 5,
+        "fg2a": 11,
+        "fg2m": 5,
         "fg3a": 0,
         "fg3m": 0
       },
       {
         "context": "22-18 Very Early",
-        "fga": 26,
-        "fgm": 17,
-        "fg2a": 16,
-        "fg2m": 14,
-        "fg3a": 10,
-        "fg3m": 3
+        "fga": 28,
+        "fgm": 19,
+        "fg2a": 17,
+        "fg2m": 15,
+        "fg3a": 11,
+        "fg3m": 4
       },
       {
         "context": "18-15 Early",
-        "fga": 31,
-        "fgm": 15,
-        "fg2a": 11,
-        "fg2m": 7,
+        "fga": 33,
+        "fgm": 17,
+        "fg2a": 13,
+        "fg2m": 9,
         "fg3a": 20,
         "fg3m": 8
       },
       {
         "context": "15-7 Average",
-        "fga": 114,
-        "fgm": 44,
-        "fg2a": 55,
-        "fg2m": 34,
-        "fg3a": 59,
+        "fga": 121,
+        "fgm": 46,
+        "fg2a": 61,
+        "fg2m": 36,
+        "fg3a": 60,
         "fg3m": 10
       },
       {
         "context": "7-4 Late",
-        "fga": 14,
-        "fgm": 8,
-        "fg2a": 6,
-        "fg2m": 3,
+        "fga": 15,
+        "fgm": 9,
+        "fg2a": 7,
+        "fg2m": 4,
         "fg3a": 8,
         "fg3m": 5
       },
       {
         "context": "4-0 Very Late",
-        "fga": 18,
+        "fga": 21,
         "fgm": 7,
-        "fg2a": 9,
+        "fg2a": 11,
         "fg2m": 5,
-        "fg3a": 9,
+        "fg3a": 10,
         "fg3m": 2
       }
     ],
     "league": [
       {
         "context": "24-22",
-        "fga": 1434,
-        "fgm": 828,
-        "fg2a": 1340,
-        "fg2m": 800,
-        "fg3a": 94,
-        "fg3m": 28
+        "fga": 1503,
+        "fgm": 870,
+        "fg2a": 1403,
+        "fg2m": 840,
+        "fg3a": 100,
+        "fg3m": 30
       },
       {
         "context": "22-18 Very Early",
-        "fga": 5845,
-        "fgm": 3157,
-        "fg2a": 3542,
-        "fg2m": 2310,
-        "fg3a": 2303,
-        "fg3m": 847
+        "fga": 6077,
+        "fgm": 3276,
+        "fg2a": 3691,
+        "fg2m": 2401,
+        "fg3a": 2386,
+        "fg3m": 875
       },
       {
         "context": "18-15 Early",
-        "fga": 7073,
-        "fgm": 3248,
-        "fg2a": 3639,
-        "fg2m": 2001,
-        "fg3a": 3434,
-        "fg3m": 1247
+        "fga": 7380,
+        "fgm": 3405,
+        "fg2a": 3798,
+        "fg2m": 2090,
+        "fg3a": 3582,
+        "fg3m": 1315
       },
       {
         "context": "15-7 Average",
-        "fga": 21091,
-        "fgm": 9675,
-        "fg2a": 11677,
-        "fg2m": 6223,
-        "fg3a": 9414,
-        "fg3m": 3452
+        "fga": 21955,
+        "fgm": 10059,
+        "fg2a": 12167,
+        "fg2m": 6478,
+        "fg3a": 9788,
+        "fg3m": 3581
       },
       {
         "context": "7-4 Late",
-        "fga": 4105,
-        "fgm": 1686,
-        "fg2a": 2325,
-        "fg2m": 1100,
-        "fg3a": 1780,
-        "fg3m": 586
+        "fga": 4260,
+        "fgm": 1752,
+        "fg2a": 2415,
+        "fg2m": 1142,
+        "fg3a": 1845,
+        "fg3m": 610
       },
       {
         "context": "4-0 Very Late",
-        "fga": 3857,
-        "fgm": 1405,
-        "fg2a": 2105,
-        "fg2m": 917,
-        "fg3a": 1752,
-        "fg3m": 488
+        "fga": 4032,
+        "fgm": 1480,
+        "fg2a": 2206,
+        "fg2m": 968,
+        "fg3a": 1826,
+        "fg3m": 512
       }
     ]
   },
@@ -214,77 +214,77 @@
     "player": [
       {
         "context": "0-2 Feet - Very Tight",
-        "fga": 21,
-        "fgm": 10,
-        "fg2a": 19,
-        "fg2m": 9,
+        "fga": 22,
+        "fgm": 11,
+        "fg2a": 20,
+        "fg2m": 10,
         "fg3a": 2,
         "fg3m": 1
       },
       {
         "context": "2-4 Feet - Tight",
-        "fga": 58,
-        "fgm": 34,
-        "fg2a": 52,
-        "fg2m": 32,
+        "fga": 65,
+        "fgm": 39,
+        "fg2a": 59,
+        "fg2m": 37,
         "fg3a": 6,
         "fg3m": 2
       },
       {
         "context": "4-6 Feet - Open",
-        "fga": 57,
-        "fgm": 22,
-        "fg2a": 18,
-        "fg2m": 12,
-        "fg3a": 39,
+        "fga": 61,
+        "fgm": 23,
+        "fg2a": 20,
+        "fg2m": 13,
+        "fg3a": 41,
         "fg3m": 10
       },
       {
         "context": "6+ Feet - Wide Open",
-        "fga": 66,
-        "fgm": 21,
-        "fg2a": 9,
+        "fga": 69,
+        "fgm": 22,
+        "fg2a": 11,
         "fg2m": 7,
-        "fg3a": 57,
-        "fg3m": 14
+        "fg3a": 58,
+        "fg3m": 15
       }
     ],
     "league": [
       {
         "context": "0-2 Feet - Very Tight",
-        "fga": 5038,
-        "fgm": 2425,
-        "fg2a": 4817,
-        "fg2m": 2349,
-        "fg3a": 221,
-        "fg3m": 76
+        "fga": 5259,
+        "fgm": 2517,
+        "fg2a": 5028,
+        "fg2m": 2436,
+        "fg3a": 231,
+        "fg3m": 81
       },
       {
         "context": "2-4 Feet - Tight",
-        "fga": 14160,
-        "fgm": 7161,
-        "fg2a": 11887,
-        "fg2m": 6474,
-        "fg3a": 2273,
-        "fg3m": 687
+        "fga": 14776,
+        "fgm": 7495,
+        "fg2a": 12409,
+        "fg2m": 6777,
+        "fg3a": 2367,
+        "fg3m": 718
       },
       {
         "context": "4-6 Feet - Open",
-        "fga": 11928,
-        "fgm": 5227,
-        "fg2a": 4946,
-        "fg2m": 2811,
-        "fg3a": 6982,
-        "fg3m": 2416
+        "fga": 12433,
+        "fgm": 5446,
+        "fg2a": 5161,
+        "fg2m": 2933,
+        "fg3a": 7272,
+        "fg3m": 2513
       },
       {
         "context": "6+ Feet - Wide Open",
-        "fga": 10592,
-        "fgm": 4459,
-        "fg2a": 1913,
-        "fg2m": 1200,
-        "fg3a": 8679,
-        "fg3m": 3259
+        "fga": 11021,
+        "fgm": 4644,
+        "fg2a": 1993,
+        "fg2m": 1247,
+        "fg3a": 9028,
+        "fg3m": 3397
       }
     ]
   }

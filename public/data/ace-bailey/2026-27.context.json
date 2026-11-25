@@ -4,23 +4,23 @@
     "player": "Ace Bailey",
     "playerId": 1642846,
     "season": "2026-27",
-    "dataThrough": "2026-11-22",
-    "gamesIncluded": 18,
-    "sourceShotPayload": "data/derived/ace-bailey/2026-27/2026-11-23T094736.json",
-    "totalShots": 213,
-    "gamesExpected": 18,
-    "gamesLoaded": 18,
+    "dataThrough": "2026-11-23",
+    "gamesIncluded": 19,
+    "sourceShotPayload": "data/derived/ace-bailey/2026-27/2026-11-25T063009.json",
+    "totalShots": 229,
+    "gamesExpected": 19,
+    "gamesLoaded": 19,
     "eventMatchCounts": {
-      "matched": 213,
+      "matched": 229,
       "missingGame": 0,
       "missingEvent": 0,
       "duplicateEvent": 0,
       "contradiction": 0
     },
     "assistStatusCounts": {
-      "assisted": 74,
-      "unassisted": 21,
-      "notApplicable": 118,
+      "assisted": 78,
+      "unassisted": 25,
+      "notApplicable": 126,
       "unknown": 0
     },
     "sourceGames": [
@@ -111,6 +111,11 @@
       },
       {
         "gameId": "0022600284",
+        "playByPlayPullDate": "2026-11-23",
+        "boxScorePullDate": "2026-11-23"
+      },
+      {
+        "gameId": "0022600295",
         "playByPlayPullDate": "2026-11-23",
         "boxScorePullDate": "2026-11-23"
       }
@@ -1819,6 +1824,134 @@
       "eventMatch": "matched",
       "assistStatus": "assisted",
       "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 14,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 32,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 54,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 56,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 247,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 286,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 312,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 349,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 366,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 409,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 424,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 440,
+      "eventMatch": "matched",
+      "assistStatus": "assisted",
+      "assistEvidence": "descriptionCredit",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 468,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 505,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 509,
+      "eventMatch": "matched",
+      "assistStatus": "unassisted",
+      "assistEvidence": "validatedAbsence",
+      "failureReason": null
+    },
+    {
+      "gameId": "0022600295",
+      "gameEventId": 699,
+      "eventMatch": "matched",
+      "assistStatus": "notApplicable",
+      "assistEvidence": "notApplicable",
       "failureReason": null
     }
   ]

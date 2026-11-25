@@ -4,33 +4,33 @@
     "player": "Ace Bailey",
     "playerId": 1642846,
     "season": "2026-27",
-    "dataThrough": "2026-11-22",
-    "gamesIncluded": 18,
-    "sourceShotPayload": "data/derived/ace-bailey/2026-27/2026-11-23T094736.json",
-    "sourceLeagueTotals": "data/raw/_league/2026-27/totals/2026-11-23T094736.json",
-    "leagueTotalsPullDate": "2026-11-23",
-    "seasonFga": 213,
-    "seasonPoints": 235,
-    "seasonFtm": 17,
-    "seasonFta": 22,
+    "dataThrough": "2026-11-23",
+    "gamesIncluded": 19,
+    "sourceShotPayload": "data/derived/ace-bailey/2026-27/2026-11-25T063009.json",
+    "sourceLeagueTotals": "data/raw/_league/2026-27/totals/2026-11-25T063009.json",
+    "leagueTotalsPullDate": "2026-11-25",
+    "seasonFga": 229,
+    "seasonPoints": 253,
+    "seasonFtm": 18,
+    "seasonFta": 23,
     "technicalFtm": 0,
     "technicalFta": 0,
     "splitFtm": 0,
     "splitFta": 0,
-    "totalTrips": 12,
+    "totalTrips": 13,
     "tripClassCounts": {
       "shootingFoul2": 6,
       "shootingFoul3": 0,
       "bonus": 2,
-      "andOne": 3,
+      "andOne": 4,
       "flagrant": 1,
       "awayFromPlay": 0,
       "transitionTake": 0,
       "clearPath": 0,
       "fouledDuringMake": 0
     },
-    "gamesExpected": 18,
-    "gamesLoaded": 18,
+    "gamesExpected": 19,
+    "gamesLoaded": 19,
     "sourceGames": [
       {
         "gameId": "0022600028",
@@ -119,6 +119,11 @@
       },
       {
         "gameId": "0022600284",
+        "playByPlayPullDate": "2026-11-23",
+        "boxScorePullDate": "2026-11-23"
+      },
+      {
+        "gameId": "0022600295",
         "playByPlayPullDate": "2026-11-23",
         "boxScorePullDate": "2026-11-23"
       }
@@ -232,12 +237,21 @@
       "ftm": 1,
       "fta": 2,
       "shotId": null
+    },
+    {
+      "gameId": "0022600295",
+      "period": 3,
+      "clock": "PT03M25.00S",
+      "tripClass": "andOne",
+      "ftm": 1,
+      "fta": 1,
+      "shotId": 509
     }
   ],
   "leagueBaseline": {
-    "ftm": 9435,
-    "fta": 12122,
-    "fga": 43583,
-    "points": 56230
+    "ftm": 9796,
+    "fta": 12571,
+    "fga": 45385,
+    "points": 58552
   }
 }
